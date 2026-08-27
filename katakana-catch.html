@@ -1,0 +1,891 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Katakana Catch — カタカナ・キャッチ</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2322406e'/%3E%3Ctext x='32' y='45' font-size='40' text-anchor='middle' fill='white' font-family='Hiragino Sans,sans-serif'%3E%E5%8B%95%3C/text%3E%3C/svg%3E">
+<style>
+  :root{
+    --bg:#05070c; --fg:#eaf2ff; --sub:#9fb2cc;
+    --ok:#8ef0c0; --ng:#ff8093; --hi:#ffd479; --line:#20293a;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%;background:var(--bg);color:var(--fg);overflow:hidden;
+    font-family:"Hiragino Sans","Noto Sans JP",system-ui,-apple-system,"Segoe UI",sans-serif;
+    -webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent}
+  #view{position:fixed;inset:0;display:block}
+
+  .panel{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;
+    justify-content:center;gap:14px;padding:24px;text-align:center;
+    background:radial-gradient(120% 90% at 50% 10%,#111a2b 0%,#05070c 70%);z-index:10;overflow-y:auto}
+  .panel.hidden{display:none}
+  h1{font-size:clamp(28px,6vw,54px);margin:0;letter-spacing:.02em}
+  h1 small{display:block;font-size:.42em;color:var(--sub);font-weight:400;margin-top:8px;letter-spacing:.08em}
+  p.lead{max-width:620px;margin:0;color:var(--sub);line-height:1.7;font-size:clamp(14px,2.4vw,17px)}
+  .row{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;align-items:center}
+  button{font:inherit;color:var(--fg);background:#141d2e;border:1px solid var(--line);
+    border-radius:14px;padding:12px 20px;cursor:pointer;transition:.15s}
+  button:hover:not(:disabled){background:#1c2740;border-color:#3a4a68}
+  button:disabled{opacity:.45;cursor:default}
+  button.big{font-size:clamp(16px,3vw,20px);padding:16px 34px;border-radius:18px}
+  button.primary{background:linear-gradient(180deg,#2f7cff,#1b56c9);border-color:#2f7cff;font-weight:700}
+  button.on{background:#1f4d3a;border-color:var(--ok);color:var(--ok)}
+  .seg{display:flex;gap:0;border:1px solid var(--line);border-radius:14px;overflow:hidden}
+  .seg button{border:0;border-radius:0;padding:11px 18px;background:transparent}
+  .seg button.on{background:#20304d;color:var(--fg)}
+  .lbl{color:var(--sub);font-size:13px;letter-spacing:.1em;text-transform:uppercase}
+  .err{color:var(--ng);font-size:13px;max-width:620px;line-height:1.6}
+  .card{background:#0d1420;border:1px solid var(--line);border-radius:18px;padding:18px 22px;
+    max-width:640px;width:100%;text-align:left}
+  .wordline{display:flex;justify-content:space-between;gap:16px;padding:9px 0;
+    border-bottom:1px solid #17202f;align-items:baseline}
+  .wordline:last-child{border-bottom:0}
+  .wordline b{font-size:22px;letter-spacing:.06em}
+  .wordline span{color:var(--sub);font-size:14px}
+  .back{position:fixed;top:14px;left:14px;z-index:20;font-size:14px;padding:9px 16px;
+    background:#0d1420cc;backdrop-filter:blur(6px)}
+  .back.hidden{display:none}
+  a{color:#7fb6ff}
+</style>
+</head>
+<body>
+
+<canvas id="view"></canvas>
+<video id="vid" playsinline muted style="display:none"></video>
+<button class="back hidden" id="btnBack">← メニュー / Menu</button>
+
+<!-- ===== 入口：カメラ許可 ===== -->
+<div class="panel" id="gate">
+  <h1>カタカナ・キャッチ<small>KATAKANA CATCH — catch the letters with your body</small></h1>
+  <p class="lead">
+    Stand back so your whole body fits in the camera, then catch the falling katakana
+    with your hands, head and feet to spell the word.<br>
+    <span style="color:#6d8099">カメラに全身が入るくらい下がって、落ちてくるカタカナを手・頭・足で取ってください。</span>
+  </p>
+  <p class="lead" id="gsub" style="color:#6d8099">Loading the model… / モデルを読み込み中…</p>
+  <button class="big primary" id="start" disabled>▶ Start camera / カメラを開始</button>
+  <p class="lead" style="font-size:13px">
+    The camera image never leaves this device. Nothing is uploaded.<br>
+    <span style="color:#6d8099">映像はこの端末から出ません。どこにも送られません。</span>
+  </p>
+  <p class="err" id="err"></p>
+</div>
+
+<!-- ===== メニュー ===== -->
+<div class="panel hidden" id="menu">
+  <h1 style="font-size:clamp(24px,5vw,40px)">Choose a mode<small>あそび方をえらぶ</small></h1>
+  <div class="row">
+    <div class="seg" id="segMode">
+      <button data-mode="char" class="on">もじ &nbsp;Letters</button>
+      <button data-mode="word">ことば &nbsp;Words</button>
+    </div>
+  </div>
+  <p class="lead" id="modeDesc"></p>
+  <div class="row">
+    <span class="lbl">Romaji hint</span>
+    <button id="btnHint" class="on">ON</button>
+    <span class="lbl" style="margin-left:14px">Speed</span>
+    <div class="seg" id="segSpeed">
+      <button data-sp="0" class="on">ゆっくり Slow</button>
+      <button data-sp="1">ふつう Normal</button>
+      <button data-sp="2">はやい Fast</button>
+    </div>
+  </div>
+  <div class="row" style="margin-top:10px">
+    <button class="big primary" id="btnPlay">▶ START</button>
+    <button class="big" id="btnVideo">Camera: dim</button>
+    <button class="big" id="btnFull">⛶ Full screen</button>
+  </div>
+</div>
+
+<!-- ===== 結果 ===== -->
+<div class="panel hidden" id="result">
+  <h1 id="resScore">SCORE</h1>
+  <div class="card" id="resList"></div>
+  <div class="row" style="margin-top:6px">
+    <button class="big primary" id="btnAgain">もう一回 / Again</button>
+    <button class="big" id="btnMenu">メニュー / Menu</button>
+  </div>
+  <p class="lead" style="font-size:13px">
+    Want to learn these words properly? <a href="index.html#contact">Book a trial lesson →</a>
+  </p>
+</div>
+
+<script>
+  /* tasks-vision の wasm グルーが未定義の dbg() を呼ぶことがある。
+     置いておかないと PoseLandmarker の生成が "dbg is not a function" で落ちる。 */
+  if (typeof globalThis.dbg !== "function") globalThis.dbg = function () {};
+</script>
+
+<script type="module">
+"use strict";
+/* MediaPipe 本体・wasm・モデルは vendor/ に置いてある。ネットが無くても動かすため。
+   vendor/ が読めなかったときだけ CDN に落ちる。 */
+const MP_VER = "0.10.14";
+const CDN = "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@" + MP_VER;
+let offline = true, mp;
+try { mp = await import("./vendor/vision_bundle.mjs"); }
+catch (e) { offline = false; mp = await import(CDN + "/vision_bundle.mjs"); }
+const { FilesetResolver, PoseLandmarker } = mp;
+
+const $ = id => document.getElementById(id);
+const view = $("view"), vctx = view.getContext("2d");
+const vid = $("vid");
+const gate = $("gate"), gsub = $("gsub"), startBtn = $("start"), errEl = $("err");
+const menuEl = $("menu"), resultEl = $("result"), backBtn = $("btnBack");
+
+/* モデルに渡す鏡像用オフスクリーン */
+const mir = document.createElement("canvas");
+const mctx = mir.getContext("2d", { willReadFrequently: true });
+
+/* ---------- 画面サイズ ---------- */
+let DPR = 1, W = 0, H = 0, U = 1;      // U = 高さ720px基準のスケール単位
+function resize() {
+  DPR = Math.min(2, window.devicePixelRatio || 1);
+  W = Math.max(1, window.innerWidth | 0);
+  H = Math.max(1, window.innerHeight | 0);
+  U = H / 720;
+  view.width = W * DPR; view.height = H * DPR;
+  view.style.width = W + "px"; view.style.height = H + "px";
+  vctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+}
+resize();
+addEventListener("resize", resize);
+
+/* ---------- 姿勢ランドマーク番号 ---------- */
+const NOSE = 0,
+      L_SHOULDER = 11, R_SHOULDER = 12, L_ELBOW = 13, R_ELBOW = 14,
+      L_WRIST = 15, R_WRIST = 16, L_PINKY = 17, R_PINKY = 18,
+      L_INDEX = 19, R_INDEX = 20, L_HIP = 23, R_HIP = 24,
+      L_KNEE = 25, R_KNEE = 26, L_ANKLE = 27, R_ANKLE = 28,
+      L_FOOT = 31, R_FOOT = 32;
+
+/* ---------- モデル読み込み（STARTより前に await して先読み） ---------- */
+let pose = null;
+const opts = (modelPath, delegate) => ({
+  baseOptions: { modelAssetPath: modelPath, delegate },
+  runningMode: "VIDEO",
+  numPoses: 1,
+  minPoseDetectionConfidence: 0.5,
+  minPosePresenceConfidence: 0.5,
+  minTrackingConfidence: 0.5,
+  outputSegmentationMasks: false,
+});
+async function buildPose(wasmDir, modelPath) {
+  const vision = await FilesetResolver.forVisionTasks(wasmDir);
+  try { return await PoseLandmarker.createFromOptions(vision, opts(modelPath, "GPU")); }
+  catch (gpuErr) {
+    console.warn("GPU delegate failed, falling back to CPU:", gpuErr);
+    return await PoseLandmarker.createFromOptions(vision, opts(modelPath, "CPU"));
+  }
+}
+try {
+  try {
+    pose = await buildPose("./vendor/wasm", "./vendor/pose_landmarker_lite.task");
+  } catch (localErr) {
+    offline = false;
+    console.warn("vendor/ から読めなかったのでCDNに切り替えます:", localErr);
+    pose = await buildPose(CDN + "/wasm",
+      "https://storage.googleapis.com/mediapipe-models/pose_landmarker/" +
+      "pose_landmarker_lite/float16/1/pose_landmarker_lite.task");
+  }
+  gsub.textContent = "Ready — step back until your whole body fits in the camera / 準備完了";
+  startBtn.disabled = false;
+} catch (e) {
+  gsub.textContent = "Failed to load the model / モデルの読み込みに失敗しました";
+  errEl.textContent = String(e && e.message || e);
+}
+
+/* ---------- カタカナ表 ---------- */
+const KANA = {
+  "ア":"a","イ":"i","ウ":"u","エ":"e","オ":"o",
+  "カ":"ka","キ":"ki","ク":"ku","ケ":"ke","コ":"ko",
+  "サ":"sa","シ":"shi","ス":"su","セ":"se","ソ":"so",
+  "タ":"ta","チ":"chi","ツ":"tsu","テ":"te","ト":"to",
+  "ナ":"na","ニ":"ni","ヌ":"nu","ネ":"ne","ノ":"no",
+  "ハ":"ha","ヒ":"hi","フ":"fu","ヘ":"he","ホ":"ho",
+  "マ":"ma","ミ":"mi","ム":"mu","メ":"me","モ":"mo",
+  "ヤ":"ya","ユ":"yu","ヨ":"yo",
+  "ラ":"ra","リ":"ri","ル":"ru","レ":"re","ロ":"ro",
+  "ワ":"wa","ヲ":"wo","ン":"n",
+  "ガ":"ga","ギ":"gi","グ":"gu","ゲ":"ge","ゴ":"go",
+  "ザ":"za","ジ":"ji","ズ":"zu","ゼ":"ze","ゾ":"zo",
+  "ダ":"da","デ":"de","ド":"do",
+  "バ":"ba","ビ":"bi","ブ":"bu","ベ":"be","ボ":"bo",
+  "パ":"pa","ピ":"pi","プ":"pu","ペ":"pe","ポ":"po",
+  "ー":"—","ャ":"ya","ュ":"yu","ョ":"yo","ッ":"tsu",
+};
+const BASIC = Object.keys(KANA).filter(k => !"ーャュョッ".includes(k));
+
+/* 見た目がまぎらわしい組。カタカナで一番つまずくのがここなので、
+   おとりの半分はわざと「にせもの」から出す。 */
+const CONFUSE = {
+  "シ":["ツ","ミ"],"ツ":["シ","ソ"],"ソ":["ン","ツ"],"ン":["ソ","ノ"],"ノ":["ン","ソ"],
+  "ク":["ケ","タ"],"ケ":["ク","タ"],"タ":["ク","ヲ"],"ラ":["フ","ワ"],"フ":["ラ","ワ"],
+  "ワ":["ウ","ク"],"ウ":["ワ","フ"],"コ":["ユ","ヨ"],"ヨ":["コ","ヲ"],"エ":["ユ","コ"],
+  "ス":["ヌ","メ"],"ヌ":["ス","メ"],"メ":["ヌ","ス"],"ナ":["メ","チ"],"チ":["テ","ナ"],
+  "テ":["チ","ラ"],"ホ":["オ","ネ"],"オ":["ホ","ヌ"],"ネ":["ホ","オ"],"ア":["マ","ヤ"],
+  "マ":["ア","ム"],"ム":["マ","エ"],"ロ":["ヨ","コ"],"ニ":["エ","ハ"],"ハ":["ヘ","ノ"],
+  "ヘ":["ハ","ノ"],"レ":["ル","ノ"],"ル":["レ","ノ"],"イ":["ノ","リ"],"リ":["ソ","ハ"],
+  "ミ":["シ","ツ"],"ヒ":["ト","レ"],"ト":["ヒ","イ"],"キ":["サ","チ"],"サ":["キ","ヤ"],
+  "ヤ":["セ","マ"],"セ":["ヤ","キ"],"ヲ":["フ","ラ"],"モ":["セ","ヒ"],"ユ":["コ","ヱ"],
+};
+
+/* 外来語だけを並べてある。日本に住んでいれば毎日目に入るものを優先した。 */
+const WORDS = [
+  ["バス","basu","bus"],            ["パン","pan","bread"],
+  ["ペン","pen","pen"],             ["ゴミ","gomi","trash"],
+  ["ドア","doa","door"],            ["ビル","biru","building"],
+  ["ガス","gasu","gas"],            ["レジ","reji","cash register"],
+  ["ネット","netto","internet"],     ["カメラ","kamera","camera"],
+  ["ホテル","hoteru","hotel"],       ["ケーキ","kēki","cake"],
+  ["ビール","bīru","beer"],          ["ジュース","jūsu","juice"],
+  ["ピザ","piza","pizza"],           ["サラダ","sarada","salad"],
+  ["テレビ","terebi","TV"],          ["トイレ","toire","toilet"],
+  ["カード","kādo","card"],          ["ミルク","miruku","milk"],
+  ["チーズ","chīzu","cheese"],       ["ノート","nōto","notebook"],
+  ["マスク","masuku","mask"],        ["メール","mēru","email"],
+  ["シャツ","shatsu","shirt"],       ["ズボン","zubon","pants"],
+  ["プール","pūru","pool"],          ["ダンス","dansu","dance"],
+  ["アイス","aisu","ice cream"],     ["ラーメン","rāmen","ramen"],
+  ["コーヒー","kōhī","coffee"],      ["タクシー","takushī","taxi"],
+  ["スマホ","sumaho","smartphone"],  ["コンビニ","konbini","convenience store"],
+  ["スーパー","sūpā","supermarket"], ["アパート","apāto","apartment"],
+  ["エアコン","eakon","air conditioner"], ["シャワー","shawā","shower"],
+  ["テーブル","tēburu","table"],     ["チケット","chiketto","ticket"],
+  ["パソコン","pasokon","computer"], ["サービス","sābisu","service"],
+  ["デパート","depāto","department store"], ["バイト","baito","part-time job"],
+  ["レストラン","resutoran","restaurant"],  ["パスポート","pasupōto","passport"],
+];
+
+/* ---------- 音 ---------- */
+let ac = null, master = null;
+async function initAudio() {
+  if (ac) { if (ac.state === "suspended") await ac.resume(); return; }
+  ac = new (window.AudioContext || window.webkitAudioContext)();
+  if (ac.state === "suspended") await ac.resume();
+  const comp = ac.createDynamicsCompressor();
+  comp.threshold.value = -6; comp.ratio.value = 20;
+  master = ac.createGain(); master.gain.value = 0.5;
+  master.connect(comp); comp.connect(ac.destination);
+}
+function beep(freq, dur, type, vol) {
+  if (!ac) return;
+  const o = ac.createOscillator(), g = ac.createGain();
+  o.type = type || "triangle"; o.frequency.value = freq;
+  const t = ac.currentTime;
+  g.gain.setValueAtTime(0, t);
+  g.gain.linearRampToValueAtTime(vol == null ? 0.4 : vol, t + 0.01);
+  g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+  o.connect(g); g.connect(master);
+  o.start(t); o.stop(t + dur + 0.02);
+}
+function sfxHit(step) {
+  const f = 523.25 * Math.pow(2, Math.min(step, 12) / 12);
+  beep(f, 0.16, "triangle", 0.45); beep(f * 2, 0.09, "sine", 0.18);
+}
+function sfxWrong() { beep(150, 0.22, "sawtooth", 0.25); }
+function sfxWord() { [660, 880, 1100].forEach((f, i) => setTimeout(() => beep(f, 0.3, "triangle", 0.35), i * 90)); }
+function sfxCount(n) { beep(n === 0 ? 880 : 440, 0.16, "square", 0.3); }
+function sfxEnd() { [523, 659, 784, 1047].forEach((f, i) => setTimeout(() => beep(f, 0.4, "triangle", 0.35), i * 110)); }
+
+/* 読み上げ。教材なので「取れた＝その音を耳で聞く」を必ず通す。 */
+function speak(text) {
+  try {
+    if (!("speechSynthesis" in window)) return;
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = "ja-JP"; u.rate = 0.8;
+    speechSynthesis.cancel(); speechSynthesis.speak(u);
+  } catch (e) { /* 読み上げが無い環境でもゲームは続ける */ }
+}
+
+/* ---------- 設定 ---------- */
+const cfg = { duration: 60, videoLevel: 1, mirror: true, hint: true, speed: 0, mode: "char" };
+const SPEEDS = [
+  { fall: 105, spawn: 1.05, label: "Slow" },
+  { fall: 145, spawn: 0.85, label: "Normal" },
+  { fall: 195, spawn: 0.66, label: "Fast" },
+];
+
+/* ---------- カメラ開始 ---------- */
+let camOn = false;
+startBtn.addEventListener("click", async () => {
+  startBtn.disabled = true;
+  try {
+    initAudio().catch(() => {});
+    const stream = await navigator.mediaDevices.getUserMedia({
+      video: { width: { ideal: 1280 }, height: { ideal: 720 }, facingMode: "user" },
+      audio: false,
+    });
+    vid.srcObject = stream;
+    await vid.play();
+    mir.width = vid.videoWidth || 1280;
+    mir.height = vid.videoHeight || 720;
+    camOn = true;
+    gate.classList.add("hidden");
+    menuEl.classList.remove("hidden");
+    requestAnimationFrame(loop);
+  } catch (e) {
+    startBtn.disabled = false;
+    errEl.textContent = "Cannot start the camera / カメラを開始できません: "
+      + (e && e.message || e)
+      + "  —  you are on " + location.origin + " (file:// does not work / file:// では動きません)";
+  }
+});
+
+/* ---------- 正規化座標 → 画面座標（映像を画面いっぱいに cover で敷いた前提） ---------- */
+function mapPt(n) {
+  const vw = mir.width, vh = mir.height;
+  if (!W || !H || !vw || !vh) return { x: 0, y: 0 };
+  const s = Math.max(W / vw, H / vh);
+  const dw = vw * s, dh = vh * s;
+  let x = n.x * dw - (dw - W) / 2;
+  const y = n.y * dh - (dh - H) / 2;
+  if (!cfg.mirror) x = W - x;             // 鏡像はモデルに渡す時点で済ませてある
+  return { x, y };
+}
+
+/* ---------- 平滑化（見失って別の場所で再認識したら補間せず瞬間移動） ---------- */
+const SMOOTH = 0.6;
+function makeSm() { return { x: 0, y: 0, has: false }; }
+function follow(sm, p) {
+  if (!sm.has) { sm.x = p.x; sm.y = p.y; sm.has = true; return sm; }
+  if (Math.hypot(p.x - sm.x, p.y - sm.y) > Math.hypot(W, H) * 0.35) { sm.x = p.x; sm.y = p.y; }
+  else { sm.x += (p.x - sm.x) * SMOOTH; sm.y += (p.y - sm.y) * SMOOTH; }
+  return sm;
+}
+
+/* ---------- 体の当たり判定 ----------
+   手だけでなく頭・ひじ・ひざ・足にも置く。走って体ごと文字の下に入れば取れる。
+   大きさはすべて肩幅から決めるので、部屋のどこに立っていても同じ感覚で取れる。 */
+const BODY = [
+  { key:"head",     rf:0.42, ring:1, lm:[NOSE] },
+  { key:"chest",    rf:0.40, lm:[L_SHOULDER, R_SHOULDER] },
+  { key:"elbowL",   rf:0.24, lm:[L_ELBOW] },
+  { key:"elbowR",   rf:0.24, lm:[R_ELBOW] },
+  { key:"handL",    rf:0.40, ring:1, lm:[L_WRIST, L_INDEX, L_PINKY] },
+  { key:"handR",    rf:0.40, ring:1, lm:[R_WRIST, R_INDEX, R_PINKY] },
+  { key:"hipL",     rf:0.26, lm:[L_HIP] },
+  { key:"hipR",     rf:0.26, lm:[R_HIP] },
+  { key:"kneeL",    rf:0.26, lm:[L_KNEE] },
+  { key:"kneeR",    rf:0.26, lm:[R_KNEE] },
+  { key:"footL",    rf:0.32, ring:1, lm:[L_ANKLE, L_FOOT] },
+  { key:"footR",    rf:0.32, ring:1, lm:[R_ANKLE, R_FOOT] },
+];
+const IDX = {};
+BODY.forEach((b, i) => { IDX[b.key] = i; });
+const LINKS = [
+  ["head","chest"], ["chest","elbowL"], ["elbowL","handL"],
+  ["chest","elbowR"], ["elbowR","handR"], ["chest","hipL"], ["chest","hipR"],
+  ["hipL","hipR"], ["hipL","kneeL"], ["kneeL","footL"],
+  ["hipR","kneeR"], ["kneeR","footR"],
+].map(([a, b]) => [IDX[a], IDX[b]]);
+
+const smooths = BODY.map(makeSm);
+function vis(l) { return l.visibility == null ? 1 : l.visibility; }
+
+function poseToPlayer(lm) {
+  const ls = lm[L_SHOULDER], rs = lm[R_SHOULDER];
+  if (!ls || !rs) return null;
+  const lsP = mapPt(ls), rsP = mapPt(rs);
+  const shoulderPx = Math.hypot(lsP.x - rsP.x, lsP.y - rsP.y) || 1;
+  const pts = BODY.map(b => {
+    const ok = b.lm.filter(i => lm[i] && vis(lm[i]) > 0.35);
+    if (!ok.length) return null;
+    let x = 0, y = 0;
+    for (const i of ok) { const p = mapPt(lm[i]); x += p.x; y += p.y; }
+    return { x: x / ok.length, y: y / ok.length, r: Math.max(16, shoulderPx * b.rf) };
+  });
+  return { pts, shoulderPx };
+}
+
+/* ---------- ゲーム状態 ---------- */
+const ST = { MENU: 0, COUNT: 1, PLAY: 2, OVER: 3 };
+let state = ST.MENU;
+let tiles = [], effects = [];
+let score = 0, combo = 0, best = 0, timeLeft = 0, countT = 0;
+let spawnT = 0, nextId = 1, learned = [], wrongCount = 0;
+let target = null;
+
+function comboMul(c) { return c >= 12 ? 3 : c >= 6 ? 2 : 1; }
+const pick = a => a[Math.floor(Math.random() * a.length)];
+
+function newTarget(sayDelay) {
+  if (cfg.mode === "word") {
+    let w = pick(WORDS), guard = 0;
+    while (target && w[0] === target.word && guard++ < 8) w = pick(WORDS);
+    target = { word: w[0], chars: [...w[0]], romaji: w[1], mean: w[2], idx: 0, hide: false };
+  } else {
+    let c = pick(BASIC), guard = 0;
+    while (target && c === target.word && guard++ < 8) c = pick(BASIC);
+    // もじモードは「音 → 形」を思い出す練習なので、答えのカタカナは伏せる
+    target = { word: c, chars: [c], romaji: KANA[c], mean: "", idx: 0, hide: true };
+  }
+  const w = target.word;
+  if (sayDelay) setTimeout(() => { if (target && target.word === w) speak(w); }, sayDelay);
+  else speak(w);
+}
+
+function needChar() { return target ? target.chars[target.idx] : null; }
+
+/* おとりの選び方。半分は「見た目がまぎらわしい字」から出す。 */
+function decoyChar(need) {
+  const near = (CONFUSE[need] || []).filter(c => KANA[c]);
+  if (near.length && Math.random() < 0.5) return pick(near);
+  let c = pick(BASIC), guard = 0;
+  while (c === need && guard++ < 8) c = pick(BASIC);
+  return c;
+}
+
+function spawnTile(ch) {
+  const r = 44 * U;
+  const m = r + 14 * U;
+  tiles.push({
+    id: nextId++, ch,
+    x: m + Math.random() * Math.max(1, W - m * 2),
+    y: -r - Math.random() * 60 * U,
+    vy: SPEEDS[cfg.speed].fall * U * (0.85 + Math.random() * 0.35),
+    r, wob: Math.random() * 6.28, dead: false, pop: 0, bad: false,
+  });
+}
+
+function startGame() {
+  score = 0; combo = 0; best = 0; wrongCount = 0;
+  tiles = []; effects = []; learned = [];
+  target = null; newTarget();
+  spawnT = 0; countT = 3.2; state = ST.COUNT;
+  menuEl.classList.add("hidden");
+  resultEl.classList.add("hidden");
+  backBtn.classList.remove("hidden");
+}
+
+function burst(x, y, color, n, scale) {
+  for (let i = 0; i < n; i++) {
+    const a = Math.random() * 6.28, sp = (60 + Math.random() * 220) * U * (scale || 1);
+    effects.push({ x, y, vx: Math.cos(a) * sp, vy: Math.sin(a) * sp - 40 * U,
+      life: 0.5 + Math.random() * 0.4, t: 0, color, r: (3 + Math.random() * 4) * U });
+  }
+}
+function floatText(x, y, s, color) {
+  effects.push({ text: s, x, y, vx: 0, vy: -70 * U, life: 0.9, t: 0, color, r: 0 });
+}
+
+/* ---------- 取得判定 ----------
+   URL に ?mouse=1 を付けると、マウスの先も「手」として扱う。
+   カメラの無い場所で中身を確かめるための逃げ道で、ふだんの遊びには出てこない。 */
+const TESTMOUSE = new URLSearchParams(location.search).has("mouse");
+let mouseP = null;
+if (TESTMOUSE) {
+  addEventListener("pointermove", e => { mouseP = { x: e.clientX, y: e.clientY }; });
+  // 中身をのぞくための窓。?mouse=1 のときだけ生える
+  window.__kc = {
+    get tiles() { return tiles; }, get target() { return target; },
+    get score() { return score; }, get state() { return state; },
+    get combo() { return combo; }, get learned() { return learned; },
+    touch(x, y) { mouseP = { x, y }; },
+    release() { mouseP = null; },
+    skipCountdown() { countT = -1; },
+  };
+}
+
+let lastNeedSpawn = 0;
+function resolveTile(t) {
+  const need = needChar();
+  t.dead = true; t.pop = 0;
+  if (t.ch === need) {
+    combo++; best = Math.max(best, combo);
+    const mul = comboMul(combo);
+    score += 100 * mul;
+    sfxHit(combo);
+    burst(t.x, t.y, "#8ef0c0", 16, 1);
+    floatText(t.x, t.y, "+" + (100 * mul), "#8ef0c0");
+    target.idx++;
+    if (target.idx >= target.chars.length) {
+      score += 300 * mul;
+      learned.push({ word: target.word, romaji: target.romaji, mean: target.mean });
+      sfxWord(); speak(target.word);
+      floatText(W / 2, H * 0.34, target.word + "  ✓", "#ffd479");
+      // 出しっぱなしの字は次の言葉の邪魔になるので、いったん片づける
+      for (const o of tiles) if (!o.dead) { o.dead = true; o.pop = 0.15; }
+      newTarget(1200);
+    }
+  } else {
+    combo = 0; wrongCount++;
+    score = Math.max(0, score - 50);
+    t.bad = true;
+    sfxWrong();
+    burst(t.x, t.y, "#ff8093", 10, 0.7);
+    // 何と間違えたのかを見せる。ここが一番おぼえる
+    floatText(t.x, t.y, "✕ " + t.ch + " = " + KANA[t.ch], "#ff8093");
+  }
+}
+function tryCatch(P) {
+  for (const t of tiles) {
+    if (t.dead) continue;
+    if (mouseP && Math.hypot(mouseP.x - t.x, mouseP.y - t.y) < 40 * U + t.r * 0.8) { resolveTile(t); continue; }
+    if (!P) continue;
+    for (let k = 0; k < BODY.length; k++) {
+      const p = P.pts[k], sm = smooths[k];
+      if (!p || !sm.has) continue;
+      if (Math.hypot(sm.x - t.x, sm.y - t.y) < p.r + t.r * 0.8) { resolveTile(t); break; }
+    }
+  }
+}
+
+/* ---------- 更新 ---------- */
+function updateGame(dt, P) {
+  timeLeft -= dt;
+  if (timeLeft <= 0) { timeLeft = 0; endGame(); return; }
+
+  const sp = SPEEDS[cfg.speed];
+  spawnT -= dt;
+  if (spawnT <= 0) { spawnT = sp.spawn * (0.85 + Math.random() * 0.3); spawnTile(decoyChar(needChar())); }
+
+  // 必要な字が画面にないと詰むので、切らさないように補充する
+  const need = needChar();
+  lastNeedSpawn -= dt;
+  if (need && lastNeedSpawn <= 0 && !tiles.some(t => !t.dead && t.ch === need)) {
+    spawnTile(need); lastNeedSpawn = 0.45;
+  }
+
+  for (const t of tiles) {
+    if (t.dead) { t.pop += dt; continue; }
+    t.y += t.vy * dt;
+    t.wob += dt * 2;
+  }
+  tryCatch(P);
+  tiles = tiles.filter(t => (t.dead ? t.pop < 0.35 : t.y < H + t.r * 2));
+
+  for (const e of effects) {
+    e.t += dt; e.x += e.vx * dt; e.y += e.vy * dt;
+    if (!e.text) e.vy += 900 * U * dt;
+  }
+  effects = effects.filter(e => e.t < e.life);
+}
+
+function endGame() {
+  state = ST.OVER;
+  sfxEnd();
+  backBtn.classList.add("hidden");
+  $("resScore").innerHTML = "SCORE " + score +
+    "<small>best combo " + best + " ・ mistakes " + wrongCount + "</small>";
+  const seen = [], out = [];
+  for (const l of learned) {
+    if (seen.includes(l.word)) continue;
+    seen.push(l.word);
+    out.push('<div class="wordline"><b>' + l.word + "</b><span>" + l.romaji +
+      (l.mean ? " — " + l.mean : "") + "</span></div>");
+  }
+  $("resList").innerHTML = out.length
+    ? '<div class="lbl" style="margin-bottom:8px">You caught these / 取れたことば</div>' + out.join("")
+    : '<div class="lbl">Nothing caught yet — try Slow mode / まずは Slow で</div>';
+  resultEl.classList.remove("hidden");
+}
+
+/* ---------- 描画 ---------- */
+function drawBackground() {
+  vctx.fillStyle = "#05070c";
+  vctx.fillRect(0, 0, W, H);
+  if (cfg.videoLevel === 0) return;
+  const vw = vid.videoWidth | 0, vh = vid.videoHeight | 0;
+  if (!vw || !vh) return;
+  const s = Math.max(W / vw, H / vh);
+  const dw = vw * s, dh = vh * s, x = -(dw - W) / 2, y = -(dh - H) / 2;
+  vctx.save();
+  if (cfg.mirror) { vctx.translate(W, 0); vctx.scale(-1, 1); }
+  vctx.globalAlpha = cfg.videoLevel === 1 ? 0.3 : 0.72;
+  vctx.filter = cfg.videoLevel === 1 ? "grayscale(.85) brightness(.55)" : "brightness(.85)";
+  vctx.drawImage(vid, cfg.mirror ? W - (x + dw) : x, y, dw, dh);
+  vctx.restore();
+  vctx.filter = "none";
+}
+
+/* 当たる場所がそのまま光るので、「どこで取れるのか」を説明しなくても体で分かる */
+function drawBody(P) {
+  if (mouseP) {
+    vctx.save();
+    vctx.strokeStyle = "#8ef0c0"; vctx.lineWidth = 3 * U; vctx.globalAlpha = .8;
+    vctx.beginPath(); vctx.arc(mouseP.x, mouseP.y, 40 * U, 0, 6.2832); vctx.stroke();
+    vctx.restore();
+  }
+  if (!P) return;
+  const col = "#8ef0c0";
+  vctx.save();
+  vctx.shadowColor = col; vctx.shadowBlur = 24 * U;
+  vctx.strokeStyle = col; vctx.lineCap = "round";
+  vctx.globalAlpha = .55; vctx.lineWidth = 5 * U;
+  for (const [a, b] of LINKS) {
+    if (!P.pts[a] || !P.pts[b] || !smooths[a].has || !smooths[b].has) continue;
+    vctx.beginPath();
+    vctx.moveTo(smooths[a].x, smooths[a].y);
+    vctx.lineTo(smooths[b].x, smooths[b].y);
+    vctx.stroke();
+  }
+  for (let k = 0; k < BODY.length; k++) {
+    const p = P.pts[k], sm = smooths[k];
+    if (!p || !sm.has) continue;
+    vctx.globalAlpha = BODY[k].ring ? .30 : .16;
+    vctx.fillStyle = col;
+    vctx.beginPath(); vctx.arc(sm.x, sm.y, p.r, 0, 6.2832); vctx.fill();
+    if (BODY[k].ring) {
+      vctx.globalAlpha = .8; vctx.lineWidth = 3 * U;
+      vctx.beginPath(); vctx.arc(sm.x, sm.y, p.r, 0, 6.2832); vctx.stroke();
+    }
+  }
+  vctx.restore();
+}
+
+function roundRect(ctx, x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.arcTo(x + w, y, x + w, y + h, r);
+  ctx.arcTo(x + w, y + h, x, y + h, r);
+  ctx.arcTo(x, y + h, x, y, r);
+  ctx.arcTo(x, y, x + w, y, r);
+  ctx.closePath();
+}
+
+function drawTiles() {
+  for (const t of tiles) {
+    const k = t.dead ? 1 + t.pop * 2.2 : 1;
+    const a = t.dead ? Math.max(0, 1 - t.pop * 3) : 1;
+    const s = t.r * k;
+    const wob = Math.sin(t.wob) * 3 * U;
+    vctx.save();
+    vctx.globalAlpha = a;
+    vctx.translate(t.x + wob, t.y);
+
+    const g = vctx.createLinearGradient(0, -s, 0, s);
+    if (t.dead && t.bad) { g.addColorStop(0, "#5e2333"); g.addColorStop(1, "#2a1018"); }
+    else { g.addColorStop(0, "#28344f"); g.addColorStop(1, "#0f1726"); }
+    vctx.fillStyle = g;
+    vctx.shadowColor = "#000"; vctx.shadowBlur = 18 * U;
+    roundRect(vctx, -s, -s, s * 2, s * 2, s * 0.34);
+    vctx.fill();
+    vctx.shadowBlur = 0;
+    vctx.lineWidth = 2.5 * U;
+    vctx.strokeStyle = t.dead && t.bad ? "#ff8093" : "#3d4f70";
+    vctx.stroke();
+
+    vctx.fillStyle = "#f2f7ff";
+    vctx.textAlign = "center"; vctx.textBaseline = "middle";
+    vctx.font = "700 " + (s * 1.15) + 'px "Hiragino Sans","Noto Sans JP",sans-serif';
+    vctx.fillText(t.ch, 0, cfg.hint ? -s * 0.12 : 0);
+    if (cfg.hint) {
+      vctx.fillStyle = "#8ea4c4";
+      vctx.font = "600 " + (s * 0.36) + 'px system-ui,sans-serif';
+      vctx.fillText(KANA[t.ch] || "", 0, s * 0.62);
+    }
+    vctx.restore();
+  }
+}
+
+function drawEffects() {
+  for (const e of effects) {
+    const a = Math.max(0, 1 - e.t / e.life);
+    vctx.save();
+    vctx.globalAlpha = a;
+    if (e.text) {
+      vctx.fillStyle = e.color;
+      vctx.textAlign = "center"; vctx.textBaseline = "middle";
+      vctx.font = "800 " + (26 * U) + 'px "Hiragino Sans",system-ui,sans-serif';
+      vctx.shadowColor = "#000"; vctx.shadowBlur = 10 * U;
+      vctx.fillText(e.text, e.x, e.y);
+    } else {
+      vctx.fillStyle = e.color;
+      vctx.beginPath(); vctx.arc(e.x, e.y, e.r, 0, 6.2832); vctx.fill();
+    }
+    vctx.restore();
+  }
+}
+
+function txt(s, x, y, size, color, align, weight) {
+  vctx.fillStyle = color;
+  vctx.textAlign = align || "left"; vctx.textBaseline = "middle";
+  vctx.font = (weight || 700) + " " + size + 'px "Hiragino Sans","Noto Sans JP",system-ui,sans-serif';
+  vctx.fillText(s, x, y);
+}
+
+/* 上に出す「いま何を取るのか」。取った字は緑、次の字は黄色く光る。 */
+function drawTarget() {
+  if (!target) return;
+  const box = 46 * U, gap = 8 * U;
+  const n = target.chars.length;
+  const totalW = n * box + (n - 1) * gap;
+  const x0 = W / 2 - totalW / 2, y = 44 * U;
+
+  vctx.save();
+  const padX = 26 * U, padY = 16 * U;
+  const panelW = Math.max(totalW + padX * 2, 300 * U);
+  const panelH = box + padY * 2 + (target.hide ? 46 : 34) * U;
+  // 落ちてくる字がパネルの裏に透けると読み違えるので、ここは完全に塗りつぶす
+  vctx.fillStyle = "#070b13";
+  roundRect(vctx, W / 2 - panelW / 2, y - box / 2 - padY, panelW, panelH, 18 * U);
+  vctx.fill();
+  vctx.lineWidth = 1.5 * U; vctx.strokeStyle = "#22304a"; vctx.stroke();
+
+  for (let i = 0; i < n; i++) {
+    const cx = x0 + i * (box + gap) + box / 2;
+    const done = i < target.idx, now = i === target.idx;
+    if (now) {
+      const p = 0.5 + 0.5 * Math.sin(performance.now() / 260);
+      vctx.globalAlpha = .18 + .22 * p; vctx.fillStyle = "#ffd479";
+      roundRect(vctx, cx - box / 2, y - box / 2, box, box, box * 0.28); vctx.fill();
+      vctx.globalAlpha = 1;
+    }
+    const hidden = target.hide && !done;
+    txt(hidden ? "?" : target.chars[i], cx, y, box * 0.82,
+        done ? "#8ef0c0" : now ? "#ffd479" : "#5b6b85", "center", 700);
+  }
+  const label = target.hide
+    ? target.romaji.toUpperCase()
+    : target.romaji + (target.mean ? "  —  " + target.mean : "");
+  txt(label, W / 2, y + box / 2 + 24 * U, (target.hide ? 30 : 19) * U,
+      target.hide ? "#ffd479" : "#a9bcd8", "center", target.hide ? 800 : 600);
+  vctx.restore();
+}
+
+function drawHUD() {
+  // 残り時間は上端の細い帯。数字より先に「あとどれくらい」が目に入る
+  const frac = Math.max(0, timeLeft / cfg.duration);
+  vctx.fillStyle = "#141c2b"; vctx.fillRect(0, 0, W, 6 * U);
+  vctx.fillStyle = frac < 0.2 ? "#ff8093" : "#2f7cff";
+  vctx.fillRect(0, 0, W * frac, 6 * U);
+
+  vctx.save();
+  vctx.shadowColor = "#000"; vctx.shadowBlur = 8 * U;
+  txt("SCORE " + score, 22 * U, H - 34 * U, 26 * U, "#eaf2ff", "left", 800);
+  txt(Math.ceil(timeLeft) + "s", 22 * U, H - 66 * U, 17 * U, "#9fb2cc", "left", 600);
+  if (combo >= 2) {
+    const mul = comboMul(combo);
+    txt(combo + " COMBO" + (mul > 1 ? "  ×" + mul : ""),
+        W - 22 * U, H - 34 * U, 26 * U, mul > 1 ? "#ffd479" : "#8ef0c0", "right", 800);
+  }
+  vctx.restore();
+}
+
+function drawCountdown() {
+  const n = Math.ceil(countT - 0.2);
+  const s = n <= 0 ? "GO!" : String(n);
+  vctx.save();
+  vctx.globalAlpha = .85;
+  vctx.shadowColor = "#2f7cff"; vctx.shadowBlur = 40 * U;
+  txt(s, W / 2, H / 2, 130 * U, "#eaf2ff", "center", 800);
+  vctx.globalAlpha = 1;
+  txt("Catch the yellow letter with any part of your body",
+      W / 2, H / 2 + 100 * U, 20 * U, "#9fb2cc", "center", 600);
+  txt("光っている字を、手でも頭でも足でも取ってください",
+      W / 2, H / 2 + 132 * U, 18 * U, "#6d8099", "center", 500);
+  vctx.restore();
+}
+
+/* ---------- メインループ ---------- */
+let last = performance.now(), poseCount = 0;
+function loop(now) {
+  requestAnimationFrame(loop);
+  if (!camOn || !pose) return;
+
+  let dt = (now - last) / 1000;
+  last = now;
+  if (!(dt > 0)) dt = 0.016;
+  dt = Math.min(dt, 0.05);                     // タブ復帰で巨大な dt が来る
+
+  if (window.innerWidth !== W || window.innerHeight !== H) resize();
+  if (!W || !H || !mir.width || vid.readyState < 2) return;
+
+  // 鏡像にしてからモデルへ渡す（左右ラベルと見た目を一致させる）
+  mctx.save();
+  mctx.translate(mir.width, 0); mctx.scale(-1, 1);
+  mctx.drawImage(vid, 0, 0, mir.width, mir.height);
+  mctx.restore();
+
+  const res = pose.detectForVideo(mir, now);
+  const lm = (res && res.landmarks && res.landmarks[0]) || null;
+  poseCount = lm ? 1 : 0;
+  const P = lm ? poseToPlayer(lm) : null;
+
+  for (let k = 0; k < BODY.length; k++) {
+    if (P && P.pts[k]) follow(smooths[k], P.pts[k]);
+    else smooths[k].has = false;
+  }
+
+  if (state === ST.COUNT) {
+    const before = Math.ceil(countT - 0.2);
+    countT -= dt;
+    const after = Math.ceil(countT - 0.2);
+    if (after !== before && after >= 0) sfxCount(after);
+    if (countT <= -0.6) { state = ST.PLAY; timeLeft = cfg.duration; }
+  } else if (state === ST.PLAY) {
+    updateGame(dt, P);
+  }
+
+  vctx.clearRect(0, 0, W, H);
+  drawBackground();
+  drawBody(P);
+  if (state === ST.PLAY || state === ST.COUNT) {
+    drawTiles();
+    drawTarget();
+    drawEffects();
+    if (state === ST.PLAY) drawHUD();
+    if (state === ST.COUNT) drawCountdown();
+  }
+  if (state !== ST.OVER && state !== ST.MENU && !poseCount && !TESTMOUSE) {
+    txt("Step back so your whole body is in frame / 全身が入るまで下がってください",
+        W / 2, H - 96 * U, 18 * U, "#ffd479", "center", 600);
+  }
+}
+
+/* ---------- メニュー操作 ---------- */
+const MODE_DESC = {
+  char: "A romaji sound is shown. Catch the matching katakana.\n" +
+        "ローマ字が出ます。同じ音のカタカナを取ってください。",
+  word: "A whole word is shown. Catch its letters in order.\n" +
+        "ことばが出ます。左から順に文字を取ってください。",
+};
+function setModeDesc() {
+  $("modeDesc").innerHTML = MODE_DESC[cfg.mode].replace("\n", "<br><span style='color:#6d8099'>") + "</span>";
+}
+setModeDesc();
+
+$("segMode").addEventListener("click", e => {
+  const b = e.target.closest("button"); if (!b) return;
+  cfg.mode = b.dataset.mode;
+  [...e.currentTarget.children].forEach(c => c.classList.toggle("on", c === b));
+  setModeDesc();
+});
+$("segSpeed").addEventListener("click", e => {
+  const b = e.target.closest("button"); if (!b) return;
+  cfg.speed = +b.dataset.sp;
+  [...e.currentTarget.children].forEach(c => c.classList.toggle("on", c === b));
+});
+$("btnHint").addEventListener("click", e => {
+  cfg.hint = !cfg.hint;
+  e.currentTarget.textContent = cfg.hint ? "ON" : "OFF";
+  e.currentTarget.classList.toggle("on", cfg.hint);
+});
+$("btnVideo").addEventListener("click", e => {
+  cfg.videoLevel = (cfg.videoLevel + 1) % 3;
+  e.currentTarget.textContent = "Camera: " + ["off", "dim", "clear"][cfg.videoLevel];
+});
+$("btnFull").addEventListener("click", () => {
+  if (!document.fullscreenElement) document.documentElement.requestFullscreen().catch(() => {});
+  else document.exitFullscreen().catch(() => {});
+});
+$("btnPlay").addEventListener("click", () => { initAudio().catch(() => {}); startGame(); });
+$("btnAgain").addEventListener("click", startGame);
+$("btnMenu").addEventListener("click", () => {
+  state = ST.MENU; tiles = []; effects = [];
+  resultEl.classList.add("hidden");
+  menuEl.classList.remove("hidden");
+  backBtn.classList.add("hidden");
+});
+backBtn.addEventListener("click", () => {
+  state = ST.MENU; tiles = []; effects = [];
+  try { speechSynthesis.cancel(); } catch (e) {}
+  menuEl.classList.remove("hidden");
+  backBtn.classList.add("hidden");
+});
+</script>
+</body>
+</html>

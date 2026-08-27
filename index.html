@@ -1,0 +1,435 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Move Japanese — learn Japanese with your whole body</title>
+<meta name="description" content="Japanese lessons for people living in Japan and anyone who wants to learn. Free katakana body game, online and in-person lessons.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Move Japanese — learn Japanese with your whole body">
+<meta property="og:description" content="Japanese lessons for people living in Japan and anyone who wants to learn. Play the free katakana body game in your browser.">
+<meta property="og:url" content="https://eisakukun.github.io/move-japanese/">
+<meta property="og:locale" content="en_US">
+<meta property="og:locale:alternate" content="ja_JP">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2322406e'/%3E%3Ctext x='32' y='45' font-size='40' text-anchor='middle' fill='white' font-family='Hiragino Sans,sans-serif'%3E%E5%8B%95%3C/text%3E%3C/svg%3E">
+<style>
+  :root{
+    --paper:#faf7f2; --ink:#1b1f26; --sub:#5d6673; --line:#e4ddd2;
+    --ai:#22406e;        /* 藍 */
+    --aka:#d94f2b;       /* 朱 */
+    --card:#ffffff;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--paper);color:var(--ink);line-height:1.75;
+    font-family:"Hiragino Sans","Noto Sans JP",system-ui,-apple-system,"Segoe UI",sans-serif;
+    -webkit-font-smoothing:antialiased}
+  .wrap{max-width:1040px;margin:0 auto;padding:0 24px}
+  a{color:var(--ai)}
+
+  /* ---- nav ---- */
+  header{position:sticky;top:0;z-index:50;background:#faf7f2e6;backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line)}
+  nav{display:flex;align-items:center;gap:20px;height:64px}
+  .logo{font-weight:800;font-size:19px;letter-spacing:.02em;text-decoration:none;color:var(--ink);
+    display:flex;align-items:center;gap:9px}
+  .logo i{display:grid;place-items:center;width:30px;height:30px;border-radius:9px;
+    background:var(--ai);color:#fff;font-style:normal;font-size:16px;font-weight:700}
+  nav .sp{flex:1}
+  nav a.nl{color:var(--sub);text-decoration:none;font-size:15px}
+  nav a.nl:hover{color:var(--ink)}
+  @media(max-width:720px){ nav a.nl{display:none} }
+  .lang{border:1px solid var(--line);background:#fff;border-radius:999px;padding:6px 14px;
+    font:inherit;font-size:13px;cursor:pointer;color:var(--sub)}
+  .lang:hover{border-color:var(--ai);color:var(--ai)}
+
+  /* ---- buttons ---- */
+  .btn{display:inline-block;text-decoration:none;font-weight:700;border-radius:12px;
+    padding:14px 26px;font-size:16px;border:1.5px solid transparent;cursor:pointer;
+    transition:.15s;font-family:inherit}
+  .btn.p{background:var(--aka);color:#fff}
+  .btn.p:hover{background:#c2401e}
+  .btn.s{background:#fff;color:var(--ai);border-color:#cfd8e6}
+  .btn.s:hover{border-color:var(--ai)}
+
+  /* ---- hero ---- */
+  .hero{padding:72px 0 56px;display:grid;grid-template-columns:1.15fr .85fr;gap:48px;align-items:center}
+  @media(max-width:860px){ .hero{grid-template-columns:1fr;padding:48px 0 36px;gap:32px} }
+  .kicker{color:var(--aka);font-weight:700;font-size:13px;letter-spacing:.16em;text-transform:uppercase}
+  h1{font-size:clamp(34px,5.4vw,56px);line-height:1.2;margin:12px 0 18px;letter-spacing:-.01em}
+  .hero p{font-size:18px;color:var(--sub);margin:0 0 28px;max-width:34em}
+  .heroBtns{display:flex;gap:12px;flex-wrap:wrap}
+
+  /* 落ちてくるカタカナ。トップで「何のサイトか」を字で見せる */
+  .drop{position:relative;height:330px;border-radius:22px;overflow:hidden;
+    background:linear-gradient(170deg,#0e1626,#1b2a45);border:1px solid #24344f}
+  .drop b{position:absolute;color:#fff;font-weight:700;opacity:.9;
+    display:grid;place-items:center;border-radius:14px;background:#ffffff14;
+    border:1px solid #ffffff26;width:66px;height:66px;font-size:34px;
+    animation:fall linear infinite}
+  @keyframes fall{ from{transform:translateY(-90px) rotate(-6deg)} to{transform:translateY(400px) rotate(6deg)} }
+  .drop .cap{position:absolute;left:0;right:0;bottom:0;padding:18px 20px;color:#dce6f6;
+    background:linear-gradient(transparent,#0b1220 55%);font-size:14px;text-align:center}
+  @media(prefers-reduced-motion:reduce){ .drop b{animation:none;opacity:.5} }
+
+  /* ---- sections ---- */
+  section{padding:64px 0;border-top:1px solid var(--line)}
+  h2{font-size:clamp(24px,3.4vw,34px);margin:0 0 10px;letter-spacing:-.01em}
+  .lead{color:var(--sub);font-size:17px;margin:0 0 32px;max-width:44em}
+  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+  @media(max-width:860px){ .grid3{grid-template-columns:1fr} }
+  .card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:26px}
+  .card h3{margin:0 0 8px;font-size:19px}
+  .card p{margin:0;color:var(--sub);font-size:15px}
+  .card .ic{font-size:26px;margin-bottom:10px;display:block}
+
+  /* ---- game banner ---- */
+  .gameCard{background:linear-gradient(150deg,#0e1626,#1d2c48);color:#eaf2ff;border-radius:24px;
+    padding:40px;display:grid;grid-template-columns:1.2fr .8fr;gap:34px;align-items:center;
+    border:1px solid #24344f}
+  @media(max-width:860px){ .gameCard{grid-template-columns:1fr;padding:28px} }
+  .gameCard h2{margin:0 0 12px}
+  .gameCard p{color:#a9bcd8;margin:0 0 22px;font-size:16px}
+  .kana{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+  .kana span{width:62px;height:62px;display:grid;place-items:center;border-radius:14px;
+    background:#ffffff10;border:1px solid #ffffff26;font-size:30px;font-weight:700}
+  .kana span.hit{background:#8ef0c026;border-color:#8ef0c0;color:#8ef0c0}
+
+  /* ---- list ---- */
+  ul.ticks{list-style:none;padding:0;margin:0;display:grid;gap:12px}
+  ul.ticks li{padding-left:32px;position:relative;color:var(--sub)}
+  ul.ticks li::before{content:"—";position:absolute;left:0;color:var(--aka);font-weight:800}
+  ul.ticks li b{color:var(--ink)}
+
+  /* ---- pricing ---- */
+  .price{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+  @media(max-width:860px){ .price{grid-template-columns:1fr} }
+  .price .card.hi{border-color:var(--aka);box-shadow:0 8px 30px #d94f2b1a}
+  .tag{display:inline-block;background:#d94f2b14;color:var(--aka);font-size:12px;font-weight:800;
+    padding:4px 10px;border-radius:999px;letter-spacing:.08em;text-transform:uppercase;margin-bottom:10px}
+  .amt{font-size:32px;font-weight:800;margin:6px 0 4px}
+  .amt small{font-size:14px;font-weight:600;color:var(--sub)}
+
+  /* ---- about ---- */
+  .about{display:grid;grid-template-columns:.8fr 1.2fr;gap:40px;align-items:start}
+  @media(max-width:860px){ .about{grid-template-columns:1fr} }
+  .face{aspect-ratio:1;border-radius:22px;background:linear-gradient(150deg,#22406e,#d94f2b);
+    display:grid;place-items:center;color:#fff;font-size:60px;font-weight:800}
+
+  /* ---- form ---- */
+  form{display:grid;gap:16px;max-width:620px}
+  label{display:grid;gap:6px;font-size:14px;font-weight:700}
+  input,select,textarea{font:inherit;padding:13px 15px;border:1px solid var(--line);
+    border-radius:12px;background:#fff;color:var(--ink);width:100%}
+  input:focus,select:focus,textarea:focus{outline:2px solid #22406e40;border-color:var(--ai)}
+  textarea{min-height:120px;resize:vertical}
+  .hintline{font-size:13px;color:var(--sub);font-weight:400}
+
+  footer{border-top:1px solid var(--line);padding:40px 0 60px;color:var(--sub);font-size:14px}
+  footer .wrap{display:flex;gap:18px;flex-wrap:wrap;align-items:center}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <nav>
+      <a class="logo" href="#top"><i>動</i>Move Japanese</a>
+      <span class="sp"></span>
+      <a class="nl" href="#game"   data-en="Free game"  data-ja="無料ゲーム">Free game</a>
+      <a class="nl" href="#how"    data-en="Lessons"    data-ja="レッスン">Lessons</a>
+      <a class="nl" href="#price"  data-en="Price"      data-ja="料金">Price</a>
+      <a class="nl" href="#about"  data-en="About"      data-ja="講師について">About</a>
+      <button class="lang" id="lang">日本語</button>
+    </nav>
+  </div>
+</header>
+
+<div id="top"></div>
+
+<!-- ===================== HERO ===================== -->
+<div class="wrap">
+  <div class="hero">
+    <div>
+      <div class="kicker" data-en="Japanese lessons · online &amp; in person"
+           data-ja="日本語レッスン ・ オンラインと対面">Japanese lessons · online &amp; in person</div>
+      <h1 data-en="Learn Japanese with your whole body."
+          data-ja="日本語を、体ぜんぶで覚える。">Learn Japanese with your whole body.</h1>
+      <p data-en="Most people quit Japanese because it stays on paper. Here you catch, move, say and use it — so it stays in your body, not in your notebook. For anyone learning Japanese, and for people already living in Japan."
+         data-ja="紙の上だけで終わるから、日本語は続かない。ここでは取って、動いて、声に出して、その日から使う。ノートではなく体に残す。日本語を勉強したい人、そして日本に住んでいる人のためのレッスンです。">
+        Most people quit Japanese because it stays on paper. Here you catch, move, say and use it — so it stays in your body, not in your notebook. For anyone learning Japanese, and for people already living in Japan.
+      </p>
+      <div class="heroBtns">
+        <a class="btn p" href="#contact" data-en="Book a free trial lesson"
+           data-ja="無料の体験レッスンを申し込む">Book a free trial lesson</a>
+        <a class="btn s" href="katakana-catch.html" data-en="▶ Play the katakana game"
+           data-ja="▶ カタカナのゲームで遊ぶ">▶ Play the katakana game</a>
+      </div>
+    </div>
+    <div class="drop" id="drop" aria-hidden="true">
+      <div class="cap" data-en="Katakana Catch — free, no sign-up, runs in your browser"
+           data-ja="カタカナ・キャッチ ─ 無料・登録なし・ブラウザで動きます">
+        Katakana Catch — free, no sign-up, runs in your browser</div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== GAME ===================== -->
+<section id="game" style="border-top:0">
+  <div class="wrap">
+    <div class="gameCard">
+      <div>
+        <h2 data-en="Katakana Catch" data-ja="カタカナ・キャッチ">Katakana Catch</h2>
+        <p data-en="Katakana is the first wall. シ and ツ, ソ and ン — they refuse to stay apart on paper. So stand up: the letters fall, and you catch the right one with your hands, your head, your feet. Your camera never sends anything anywhere."
+           data-ja="最初の壁はカタカナです。シとツ、ソとン。紙の上ではいつまでも混ざる。だから立ってください。字が落ちてきます。手でも頭でも足でも、正しい字を取る。カメラの映像はどこにも送られません。">
+          Katakana is the first wall. シ and ツ, ソ and ン — they refuse to stay apart on paper. So stand up: the letters fall, and you catch the right one with your hands, your head, your feet. Your camera never sends anything anywhere.
+        </p>
+        <a class="btn p" href="katakana-catch.html" data-en="▶ Play now — free"
+           data-ja="▶ いま遊ぶ ─ 無料">▶ Play now — free</a>
+      </div>
+      <div class="kana">
+        <span class="hit">コ</span><span class="hit">ー</span><span>ヒ</span><span>ー</span>
+        <span>シ</span><span>ツ</span><span>ソ</span><span>ン</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== WHY ===================== -->
+<section id="why">
+  <div class="wrap">
+    <h2 data-en="Why this is not another textbook course"
+        data-ja="よくある教科書のコースと違うところ">Why this is not another textbook course</h2>
+    <p class="lead" data-en="Three things you will not get from an app or a grammar book."
+       data-ja="アプリや文法書では手に入らない三つ。">Three things you will not get from an app or a grammar book.</p>
+    <div class="grid3">
+      <div class="card">
+        <span class="ic">🕺</span>
+        <h3 data-en="Rhythm, not memorising" data-ja="暗記ではなくリズム">Rhythm, not memorising</h3>
+        <p data-en="I am a dancer. Verb forms, pitch accent and long vowels are rhythm problems, and rhythm is learned by moving — not by staring at a chart."
+           data-ja="わたしはダンサーです。活用も、アクセントも、長い音も、ぜんぶリズムの問題。リズムは表を見て覚えるものではなく、動いて覚えるものです。">
+          I am a dancer. Verb forms, pitch accent and long vowels are rhythm problems, and rhythm is learned by moving — not by staring at a chart.</p>
+      </div>
+      <div class="card">
+        <span class="ic">🩺</span>
+        <h3 data-en="The Japanese of the body" data-ja="体の日本語">The Japanese of the body</h3>
+        <p data-en="I also work as a bodyworker. 肩がこる, 腰が痛い, だるい — the words you need at a clinic, a pharmacy or a job in care. Almost no course teaches them."
+           data-ja="整体の仕事もしています。「肩がこる」「腰が痛い」「だるい」。病院でも薬局でも介護の現場でも要るのに、どの教科書にも載っていない言葉です。">
+          I also work as a bodyworker. 肩がこる, 腰が痛い, だるい — the words you need at a clinic, a pharmacy or a job in care. Almost no course teaches them.</p>
+      </div>
+      <div class="card">
+        <span class="ic">✨</span>
+        <h3 data-en="Onomatopoeia, properly" data-ja="オノマトペをちゃんと">Onomatopoeia, properly</h3>
+        <p data-en="ぴかぴか, どきどき, ふわっと. Japanese people use these all day and no dictionary can explain them. I can show them with my body until you feel the difference."
+           data-ja="ぴかぴか、どきどき、ふわっと。日本人が一日中つかうのに、辞書では説明できない。体で見せて、違いが分かるところまでやります。">
+          ぴかぴか, どきどき, ふわっと. Japanese people use these all day and no dictionary can explain them. I can show them with my body until you feel the difference.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== LESSONS ===================== -->
+<section id="how">
+  <div class="wrap">
+    <h2 data-en="What we actually do" data-ja="レッスンでやること">What we actually do</h2>
+    <p class="lead" data-en="Every lesson is built around something you will say out loud this week."
+       data-ja="毎回、その週に実際に口に出すことを軸に組み立てます。">
+      Every lesson is built around something you will say out loud this week.</p>
+    <ul class="ticks">
+      <li data-en="<b>Survival Japanese</b> — hospital, city hall, real estate agent, delivery, garbage rules. The sentences you need before you need them."
+          data-ja="<b>生活の日本語</b> ─ 病院、役所、不動産屋、宅配、ゴミ出し。必要になる前に、必要な文をつくっておく。">
+        <b>Survival Japanese</b> — hospital, city hall, real estate agent, delivery, garbage rules.</li>
+      <li data-en="<b>Katakana &amp; hiragana from zero</b> — with games, not worksheets. Most people read katakana signs within three weeks."
+          data-ja="<b>ひらがな・カタカナをゼロから</b> ─ プリントではなくゲームで。だいたい三週間で街の看板が読めるようになります。">
+        <b>Katakana &amp; hiragana from zero</b> — with games, not worksheets.</li>
+      <li data-en="<b>Conversation that does not stall</b> — I correct the two or three habits that actually make you hard to understand, and leave the rest alone."
+          data-ja="<b>止まらない会話</b> ─ 通じにくさの原因になっている二つ三つの癖だけ直します。あとは触りません。">
+        <b>Conversation that does not stall</b></li>
+      <li data-en="<b>Work Japanese</b> — 敬語 you will really use, phone calls, and how to say no politely without disappearing."
+          data-ja="<b>仕事の日本語</b> ─ 本当に使う敬語、電話、そして消えずに丁寧に断る言い方。">
+        <b>Work Japanese</b></li>
+      <li data-en="<b>JLPT support</b> — if you need the certificate, we aim at the test. If you do not, we ignore it completely."
+          data-ja="<b>JLPT対策</b> ─ 証明が要るなら試験に向けて。要らないなら一切やりません。">
+        <b>JLPT support</b></li>
+    </ul>
+  </div>
+</section>
+
+<!-- ===================== PRICE ★ここを自分の金額に書き換える ===================== -->
+<section id="price">
+  <div class="wrap">
+    <h2 data-en="Price" data-ja="料金">Price</h2>
+    <p class="lead" data-en="No contract, no monthly fee. Stop whenever you like."
+       data-ja="契約も月額もありません。いつでもやめられます。">
+      No contract, no monthly fee. Stop whenever you like.</p>
+    <div class="price">
+      <div class="card">
+        <div class="tag" data-en="Trial" data-ja="体験">Trial</div>
+        <div class="amt">¥0 <small data-en="/ 30 min" data-ja="/ 30分">/ 30 min</small></div>
+        <p data-en="We talk, I find your level, you try one game. No sales talk afterwards."
+           data-ja="話して、レベルを見て、ゲームを一つ試します。あとから売り込みはしません。">
+          We talk, I find your level, you try one game.</p>
+      </div>
+      <div class="card hi">
+        <div class="tag" data-en="Single lesson" data-ja="1回">Single lesson</div>
+        <div class="amt">¥3,000 <small data-en="/ 60 min" data-ja="/ 60分">/ 60 min</small></div>
+        <p data-en="Online or in person. Materials and the recording are included."
+           data-ja="オンラインでも対面でも。教材と録画つき。">Online or in person. Materials included.</p>
+      </div>
+      <div class="card">
+        <div class="tag" data-en="5 lessons" data-ja="5回券">5 lessons</div>
+        <div class="amt">¥13,500 <small data-en="/ 5 × 60 min" data-ja="/ 60分 × 5回">/ 5 × 60 min</small></div>
+        <p data-en="About 10% off. Use them at your own pace, no expiry."
+           data-ja="約1割引き。期限なし、好きなペースで使えます。">About 10% off, no expiry.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== ABOUT ★自己紹介を自分の言葉に ===================== -->
+<section id="about">
+  <div class="wrap">
+    <div class="about">
+      <div class="face">栄</div>
+      <div>
+        <h2 data-en="Who is teaching you" data-ja="教えるのはこんな人間です">Who is teaching you</h2>
+        <p class="lead" data-en="I am Eisaku — a native Japanese speaker, a breakdancer, a bodyworker, and someone who builds small strange apps like the one on this page."
+           data-ja="栄作といいます。日本語のネイティブで、ブレイクダンサーで、体をさわる仕事をしていて、このページにあるような変なアプリを作っています。">
+          I am Eisaku — a native Japanese speaker, a breakdancer, a bodyworker, and someone who builds small strange apps like the one on this page.</p>
+        <p style="color:var(--sub)" data-en="I am not a school. There is no curriculum I have to follow and no one above me telling me to finish the textbook. That means the lesson bends to you: if you need to argue with your landlord next Tuesday, that is the lesson. I teach in easy Japanese and English, and I am patient with people who learn by seeing and moving rather than by reading — because that is exactly how I learn."
+           data-ja="学校ではありません。決められたカリキュラムも、教科書を終わらせろと言う上の人もいません。だからレッスンはあなたに合わせて曲がります。来週の火曜に大家さんと交渉するなら、それがその日のレッスンです。やさしい日本語と英語で教えます。読んで覚えるより、見て動いて覚えるタイプの人には特に向いています。わたし自身がそうだからです。">
+          I am not a school. There is no curriculum I have to follow. The lesson bends to you.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== CONTACT ===================== -->
+<section id="contact">
+  <div class="wrap">
+    <h2 data-en="Book a free trial lesson" data-ja="無料体験レッスンの申し込み">Book a free trial lesson</h2>
+    <p class="lead" data-en="Fill this in and it opens your mail app with the message ready. I usually reply within a day."
+       data-ja="入力すると、メールアプリが本文つきで開きます。だいたい1日以内に返事します。">
+      Fill this in and it opens your mail app with the message ready.</p>
+    <form id="form">
+      <label>
+        <span data-en="Your name" data-ja="お名前">Your name</span>
+        <input name="name" required placeholder="Maria / マリア">
+      </label>
+      <label>
+        <span data-en="Your Japanese level" data-ja="いまの日本語のレベル">Your Japanese level</span>
+        <select name="level">
+          <option data-en="Complete beginner — I cannot read hiragana yet" data-ja="まったくの初心者 ─ ひらがなも読めない">Complete beginner — I cannot read hiragana yet</option>
+          <option data-en="I can read kana, but I cannot speak" data-ja="かなは読めるが話せない">I can read kana, but I cannot speak</option>
+          <option data-en="I can survive daily life" data-ja="日常生活はなんとかなる">I can survive daily life</option>
+          <option data-en="Intermediate or above" data-ja="中級以上">Intermediate or above</option>
+        </select>
+      </label>
+      <label>
+        <span data-en="Online or in person?" data-ja="オンライン／対面">Online or in person?</span>
+        <select name="where">
+          <option data-en="Online" data-ja="オンライン">Online</option>
+          <option data-en="In person" data-ja="対面">In person</option>
+          <option data-en="Either is fine" data-ja="どちらでもいい">Either is fine</option>
+        </select>
+      </label>
+      <label>
+        <span data-en="What do you want to be able to do?" data-ja="できるようになりたいこと">What do you want to be able to do?</span>
+        <span class="hintline" data-en="e.g. talk to my doctor, read food labels, pass N4, stop freezing at work"
+              data-ja="例：医者と話したい、食品表示を読みたい、N4に受かりたい、職場で固まるのをやめたい">
+          e.g. talk to my doctor, read food labels, pass N4</span>
+        <textarea name="goal"></textarea>
+      </label>
+      <div>
+        <button class="btn p" type="submit" data-en="Send the request" data-ja="申し込みを送る">Send the request</button>
+      </div>
+      <p class="hintline" id="mailNote"></p>
+    </form>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <span>© <span id="yr"></span> Move Japanese</span>
+    <span class="sp" style="flex:1"></span>
+    <a href="katakana-catch.html" data-en="Katakana Catch" data-ja="カタカナ・キャッチ">Katakana Catch</a>
+  </div>
+</footer>
+
+<script>
+/* ★教室用のメールアドレスができたら、ここに入れるだけで申し込みが動き出す。
+   空のあいだは「準備中」と出るので、間違ったアドレスに問い合わせが消えることはない。 */
+const CONTACT_EMAIL = "";
+
+/* ---------- 落ちてくるカタカナ（トップの絵） ---------- */
+(function () {
+  const box = document.getElementById("drop");
+  const chars = "コーヒーシツソンカメラパンビル".split("");
+  // 列を決めて置く。完全にランダムにすると字が重なって読めなくなる
+  const COLS = 5;
+  for (let i = 0; i < 10; i++) {
+    const b = document.createElement("b");
+    b.textContent = chars[i % chars.length];
+    const col = i % COLS;
+    // タイルの幅ぶんを引いてから割る。%だけで置くと右端がはみ出す
+    const frac = (col + (Math.random() * 0.4 - 0.2)) / (COLS - 1);
+    b.style.left = "calc(18px + (100% - 102px) * " + Math.min(1, Math.max(0, frac)).toFixed(3) + ")";
+    b.style.animationDuration = (6 + Math.random() * 4).toFixed(2) + "s";
+    // 同じ列の2枚は必ず時間をずらして、上下に重ならないようにする
+    b.style.animationDelay = (-(Math.floor(i / COLS) * 4.5 + Math.random() * 1.5)).toFixed(2) + "s";
+    box.appendChild(b);
+  }
+})();
+
+/* ---------- 英語 / 日本語の切り替え ---------- */
+let lang = "en";
+function applyLang() {
+  document.documentElement.lang = lang === "en" ? "en" : "ja";
+  document.querySelectorAll("[data-en]").forEach(el => {
+    const v = el.getAttribute("data-" + lang);
+    if (v != null) el.innerHTML = v;
+  });
+  document.getElementById("lang").textContent = lang === "en" ? "日本語" : "English";
+  try { localStorage.setItem("mj-lang", lang); } catch (e) {}
+}
+document.getElementById("lang").addEventListener("click", () => {
+  lang = lang === "en" ? "ja" : "en";
+  applyLang();
+});
+try { const s = localStorage.getItem("mj-lang"); if (s) lang = s; } catch (e) {}
+applyLang();
+document.getElementById("yr").textContent = new Date().getFullYear();
+
+/* ---------- 申し込みフォーム ----------
+   サーバーを持たない作りなので、書いた内容をそのままメールの本文にして
+   本人のメールアプリを開く。無料で、どこにもデータを預けない。 */
+document.getElementById("form").addEventListener("submit", e => {
+  e.preventDefault();
+  if (!CONTACT_EMAIL) {
+    document.getElementById("mailNote").textContent = lang === "en"
+      ? "The booking address is being set up right now — please check back in a day or two."
+      : "受付用のメールアドレスをいま準備しています。1〜2日で使えるようになります。";
+    return;
+  }
+  const f = new FormData(e.currentTarget);
+  const body = [
+    "Name: " + (f.get("name") || ""),
+    "Level: " + (f.get("level") || ""),
+    "Online / in person: " + (f.get("where") || ""),
+    "",
+    "What I want to be able to do:",
+    (f.get("goal") || ""),
+  ].join("\n");
+  const url = "mailto:" + CONTACT_EMAIL
+    + "?subject=" + encodeURIComponent("Trial lesson request — " + (f.get("name") || ""))
+    + "&body=" + encodeURIComponent(body);
+  location.href = url;
+  document.getElementById("mailNote").textContent =
+    lang === "en"
+      ? "Your mail app should open. If nothing happened, write to " + CONTACT_EMAIL + " directly."
+      : "メールアプリが開きます。開かないときは " + CONTACT_EMAIL + " に直接ください。";
+});
+</script>
+</body>
+</html>
