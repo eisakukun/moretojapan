@@ -1,7 +1,12 @@
-# Move Japanese — 日本語を教えるホームページ
+# More to Japan — 日本語と、その先の日本
 
-**公開中 → https://eisakukun.github.io/move-japanese/**
-（GitHub: `eisakukun/move-japanese` / ブランチ `master` を push すれば1〜2分で反映される）
+**公開中 → https://eisakukun.github.io/moretojapan/**
+（GitHub: `eisakukun/moretojapan` / ブランチ `master` を push すれば1〜2分で反映される）
+
+買うと決めたドメイン：**moretojapan.com**（未購入。買ったら下の手順で切り替える）
+
+いずれ「日本語レッスン」だけでなく、ディープスポットの地図・日本語アプリ・文化アプリを
+並べる器にする。いまのページはその中の「レッスン」の部屋。
 
 日本語を勉強したい人・日本に住んでいる人に向けたレッスンの入口ページと、
 集客用の無料ゲーム「カタカナ・キャッチ」。
