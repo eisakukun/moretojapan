@@ -1,9 +1,10 @@
 # More to Japan — 日本語と、その先の日本
 
-**公開中 → https://eisakukun.github.io/moretojapan/**
+**公開中 → https://moretojapan.com/**
 （GitHub: `eisakukun/moretojapan` / ブランチ `master` を push すれば1〜2分で反映される）
 
-買うと決めたドメイン：**moretojapan.com**（未購入。買ったら下の手順で切り替える）
+独自ドメイン **moretojapan.com** で公開中（XServerドメインで取得、2026-08-28）。
+DNSはXServer側（ns1〜3.xdomain.ne.jp）にAレコード4行＋www CNAMEを設定済み。
 
 いずれ「日本語レッスン」だけでなく、ディープスポットの地図・日本語アプリ・文化アプリを
 並べる器にする。いまのページはその中の「レッスン」の部屋。
