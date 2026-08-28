@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Why this site exists — More to Japan</title>
+<meta name="description" content="The deep Japan is not hidden. It is just unreadable. Why this site teaches the language and shows the places as one thing, not two.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="The deep Japan is not hidden. It is just unreadable.">
+<meta property="og:description" content="You have been here five times and still feel outside something. That feeling is correct — and it is not your fault.">
+<meta property="og:url" content="https://moretojapan.com/why.html">
+<link rel="canonical" href="https://moretojapan.com/why.html">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2322406e'/%3E%3Ctext x='32' y='45' font-size='40' text-anchor='middle' fill='white' font-family='Hiragino Sans,sans-serif'%3E%E5%A5%A5%3C/text%3E%3C/svg%3E">
+<style>
+  :root{
+    --paper:#faf7f2; --ink:#1b1f26; --sub:#5d6673; --line:#e4ddd2;
+    --ai:#22406e; --aka:#d94f2b; --card:#ffffff;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--paper);color:var(--ink);line-height:1.85;
+    font-family:"Hiragino Sans","Noto Sans JP",system-ui,-apple-system,"Segoe UI",sans-serif;
+    -webkit-font-smoothing:antialiased}
+  .wrap{max-width:760px;margin:0 auto;padding:0 24px}
+  a{color:var(--ai)}
+
+  header{position:sticky;top:0;z-index:50;background:#faf7f2e6;backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line)}
+  nav{display:flex;align-items:center;gap:20px;height:64px;max-width:1040px;margin:0 auto;padding:0 24px}
+  .logo{font-weight:800;font-size:19px;text-decoration:none;color:var(--ink);
+    display:flex;align-items:center;gap:9px}
+  .logo i{display:grid;place-items:center;width:30px;height:30px;border-radius:9px;
+    background:var(--ai);color:#fff;font-style:normal;font-size:16px;font-weight:700}
+  nav .sp{flex:1}
+  nav a.nl{color:var(--sub);text-decoration:none;font-size:15px}
+  nav a.nl:hover{color:var(--ink)}
+  @media(max-width:720px){ nav a.nl{display:none} }
+  .lang{border:1px solid var(--line);background:#fff;border-radius:999px;padding:6px 14px;
+    font:inherit;font-size:13px;cursor:pointer;color:var(--sub)}
+  .lang:hover{border-color:var(--ai);color:var(--ai)}
+
+  .hero{padding:76px 0 20px}
+  .kicker{color:var(--aka);font-weight:700;font-size:13px;letter-spacing:.16em;text-transform:uppercase}
+  h1{font-size:clamp(30px,4.8vw,46px);line-height:1.28;margin:14px 0 24px;letter-spacing:-.01em}
+  .lead{font-size:19px;color:var(--sub);margin:0}
+
+  section{padding:44px 0}
+  section + section{border-top:1px solid var(--line)}
+  h2{font-size:clamp(21px,3vw,27px);margin:0 0 18px;line-height:1.4}
+  p{font-size:17px;margin:0 0 20px}
+  p.q{color:var(--sub)}
+
+  /* 引用のように置く一行。ページの背骨になる文だけここに入れる */
+  .spine{border-left:3px solid var(--aka);padding:6px 0 6px 22px;margin:30px 0;
+    font-size:clamp(19px,2.6vw,24px);font-weight:700;line-height:1.5}
+
+  ul.plain{list-style:none;padding:0;margin:0 0 22px}
+  ul.plain li{padding-left:26px;position:relative;color:var(--sub);margin-bottom:12px;font-size:17px}
+  ul.plain li::before{content:"—";position:absolute;left:0;color:var(--aka);font-weight:800}
+  ul.plain li b{color:var(--ink)}
+
+  .no{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:8px 26px 22px}
+  .no h3{font-size:17px;margin:20px 0 6px}
+  .no p{font-size:16px;color:var(--sub);margin:0}
+
+  .end{background:linear-gradient(150deg,#0e1626,#1d2c48);color:#eaf2ff;border-radius:24px;
+    padding:44px 38px;margin:12px 0 0;border:1px solid #24344f}
+  .end p{color:#a9bcd8}
+  .end .big{color:#fff;font-size:clamp(22px,3.4vw,30px);font-weight:800;line-height:1.45;margin:0 0 18px}
+  .btn{display:inline-block;text-decoration:none;font-weight:700;border-radius:12px;
+    padding:14px 26px;font-size:16px;background:var(--aka);color:#fff;margin-right:10px;margin-top:6px}
+  .btn.s{background:#ffffff14;border:1px solid #ffffff33;color:#eaf2ff}
+
+  footer{border-top:1px solid var(--line);padding:36px 0 60px;color:var(--sub);font-size:14px;margin-top:60px}
+  footer .wrap{display:flex;gap:18px;flex-wrap:wrap;align-items:center}
+</style>
+</head>
+<body>
+
+<header>
+  <nav>
+    <a class="logo" href="index.html"><i>奥</i>More to Japan</a>
+    <span class="sp"></span>
+    <a class="nl" href="index.html#game"  data-en="Free game" data-ja="無料ゲーム">Free game</a>
+    <a class="nl" href="index.html#how"   data-en="Lessons"   data-ja="レッスン">Lessons</a>
+    <a class="nl" href="index.html#contact" data-en="Contact" data-ja="申し込み">Contact</a>
+    <button class="lang" id="lang">日本語</button>
+  </nav>
+</header>
+
+<div class="wrap">
+
+  <div class="hero">
+    <div class="kicker" data-en="Why this site exists" data-ja="このサイトがある理由">Why this site exists</div>
+    <h1 data-en="The deep Japan is not hidden.<br>It is just unreadable."
+        data-ja="深い日本は、隠れていない。<br>読めないだけだ。">
+      The deep Japan is not hidden.<br>It is just unreadable.</h1>
+    <p class="lead" data-en="You have been here five times. Ten times. You have eaten well, seen the shrines, taken the train to the town everyone recommends. And you still have the feeling that you are standing just outside something. That feeling is correct — and it is not your fault."
+       data-ja="五回目。十回目。おいしいものも食べたし、神社も見たし、みんなが勧める町にも行った。それでもまだ、何かの外側に立っている感じが消えない。その感覚は正しい。そして、あなたのせいではない。">
+      You have been here five times. Ten times. And you still have the feeling that you are standing just outside something.</p>
+  </div>
+
+  <section>
+    <h2 data-en="What is actually happening" data-ja="何が起きているのか">What is actually happening</h2>
+    <p data-en="Japan does not hide its depth. It simply never translated it."
+       data-ja="日本は、深いところを隠してはいません。ただ、翻訳しなかっただけです。">
+      Japan does not hide its depth. It simply never translated it.</p>
+    <ul class="plain">
+      <li data-en="The good shop has no English sign, because in ninety years it never needed one."
+          data-ja="いい店に英語の看板が無いのは、九十年のあいだ必要になったことがないからです。">
+        The good shop has no English sign, because in ninety years it never needed one.</li>
+      <li data-en="The festival is four hundred years old, and nobody wrote down for you what it is for."
+          data-ja="その祭りは四百年続いていて、何のための祭りなのかを、誰もあなたのために書き残していません。">
+        The festival is four hundred years old, and nobody wrote it down for you.</li>
+      <li data-en="The menu is a wall of characters, and the owner is waiting, kindly, for you to speak first."
+          data-ja="お品書きは文字の壁で、店主は親切に、あなたが先に口を開くのを待っています。">
+        The menu is a wall of characters, and the owner is waiting for you to speak first.</li>
+    </ul>
+    <p data-en="Nothing here is locked. There is simply no door in your language."
+       data-ja="鍵がかかっているものは、ひとつもありません。ただ、あなたの言葉でできた扉が無いだけです。">
+      Nothing here is locked. There is simply no door in your language.</p>
+  </section>
+
+  <section>
+    <h2 data-en="So language and place are not two subjects. They are one."
+        data-ja="だから、ことばと場所は別の話ではない。ひとつの話だ。">
+      So language and place are not two subjects. They are one.</h2>
+    <p data-en="Most people treat “studying Japanese” and “seeing Japan” as two separate hobbies, done on different days, with different apps. That split is why both of them stall."
+       data-ja="ほとんどの人が「日本語を勉強すること」と「日本を見ること」を、別々の日にやる別々の趣味として扱います。その分け方こそが、両方を止めている原因です。">
+      Most people treat studying Japanese and seeing Japan as two separate hobbies. That split is why both of them stall.</p>
+    <div class="spine" data-en="Twenty words of the right kind will open a shop you have already walked past nine times."
+         data-ja="正しい二十語があれば、九回すでに前を通り過ぎた店の戸が開く。">
+      Twenty words of the right kind will open a shop you have already walked past nine times.</div>
+    <p data-en="Not perfect Japanese. Not N1. Twenty of the right words, and the nerve to use them. That is the whole distance between the surface and the inside — and it is much shorter than people are told."
+       data-ja="完璧な日本語ではありません。N1でもありません。正しい二十語と、それを使う度胸。表面と内側の距離は、それだけです。世間で言われているより、ずっと短い。">
+      Not perfect Japanese. Twenty of the right words, and the nerve to use them.</p>
+  </section>
+
+  <section>
+    <h2 data-en="Why history keeps coming up here" data-ja="ここで歴史の話ばかり出てくる理由">Why history keeps coming up here</h2>
+    <p data-en="History in this country is not a museum activity. It is the reason the street bends where it bends. The reason people say a word at the door before they come in. The reason this dish is sweet in this town and not in the next one, thirty kilometres away."
+       data-ja="この国の歴史は、博物館でやることではありません。その道がそこで曲がっている理由であり、人が家に入る前にひと言いう理由であり、この町では甘いのに三十キロ隣ではそうでない理由です。">
+      History here is not a museum activity. It is the reason the street bends where it bends.</p>
+    <div class="spine" data-en="Once you know why, the same view stops being the same view."
+         data-ja="理由が分かった瞬間、同じ景色が同じ景色でなくなる。">
+      Once you know why, the same view stops being the same view.</div>
+    <p data-en="That is the entire trick, and there is nothing mystical about it. You are not being let into a secret. You are just being told what everyone standing around you already knows."
+       data-ja="仕掛けはそれだけで、神秘的なことは何もありません。秘密に入れてもらうのではなく、周りに立っている人が全員すでに知っていることを、教えてもらうだけです。">
+      That is the entire trick, and there is nothing mystical about it.</p>
+  </section>
+
+  <section>
+    <h2 data-en="What this site will not do" data-ja="このサイトがやらないこと">What this site will not do</h2>
+    <div class="no">
+      <h3 data-en="It will not say “the real Japan.”" data-ja="「本当の日本」とは言いません">It will not say “the real Japan.”</h3>
+      <p data-en="A convenience store at 2am is as real as a temple. The word usually just means “the part you have not seen yet.”"
+         data-ja="深夜二時のコンビニも、寺と同じくらい本物です。あの言葉はたいてい「あなたがまだ見ていない部分」という意味でしかありません。">
+        A convenience store at 2am is as real as a temple.</p>
+
+      <h3 data-en="It will not guard secret places." data-ja="場所を隠しません">It will not guard secret places.</h3>
+      <p data-en="If a place is good, you will be told exactly where it is. If it gets busy, it earned that."
+         data-ja="いい場所なら、どこにあるかを正確に書きます。それで混んだなら、その店はそれに値したということです。">
+        If a place is good, you will be told exactly where it is.</p>
+
+      <h3 data-en="It will not tell you Japan is mysterious." data-ja="日本は神秘的だ、とは言いません">It will not tell you Japan is mysterious.</h3>
+      <p data-en="It is not mysterious. It is specific. Specific can be learned; mysterious cannot, and that is why people keep selling it to you."
+         data-ja="神秘的ではありません。具体的なだけです。具体は学べますが、神秘は学べません。だからみんな、いつまでもそれを売り続けるのです。">
+        It is not mysterious. It is specific. Specific can be learned.</p>
+
+      <h3 data-en="It will not wait until your Japanese is good." data-ja="日本語が上手くなるまで待ちません">It will not wait until your Japanese is good.</h3>
+      <p data-en="You need enough, not perfect. We start from the sentence you need this week."
+         data-ja="必要なのは「足りる」であって「完璧」ではありません。今週あなたが必要とする一文から始めます。">
+        You need enough, not perfect.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="end">
+      <p class="big" data-en="I want you to stop being a visitor to the surface of this country."
+         data-ja="この国の表面を訪ねる人で、終わってほしくない。">
+        I want you to stop being a visitor to the surface of this country.</p>
+      <p data-en="Not by moving here. Not by becoming fluent. Just by being able to read what is already in front of you — the sign, the room, the person waiting for you to speak. That is what the lessons are for, that is what the map is for, and that is what the games are for. They are three doors into the same room."
+         data-ja="移住しなくていい。ぺらぺらにならなくていい。目の前にすでにあるもの——看板、部屋、あなたが話すのを待っている人——それが読めるようになればいい。レッスンも、地図も、ゲームも、そのためにあります。全部、同じ部屋への三つの入口です。">
+        Just by being able to read what is already in front of you.</p>
+      <p class="big" style="margin-top:26px" data-en="There’s more to Japan. Not further away — deeper in, right where you are standing."
+         data-ja="日本には、まだある。遠くではなく、いま立っている場所の、もう一枚奥に。">
+        There’s more to Japan. Not further away — deeper in, right where you are standing.</p>
+      <a class="btn" href="index.html#contact" data-en="Book a free trial lesson" data-ja="無料の体験レッスンを申し込む">Book a free trial lesson</a>
+      <a class="btn s" href="katakana-catch.html" data-en="▶ Try the free game" data-ja="▶ 無料のゲームを試す">▶ Try the free game</a>
+    </div>
+  </section>
+
+</div>
+
+<footer>
+  <div class="wrap">
+    <span>© <span id="yr"></span> More to Japan</span>
+    <span style="flex:1"></span>
+    <a href="index.html" data-en="Home" data-ja="トップ">Home</a>
+  </div>
+</footer>
+
+<script>
+let lang = "en";
+function applyLang() {
+  document.documentElement.lang = lang === "en" ? "en" : "ja";
+  document.querySelectorAll("[data-en]").forEach(el => {
+    const v = el.getAttribute("data-" + lang);
+    if (v != null) el.innerHTML = v;
+  });
+  document.getElementById("lang").textContent = lang === "en" ? "日本語" : "English";
+  try { localStorage.setItem("mj-lang", lang); } catch (e) {}
+}
+document.getElementById("lang").addEventListener("click", () => {
+  lang = lang === "en" ? "ja" : "en"; applyLang();
+});
+try { const s = localStorage.getItem("mj-lang"); if (s) lang = s; } catch (e) {}
+applyLang();
+document.getElementById("yr").textContent = new Date().getFullYear();
+</script>
+</body>
+</html>
