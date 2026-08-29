@@ -1,0 +1,420 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Tokyo Shrine Hunt — 8 shrines the city grew over</title>
+<meta name="description" content="Eight tiny shrines hidden inside central Tokyo — one on a roof, one under an office tower, one that is now just a tree. Find them, answer what is written there, collect the stamp. Free, no sign-up.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Tokyo Shrine Hunt — 8 shrines the city grew over">
+<meta property="og:description" content="One is on a rooftop. One is under an office tower. One is now only a tree. Find all eight in central Tokyo.">
+<meta property="og:url" content="https://moretojapan.com/shrine-hunt.html">
+<link rel="canonical" href="https://moretojapan.com/shrine-hunt.html">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2322406e'/%3E%3Ctext x='32' y='45' font-size='40' text-anchor='middle' fill='white' font-family='Hiragino Sans,sans-serif'%3E%E5%A5%A5%3C/text%3E%3C/svg%3E">
+<style>
+  :root{
+    --paper:#faf7f2; --ink:#1b1f26; --sub:#5d6673; --line:#e4ddd2;
+    --ai:#22406e; --aka:#d94f2b; --card:#fff; --got:#1f7a5a;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--paper);color:var(--ink);line-height:1.8;
+    font-family:"Hiragino Sans","Noto Sans JP",system-ui,-apple-system,"Segoe UI",sans-serif;
+    -webkit-font-smoothing:antialiased}
+  .wrap{max-width:820px;margin:0 auto;padding:0 24px}
+  a{color:var(--ai)}
+
+  header{position:sticky;top:0;z-index:50;background:#faf7f2e6;backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line)}
+  nav{display:flex;align-items:center;gap:18px;height:64px;max-width:1040px;margin:0 auto;padding:0 24px}
+  .logo{font-weight:800;font-size:19px;text-decoration:none;color:var(--ink);display:flex;align-items:center;gap:9px}
+  .logo i{display:grid;place-items:center;width:30px;height:30px;border-radius:9px;
+    background:var(--ai);color:#fff;font-style:normal;font-size:16px;font-weight:700}
+  nav .sp{flex:1}
+  nav a.nl{color:var(--sub);text-decoration:none;font-size:15px}
+  @media(max-width:760px){ nav a.nl{display:none} }
+  .lang{border:1px solid var(--line);background:#fff;border-radius:999px;padding:6px 14px;
+    font:inherit;font-size:13px;cursor:pointer;color:var(--sub)}
+
+  .hero{padding:64px 0 14px}
+  .kicker{color:var(--aka);font-weight:700;font-size:13px;letter-spacing:.16em;text-transform:uppercase}
+  h1{font-size:clamp(30px,4.6vw,46px);line-height:1.25;margin:14px 0 20px}
+  .lead{font-size:18px;color:var(--sub);margin:0 0 12px}
+
+  /* 進み具合 */
+  .bar{display:flex;gap:7px;margin:26px 0 6px;flex-wrap:wrap}
+  .pip{width:34px;height:34px;border-radius:10px;border:2px dashed #cfc6b8;display:grid;place-items:center;
+    font-size:14px;font-weight:800;color:#c3b8a7;background:#fff}
+  .pip.on{border:2px solid var(--got);background:#e8f5ef;color:var(--got);border-style:solid}
+  .count{font-size:14px;color:var(--sub)}
+
+  section{padding:36px 0}
+  h2{font-size:clamp(20px,2.8vw,26px);margin:0 0 14px}
+  p{font-size:17px;margin:0 0 18px}
+
+  /* 作法カード */
+  .rules{background:#fff6ec;border:1px solid #f0d9c0;border-radius:18px;padding:24px 26px}
+  .rules h2{margin-top:0}
+  .rules ol{margin:0 0 18px;padding-left:22px}
+  .rules li{margin-bottom:9px;color:var(--sub);font-size:16px}
+  .rules li b{color:var(--ink)}
+
+  /* 神社カード */
+  .shrine{background:var(--card);border:1px solid var(--line);border-radius:20px;
+    padding:24px 26px;margin-bottom:20px;position:relative;overflow:hidden}
+  .shrine.done{border-color:var(--got);box-shadow:0 6px 22px #1f7a5a14}
+  .top{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:4px}
+  .num{font-size:13px;font-weight:800;color:var(--sub);letter-spacing:.1em}
+  .diff{font-size:14px;color:var(--aka);letter-spacing:.12em}
+  .area{font-size:13px;color:var(--sub);border:1px solid var(--line);border-radius:999px;padding:2px 10px}
+  .shrine h3{margin:2px 0 2px;font-size:22px}
+  .kana{color:var(--sub);font-size:14px;margin:0 0 14px}
+  .shrine p{font-size:16px;margin:0 0 14px}
+  .look{background:#f5f2ec;border-radius:14px;padding:14px 18px;margin:0 0 16px}
+  .look .t{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--aka);font-weight:800}
+  .look p{margin:4px 0 0;font-size:16px;color:var(--ink)}
+  .go{display:inline-block;font-size:14px;text-decoration:none;border:1px solid #cfd8e6;
+    border-radius:10px;padding:8px 14px;margin-bottom:16px}
+
+  .qa{border-top:1px dashed var(--line);padding-top:16px}
+  .qa .q{font-weight:700;margin:0 0 10px;font-size:16px}
+  .row{display:flex;gap:10px;flex-wrap:wrap}
+  input[type=text]{font:inherit;padding:12px 14px;border:1px solid var(--line);border-radius:12px;
+    background:#fff;color:var(--ink);flex:1;min-width:190px}
+  input:focus{outline:2px solid #22406e33;border-color:var(--ai)}
+  button.chk{font:inherit;font-weight:700;border:0;border-radius:12px;padding:12px 22px;
+    background:var(--ai);color:#fff;cursor:pointer}
+  button.chk:hover{background:#1a3358}
+  .msg{font-size:14px;margin:10px 0 0;min-height:20px}
+  .msg.ng{color:var(--aka)}
+  .msg.ok{color:var(--got);font-weight:700}
+  .stamp{position:absolute;top:18px;right:20px;width:60px;height:60px;border-radius:50%;
+    border:3px solid var(--got);color:var(--got);display:none;place-items:center;
+    font-weight:800;font-size:12px;line-height:1.2;text-align:center;transform:rotate(-14deg);
+    background:#e8f5ef}
+  .shrine.done .stamp{display:grid}
+  .shrine.done .qa{display:none}
+  .soon{color:var(--sub);font-size:15px;font-style:italic}
+
+  .end{background:linear-gradient(150deg,#0e1626,#1d2c48);color:#eaf2ff;border-radius:24px;
+    padding:38px 34px;border:1px solid #24344f}
+  .end h2{color:#fff}
+  .end p{color:#a9bcd8;font-size:17px}
+  .end.locked{filter:grayscale(1);opacity:.5}
+  .btn{display:inline-block;text-decoration:none;font-weight:700;border-radius:12px;
+    padding:14px 26px;font-size:16px;background:var(--aka);color:#fff;margin-top:8px;margin-right:10px}
+  .btn.s{background:#ffffff14;border:1px solid #ffffff33;color:#eaf2ff}
+  .reset{background:none;border:0;color:var(--sub);font-size:13px;cursor:pointer;text-decoration:underline;padding:0}
+
+  footer{border-top:1px solid var(--line);padding:34px 0 60px;color:var(--sub);font-size:14px;margin-top:50px}
+  footer .wrap{display:flex;gap:18px;flex-wrap:wrap;align-items:center}
+</style>
+</head>
+<body>
+
+<header>
+  <nav>
+    <a class="logo" href="index.html"><i>奥</i>More to Japan</a>
+    <span class="sp"></span>
+    <a class="nl" href="why.html" data-en="Why" data-ja="なぜ">Why</a>
+    <a class="nl" href="katakana-catch.html" data-en="Free game" data-ja="無料ゲーム">Free game</a>
+    <a class="nl" href="index.html#contact" data-en="Lessons" data-ja="レッスン">Lessons</a>
+    <button class="lang" id="lang">日本語</button>
+  </nav>
+</header>
+
+<div class="wrap">
+  <div class="hero">
+    <div class="kicker" data-en="Tokyo shrine hunt · free · no sign-up"
+         data-ja="東京・神社さがし ・ 無料 ・ 登録なし">Tokyo shrine hunt · free · no sign-up</div>
+    <h1 data-en="Eight shrines the city grew over."
+        data-ja="街が、その上に育ってしまった八つの社。">Eight shrines the city grew over.</h1>
+    <p class="lead" data-en="Tokyo did not remove them. It built around them, and they each survived differently. One climbed onto a roof. One let an office tower stand on top of its path. One shrank into an alley one metre wide. One gave up its buildings entirely and is now a tree."
+       data-ja="東京は、それらを撤去しませんでした。まわりに建てて、社のほうが生き延び方を変えた。屋上に登った社。参道の上にビルを建てさせた社。幅一メートルの路地に縮んだ社。そして、社殿をすべて手放して、いまは一本の木になった社。">
+      Tokyo did not remove them. It built around them, and they each survived differently.</p>
+    <p class="lead" data-en="Find them. Answer what is written there. Collect eight stamps."
+       data-ja="見つけて、そこに書いてあることに答えて、八つ集めてください。">
+      Find them. Answer what is written there. Collect eight stamps.</p>
+
+    <div class="bar" id="bar"></div>
+    <p class="count" id="count"></p>
+  </div>
+
+  <section>
+    <div class="rules">
+      <h2 data-en="Before you start — how to behave at a shrine"
+          data-ja="はじめる前に ─ 神社での作法">Before you start — how to behave at a shrine</h2>
+      <p style="font-size:16px;color:#5d6673;margin-top:0"
+         data-en="These are working places of worship, not attractions. Almost all of them sit inside someone’s neighbourhood, and some are inside a company’s building. Do this and you will be welcome anywhere."
+         data-ja="ここは信仰の場所であって、観光施設ではありません。ほとんどが誰かの生活圏の中にあり、会社の建物の中にあるものもあります。これさえ守れば、どこでも歓迎されます。">
+        These are working places of worship, not attractions.</p>
+      <ol>
+        <li data-en="<b>Bow once</b> before you pass under the torii gate. Walk to the side of the path, not down the middle."
+            data-ja="<b>鳥居の前で一礼。</b> 参道の真ん中は歩かず、端を歩く。">Bow once before the torii.</li>
+        <li data-en="<b>At the water basin</b> (temizuya): left hand, right hand, rinse your mouth from your left hand, never from the ladle."
+            data-ja="<b>手水舎で</b> 左手 → 右手 → 左手に水を受けて口をすすぐ。柄杓に直接口をつけない。">At the water basin.</li>
+        <li data-en="<b>Two bows, two claps, one bow.</b> Coins are an offering, not a fee — any amount is fine."
+            data-ja="<b>二礼・二拍手・一礼。</b> お賽銭は料金ではなく供え物。金額はいくらでもいい。">Two bows, two claps, one bow.</li>
+        <li data-en="<b>Do not photograph people praying.</b> The building is fine; a person’s back is not."
+            data-ja="<b>参拝している人を撮らない。</b> 建物はよくても、人の背中はだめ。">Do not photograph people praying.</li>
+        <li data-en="<b>Quiet.</b> Several of these are two metres from someone’s window."
+            data-ja="<b>静かに。</b> このうち何社かは、誰かの家の窓から二メートルの場所にあります。">Quiet.</li>
+      </ol>
+      <p style="margin:0;font-size:16px"
+         data-en="Want a real, hand-written stamp too? Ask at the 社務所 (shamusho, shrine office) for a <b>御朱印 (goshuin)</b>. Have a ¥300–500 coin ready and a goshuin book. Small shrines like most of these are unstaffed — that is normal, and not a rejection."
+         data-ja="本物の手書きの印も欲しいときは、社務所で「御朱印をお願いします」と言ってください。300〜500円と御朱印帳を用意して。ここに載っている多くは無人です。それは普通のことで、断られているわけではありません。">
+        Want a real hand-written stamp too? Ask at the shrine office for a goshuin.</p>
+    </div>
+  </section>
+
+  <section id="list"></section>
+
+  <section>
+    <div class="end locked" id="end">
+      <h2 data-en="Why they are all still here" data-ja="なぜ、まだ全部あるのか">Why they are all still here</h2>
+      <p id="endBody" data-en="Find all eight to unlock this." data-ja="八つ集めると開きます。">Find all eight to unlock this.</p>
+      <div id="endCta" style="display:none">
+        <a class="btn" href="index.html#contact" data-en="Learn to read them properly" data-ja="読めるようになる">Learn to read them properly</a>
+        <a class="btn s" href="why.html" data-en="Why this site exists" data-ja="このサイトの理由">Why this site exists</a>
+      </div>
+    </div>
+    <p style="margin-top:18px"><button class="reset" id="reset" data-en="Reset my stamps" data-ja="スタンプを消す">Reset my stamps</button></p>
+  </section>
+</div>
+
+<footer>
+  <div class="wrap">
+    <span>© <span id="yr"></span> More to Japan</span>
+    <span style="flex:1"></span>
+    <a href="index.html" data-en="Home" data-ja="トップ">Home</a>
+  </div>
+</footer>
+
+<script>
+/* ============================================================
+   八社のデータ。
+   ★ ans を書き換えれば、問いはいくらでも差し替えられる。
+     現地で「そこに立たないと分からないこと」を見つけたら、q と ans を
+     そちらに置き換えるのが本来の形（いまは下調べで確かめられる問いにしてある）。
+     ans は配列。どれか1つに一致すれば正解。ひらがな・漢字・英語を並べておく。
+   ============================================================ */
+const SHRINES = [
+  {
+    id: "kotohira", diff: 1, area: ["Toranomon, Minato", "港区・虎ノ門"],
+    name: ["Toranomon Kotohira-gū", "虎ノ門金刀比羅宮"], kana: "とらのもん ことひらぐう",
+    body: [
+      "The easiest one, and the clearest example of the deal these shrines struck. A 40-storey office tower was built on the site — and the shrine stayed. The approach path now runs underneath the building. At lunchtime office workers eat bento in the grounds.",
+      "一番やさしい社であり、この八社が結んだ取引が一番はっきり見える場所。四十階のオフィスビルが同じ敷地に建ち、それでも社は動かなかった。参道はビルの下をくぐる。昼になると、会社員が境内で弁当を食べている。"],
+    look: [
+      "The bronze torii gate in front of the hall. It was donated in 1821 and survived everything since. Four creatures are carved around its top — this is a Minato-ward designated cultural property.",
+      "社殿の前の銅鳥居。1821年（文政4年）に奉納され、それ以来すべてを生き延びた。上部に四体の生き物が彫られている。港区指定有形文化財。"],
+    q: ["Four mythical creatures are carved on the bronze torii. What are they called as a set? (a Japanese word, 2 kanji)",
+        "銅鳥居の上部に彫られている四体の神獣を、まとめて何という？（漢字二文字）"],
+    ans: ["四神", "しじん", "shijin", "shijin (four gods)", "four gods", "4神"],
+  },
+  {
+    id: "fukutoku", diff: 1, area: ["Nihonbashi Muromachi, Chūō", "中央区・日本橋室町"],
+    name: ["Fukutoku Shrine", "福徳神社"], kana: "ふくとく じんじゃ",
+    body: [
+      "This one nearly disappeared. As the district was developed the shrine shrank, and shrank, until it was a small box sitting on the roof of a building. In the recent Nihonbashi redevelopment it was rebuilt at ground level, in the gap between two towers.",
+      "この社は、ほとんど消えかけた。一帯の開発が進むにつれて縮み、縮み、最後はビルの屋上に置かれた小さな祠になっていた。近年の日本橋の再開発で、二棟の谷間に、地上へ建て直された。"],
+    look: [
+      "Look up at the towers on both sides, then down at the shrine. This is what the whole hunt is about — the city did not delete it, it negotiated with it.",
+      "両側のビルを見上げてから、社を見おろしてみてください。この八社めぐりが言いたいことは、全部ここにあります。街は消さなかった。交渉した。"],
+    q: ["This shrine has a second, older name — a kind of Inari. What is it? (4 kanji, ends in 稲荷)",
+        "この神社には、もう一つ古い名前がある。「◯◯稲荷」。◯◯は？"],
+    ans: ["芽吹稲荷", "芽吹", "めぶきいなり", "めぶき", "mebuki", "mebuki inari"],
+  },
+  {
+    id: "tsukudo", diff: 2, area: ["Kudanshita, Chiyoda", "千代田区・九段下"],
+    name: ["Tsukudo Shrine", "築土神社"], kana: "つくど じんじゃ",
+    body: [
+      "You will walk past this one. The entrance is a gap between two buildings that looks like a service alley, and the torii is at the very back of it. Go in anyway. Inside is a concrete shrine that has been moved around Tokyo for a thousand years.",
+      "ここは必ず通り過ぎる。入口はビルとビルの隙間で、通用口にしか見えない。鳥居はその一番奥にある。それでも入ってみてください。中には、千年のあいだ東京の中を移動させられ続けてきた社が、コンクリートで建っている。"],
+    look: [
+      "Who is enshrined here. He was a warrior who declared himself emperor in the 10th century, lost, and had his head displayed in Kyoto. Tokyo has been quietly apologising to him ever since.",
+      "誰が祀られているか。十世紀に自ら新皇を名乗り、敗れ、京で首をさらされた武将。東京はそれ以来ずっと、彼に対して静かに詫び続けている。"],
+    q: ["Which warrior is enshrined here? (family name is enough, in kanji or romaji)",
+        "ここに祀られている武将は誰？（名字だけでも可）"],
+    ans: ["平将門", "将門", "たいらのまさかど", "まさかど", "masakado", "taira no masakado", "taira masakado"],
+  },
+  {
+    id: "kabuto", diff: 2, area: ["Nihonbashi Kabutochō, Chūō", "中央区・日本橋兜町"],
+    name: ["Kabuto Shrine", "兜神社"], kana: "かぶと じんじゃ",
+    body: [
+      "Squeezed between the Tokyo Stock Exchange and the concrete legs of an elevated expressway. It was founded in 1878 by the men who started the stock exchange, and it is still the shrine of Japanese finance. The traffic goes over your head the whole time you are there.",
+      "東京証券取引所と、首都高の高架の脚のあいだに挟まっている。1878年、株式取引所を作った人々が建てた社で、いまも日本の金融の守り神。いる間じゅう、頭の上を車が走り続けている。"],
+    look: [
+      "The rock in the grounds. The whole district — Kabutochō, the name on every financial news report in Japan — is named after it. One legend says a defeated warrior’s helmet was buried under it in the year 940.",
+      "境内の岩。この街の名前「兜町」——日本の金融ニュースが必ず口にするあの名前——は、この岩から来ている。940年、討たれた武将の兜がこの下に埋められたという伝説がある。"],
+    q: ["What is the rock in the grounds called? (2 kanji, or romaji)",
+        "境内にある岩の名前は？（漢字二文字、またはローマ字）"],
+    ans: ["兜岩", "かぶといわ", "kabutoiwa", "kabuto iwa", "kabuto-iwa"],
+  },
+  {
+    id: "asahi", diff: 2, area: ["Ginza 3-chōme, Chūō", "中央区・銀座三丁目"],
+    name: ["Asahi Inari Shrine", "朝日稲荷神社"], kana: "あさひ いなり じんじゃ",
+    body: [
+      "The strangest solution of the eight. The hall you pray at is on the ground floor of an office building. The main sanctuary is not there — it is on the roof, several floors above your head. You take the lift to reach it.",
+      "八社のなかで、いちばん変わった解き方。参拝する拝殿は、オフィスビルの一階にある。だが本殿はそこにない。頭上何階分も上、屋上にある。エレベーターで上がる。"],
+    look: [
+      "Fans of the film Weathering with You (天気の子) will recognise the rooftop shrine. Stand at the ground-floor hall first, then go up and understand what you were praying to.",
+      "映画『天気の子』を観た人は、屋上の社に見覚えがあるはずです。まず一階で参拝して、それから上がって、自分が何に向かって拝んでいたのかを確かめてください。"],
+    q: ["Where is the main sanctuary (honden) of this shrine? One word.",
+        "この神社の本殿はどこにある？（ひとこと）"],
+    ans: ["屋上", "おくじょう", "okujo", "okujou", "roof", "rooftop", "on the roof", "the roof"],
+  },
+  {
+    id: "hodo", diff: 3, area: ["Ginza 4-chōme, Chūō", "中央区・銀座四丁目"],
+    name: ["Hōdō Inari Shrine", "宝童稲荷神社"], kana: "ほうどう いなり じんじゃ",
+    body: [
+      "Dead centre of Ginza — the most expensive retail land in Japan — down an alley between Namiki-dōri and Renga-dōri. You will walk past the entrance. It is barely wider than your shoulders, and there is no sign facing the street.",
+      "銀座の、ど真ん中。日本でいちばん地価の高い商業地の、並木通りとレンガ通りのあいだの路地。入口は必ず通り過ぎる。肩幅ほどしかなく、表通りに看板は出ていない。"],
+    look: [
+      "Who this shrine protects. Not money, not business — surprising, for this address.",
+      "この社が守っているのが誰か。金でも商売でもない。この住所にしては意外なものです。"],
+    q: ["Who does this shrine protect? (one word — a kind of person)",
+        "この神社が守っているのは誰？（ひとこと）"],
+    ans: ["子供", "こども", "子ども", "kodomo", "children", "child", "kids"],
+  },
+  {
+    id: "toyoiwa", diff: 3, area: ["Ginza 7-chōme, Chūō", "中央区・銀座七丁目"],
+    name: ["Toyoiwa Inari Shrine", "豊岩稲荷神社"], kana: "とよいわ いなり じんじゃ",
+    body: [
+      "A second Ginza alley shrine, and a smaller one. It used to have proper grounds. A building went up in 1994 and the shrine was compressed into the gap that was left. You walk in past a stone marker, into darkness, and then lanterns appear.",
+      "銀座の路地の社、二つめ。こちらのほうが小さい。もとはちゃんとした境内があった。1994年にビルが建ち、社は残された隙間へ押し込められた。石碑の脇から入り、暗がりを進むと、灯籠が見えてくる。"],
+    look: [
+      "What people come here to ask for. Ginza hostesses and shop staff have prayed here for decades — the request is not about money either.",
+      "人が何を願いに来ているか。銀座で働く人たちが何十年も通っている。こちらの願いも、やはり金の話ではありません。"],
+    q: ["What is this shrine known for granting? (one word)",
+        "この神社が知られている御利益は？（ひとこと）"],
+    ans: ["縁結び", "えんむすび", "enmusubi", "en-musubi", "love", "matchmaking", "relationships", "marriage"],
+  },
+  {
+    id: "otahime", diff: 3, area: ["Ochanomizu, Chiyoda", "千代田区・御茶ノ水"],
+    name: ["Ōtahime Inari — the original site", "太田姫稲荷神社 元宮"], kana: "おおたひめ いなり じんじゃ もとみや",
+    body: [
+      "The hardest, because there is no shrine. In 1931 the railway was widened at Ochanomizu and the shrine was moved away. What stayed behind, at the original site beside the tracks, is a single enormous tree with a small wooden sign and paper charms tied to it.",
+      "いちばん難しい。社が無いからです。1931年、御茶ノ水で線路が拡張され、社は移された。元の場所——線路脇——に残ったのは、一本の巨木と、小さな木の札と、そこに結ばれた御札だけ。"],
+    look: [
+      "The tree itself. Trains pass a few metres away, all day. Nobody stops. This is what a shrine looks like after the city has taken everything except the reason it was there.",
+      "木そのもの。数メートル横を、電車が一日じゅう通る。誰も足を止めない。街がすべてを持っていったあと、そこにあった理由だけが残ると、神社はこういう姿になります。"],
+    q: ["What species is the tree at the original site? (Japanese name — kanji, kana or romaji)",
+        "元宮に残っている木の種類は？（漢字・かな・ローマ字どれでも）"],
+    ans: ["欅", "ケヤキ", "けやき", "keyaki", "zelkova", "zelkova tree"],
+  },
+];
+
+const END = {
+  en: "Look at what they each did. Kotohira-gū let a tower stand on its path. Fukutoku climbed onto a roof and waited thirty years to come back down. Tsukudo hid in a gap. Kabuto took shelter under a motorway. Asahi Inari split itself in two — you on the ground floor, the god upstairs. Hōdō and Toyoiwa shrank until they were the width of a person. And Ōtahime gave up its buildings completely and became a tree.<br><br>None of them were protected by law from being removed. They are still here because, every time the ground under them became worth an enormous amount of money, enough people quietly decided that the shrine stayed. That decision was made over and over, by ordinary people who owned the land and could have sold it.<br><br>That is the thing you cannot see by looking at Tokyo. It looks like a city that replaced everything. It is actually a city that kept making exceptions, one small building at a time — and never wrote down why.",
+  ja: "それぞれが何をしたかを並べてみてください。金刀比羅宮は、参道の上にビルを建てさせた。福徳神社は屋上に登り、三十年待って降りてきた。築土神社は隙間に隠れた。兜神社は高速道路の下に入った。朝日稲荷は自分を二つに割った——人は一階、神は屋上。宝童と豊岩は、人ひとりの幅まで縮んだ。そして太田姫は社殿をすべて手放して、木になった。<br><br>どれも、法律で守られていたわけではありません。まだここにあるのは、その足元の土地が途方もない金額になるたびに、「それでも社は残す」と、誰かが静かに決めたからです。その判断が、何度も、何度も、土地を持っていて売ることもできた普通の人たちによって下された。<br><br>それが、東京を見ているだけでは見えないものです。すべてを建て替えた街に見える。実際は、小さな建物ひとつぶんずつ例外を作り続けた街で、その理由をどこにも書き残していないだけです。",
+};
+
+/* ---------- 描画 ---------- */
+let lang = "en";
+const KEY = "mtj-shrine-hunt";
+let got = {};
+try { got = JSON.parse(localStorage.getItem(KEY) || "{}"); } catch (e) { got = {}; }
+function save() { try { localStorage.setItem(KEY, JSON.stringify(got)); } catch (e) {} }
+
+const L = a => Array.isArray(a) ? (lang === "ja" ? a[1] : a[0]) : a;
+const T = (en, ja) => lang === "ja" ? ja : en;
+
+function norm(s) {
+  return (s || "").toLowerCase().trim()
+    .replace(/[\s　・\-—–_.,。、！!？?()（）]/g, "")
+    .replace(/[ぁ-ん]/g, c => String.fromCharCode(c.charCodeAt(0) + 0x60)); // ひらがな→カタカナで吸収
+}
+
+function render() {
+  const list = document.getElementById("list");
+  list.innerHTML = "";
+  SHRINES.forEach((s, i) => {
+    const done = !!got[s.id];
+    const el = document.createElement("div");
+    el.className = "shrine" + (done ? " done" : "");
+    el.innerHTML =
+      '<div class="stamp">' + T("FOUND", "発見") + '<br>' + (i + 1) + '/8</div>' +
+      '<div class="top"><span class="num">' + String(i + 1).padStart(2, "0") + '</span>' +
+        '<span class="diff">' + "★".repeat(s.diff) + "☆".repeat(3 - s.diff) + '</span>' +
+        '<span class="area">' + L(s.area) + '</span></div>' +
+      '<h3>' + L(s.name) + '</h3>' +
+      '<p class="kana">' + s.kana + '</p>' +
+      '<p>' + L(s.body) + '</p>' +
+      '<div class="look"><div class="t">' + T("What to look for", "何を見るか") + '</div><p>' + L(s.look) + '</p></div>' +
+      '<a class="go" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query=' +
+        encodeURIComponent(s.name[1]) + '">' + T("Open in Maps ↗", "地図で開く ↗") + '</a>' +
+      '<div class="qa"><p class="q">' + L(s.q) + '</p>' +
+        '<div class="row"><input type="text" id="in-' + s.id + '" autocomplete="off" ' +
+          'placeholder="' + T("your answer", "こたえ") + '">' +
+          '<button class="chk" data-id="' + s.id + '">' + T("Stamp it", "スタンプ") + '</button></div>' +
+        '<p class="msg" id="msg-' + s.id + '"></p></div>';
+    list.appendChild(el);
+  });
+
+  const bar = document.getElementById("bar");
+  bar.innerHTML = "";
+  SHRINES.forEach((s, i) => {
+    const p = document.createElement("div");
+    p.className = "pip" + (got[s.id] ? " on" : "");
+    p.textContent = got[s.id] ? "✓" : (i + 1);
+    bar.appendChild(p);
+  });
+  const n = SHRINES.filter(s => got[s.id]).length;
+  document.getElementById("count").textContent =
+    T(n + " of 8 found", "8社中 " + n + "社");
+
+  const end = document.getElementById("end");
+  const body = document.getElementById("endBody");
+  if (n === 8) {
+    end.classList.remove("locked");
+    body.innerHTML = END[lang === "ja" ? "ja" : "en"];
+    document.getElementById("endCta").style.display = "block";
+  } else {
+    end.classList.add("locked");
+    body.innerHTML = T("Find all eight to unlock this.", "八つ集めると開きます。");
+    document.getElementById("endCta").style.display = "none";
+  }
+}
+
+document.addEventListener("click", e => {
+  const b = e.target.closest("button.chk");
+  if (!b) return;
+  const id = b.dataset.id;
+  const s = SHRINES.find(x => x.id === id);
+  const v = norm(document.getElementById("in-" + id).value);
+  const msg = document.getElementById("msg-" + id);
+  if (!v) { msg.className = "msg ng"; msg.textContent = T("Type something first.", "何か入れてください。"); return; }
+  if (s.ans.some(a => norm(a) === v || (v.length > 1 && norm(a).includes(v)))) {
+    got[id] = true; save(); render();
+  } else {
+    msg.className = "msg ng";
+    msg.textContent = T("Not that. Look again — it is written there.",
+                        "違います。もう一度見てください。そこに書いてあります。");
+  }
+});
+
+document.getElementById("reset").addEventListener("click", () => {
+  got = {}; save(); render();
+});
+
+/* ---------- 言語切り替え ---------- */
+function applyLang() {
+  document.documentElement.lang = lang === "en" ? "en" : "ja";
+  document.querySelectorAll("[data-en]").forEach(el => {
+    const v = el.getAttribute("data-" + lang);
+    if (v != null) el.innerHTML = v;
+  });
+  document.getElementById("lang").textContent = lang === "en" ? "日本語" : "English";
+  try { localStorage.setItem("mj-lang", lang); } catch (e) {}
+  render();
+}
+document.getElementById("lang").addEventListener("click", () => {
+  lang = lang === "en" ? "ja" : "en"; applyLang();
+});
+try { const st = localStorage.getItem("mj-lang"); if (st) lang = st; } catch (e) {}
+applyLang();
+document.getElementById("yr").textContent = new Date().getFullYear();
+</script>
+</body>
+</html>
