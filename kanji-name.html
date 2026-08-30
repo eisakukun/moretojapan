@@ -1,0 +1,560 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Your name in kanji — and what it actually means</title>
+<meta name="description" content="Turn your name into a Japanese kanji name (ateji). Every character is hand-picked, and you are told exactly what each one means — no random characters, nothing with a bad meaning.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Your name in kanji — and what it actually means">
+<meta property="og:description" content="Most kanji name generators match the sound and ignore the meaning. This one tells you what every character means, and why it was chosen.">
+<meta property="og:url" content="https://moretojapan.com/kanji-name.html">
+<link rel="canonical" href="https://moretojapan.com/kanji-name.html">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2322406e'/%3E%3Ctext x='32' y='45' font-size='40' text-anchor='middle' fill='white' font-family='Hiragino Sans,sans-serif'%3E%E5%A5%A5%3C/text%3E%3C/svg%3E">
+<style>
+  :root{--paper:#faf7f2;--ink:#1b1f26;--sub:#5d6673;--line:#e4ddd2;--ai:#22406e;--aka:#d94f2b;--card:#fff}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--paper);color:var(--ink);line-height:1.8;
+    font-family:"Hiragino Sans","Noto Sans JP",system-ui,-apple-system,sans-serif;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:820px;margin:0 auto;padding:0 24px}
+  a{color:var(--ai)}
+  header{position:sticky;top:0;z-index:50;background:#faf7f2e6;backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+  nav{display:flex;align-items:center;gap:18px;height:64px;max-width:1040px;margin:0 auto;padding:0 24px}
+  .logo{font-weight:800;font-size:19px;text-decoration:none;color:var(--ink);display:flex;align-items:center;gap:9px}
+  .logo i{display:grid;place-items:center;width:30px;height:30px;border-radius:9px;background:var(--ai);
+    color:#fff;font-style:normal;font-size:16px;font-weight:700}
+  nav .sp{flex:1}
+  nav a.nl{color:var(--sub);text-decoration:none;font-size:15px}
+  @media(max-width:760px){nav a.nl{display:none}}
+  .lang{border:1px solid var(--line);background:#fff;border-radius:999px;padding:6px 14px;font:inherit;font-size:13px;cursor:pointer;color:var(--sub)}
+
+  .hero{padding:56px 0 8px}
+  .kicker{color:var(--aka);font-weight:700;font-size:13px;letter-spacing:.16em;text-transform:uppercase}
+  h1{font-size:clamp(28px,4.4vw,42px);line-height:1.25;margin:12px 0 16px}
+  .lead{font-size:17px;color:var(--sub);margin:0 0 8px}
+
+  .box{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:26px;margin:26px 0}
+  label{display:block;font-size:13px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--sub);margin-bottom:8px}
+  input[type=text]{font:inherit;font-size:17px;padding:14px 16px;border:1px solid var(--line);border-radius:12px;background:#fff;width:100%}
+  input:focus{outline:2px solid #22406e33;border-color:var(--ai)}
+  .hint{font-size:14px;color:var(--sub);margin:8px 0 0}
+  .kana{font-size:30px;font-weight:700;letter-spacing:.12em;text-align:center;padding:10px;
+    border:1px dashed var(--line);border-radius:12px;background:#f7f4ee;margin-top:6px}
+  .themes{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
+  .themes button{font:inherit;font-size:15px;padding:10px 16px;border:1px solid var(--line);
+    background:#fff;border-radius:999px;cursor:pointer;color:var(--sub)}
+  .themes button.on{background:#eef3fb;border-color:var(--ai);color:var(--ai);font-weight:700}
+  .go{font:inherit;font-weight:800;font-size:17px;border:0;border-radius:14px;padding:15px 30px;
+    background:var(--aka);color:#fff;cursor:pointer;width:100%;margin-top:18px}
+  .go:hover{background:#c2401e}
+
+  .res{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:24px 26px;margin-bottom:18px}
+  .res .name{display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+  .big{font-family:"Hiragino Mincho ProN","Yu Mincho",serif;font-size:clamp(42px,9vw,64px);
+    font-weight:600;letter-spacing:.08em;line-height:1.1}
+  .rd{color:var(--sub);font-size:15px}
+  .chars{margin-top:16px;display:grid;gap:10px}
+  .ch{display:flex;gap:14px;align-items:baseline;border-top:1px solid #f0ece5;padding-top:10px}
+  .ch b{font-family:"Hiragino Mincho ProN","Yu Mincho",serif;font-size:26px;min-width:36px}
+  .ch span{color:var(--sub);font-size:15px}
+  .ch em{font-style:normal;color:var(--ink);font-weight:700}
+  .save{margin-top:16px;font:inherit;font-size:15px;font-weight:700;border:1px solid #cfd8e6;
+    background:#fff;color:var(--ai);border-radius:12px;padding:11px 20px;cursor:pointer}
+
+  .warn{background:#fff6ec;border:1px solid #f0d9c0;border-radius:18px;padding:22px 26px;margin:30px 0}
+  .warn h2{margin:0 0 10px;font-size:19px}
+  .warn p{margin:0 0 10px;font-size:16px;color:var(--sub)}
+  .warn p:last-child{margin:0}
+  footer{border-top:1px solid var(--line);padding:34px 0 60px;color:var(--sub);font-size:14px;margin-top:40px}
+  footer .wrap{display:flex;gap:18px;flex-wrap:wrap;align-items:center}
+  canvas{display:none}
+</style>
+</head>
+<body>
+<header><nav>
+  <a class="logo" href="index.html"><i>奥</i>More to Japan</a><span class="sp"></span>
+  <a class="nl" href="why.html" data-en="Why" data-ja="なぜ">Why</a>
+  <a class="nl" href="shrine-hunt.html" data-en="Shrine hunt" data-ja="神社さがし">Shrine hunt</a>
+  <a class="nl" href="katakana-catch.html" data-en="Free game" data-ja="無料ゲーム">Free game</a>
+  <button class="lang" id="lang">日本語</button>
+</nav></header>
+
+<div class="wrap">
+  <div class="hero">
+    <div class="kicker" data-en="Free · no sign-up" data-ja="無料・登録なし">Free · no sign-up</div>
+    <h1 data-en="Your name in kanji — and what it actually means."
+        data-ja="あなたの名前を漢字に。そして、その字が何を意味するか。">Your name in kanji — and what it actually means.</h1>
+    <p class="lead" data-en="Most generators match the sound and stop there. That is how people end up with 死 (death) or 苦 (suffering) in their name — sometimes tattooed. Here every character is chosen by hand, and you are told what each one means before you use it anywhere."
+       data-ja="ほとんどの変換は音だけ合わせて終わります。だから名前に「死」や「苦」が入ったまま、彫ってしまう人が出ます。ここでは一字ずつ選んであり、使う前に意味が全部わかります。">
+      Most generators match the sound and stop there.</p>
+  </div>
+
+  <div class="box">
+    <label data-en="1 · Your name" data-ja="1 ・ 名前">1 · Your name</label>
+    <input type="text" id="name" placeholder="Maria / John / Sofia" autocomplete="off"
+           autocorrect="off" autocapitalize="off" spellcheck="false">
+    <p class="hint" data-en="Type it the way it <b>sounds</b>, not the way it is spelled. Michael → “maikeru”. You can fix the katakana below."
+       data-ja="つづりではなく<b>音のとおり</b>に打ってください。Michael → “maikeru”。下のカタカナは直せます。">
+      Type it the way it sounds.</p>
+
+    <label style="margin-top:20px" data-en="2 · In katakana (edit if wrong)" data-ja="2 ・ カタカナ（違っていたら直す）">2 · In katakana</label>
+    <input type="text" id="kana" class="kana" placeholder="マリア" autocomplete="off" spellcheck="false">
+
+    <label style="margin-top:20px" data-en="3 · What should it mean?" data-ja="3 ・ どんな意味にする？">3 · What should it mean?</label>
+    <div class="themes" id="themes"></div>
+
+    <button class="go" id="go" data-en="Make my kanji name" data-ja="漢字の名前を作る">Make my kanji name</button>
+  </div>
+
+  <div id="out"></div>
+
+  <div class="warn">
+    <h2 data-en="Read this before you tattoo it" data-ja="彫る前に、これだけは読んでください">Read this before you tattoo it</h2>
+    <p data-en="This is <b>ateji</b> (当て字) — kanji borrowed for their sound. It is a real and old practice, but it is <b>not a legal name</b> and not what appears on your residence card. Japanese people will read it as a foreign name written in kanji, which is exactly what it is."
+       data-ja="これは<b>当て字</b>です。音を借りて漢字を当てる、古くからある方法ですが、<b>法的な名前ではありません</b>。在留カードにも載りません。日本人は「外国の名前を漢字で書いたもの」として読みます。実際そのとおりのものです。">
+      This is ateji — kanji borrowed for their sound.</p>
+    <p data-en="Every character here was chosen from characters actually used in Japanese given names. Nothing with an unpleasant meaning is in the table. But if you are going to put it on your body, <b>show it to a Japanese person first.</b> Always. Even this one."
+       data-ja="ここに出る字は、実際に日本人の名前に使われる字だけから選んでいます。意味の悪い字は表に入れていません。それでも<b>体に入れるなら、必ず日本人に一度見せてください。</b> これも含めて、必ずです。">
+      Show it to a Japanese person before you put it on your body.</p>
+  </div>
+</div>
+
+<canvas id="cv" width="1000" height="1000"></canvas>
+
+<footer><div class="wrap">
+  <span>© <span id="yr"></span> More to Japan</span><span style="flex:1"></span>
+  <a href="index.html" data-en="Home" data-ja="トップ">Home</a>
+</div></footer>
+
+<script>
+/* ============================================================
+   当て字の表。
+   ここに入れる字は「実際に日本人の名前に使われる字」だけ。
+   意味の悪い字は最初から入っていないので、悪い名前は構造上できない。
+   [ 漢字, 英語の意味, 日本語の意味, テーマ ]
+   テーマ n=自然 l=光 s=強さ q=静けさ f=花 m=その他
+   ============================================================ */
+const M = {
+"ア":[["亜","Asia; second","アジア・次ぐ","m"],["愛","love","愛","q"],["安","peace, calm","やすらか","q"]],
+"イ":[["伊","that one (classical)","かれ・イタリア","m"],["依","to rely on","たよる","q"],["意","mind, intention","こころ・思い","q"]],
+"ウ":[["宇","the universe","宇宙","n"],["羽","feather, wing","はね","n"],["雨","rain","あめ","n"]],
+"エ":[["恵","blessing, grace","めぐみ","q"],["英","brilliant, gifted","すぐれた","l"],["江","river inlet","入り江","n"]],
+"オ":[["央","the centre","なかば","m"],["音","sound","おと","q"],["緒","the first thread","いとぐち","q"]],
+"カ":[["花","flower","はな","f"],["華","splendour","はなやか","f"],["香","fragrance","かおり","f"],["佳","fine, good","よい","q"]],
+"キ":[["希","hope, rare","のぞみ","l"],["輝","radiance","かがやき","l"],["樹","a standing tree","たちき","n"],["紀","a chronicle","記録","m"]],
+"ク":[["久","a long time","ひさしい","q"],["空","sky, emptiness","そら","n"],["玖","black jade","黒い玉","m"]],
+"ケ":[["圭","a jade tablet","玉","l"],["慶","celebration","よろこび","l"],["介","to stand between","たすける","s"]],
+"コ":[["湖","a lake","みずうみ","n"],["虎","tiger","とら","s"],["己","oneself","おのれ","s"],["琥","amber","こはく","l"]],
+"サ":[["咲","to bloom","さく","f"],["彩","colour","いろどり","f"],["沙","fine sand","すな","n"],["佐","to assist","たすける","q"]],
+"シ":[["詩","a poem","うた","q"],["志","will, ambition","こころざし","s"],["紫","purple","むらさき","f"],["史","history","れきし","m"]],
+"ス":[["寿","long life","ことぶき","l"],["澄","clear, transparent","すみきる","q"],["素","plain, unadorned","ありのまま","q"]],
+"セ":[["世","the world, an era","よ","m"],["聖","holy","ひじり","l"],["瀬","shallows of a river","川の浅瀬","n"]],
+"ソ":[["蒼","deep blue-green","あおい","n"],["想","a thought","おもい","q"],["爽","refreshing","さわやか","n"]],
+"タ":[["太","great, thick","ふとい","s"],["多","many","おおい","m"],["田","a rice field","たんぼ","n"]],
+"チ":[["千","a thousand","せん","m"],["智","wisdom","ちえ","q"],["知","to know","しる","q"],["地","the earth","だいち","n"]],
+"ツ":[["津","a harbour","みなと","n"],["都","a capital","みやこ","m"]],
+"テ":[["天","the heavens","そら・天","l"],["照","to shine on","てらす","l"]],
+"ト":[["斗","the Dipper (stars)","ひしゃく・北斗","l"],["登","to climb","のぼる","s"],["都","a capital","みやこ","m"]],
+"ナ":[["奈","(as in Nara)","奈良の奈","m"],["菜","greens, rapeseed flower","なのはな","f"],["那","elegant (classical)","うつくしい","q"]],
+"ニ":[["仁","benevolence","おもいやり","q"],["丹","vermilion","あかい色","f"],["二","two","ふたつ","m"]],
+"ヌ":[["温","warm","あたたかい","q"]],
+"ネ":[["音","sound","おと","q"],["根","a root","ね","n"],["寧","peaceful","やすらか","q"]],
+"ノ":[["乃","of (classical)","〜の","m"],["野","open field","のはら","n"],["之","of (classical)","〜の","m"]],
+"ハ":[["波","a wave","なみ","n"],["羽","feather","はね","n"],["葉","a leaf","は","n"],["芭","a plantain leaf","ばしょう","f"]],
+"ヒ":[["陽","the sun","たいよう","l"],["日","the sun, a day","ひ","l"],["飛","to fly","とぶ","s"],["妃","a princess","きさき","q"]],
+"フ":[["風","wind","かぜ","n"],["富","abundance","とみ","l"],["芙","lotus","ふよう","f"]],
+"ヘ":[["平","level, peaceful","たいら","q"]],
+"ホ":[["帆","a sail","ほ","n"],["穂","an ear of grain","いなほ","n"],["宝","treasure","たから","l"],["歩","to walk","あゆむ","s"]],
+"マ":[["真","truth","まこと","q"],["茉","jasmine","まつり花","f"],["麻","hemp, linen","あさ","n"],["万","ten thousand","よろず","m"],["舞","to dance","まう","f"]],
+"ミ":[["美","beauty","うつくしい","f"],["実","fruit; substance","みのり","n"],["深","deep","ふかい","q"],["水","water","みず","n"]],
+"ム":[["夢","a dream","ゆめ","q"],["武","martial","つわもの","s"],["睦","harmony between people","むつまじい","q"]],
+"メ":[["芽","a bud","め","n"],["明","bright","あかるい","l"],["銘","an inscription","きざむ","m"]],
+"モ":[["萌","sprouting","もえる","n"],["茂","lush growth","しげる","n"],["桃","peach","もも","f"]],
+"ヤ":[["弥","more and more","いよいよ","m"],["矢","an arrow","や","s"],["夜","night","よる","q"]],
+"ユ":[["優","gentle; excellent","やさしい","q"],["悠","far-off, unhurried","はるか","q"],["結","to tie together","むすぶ","q"],["遊","to play, to roam","あそぶ","m"]],
+"ヨ":[["葉","a leaf","は","n"],["世","the world","よ","m"],["良","good","よい","q"]],
+"ラ":[["羅","fine woven silk","うすぎぬ","f"],["良","good","よい","q"]],
+"リ":[["理","reason, the order of things","ことわり","q"],["莉","jasmine","まつり花","f"],["璃","lapis lazuli","るり","l"],["里","a home village","さと","n"],["利","benefit, sharp","するどい","s"]],
+"ル":[["瑠","lapis lazuli","るり","l"],["流","to flow","ながれる","n"],["琉","a gem","たま","l"],["留","to stay","とどまる","q"]],
+"レ":[["麗","elegant, lovely","うるわしい","f"],["玲","the ring of jade","玉の音","q"],["礼","courtesy","れい","q"],["怜","clear-minded","かしこい","q"]],
+"ロ":[["路","a road","みち","n"],["露","dew","つゆ","n"],["朗","bright, cheerful","ほがらか","l"]],
+"ワ":[["和","harmony; Japan","やわらぎ","q"],["輪","a ring, a circle","わ","m"],["環","a ring, encircling","めぐる","m"]],
+"ヲ":[["緒","the first thread","いとぐち","q"]],
+"ヴ":[["武","martial","つわもの","s"]],
+"ガ":[["雅","refined, elegant","みやび","q"],["賀","to congratulate","いわう","l"]],
+"ギ":[["義","righteousness","すじみち","s"]],
+"グ":[["空","sky","そら","n"]],
+"ゲ":[["玄","deep, mysterious dark","くろ・奥深い","q"]],
+"ゴ":[["悟","to awaken, to understand","さとる","q"]],
+"ザ":[["座","a seat, a place","すわる","m"]],
+"ジ":[["慈","compassion","いつくしみ","q"],["治","to govern, to heal","おさめる","s"],["路","a road","みち","n"]],
+"ズ":[["瑞","auspicious, fresh","みずみずしい","l"]],
+"ゼ":[["是","this; what is right","ただしい","q"]],
+"ゾ":[["象","a form, an elephant","かたち","m"]],
+"ダ":[["拓","to open up new land","ひらく","s"]],
+"ヂ":[["地","the earth","だいち","n"]],
+"デ":[["出","to go out, to emerge","でる","s"]],
+"ド":[["童","a child","わらべ","q"]],
+"バ":[["馬","a horse","うま","s"],["芭","a plantain leaf","ばしょう","f"]],
+"ビ":[["美","beauty","うつくしい","f"],["備","to be prepared","そなえる","q"]],
+"ブ":[["武","martial","つわもの","s"],["舞","to dance","まう","f"]],
+"ベ":[["紅","crimson","くれない","f"]],
+"ボ":[["望","to hope, to gaze far","のぞむ","l"]],
+"パ":[["巴","a swirling comma pattern","ともえ","m"]],
+"ピ":[["妃","a princess","きさき","q"]],
+"プ":[["風","wind","かぜ","n"]],
+"ペ":[["平","level, peaceful","たいら","q"]],
+"ポ":[["歩","to walk","あゆむ","s"]],
+"キャ":[["京","the capital","みやこ","m"]],
+"シャ":[["紗","light gauze silk","うすぎぬ","f"],["沙","fine sand","すな","n"]],
+"ジャ":[["蛇","a serpent","へび","s"]],
+"チャ":[["茶","tea","ちゃ","n"]],
+"ニャ":[["若","young","わかい","n"]],
+"ヒャ":[["百","a hundred","ひゃく","m"]],
+"ミャ":[["脈","a vein, a mountain range","みゃく","n"]],
+"リャ":[["略","the essential outline","はぶく","m"]],
+"シュ":[["珠","a pearl","たま","l"],["朱","vermilion red","あか","f"]],
+"ジュ":[["樹","a standing tree","たちき","n"],["寿","long life","ことぶき","l"]],
+"チュ":[["宙","the heavens, space","そら","n"]],
+"リュ":[["竜","a dragon","たつ","s"],["琉","a gem","たま","l"]],
+"キュ":[["久","a long time","ひさしい","q"]],
+"ミュ":[["妙","subtle, exquisite","たえなる","q"]],
+"ニュ":[["乳","milk, nurture","はぐくむ","q"]],
+"ヒュ":[["彪","tiger stripes","あやどる","s"]],
+"ショ":[["翔","to soar","かける","s"],["渚","the water's edge","なぎさ","n"]],
+"ジョ":[["丈","stature, height","たけ","s"],["穣","an abundant harvest","ゆたか","n"]],
+"チョ":[["蝶","a butterfly","ちょう","f"]],
+"リョ":[["涼","cool, refreshing","すずしい","n"],["綾","figured silk","あや","f"]],
+"キョ":[["京","the capital","みやこ","m"],["響","an echo, resonance","ひびき","q"]],
+"ミョ":[["妙","subtle, exquisite","たえなる","q"]],
+"ニョ":[["如","just as, likeness","ごとし","q"]],
+"ヒョ":[["氷","ice","こおり","n"]],
+};
+
+/* ン・ー がつく音は、2音まとめて1字にしたほうが名前として自然になる */
+const C = {
+"リン":[["凛","dignified, crisp cold","りりしい","s"],["鈴","a small bell","すず","q"],["林","a wood","はやし","n"]],
+"ケン":[["健","healthy, sturdy","すこやか","s"],["賢","wise","かしこい","q"],["剣","a sword","つるぎ","s"]],
+"シン":[["真","truth","まこと","q"],["心","the heart","こころ","q"],["信","trust","しんじる","q"],["深","deep","ふかい","q"]],
+"アン":[["杏","apricot","あんず","f"],["安","peace, calm","やすらか","q"]],
+"ラン":[["蘭","an orchid","らん","f"],["藍","indigo","あい","n"]],
+"レン":[["蓮","a lotus","はす","f"],["連","to link together","つらなる","q"]],
+"セン":[["泉","a spring of water","いずみ","n"],["千","a thousand","せん","m"],["仙","a mountain sage","せんにん","q"]],
+"テン":[["天","the heavens","そら・天","l"],["典","a canon, a rule","のり","m"]],
+"キン":[["錦","brocade","にしき","l"],["金","gold","こがね","l"]],
+"ギン":[["銀","silver","しろがね","l"]],
+"ゼン":[["禅","Zen","ぜん","q"],["善","goodness","よい","q"]],
+"ジン":[["仁","benevolence","おもいやり","q"],["神","a god","かみ","l"]],
+"ブン":[["文","writing, culture","ふみ","q"]],
+"モン":[["門","a gate","もん","m"],["紋","a family crest","もんしょう","m"]],
+"コン":[["紺","deep navy blue","こん","n"],["今","now","いま","m"]],
+"クン":[["薫","fragrant","かおる","f"]],
+"マン":[["満","full","みちる","l"]],
+"ミン":[["明","bright","あかるい","l"]],
+"ソン":[["尊","revered","とうとい","s"]],
+"ハン":[["帆","a sail","ほ","n"]],
+"バン":[["磐","a great boulder","いわ","s"]],
+"サン":[["燦","brilliant, sparkling","きらめく","l"],["山","a mountain","やま","n"]],
+"ダン":[["暖","warm","あたたかい","q"]],
+"トン":[["敦","sincere, generous","あつい","q"]],
+"ロン":[["朗","bright, cheerful","ほがらか","l"]],
+"ニン":[["忍","to endure, to bear","しのぶ","s"]],
+"ヒン":[["品","grace, quality","ひん","q"]],
+"ホン":[["本","the origin; a book","もと","q"]],
+"ネン":[["念","a held thought","おもい","q"]],
+"デン":[["伝","to hand down","つたえる","m"]],
+"ビン":[["敏","quick, sharp","さとい","s"]],
+"ゲン":[["玄","deep mysterious dark","くろ・奥深い","q"],["源","a source","みなもと","n"]],
+"オン":[["音","sound","おと","q"],["温","warm","あたたかい","q"]],
+"イン":[["胤","a bloodline","たね・血すじ","m"]],
+"エン":[["円","a circle; harmony","まるい","q"],["縁","a bond between people","えにし","q"],["燕","a swallow (bird)","つばめ","n"]],
+"ウン":[["雲","a cloud","くも","n"],["運","fortune, destiny","めぐりあわせ","m"]],
+"カン":[["寛","broad-minded, generous","ひろい","q"],["環","encircling","めぐる","m"]],
+"タン":[["丹","vermilion","あかい色","f"]],
+"チン":[["珍","rare, precious","めずらしい","m"]],
+"ナン":[["南","south","みなみ","n"]],
+"ジャン":[["丈","stature","たけ","s"]],
+"ジョン":[["譲","to yield to others","ゆずる","q"],["丈","stature","たけ","s"]],
+"ション":[["翔","to soar","かける","s"]],
+"リョン":[["涼","cool, refreshing","すずしい","n"]],
+"コー":[["光","light","ひかり","l"],["幸","happiness","しあわせ","l"],["航","a voyage","わたる","n"]],
+"ソー":[["蒼","deep blue-green","あおい","n"],["想","a thought","おもい","q"]],
+"トー":[["灯","a lamp","ともしび","l"],["統","to bring together","すべる","s"],["透","transparent","すきとおる","q"]],
+"ロー":[["朗","bright, cheerful","ほがらか","l"],["郎","(a classic ending for men’s names)","男子の名の字","m"],["浪","a wave","なみ","n"]],
+"リー":[["理","reason, the order of things","ことわり","q"],["莉","jasmine","まつり花","f"],["里","a home village","さと","n"]],
+"ユー":[["優","gentle; excellent","やさしい","q"],["悠","far-off, unhurried","はるか","q"],["祐","help from heaven","たすけ","l"]],
+"ジョー":[["譲","to yield to others","ゆずる","q"],["城","a castle","しろ","s"],["丈","stature","たけ","s"]],
+"ヨー":[["陽","the sun","たいよう","l"],["洋","the open ocean","おおうみ","n"],["葉","a leaf","は","n"]],
+"ミー":[["実","fruit; substance","みのり","n"],["美","beauty","うつくしい","f"]],
+"マー":[["磨","to polish","みがく","s"],["真","truth","まこと","q"]],
+"ター":[["太","great, thick","ふとい","s"]],
+"カー":[["華","splendour","はなやか","f"]],
+"サー":[["沙","fine sand","すな","n"]],
+"ナー":[["奈","(as in Nara)","奈良の奈","m"]],
+"ハー":[["波","a wave","なみ","n"]],
+"ケー":[["慶","celebration","よろこび","l"],["圭","a jade tablet","玉","l"]],
+"レー":[["麗","elegant, lovely","うるわしい","f"],["玲","the ring of jade","玉の音","q"]],
+"メー":[["明","bright","あかるい","l"]],
+"セー":[["星","a star","ほし","l"],["誠","sincerity","まこと","q"]],
+"ヘー":[["平","level, peaceful","たいら","q"]],
+"ホー":[["峰","a mountain peak","みね","n"],["宝","treasure","たから","l"]],
+"モー":[["望","to gaze far, to hope","のぞむ","l"]],
+"ニー":[["仁","benevolence","おもいやり","q"]],
+"ワー":[["和","harmony; Japan","やわらぎ","q"]],
+"ムー":[["夢","a dream","ゆめ","q"]],
+"フー":[["風","wind","かぜ","n"],["楓","a maple","かえで","n"]],
+"クー":[["空","sky, emptiness","そら","n"]],
+"スー":[["寿","long life","ことぶき","l"]],
+"チー":[["智","wisdom","ちえ","q"],["千","a thousand","せん","m"]],
+"ジー":[["慈","compassion","いつくしみ","q"]],
+"シー":[["詩","a poem","うた","q"],["志","will, ambition","こころざし","s"]],
+"キー":[["希","hope","のぞみ","l"],["輝","radiance","かがやき","l"]],
+"ビー":[["美","beauty","うつくしい","f"]],
+"アー":[["亜","Asia; second","アジア・次ぐ","m"]],
+"イー":[["依","to rely on","たよる","q"]],
+"ウー":[["宇","the universe","宇宙","n"]],
+"エー":[["永","eternal","とこしえ","q"],["英","brilliant, gifted","すぐれた","l"]],
+"オー":[["桜","cherry blossom","さくら","f"],["央","the centre","なかば","m"],["王","a king","おう","s"]],
+"ドー":[["童","a child","わらべ","q"]],
+"ボー":[["望","to gaze far, to hope","のぞむ","l"]],
+"ポー":[["歩","to walk","あゆむ","s"]],
+"ゴー":[["剛","strong, unyielding","つよい","s"]],
+"ゾー":[["蔵","a storehouse","くら","m"]],
+"ヅー":[["瑞","auspicious","みずみずしい","l"]],
+"ヴィ":[["美","beauty","うつくしい","f"]],
+"ティ":[["汀","the water's edge","みぎわ","n"]],
+"ディ":[["出","to emerge","でる","s"]],
+"ファ":[["花","flower","はな","f"]],
+"フィ":[["妃","a princess","きさき","q"]],
+"フェ":[["風","wind","かぜ","n"]],
+"フォ":[["帆","a sail","ほ","n"]],
+"ウィ":[["羽","feather","はね","n"]],
+"ウェ":[["恵","blessing","めぐみ","q"]],
+"ウォ":[["緒","the first thread","いとぐち","q"]],
+"シェ":[["紗","light gauze silk","うすぎぬ","f"]],
+"ジェ":[["慈","compassion","いつくしみ","q"]],
+"チェ":[["千","a thousand","せん","m"]],
+};
+
+/* よくある名前は、つづりからは音が読めないので直接持っておく（Michael は「ミチャエル」ではない） */
+const DICT = {
+maria:"マリア",john:"ジョン",michael:"マイケル",david:"デイビッド",sarah:"セーラ",sara:"サラ",
+emma:"エマ",anna:"アンナ",ana:"アナ",sofia:"ソフィア",sophia:"ソフィア",sophie:"ソフィー",
+chris:"クリス",tom:"トム",thomas:"トーマス",alex:"アレックス",lucas:"ルーカス",nina:"ニーナ",
+leo:"レオ",julia:"ジュリア",kate:"ケイト",ben:"ベン",sam:"サム",ryan:"ライアン",daniel:"ダニエル",
+laura:"ローラ",mark:"マーク",paul:"ポール",peter:"ピーター",james:"ジェームス",robert:"ロバート",
+george:"ジョージ",helen:"ヘレン",grace:"グレース",oliver:"オリバー",lucy:"ルーシー",jack:"ジャック",
+luke:"ルーク",adam:"アダム",mia:"ミア",noah:"ノア",liam:"リアム",ethan:"イーサン",olivia:"オリビア",
+ava:"エバ",eva:"エバ",isabella:"イザベラ",charlotte:"シャーロット",amelia:"アメリア",
+william:"ウィリアム",henry:"ヘンリー",andrew:"アンドリュー",joseph:"ジョセフ",matthew:"マシュー",
+elena:"エレナ",marco:"マルコ",pedro:"ペドロ",carlos:"カルロス",luis:"ルイス",pablo:"パブロ",
+diego:"ディエゴ",hans:"ハンス",pierre:"ピエール",jean:"ジャン",louis:"ルイ",marie:"マリー",
+nicolas:"ニコラ",antoine:"アントワーヌ",lisa:"リサ",amy:"エイミー",jane:"ジェーン",kevin:"ケビン",
+brian:"ブライアン",steven:"スティーブン",eric:"エリック",frank:"フランク",linda:"リンダ",
+nancy:"ナンシー",karen:"カレン",betty:"ベティ",susan:"スーザン",jessica:"ジェシカ",
+};
+
+/* ローマ字 → カタカナ。長い綴りから順に当てる */
+const R = {
+"kya":"キャ","kyu":"キュ","kyo":"キョ","gya":"ギャ","gyu":"ギュ","gyo":"ギョ",
+"sha":"シャ","shu":"シュ","sho":"ショ","shi":"シ","she":"シェ",
+"cha":"チャ","chu":"チュ","cho":"チョ","chi":"チ","che":"チェ",
+"tsu":"ツ","nya":"ニャ","nyu":"ニュ","nyo":"ニョ",
+"hya":"ヒャ","hyu":"ヒュ","hyo":"ヒョ","mya":"ミャ","myu":"ミュ","myo":"ミョ",
+"rya":"リャ","ryu":"リュ","ryo":"リョ","bya":"ビャ","byu":"ビュ","byo":"ビョ",
+"pya":"ピャ","pyu":"ピュ","pyo":"ピョ","ja":"ジャ","ju":"ジュ","jo":"ジョ","ji":"ジ","je":"ジェ",
+"ti":"ティ","di":"ディ","fa":"ファ","fi":"フィ","fe":"フェ","fo":"フォ","fu":"フ",
+"wi":"ウィ","we":"ウェ","wo":"ウォ","vi":"ヴィ","va":"バ","vu":"ブ","ve":"ベ","vo":"ボ",
+"ka":"カ","ki":"キ","ku":"ク","ke":"ケ","ko":"コ","ga":"ガ","gi":"ギ","gu":"グ","ge":"ゲ","go":"ゴ",
+"sa":"サ","su":"ス","se":"セ","so":"ソ","za":"ザ","zu":"ズ","ze":"ゼ","zo":"ゾ",
+"ta":"タ","te":"テ","to":"ト","da":"ダ","de":"デ","do":"ド",
+"na":"ナ","ni":"ニ","nu":"ヌ","ne":"ネ","no":"ノ",
+"ha":"ハ","hi":"ヒ","he":"ヘ","ho":"ホ","ba":"バ","bi":"ビ","bu":"ブ","be":"ベ","bo":"ボ",
+"pa":"パ","pi":"ピ","pu":"プ","pe":"ペ","po":"ポ",
+"ma":"マ","mi":"ミ","mu":"ム","me":"メ","mo":"モ",
+"ya":"ヤ","yu":"ユ","yo":"ヨ","ra":"ラ","ri":"リ","ru":"ル","re":"レ","ro":"ロ",
+"la":"ラ","li":"リ","lu":"ル","le":"レ","lo":"ロ",
+"wa":"ワ","a":"ア","i":"イ","u":"ウ","e":"エ","o":"オ",
+};
+/* 語尾の子音（英語の名前は子音で終わる） */
+const TAIL = {b:"ブ",c:"ク",d:"ド",f:"フ",g:"グ",h:"フ",j:"ジ",k:"ク",l:"ル",m:"ム",
+  p:"プ",q:"ク",r:"ル",s:"ス",t:"ト",v:"ブ",w:"ウ",x:"クス",y:"イ",z:"ズ"};
+
+function toKana(raw) {
+  let s = (raw || "").toLowerCase().replace(/[^a-z]/g, "");
+  if (!s) return "";
+  if (DICT[s]) return DICT[s];
+  let out = "", i = 0;
+  while (i < s.length) {
+    // 同じ子音が続いたら小さい「ッ」
+    if (i + 1 < s.length && s[i] === s[i + 1] && !"aiueon".includes(s[i])) { out += "ッ"; i++; continue; }
+    // n のうしろが子音、または終わりなら「ン」
+    if (s[i] === "n" && (i + 1 >= s.length || !"aiueoy".includes(s[i + 1]))) { out += "ン"; i++; continue; }
+    let hit = false;
+    for (const len of [3, 2, 1]) {
+      const t = s.substr(i, len);
+      if (t.length === len && R[t]) { out += R[t]; i += len; hit = true; break; }
+    }
+    if (hit) continue;
+    if (TAIL[s[i]]) { out += TAIL[s[i]]; i++; continue; }
+    i++;
+  }
+  // 同じ母音が続いたら長音に（naomi はそのまま、lee → リー）
+  return out.replace(/([アカサタナハマヤラワガザダバパ])ア/g, "$1ー")
+            .replace(/([イキシチニヒミリギジビピ])イ/g, "$1ー")
+            .replace(/([ウクスツヌフムユルグズブプ])ウ/g, "$1ー")
+            .replace(/([エケセテネヘメレゲゼベペ])エ/g, "$1ー")
+            .replace(/([オコソトノホモヨロゴゾボポ])オ/g, "$1ー");
+}
+
+/* カタカナを「一字ぶんの音」に割る。ン・ーは前とくっつける */
+function units(kana) {
+  const s = (kana || "").replace(/[^ァ-ヴー]/g, "");
+  const out = [];
+  let i = 0;
+  while (i < s.length) {
+    const t3 = s.substr(i, 3), t2 = s.substr(i, 2), t1 = s[i];
+    if (t3.length === 3 && C[t3]) { out.push([t3, C[t3]]); i += 3; continue; }
+    if (t2.length === 2 && C[t2]) { out.push([t2, C[t2]]); i += 2; continue; }
+    if (t2.length === 2 && M[t2]) { out.push([t2, M[t2]]); i += 2; continue; }
+    if (M[t1]) { out.push([t1, M[t1]]); i += 1; continue; }
+    i += 1;                                   // ッ など、字を当てない音は飛ばす
+  }
+  return out;
+}
+
+const THEMES = [
+  ["q", "Calm", "静けさ"], ["n", "Nature", "自然"], ["l", "Light", "光"],
+  ["s", "Strength", "強さ"], ["f", "Flowers", "花"],
+];
+let theme = "q", lang = "en";
+const T = (en, ja) => lang === "ja" ? ja : en;
+
+function build(kana, th) {
+  const us = units(kana);
+  if (!us.length) return [];
+  const names = [];
+  for (let v = 0; v < 3; v++) {
+    const picked = [], used = new Set();
+    for (const [mora, cands] of us) {
+      let pool = cands.filter(c => c[3] === th);
+      if (!pool.length) pool = cands;
+      let c = null;
+      for (let k = 0; k < pool.length; k++) {
+        const t = pool[(v + k) % pool.length];
+        if (!used.has(t[0])) { c = t; break; }
+      }
+      if (!c) c = pool[v % pool.length];
+      used.add(c[0]);
+      picked.push({ mora, k: c[0], en: c[1], ja: c[2] });
+    }
+    const key = picked.map(p => p.k).join("");
+    if (!names.some(n => n.key === key)) names.push({ key, parts: picked });
+  }
+  return names;
+}
+
+function show() {
+  const kana = document.getElementById("kana").value.trim();
+  const out = document.getElementById("out");
+  const names = build(kana, theme);
+  if (!names.length) {
+    out.innerHTML = '<div class="res"><p>' +
+      T("Put your name in the box above and press the button.",
+        "上に名前を入れて、ボタンを押してください。") + '</p></div>';
+    return;
+  }
+  out.innerHTML = names.map((n, idx) =>
+    '<div class="res">' +
+      '<div class="name"><div class="big">' + n.key + '</div>' +
+        '<div class="rd">' + kana + '<br><span style="font-size:13px">' +
+        T("reading", "読み") + '</span></div></div>' +
+      '<div class="chars">' + n.parts.map(p =>
+        '<div class="ch"><b>' + p.k + '</b><span>' +
+          '<em>' + (lang === "ja" ? p.ja : p.en) + '</em> ・ ' + p.mora +
+        '</span></div>').join("") + '</div>' +
+      '<button class="save" data-n="' + idx + '">' +
+        T("Save as image", "画像として保存") + '</button>' +
+    '</div>').join("");
+  out.dataset.names = JSON.stringify(names.map(n => n.key));
+  out.dataset.kana = kana;
+}
+
+/* 画像にして持ち帰れるようにする。名刺やSNSに置くのはこれ */
+function png(kanji, kana) {
+  const cv = document.getElementById("cv"), x = cv.getContext("2d");
+  const S = 1000;
+  x.fillStyle = "#faf7f2"; x.fillRect(0, 0, S, S);
+  x.strokeStyle = "#e4ddd2"; x.lineWidth = 6; x.strokeRect(40, 40, S - 80, S - 80);
+  x.fillStyle = "#1b1f26";
+  x.textAlign = "center"; x.textBaseline = "middle";
+  const n = kanji.length;
+  const size = Math.min(210, Math.floor(620 / n) + 60);
+  x.font = '600 ' + size + 'px "Hiragino Mincho ProN","Yu Mincho",serif';
+  const gap = size * 1.12;
+  const top = S / 2 - (gap * (n - 1)) / 2;
+  [...kanji].forEach((c, i) => x.fillText(c, S / 2 - 30, top + gap * i));
+  x.font = '400 34px "Hiragino Sans",sans-serif';
+  x.fillStyle = "#5d6673";
+  x.fillText(kana, S / 2 - 30, S - 120);
+  // 落款のかわりの朱印
+  x.fillStyle = "#d94f2b";
+  x.fillRect(S - 190, S - 210, 92, 92);
+  x.fillStyle = "#fff";
+  x.font = '700 54px "Hiragino Sans",sans-serif';
+  x.fillText("奥", S - 144, S - 162);
+  x.fillStyle = "#9aa3b0";
+  x.font = '400 22px "Hiragino Sans",sans-serif';
+  x.fillText("moretojapan.com", S - 144, S - 90);
+  const a = document.createElement("a");
+  a.download = "kanji-name-" + kanji + ".png";
+  a.href = cv.toDataURL("image/png");
+  a.click();
+}
+
+/* ---------- 画面 ---------- */
+function drawThemes() {
+  document.getElementById("themes").innerHTML = THEMES.map(([k, en, ja]) =>
+    '<button data-t="' + k + '"' + (k === theme ? ' class="on"' : '') + '>' +
+    (lang === "ja" ? ja : en) + '</button>').join("");
+}
+document.getElementById("themes").addEventListener("click", e => {
+  const b = e.target.closest("button"); if (!b) return;
+  theme = b.dataset.t; drawThemes(); show();
+});
+document.getElementById("name").addEventListener("input", e => {
+  document.getElementById("kana").value = toKana(e.target.value);
+});
+document.getElementById("name").addEventListener("keydown", e => {
+  if (e.key === "Enter") { e.preventDefault(); show(); }
+});
+document.getElementById("kana").addEventListener("keydown", e => {
+  if (e.key === "Enter") { e.preventDefault(); show(); }
+});
+document.getElementById("go").addEventListener("click", show);
+document.getElementById("out").addEventListener("click", e => {
+  const b = e.target.closest("button.save"); if (!b) return;
+  const out = document.getElementById("out");
+  png(JSON.parse(out.dataset.names)[+b.dataset.n], out.dataset.kana);
+});
+
+function applyLang() {
+  document.documentElement.lang = lang === "en" ? "en" : "ja";
+  document.querySelectorAll("[data-en]").forEach(el => {
+    const v = el.getAttribute("data-" + lang);
+    if (v != null) el.innerHTML = v;
+  });
+  document.getElementById("lang").textContent = lang === "en" ? "日本語" : "English";
+  try { localStorage.setItem("mj-lang", lang); } catch (e) {}
+  drawThemes();
+  if (document.getElementById("out").innerHTML.trim()) show();
+}
+document.getElementById("lang").addEventListener("click", () => {
+  lang = lang === "en" ? "ja" : "en"; applyLang();
+});
+try { const st = localStorage.getItem("mj-lang"); if (st) lang = st; } catch (e) {}
+applyLang();
+document.getElementById("yr").textContent = new Date().getFullYear();
+</script>
+</body>
+</html>
