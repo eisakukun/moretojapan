@@ -108,6 +108,15 @@
   .btn.s{background:#ffffff14;border:1px solid #ffffff33;color:#eaf2ff}
   .reset{background:none;border:0;color:var(--sub);font-size:13px;cursor:pointer;text-decoration:underline;padding:0}
 
+  @media(max-width:600px){
+    .row{flex-direction:column}
+    input[type=text]{width:100%}
+    button.chk{width:100%;padding:15px 22px;font-size:17px}
+    .shrine{padding:22px 20px}
+    .stamp{width:54px;height:54px;top:14px;right:14px;font-size:11px}
+    .shrine.done .top{padding-right:64px}
+    .shrine.done h3{padding-right:64px}
+  }
   footer{border-top:1px solid var(--line);padding:34px 0 60px;color:var(--sub);font-size:14px;margin-top:50px}
   footer .wrap{display:flex;gap:18px;flex-wrap:wrap;align-items:center}
 </style>
@@ -348,6 +357,7 @@ function render() {
         encodeURIComponent(s.name[1]) + '">' + T("Open in Maps ↗", "地図で開く ↗") + '</a>' +
       '<div class="qa"><p class="q">' + L(s.q) + '</p>' +
         '<div class="row"><input type="text" id="in-' + s.id + '" autocomplete="off" ' +
+          'autocorrect="off" autocapitalize="off" spellcheck="false" enterkeyhint="done" ' +
           'placeholder="' + T("your answer", "こたえ") + '">' +
           '<button class="chk" data-id="' + s.id + '">' + T("Stamp it", "スタンプ") + '</button></div>' +
         '<p class="msg" id="msg-' + s.id + '"></p></div>';
@@ -379,11 +389,21 @@ function render() {
   }
 }
 
+document.addEventListener("keydown", e => {
+  if (e.key !== "Enter") return;
+  const inp = e.target.closest("input[type=text]");
+  if (!inp || !inp.id.startsWith("in-")) return;
+  e.preventDefault();
+  check(inp.id.slice(3));
+});
 document.addEventListener("click", e => {
   const b = e.target.closest("button.chk");
   if (!b) return;
-  const id = b.dataset.id;
+  check(b.dataset.id);
+});
+function check(id) {
   const s = SHRINES.find(x => x.id === id);
+  if (!s) return;
   const v = norm(document.getElementById("in-" + id).value);
   const msg = document.getElementById("msg-" + id);
   if (!v) { msg.className = "msg ng"; msg.textContent = T("Type something first.", "何か入れてください。"); return; }
@@ -394,7 +414,7 @@ document.addEventListener("click", e => {
     msg.textContent = T("Not that. Look again — it is written there.",
                         "違います。もう一度見てください。そこに書いてあります。");
   }
-});
+}
 
 document.getElementById("reset").addEventListener("click", () => {
   got = {}; save(); render();
