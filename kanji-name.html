@@ -437,8 +437,11 @@ function build(kana, th) {
   for (let v = 0; v < 3; v++) {
     const picked = [], used = new Set();
     for (const [mora, cands] of us) {
-      let pool = cands.filter(c => c[3] === th);
-      if (!pool.length) pool = cands;
+      // 選んだテーマの字を先頭に、残りも後ろにつなぐ。
+      // 絞りすぎると候補が1つになって3案が全部同じになるため
+      const hit = cands.filter(c => c[3] === th);
+      const rest = cands.filter(c => c[3] !== th);
+      const pool = hit.concat(rest);
       let c = null;
       for (let k = 0; k < pool.length; k++) {
         const t = pool[(v + k) % pool.length];
