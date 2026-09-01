@@ -213,6 +213,11 @@
   #wait .wtitle { font-size: 17px; color: #f0e7d4; letter-spacing: .08em; font-weight: 600; }
   #wait .wcode { margin-top: 6px; font-size: 13px; color: #9a8f7d; letter-spacing: .06em; }
   #wait .wcode b { color: #e0705a; font-size: 20px; letter-spacing: .3em; }
+  /* 招待QR。目の前にいる相手には、4文字を口で伝えるより読ませたほうが速い */
+  #wait .wqrwrap { margin-top: 11px; animation: floatIn .55s ease both; }
+  #wait .wqr { display: inline-block; padding: 7px; background: #f6efe0; border-radius: 10px; line-height: 0; }
+  #wait .wqr img, #wait .wqr canvas { display: block; width: 128px; height: 128px; }
+  #wait .wqrcap { font-size: 11.5px; color: #9a8f7d; margin-top: 5px; letter-spacing: .02em; }
   #wait .wscore { margin-top: 8px; font-size: 15px; color: #6fe3a6; font-variant-numeric: tabular-nums; font-weight: 700; }
   #wait .whint { margin-top: 4px; font-size: 12px; color: #7e8894; }
   #wait .wfoot { position: absolute; left: 0; right: 0; bottom: calc(16px + env(safe-area-inset-bottom));
@@ -310,6 +315,10 @@
     <div class="wcopywrap">
       <div class="wcopycap" id="wCopyCap">👇 これを相手に送ると たいせん スタート！</div>
       <button class="wbtn wpulse" id="wCopy">📋 しょうたいメッセージをコピー</button>
+    </div>
+    <div class="wqrwrap" id="wQrWrap">
+      <div class="wqr" id="wQr"></div>
+      <div class="wqrcap" id="wQrCap">▲ 相手のカメラでこれを読むと、そのまま入れる</div>
     </div>
     <div class="wscore" id="wScore">スコア 0</div>
     <div class="whint" id="wHint">待ち時間に ミニゲーム！ 👆 玉を手でタップ</div>
@@ -516,7 +525,8 @@
     x.send();
     local = x.status >= 200 && x.status < 400;
   } catch (e) {}
-  var libs = [["./vendor-lib/peerjs.min.js", "https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"]];
+  var libs = [["./vendor-lib/peerjs.min.js", "https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"],
+              ["./vendor-lib/qrcode.min.js", "https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"]];
   for (var i = 0; i < libs.length; i++)
     document.write('<scr' + 'ipt src="' + libs[i][local ? 0 : 1] + '"><\/scr' + 'ipt>');
 })();
@@ -777,6 +787,11 @@ const T = {
   noRoom:   { ja: "その CODE の部屋が見つかりません。もう一度たしかめてね。",
              en: "No room found for that CODE. Please check and retry." },
   connected:{ ja: "つながった！ はじめます…", en: "Connected! Starting…" },
+  connectingN:{ ja: s => "せつぞく中… " + s + "びょう", en: s => "Connecting… " + s + "s" },
+  joinSlow: { ja: "つながりませんでした。相手が「部屋をつくる」の画面を開いたままか、たしかめてね。",
+              en: "Could not connect. Check your friend still has the room screen open." },
+  qrCap:    { ja: "▲ 相手のカメラでこれを読むと、そのまま入れる",
+              en: "▲ Point your friend's camera here — it opens straight into the room" },
   waitHost: { ja: "つながった！ ホストのはじめるのを待っています…",
              en: "Connected! Waiting for the host to start…" },
   disc:     { ja: "あいてが切断しました", en: "Opponent disconnected" },
@@ -884,8 +899,10 @@ function applyLang() {
   $("wTitle").textContent = tt("waitTitle");
   $("wCopy").textContent = tt("copyUrl");
   $("wCopyCap").textContent = tt("copyCap");
+  $("wQrCap").textContent = tt("qrCap");
   $("wHint").textContent = tt("waitHint");
   $("wRules").textContent = tt("waitRules");
+  $("wCancel").textContent = tt("quit");
   $("rulesT").textContent = tt("howtoTitle");
   $("rulesClose").textContent = tt("rulesClose");
   updateVoiceBtn();
@@ -1033,6 +1050,11 @@ function wireConn(c) {
       setTimeout(() => startGame("net"), 700);
     } else {
       say(tt("waitHost"));
+      // ゲストもここで対戦画面に入る。ホストは700ms後に1問目を送ってくるので、
+      // それより先に入っていないと applyRound が空振りして1問目を取りこぼす。
+      // （前は「入室から2.5秒後」に入っていた。その2.5秒が誤判定の元だったので、
+      //   時間ではなく回線が開いた瞬間を合図にする）
+      startGame("net");
     }
   });
 }
@@ -1388,7 +1410,8 @@ $("bSolo").addEventListener("click", async () => {
 
 $("bHost").addEventListener("click", async () => {
   unlockAudioInGesture();
-  try { await openCamera(true); } catch (e) { return say("カメラを開始できません: " + e.message, true); }
+  // カメラを断られても対戦はできる（キーボード操作・顔だしオフになるだけ）。ここで止めない
+  try { await openCamera(true); } catch (e) { say(tt("camNG", e.name)); }
   isHost = true;
   const code = Math.random().toString(36).slice(2, 6).toUpperCase();
   try {
@@ -1397,9 +1420,27 @@ $("bHost").addEventListener("click", async () => {
     // 待機画面（ミニゲーム）へ。あいてが入ったら startGame が呼ばれる
     gate.classList.add("hidden");
     $("wCode").innerHTML = tt("waitCode", code);
+    showRoomQR(code);
     startWaiting();
   } catch (e) { say("Room error: " + (e.message || e), true); }
 });
+
+/* 招待QR。相手のカメラで読ませれば、4文字を打たせずにそのまま部屋へ入れる。
+   ライブラリが無い環境（CDNも落ちた等）では黙って隠す＝コピーの導線は残る。 */
+function showRoomQR(code) {
+  const box = $("wQr"), wrap = $("wQrWrap");
+  if (!box || !wrap) return;
+  box.innerHTML = "";
+  if (typeof QRCode === "undefined") { wrap.style.display = "none"; return; }
+  wrap.style.display = "";
+  try {
+    new QRCode(box, {
+      text: roomUrl(code), width: 128, height: 128,
+      colorDark: "#1a1207", colorLight: "#f6efe0",
+      correctLevel: QRCode.CorrectLevel.M
+    });
+  } catch (e) { wrap.style.display = "none"; }
+}
 
 async function copyInvite() {
   const text = tt("inviteMsg", roomUrl(roomCode), roomCode);
@@ -1541,21 +1582,66 @@ $("bJoin").addEventListener("click", async () => {
   unlockAudioInGesture();
   const code = $("code").value.trim().toUpperCase();
   if (code.length !== 4) return say(tt("code4"), true);
-  try { await openCamera(true); } catch (e) { return say("Camera error: " + e.message, true); }
+  // 同上。カメラが無いことを入室の条件にしない
+  try { await openCamera(true); } catch (e) { say(tt("camNG", e.name)); }
   isHost = false;
   try {
     await initPeer(null);
-    say(tt("connecting"));
-    wireConn(peer.connect(PREFIX + code, { reliable: true }));
-    // 顔出しに関わらず必ず接続（会話の音声もこの回線で流れる）
-    setTimeout(() => callPeer(PREFIX + code), 900);
-    setTimeout(() => {
-      if (playing) return;
-      if (conn && conn.open) startGame("net");
-      else say(tt("noRoom"), true);
-    }, 2500);
+    joinRoom(PREFIX + code);
   } catch (e) { say("Join error: " + (e.message || e), true); }
 });
+
+/* ================= 部屋に入る =================
+   前は「2.5秒たって開いていなければ部屋が無い」と決めつけていた。
+   これが『そんな部屋はない』の正体で、相手はちゃんと待っているのに出ていた。
+   4G・海外・NAT越えだと、つながるまで3〜8秒かかるのがふつうで、2.5秒はただ短すぎた。
+
+   PeerJS は、そのIDが本当に登録されていないときだけ peer-unavailable を投げる。
+   これだけが「部屋が無い」の確かな合図なので、それを使う。
+   時間切れは「部屋が無い」ではなく時間切れとして、別の文言を出す。 */
+const JOIN_TRIES = 3;        // 部屋を作った直後はブローカーに行き渡っておらず、空振りすることがある
+const JOIN_WAIT_MS = 20000;  // 全体でこれだけ待つ
+const NOROOM_GRACE_MS = 5000; // 「部屋が無い」と言われてから、念のため待つ時間
+
+function joinRoom(fullId) {
+  let done = false, tries = 0, unavailAt = 0;
+  const t0 = performance.now();
+  const timers = [];
+  const later = (fn, ms) => { timers.push(setTimeout(fn, ms)); };
+  const stop = () => { done = true; clearInterval(tick); timers.forEach(clearTimeout); };
+
+  /* peer-unavailable = そのIDは登録されていない、という PeerJS からの返事。
+     ただし一度これを受けたあとの peer.connect() は無反応になることがあり、
+     「エラーが何回来たか」では数えられない。受けた時刻を覚えておいて、
+     そこから NOROOM_GRACE_MS 開かなければ部屋は無い、と決める。 */
+  peer.on("error", e => {
+    if (done || !e || e.type !== "peer-unavailable") return;
+    if (!unavailAt) unavailAt = performance.now();
+    // 部屋を作った直後はブローカーに行き渡っていないことがあるので、数回だけ入れ直す
+    if (++tries < JOIN_TRIES) later(() => { if (!done) attempt(); }, 1200);
+  });
+
+  function attempt() {
+    wireConn(peer.connect(fullId, { reliable: true }));
+    // 顔出しに関わらず必ず接続（会話の音声もこの回線で流れる）
+    later(() => { if (!done) callPeer(fullId); }, 900);
+  }
+
+  // つながるまで何秒たったかを出す。黙って固まるのが一番こわい
+  const tick = setInterval(() => {
+    if (done) return;
+    if (playing || (conn && conn.open)) { stop(); return; }   // つながった。ここが最優先
+    const ms = performance.now() - t0;
+    if (unavailAt && performance.now() - unavailAt >= NOROOM_GRACE_MS) {
+      stop(); say(tt("noRoom"), true); return;                 // CODEが違う／部屋が閉じた
+    }
+    if (ms >= JOIN_WAIT_MS) { stop(); say(tt("joinSlow"), true); return; }  // ただの時間切れ
+    say(tt("connectingN", Math.round(ms / 1000)));
+  }, 1000);
+
+  say(tt("connecting"));
+  attempt();
+}
 
 /* キーボード操作 */
 addEventListener("keydown", e => {
