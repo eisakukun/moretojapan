@@ -33,6 +33,30 @@
   h1{font-size:clamp(28px,4.4vw,42px);line-height:1.25;margin:12px 0 16px}
   .lead{font-size:17px;color:var(--sub);margin:0 0 8px}
 
+  /* ---- 上の図。何が起きるかを説明ではなく「字」で見せる（写真は使わない） ---- */
+  .flow{background:var(--card);border:1px solid var(--line);border-radius:20px;
+    padding:22px 24px 18px;margin:22px 0 0;display:flex;align-items:flex-end;
+    justify-content:center;gap:16px;flex-wrap:wrap}
+  .fst{text-align:center}
+  .fst u{display:block;text-decoration:none;font-size:10px;font-weight:800;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--sub);margin-bottom:8px}
+  .fbox{border:1px dashed #cfd8e6;border-radius:12px;background:#fbfcfe;padding:11px 18px;
+    font-size:20px;line-height:1.5;color:var(--sub);min-width:122px}
+  .fbox.k{border-style:solid;color:var(--ink);font-weight:600;letter-spacing:.1em}
+  .farr{color:var(--aka);font-weight:800;font-size:18px;padding-bottom:13px}
+  .ftiles{display:flex;gap:8px}
+  .ftiles i{font-style:normal;display:grid;place-items:center;width:68px;padding:8px 0 7px;
+    border-radius:12px;background:var(--ai);color:#fff}
+  .ftiles i b{font-family:"Hiragino Mincho ProN","Yu Mincho",serif;font-size:32px;font-weight:600;line-height:1.15}
+  .ftiles i s{text-decoration:none;font-size:10px;line-height:1.4;color:#c2d1e8;margin-top:2px}
+  .fnote{width:100%;text-align:center;color:var(--sub);font-size:13.5px;line-height:1.6;margin-top:10px}
+  @media(max-width:640px){
+    .flow{gap:10px;padding:18px 16px 16px}
+    .fst{width:100%}
+    .farr{padding:0;transform:rotate(90deg)}
+    .ftiles{justify-content:center}
+  }
+
   .box{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:26px;margin:26px 0}
   label{display:block;font-size:13px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--sub);margin-bottom:8px}
   input[type=text]{font:inherit;font-size:17px;padding:14px 16px;border:1px solid var(--line);border-radius:12px;background:#fff;width:100%}
@@ -87,6 +111,29 @@
     <p class="lead" data-en="Most generators match the sound and stop there. That is how people end up with 死 (death) or 苦 (suffering) in their name — sometimes tattooed. Here every character is chosen by hand, and you are told what each one means before you use it anywhere."
        data-ja="ほとんどの変換は音だけ合わせて終わります。だから名前に「死」や「苦」が入ったまま、彫ってしまう人が出ます。ここでは一字ずつ選んであり、使う前に意味が全部わかります。">
       Most generators match the sound and stop there.</p>
+  </div>
+
+  <div class="flow">
+    <div class="fst">
+      <u data-en="You type" data-ja="打つ">You type</u>
+      <div class="fbox">Maria</div>
+    </div>
+    <div class="farr">&rarr;</div>
+    <div class="fst">
+      <u data-en="You fix the sound" data-ja="音を直す">You fix the sound</u>
+      <div class="fbox k">マリア</div>
+    </div>
+    <div class="farr">&rarr;</div>
+    <div class="fst">
+      <u data-en="You get it — with meanings" data-ja="意味つきで出る">You get it — with meanings</u>
+      <div class="ftiles">
+        <i><b>真</b><s>truth</s></i>
+        <i><b>理</b><s>reason</s></i>
+        <i><b>愛</b><s>love</s></i>
+      </div>
+    </div>
+    <div class="fnote" data-en="Three versions of your name, every character explained — and you can save it as an image."
+         data-ja="名前は3案出て、一字ずつ意味がつきます。そのまま画像で持ち帰れます。">Three versions of your name, every character explained — and you can save it as an image.</div>
   </div>
 
   <div class="box">

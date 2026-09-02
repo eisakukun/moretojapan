@@ -77,6 +77,30 @@
     background:linear-gradient(transparent,#0b1220 55%);font-size:14px;text-align:center}
   @media(prefers-reduced-motion:reduce){ .drop b{animation:none;opacity:.5} }
 
+
+  /* ---- 名前を漢字に：トップの帯。何が起きるかを説明ではなく「字」で見せる ---- */
+  .nameStrip{display:block;text-decoration:none;color:inherit;margin:22px 0 0}
+  .nsInner{background:var(--card);border:1px solid var(--line);border-radius:18px;
+    padding:16px 20px;display:flex;align-items:center;gap:24px;flex-wrap:wrap;transition:.15s}
+  .nameStrip:hover .nsInner{border-color:var(--ai);box-shadow:0 8px 26px #22406e14}
+  .nsTxt{flex:1 1 280px;min-width:230px}
+  .nsTag{color:var(--aka);font-weight:800;font-size:11px;letter-spacing:.16em;text-transform:uppercase}
+  .nsTtl{font-weight:700;font-size:17px;margin:3px 0 3px;line-height:1.4}
+  .nsSub{color:var(--sub);font-size:13.5px;line-height:1.6}
+  .nsFlow{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+  .nsChip{border:1px dashed #c9d3e2;border-radius:10px;padding:9px 13px;color:var(--sub);
+    font-size:15px;background:#fbfcfe;white-space:nowrap}
+  .nsChip.kana{border-style:solid;border-color:#cfd8e6;color:var(--ink);font-weight:600}
+  .nsAr{color:var(--aka);font-weight:800;font-size:15px}
+  .nsGrp{display:flex;align-items:center;gap:9px}
+  .nsK{display:flex;gap:6px}
+  .nsK i{font-style:normal;display:grid;place-items:center;width:58px;
+    border-radius:10px;background:var(--ai);color:#fff;padding:7px 0 6px}
+  .nsK i b{font-size:26px;font-weight:600;line-height:1.15}
+  .nsK i s{text-decoration:none;font-size:9px;color:#bcccE6;letter-spacing:.01em;margin-top:2px}
+  .nameStrip + .hero{padding-top:44px}
+  @media(max-width:520px){ .nsInner{padding:16px} .nsChip{padding:7px 11px;font-size:14px} .nsK i{width:52px} }
+
   /* ---- sections ---- */
   section{padding:64px 0;border-top:1px solid var(--line)}
   h2{font-size:clamp(24px,3.4vw,34px);margin:0 0 10px;letter-spacing:-.01em}
@@ -158,6 +182,29 @@
 
 <!-- ===================== HERO ===================== -->
 <div class="wrap">
+    <a class="nameStrip" href="kanji-name.html">
+      <div class="nsInner">
+        <div class="nsTxt">
+          <div class="nsTag" data-en="Free · no sign-up" data-ja="無料 ・ 登録なし">Free · no sign-up</div>
+          <div class="nsTtl" data-en="Your name in kanji — and what every character means."
+               data-ja="あなたの名前を漢字に。一字ずつ、意味まで出ます。">Your name in kanji — and what every character means.</div>
+          <div class="nsSub" data-en="Every character was picked by hand, so nothing here means death or suffering. Take it home as an image. &rarr;"
+               data-ja="使う漢字は全部手で選んであるので、死・苦のような字は出ません。画像で持ち帰れます。 &rarr;">Every character was picked by hand, so nothing here means death or suffering. Take it home as an image. &rarr;</div>
+        </div>
+        <div class="nsFlow" aria-hidden="true">
+          <span class="nsChip">Maria</span>
+          <span class="nsAr">&rarr;</span>
+          <span class="nsChip kana">マリア</span>
+          <span class="nsGrp"><span class="nsAr">&rarr;</span>
+          <span class="nsK">
+            <i><b>真</b><s>truth</s></i>
+            <i><b>理</b><s>reason</s></i>
+            <i><b>愛</b><s>love</s></i>
+          </span></span>
+        </div>
+      </div>
+    </a>
+
   <div class="hero">
     <div>
       <div class="kicker" data-en="Japanese lessons · online &amp; in person"
