@@ -80,9 +80,10 @@
   .subTools{display:flex;gap:14px;align-items:center;padding:8px 0 0;font-size:13px;
     color:var(--sub);flex-wrap:wrap}
   .subTools button{border:0;background:transparent;font:inherit;font-size:13px;color:var(--sub);
-    cursor:pointer;padding:2px 0;border-bottom:1.5px solid transparent}
+    cursor:pointer;padding:2px 0;border-bottom:1.5px solid transparent;white-space:nowrap}
   .subTools button.on{color:var(--ink);font-weight:700;border-bottom-color:var(--aka)}
-  .subTools .gp{display:flex;gap:10px;align-items:center}
+  .subTools .gp{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+  @media(max-width:700px){ .subTools .gp{margin-left:0 !important} }
 
   main{padding:20px 0 70px;min-height:50vh}
   .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:16px}
@@ -178,6 +179,15 @@
   .pick button.on{border-color:var(--ai);background:#eef2f9;color:var(--ai)}
   .pick button.on[data-k=free]{border-color:var(--free);background:#f3ecfb;color:var(--free)}
   .pick small{display:block;font-weight:400;font-size:11.5px;color:var(--sub);margin-top:2px}
+  .pickLang{display:flex;gap:7px;flex-wrap:wrap}
+  .pickLang button{border:1.5px solid var(--line);background:#fff;border-radius:999px;padding:7px 14px;
+    font:inherit;font-size:14px;cursor:pointer;color:var(--sub)}
+  .pickLang button.on{border-color:var(--ai);background:#eef2f9;color:var(--ai);font-weight:700}
+  .pickLang button.on::before{content:"✓ ";font-size:12px}
+  .spk{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+  .spk i{font-style:normal;font-size:11.5px;border:1px solid var(--line);border-radius:999px;
+    padding:1px 8px;color:var(--sub);background:#fff;white-space:nowrap}
+  .itM .spk i{background:#f7f5f1}
   .drop{border:1.5px dashed #cfd8e6;border-radius:14px;padding:16px;text-align:center;
     color:var(--sub);font-size:14px;cursor:pointer;background:#fff}
   .drop:hover{border-color:var(--ai);color:var(--ai)}
@@ -217,6 +227,9 @@
         <option value="ja">日本語</option>
         <option value="zh">中文</option>
         <option value="vi">Tiếng Việt</option>
+        <option value="ko">한국어</option>
+        <option value="tl">Tagalog</option>
+        <option value="ne">नेपाली</option>
       </select>
     </nav>
   </div>
@@ -257,6 +270,7 @@
       <div class="gp" style="margin-left:auto">
         <button data-av="all" class="on" data-en="Everything" data-ja="ぜんぶ">Everything</button>
         <button data-av="open" data-en="Still available" data-ja="まだある物だけ">Still available</button>
+        <select id="spkFilter" class="lang" style="margin-left:6px"></select>
       </div>
     </div>
   </div>
@@ -336,6 +350,12 @@
       </div>
     </div>
 
+    <label data-en="Which languages can you actually talk in?" data-ja="あなたが話せることば">Which languages can you actually talk in?</label>
+    <div class="pickLang" id="fLangs"></div>
+    <p class="note" style="margin-top:8px"
+       data-en="Pick every language you could hold a short conversation in at the handover. &ldquo;A little&rdquo; counts. This is the thing people are most afraid of when they meet a stranger."
+       data-ja="受け渡しのときに短い会話ができることばを全部えらんでください。「少しだけ」でも入れてかまいません。知らない人と会うとき、みんながいちばん不安なのはここです。">Pick every language you could hold a short conversation in at the handover. &ldquo;A little&rdquo; counts. This is the thing people are most afraid of when they meet a stranger.</p>
+
     <label data-en="Anything else worth knowing" data-ja="そのほか、書いておくこと">Anything else worth knowing</label>
     <textarea id="fBody" maxlength="4000"
       data-ph-en="Size, age, what is wrong with it, which station, when you are free. Saying the dent is there is faster than being asked."
@@ -363,7 +383,7 @@
   </div>
 </div>
 
-<script src="/i18n.js?v=1"></script>
+<script src="/i18n.js?v=2"></script>
 <script>
 /* =========================================================================
    More to Japan — ゆずります・さがしています
@@ -404,6 +424,12 @@ const EXAMPLES = [
     ja:"N3の教材が棚半分。12月に本当に受ける人にあげます。" }
 ];
 
+const LANGS = (window.MTJ_LANGS || [{id:"en",name:"English"},{id:"ja",name:"日本語"}]);
+function langName(id) {
+  const l = LANGS.filter(function (x) { return x.id === id; })[0];
+  return l ? l.name : id;
+}
+
 const $  = function (id) { return document.getElementById(id); };
 const esc = function (s) {
   return String(s == null ? "" : s).replace(/[&<>"]/g, function (c) {
@@ -414,13 +440,23 @@ const esc = function (s) {
    訳が無ければ英語のまま出す。半端な機械訳より、そのほうが親切。 */
 const TR = (window.MTJ_TR || {});
 /* HTMLの属性は読み出した時点で &mdash; が — にほどけている。
-   そのままだと鍵が合わないので、ほどいた鍵の控えも作っておく。 */
-const TRD = {};
-(function () {
+   そのままだと鍵が合わないので、ほどいた鍵の控えも作る。
+   訳は言語ごとに後から読み込まれるので、控えも読み込むたびに作り直す。 */
+let TRD = {};
+function buildTRD_() {
+  TRD = {};
   const d = document.createElement("textarea");
   Object.keys(TR).forEach(function (k) { d.innerHTML = k; TRD[d.value] = TR[k]; });
-})();
+}
+buildTRD_();
 function tr_(en) { return TR[en] || TRD[en]; }
+
+/** その言語の訳を取りに行ってから描き直す。英語と日本語はページの中にあるので何も読まない */
+async function setLang(l) {
+  lang = l;
+  if (window.MTJ_LOAD) { await window.MTJ_LOAD(l); buildTRD_(); }
+  applyLang();
+}
 /* 実体参照をほどく。innerHTML と違って placeholder は自分でほどかないといけない */
 const unentBox_ = document.createElement("textarea");
 function unent_(s) {
@@ -437,10 +473,12 @@ function T(en, ja) {
 
 let lang  = "en";
 let items = [];
-let state = { kind:"", cat:"", q:"", sort:"new", av:"all" };
+let state = { kind:"", cat:"", q:"", sort:"new", av:"all", spk:"" };
 let apiDown = false, loaded = false;
 let pickKind = "free";
 let shots = [];          // 送る前の写真（小さくした dataURL）
+let myLangs = [];        // 出す人が話せることば
+let langsTouched = false;   // 自分でさわったか。さわるまでは画面の言語について回る
 
 /* ---------------------------------------------------------------- 端末の印 */
 function dev() {
@@ -533,6 +571,7 @@ function renderList() {
   if (state.kind) ls = ls.filter(function (x) { return x.kind === state.kind; });
   if (state.cat)  ls = ls.filter(function (x) { return x.cat === state.cat; });
   if (state.av === "open") ls = ls.filter(function (x) { return !x.sold; });
+  if (state.spk) ls = ls.filter(function (x) { return (x.langs || []).indexOf(state.spk) >= 0; });
   if (state.q) {
     const w = state.q.toLowerCase().split(/\s+/).filter(Boolean);
     ls = ls.filter(function (x) {
@@ -573,6 +612,10 @@ function card(it) {
     +   '<p class="itT">' + esc(it.title) + "</p>"
     +   '<div class="itM"><span>📍 ' + esc(it.area) + "</span><span>" + ago(it.ts) + "</span>"
     +     (it.comments ? "<span>💬 " + it.comments + "</span>" : "") + "</div>"
+    +   (it.langs && it.langs.length
+          ? '<div class="itM spk">🗣' + it.langs.map(function (l) {
+              return "<i>" + esc(langName(l)) + "</i>"; }).join("") + "</div>"
+          : "")
     + "</div></div>";
 }
 
@@ -624,6 +667,11 @@ async function renderDetail() {
     +   '<div class="facts">'
     +     "<div><b>" + T("Where", "場所") + "</b><span>📍 " + esc(it.area) + "</span></div>"
     +     "<div><b>" + T("Handover", "受け渡し") + "</b><span>" + deliverTxt(it.deliver) + "</span></div>"
+    +     (it.langs && it.langs.length
+            ? "<div><b>" + T("Speaks", "話せることば") + '</b><span class="spk">'
+              + it.langs.map(function (l) { return "<i>" + esc(langName(l)) + "</i>"; }).join("")
+              + "</span></div>"
+            : "")
     +     "<div><b>" + T("Kind", "種類") + "</b><span>" + c.ic + " " + esc(T(c.en, c.ja)) + "</span></div>"
     +     "<div><b>" + T("Put up by", "出した人") + "</b><span>"
     +       esc(it.nick || T("Anonymous", "名無し")) + " · " + ago(it.ts) + "</span></div>"
@@ -719,6 +767,7 @@ function errText(r) {
     "short-title": T("Say what it is, in a few words.", "何なのか、ひとこと書いてください。"),
     "short-body":  T("A little more detail, please.", "もう少しだけ、くわしく。"),
     "no-area":     T("The place is the whole point here — ward or city, please.", "場所がこの掲示板の肝です。区か市まで入れてください。"),
+    "no-langs":    T("Pick at least one language you can talk in.", "話せることばを1つ以上えらんでください。"),
     "toofast":     T("Just a moment — one at a time.", "少しだけ待ってください。続けては出せません。"),
     "spam":        T("That looked like spam. Try fewer links.", "宣伝のように見えました。リンクを減らしてみてください。"),
     "notready":    T("Not open yet. Please come back soon.", "まだ開いていません。少し待ってください。"),
@@ -778,9 +827,37 @@ function openSheet() {
   $("sheet").classList.add("on");
   $("fMsg").textContent = "";
   drawKindPick();
+  drawLangPick();
   setTimeout(function () { $("fTitle").focus(); }, 50);
 }
 function closeSheet() { $("sheet").classList.remove("on"); }
+
+/* 話せることばのえらび方。いま見ている言語は最初から入れておく
+   （その言語で読んでいる人は、まずその言語が話せる） */
+function drawLangPick() {
+  if (!langsTouched) myLangs = [lang];   // さわるまでは、いま読んでいる言語を入れておく
+  $("fLangs").innerHTML = LANGS.map(function (l) {
+    return '<button type="button" data-l="' + l.id + '"'
+      + (myLangs.indexOf(l.id) >= 0 ? ' class="on"' : "") + ">" + esc(l.name) + "</button>";
+  }).join("");
+  Array.prototype.forEach.call($("fLangs").querySelectorAll("[data-l]"), function (b) {
+    b.addEventListener("click", function () {
+      langsTouched = true;
+      const i = myLangs.indexOf(b.dataset.l);
+      if (i >= 0) myLangs.splice(i, 1); else myLangs.push(b.dataset.l);
+      drawLangPick();
+    });
+  });
+}
+
+function drawSpkFilter() {
+  const sel = $("spkFilter");
+  sel.innerHTML = '<option value="">🗣 ' + T("Any language", "ことばは問わない") + "</option>"
+    + LANGS.map(function (l) {
+        return '<option value="' + l.id + '">🗣 ' + esc(l.name) + "</option>";
+      }).join("");
+  sel.value = state.spk;
+}
 
 function drawKindPick() {
   $("kindPick").innerHTML = KINDS.map(function (k) {
@@ -818,12 +895,14 @@ async function send() {
     deliver: $("fDeliver").value,
     nick:  $("fNick").value.trim(),
     mail:  $("fMail").value.trim(),
+    langs: myLangs,
     photos: pickKind === "want" ? [] : shots,
     hp:    $("fHp").value
   };
   if (b.title.length < 3) { $("fMsg").textContent = T("Say what it is.", "何なのか書いてください。"); return; }
   if (b.body.length  < 5) { $("fMsg").textContent = T("A bit more detail, please.", "もう少しだけ、くわしく。"); return; }
   if (!b.area)            { $("fMsg").textContent = T("Where is it? Ward or city.", "場所を入れてください（区・市まで）。"); return; }
+  if (!b.langs.length)    { $("fMsg").textContent = T("Pick at least one language you can talk in.", "話せることばを1つ以上えらんでください。"); return; }
 
   $("fSend").disabled = true;
   $("fMsg").textContent = shots.length
@@ -902,13 +981,10 @@ function applyLang() {
   });
   $("lang").value = lang;
   try { localStorage.setItem("mj-lang", lang); } catch (e) {}
-  buildTools(); drawKindPick(); drawThumbs(); render();
+  buildTools(); drawKindPick(); drawLangPick(); drawSpkFilter(); drawThumbs(); render();
 }
 
-$("lang").addEventListener("change", function () {
-  lang = $("lang").value;
-  applyLang();
-});
+$("lang").addEventListener("change", function () { setLang($("lang").value); });
 $("postBtn").addEventListener("click", openSheet);
 $("fCancel").addEventListener("click", closeSheet);
 $("fSend").addEventListener("click", send);
@@ -939,6 +1015,10 @@ Array.prototype.forEach.call(document.querySelectorAll("[data-av]"), function (b
     renderList();
   });
 });
+$("spkFilter").addEventListener("change", function () {
+  state.spk = $("spkFilter").value;
+  renderList();
+});
 window.addEventListener("hashchange", render);
 document.addEventListener("keydown", function (e) { if (e.key === "Escape") closeSheet(); });
 
@@ -948,12 +1028,11 @@ document.addEventListener("keydown", function (e) { if (e.key === "Escape") clos
   try { saved = localStorage.getItem("mj-lang"); } catch (e) {}
   if (saved) { lang = saved; return; }
   const n = (navigator.languages && navigator.languages[0] || navigator.language || "en").toLowerCase();
-  lang = n.indexOf("ja") === 0 ? "ja"
-       : n.indexOf("zh") === 0 ? "zh"
-       : n.indexOf("vi") === 0 ? "vi" : "en";
+  const map = { ja:"ja", zh:"zh", vi:"vi", ko:"ko", ne:"ne", tl:"tl", fil:"tl" };
+  lang = map[n.split("-")[0]] || (n.indexOf("fil") === 0 ? "tl" : "en");
 })();
 $("yr").textContent = new Date().getFullYear();
-applyLang();
+setLang(lang);
 load(false);
 </script>
 </body>

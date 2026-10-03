@@ -25,9 +25,10 @@ const COLS = {
   votes:   ['ts','key'],
   // ゆずります・さがしています（ジモティーにあたるほう）
   items:   ['id','ts','updated','kind','title','body','price','nego','cat','area','deliver',
-            'photos','nick','dev','mail','status','comments','flags']
+            'photos','langs','nick','dev','mail','status','comments','flags']
 };
 
+const OK_LANGS = ['en','ja','zh','vi','ko','tl','ne'];   // 話せることばに書ける言語
 const PROP_PHOTOS = 'PHOTO_FOLDER_ID';   // 写真の置き場（setup が作る）
 const MAX_PHOTOS  = 3;
 const ITEM_DAYS   = 60;                  // これより古いものは一覧から落とす
@@ -38,7 +39,12 @@ function setup() {
   const p = PropertiesService.getScriptProperties();
   let id = p.getProperty(PROP_SHEET);
   if (id) {
-    try { SpreadsheetApp.openById(id); return 'already: ' + ssUrl_(id); } catch (err) { id = null; }
+    try {
+      SpreadsheetApp.openById(id);
+      photoFolder_();
+      const fixed = fixCols_();
+      return 'already: ' + ssUrl_(id) + (fixed.length ? ' / 列を直した: ' + fixed.join(',') : '');
+    } catch (err) { id = null; }
   }
   const ss = SpreadsheetApp.create('More to Japan 掲示板データ');
   Object.keys(COLS).forEach(function (name, i) {
@@ -59,6 +65,29 @@ function photoFolder_() {
   const f = DriveApp.createFolder('More to Japan 掲示板の写真');
   p.setProperty(PROP_PHOTOS, f.getId());
   return f;
+}
+
+/** 列を足したあと、シートの見出しを今の形に直す。setup を ▶ したときに走る。
+ *  列の中に新しいものが割り込むと、人がシートを見たときに見出しがずれて読めなくなるので。 */
+function fixCols_() {
+  const out = [];
+  Object.keys(COLS).forEach(function (name) {
+    const sh = sheet_(name);
+    const want = COLS[name];
+    const have = sh.getRange(1, 1, 1, Math.max(1, sh.getLastColumn())).getValues()[0]
+                   .map(function (v) { return String(v); });
+    if (have.join('|') === want.join('|')) return;
+    // 足りない列を、あるべき位置に空で差し込む
+    want.forEach(function (c, i) {
+      if (have[i] !== c && have.indexOf(c) < 0) {
+        sh.insertColumnBefore(i + 1);
+        have.splice(i, 0, c);
+      }
+    });
+    sh.getRange(1, 1, 1, want.length).setValues([want]).setFontWeight('bold');
+    out.push(name);
+  });
+  return out;
 }
 
 function ssUrl_(id) { return 'https://docs.google.com/spreadsheets/d/' + id + '/edit'; }
@@ -382,6 +411,7 @@ function items_(q) {
         price: Number(it.price) || 0, nego: !!it.nego,
         cat: it.cat, area: it.area, deliver: it.deliver,
         photos: String(it.photos || '').split(',').filter(Boolean),
+        langs: String(it.langs || '').split(',').filter(Boolean),
         nick: it.nick, comments: Number(it.comments) || 0,
         sold: it.status === 'sold'
       };
@@ -407,6 +437,7 @@ function oneItem_(id) {
       id: it.id, ts: String(it.ts), kind: it.kind, title: it.title, body: it.body,
       price: Number(it.price) || 0, nego: !!it.nego, cat: it.cat, area: it.area,
       deliver: it.deliver, photos: String(it.photos || '').split(',').filter(Boolean),
+      langs: String(it.langs || '').split(',').filter(Boolean),
       nick: it.nick, sold: it.status === 'sold'
       // mail はここには絶対に入れない
     },
@@ -426,6 +457,9 @@ function newItem_(b) {
   if (title.length < 3) return { ok: false, err: 'short-title' };
   if (body.length  < 5) return { ok: false, err: 'short-body' };
   if (!area)            return { ok: false, err: 'no-area' };
+  // 話せることばは必ず1つ。会って渡すのだから、通じるかどうかが先に分かっていないと意味がない
+  const langs = (b.langs || []).filter(function (x) { return OK_LANGS.indexOf(x) >= 0; });
+  if (!langs.length) return { ok: false, err: 'no-langs' };
   const bad = spam_(title + '\n' + body);
   if (bad) return { ok: false, err: 'spam', why: bad };
 
@@ -439,7 +473,8 @@ function newItem_(b) {
     id: id, ts: now, updated: now, kind: kind, title: title, body: body,
     price: price, nego: b.nego ? 1 : '', cat: clean_(b.cat, 24) || 'misc',
     area: area, deliver: clean_(b.deliver, 16) || 'pickup',
-    photos: photos.join(','), nick: clean_(b.nick, 24), dev: dev,
+    photos: photos.join(','), langs: langs.join(','),
+    nick: clean_(b.nick, 24), dev: dev,
     mail: validMail_(b.mail), status: 'open', comments: 0, flags: 0
   });
   CacheService.getScriptCache().remove('items');
