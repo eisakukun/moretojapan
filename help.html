@@ -739,7 +739,9 @@ async function sendPost() {
   $("fSend").disabled = false;
   if (!r.ok) { $("fMsg").textContent = errText(r); return; }
   markMine(r.id);
+  $("fMsg").textContent = "";
   $("fTitle").value = ""; $("fBody").value = ""; $("fArea").value = "";
+  $("similar").classList.remove("on");
   closeSheet();
   await load(true);
   location.hash = "#p/" + r.id;
