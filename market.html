@@ -30,15 +30,17 @@
     border-bottom:1px solid var(--line)}
   nav{display:flex;align-items:center;gap:20px;height:64px}
   .logo{font-weight:800;font-size:19px;text-decoration:none;color:var(--ink);
-    display:flex;align-items:center;gap:9px}
+    display:flex;align-items:center;gap:9px;white-space:nowrap}
   .logo i{display:grid;place-items:center;width:30px;height:30px;border-radius:9px;
     background:var(--ai);color:#fff;font-style:normal;font-size:16px;font-weight:700}
   nav .sp{flex:1}
-  nav a.nl{color:var(--sub);text-decoration:none;font-size:15px}
+  nav a.nl{color:var(--sub);text-decoration:none;font-size:15px;white-space:nowrap}
   nav a.nl:hover{color:var(--ink)}
-  @media(max-width:720px){ nav a.nl{display:none} }
-  .lang{border:1px solid var(--line);background:#fff;border-radius:999px;padding:6px 14px;
-    font:inherit;font-size:13px;cursor:pointer;color:var(--sub)}
+  @media(max-width:880px){ nav a.nl{display:none} }
+  .lang{flex:none;border:1px solid var(--line);background:#fff;border-radius:999px;padding:6px 30px 6px 14px;
+    font:inherit;font-size:13px;cursor:pointer;color:var(--sub);-webkit-appearance:none;appearance:none;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%235d6673' stroke-width='1.4'/%3E%3C/svg%3E");
+    background-repeat:no-repeat;background-position:right 12px center;background-size:9px}
   .lang:hover{border-color:var(--ai);color:var(--ai)}
 
   .btn{display:inline-block;text-decoration:none;font-weight:700;border-radius:12px;
@@ -210,7 +212,12 @@
       <a class="nl" href="/why.html" data-en="Why" data-ja="なぜ">Why</a>
       <a class="nl" href="/shrine-hunt.html" data-en="Shrine hunt" data-ja="神社さがし">Shrine hunt</a>
       <a class="nl" href="/#how" data-en="Lessons" data-ja="レッスン">Lessons</a>
-      <button class="lang" id="lang">日本語</button>
+      <select class="lang" id="lang" aria-label="Language">
+        <option value="en">English</option>
+        <option value="ja">日本語</option>
+        <option value="zh">中文</option>
+        <option value="vi">Tiếng Việt</option>
+      </select>
     </nav>
   </div>
 </header>
@@ -356,6 +363,7 @@
   </div>
 </div>
 
+<script src="/i18n.js?v=1"></script>
 <script>
 /* =========================================================================
    More to Japan — ゆずります・さがしています
@@ -402,7 +410,30 @@ const esc = function (s) {
     return ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;" })[c];
   });
 };
-function T(en, ja) { return lang === "en" ? en : ja; }
+/* 英語の原文を鍵にして i18n.js から中文・Tiếng Việt を引く。
+   訳が無ければ英語のまま出す。半端な機械訳より、そのほうが親切。 */
+const TR = (window.MTJ_TR || {});
+/* HTMLの属性は読み出した時点で &mdash; が — にほどけている。
+   そのままだと鍵が合わないので、ほどいた鍵の控えも作っておく。 */
+const TRD = {};
+(function () {
+  const d = document.createElement("textarea");
+  Object.keys(TR).forEach(function (k) { d.innerHTML = k; TRD[d.value] = TR[k]; });
+})();
+function tr_(en) { return TR[en] || TRD[en]; }
+/* 実体参照をほどく。innerHTML と違って placeholder は自分でほどかないといけない */
+const unentBox_ = document.createElement("textarea");
+function unent_(s) {
+  if (String(s).indexOf("&") < 0) return s;
+  unentBox_.innerHTML = s;
+  return unentBox_.value;
+}
+function T(en, ja) {
+  if (lang === "ja") return ja;
+  if (lang === "en") return en;
+  const t = tr_(en);
+  return (t && t[lang]) || en;
+}
 
 let lang  = "en";
 let items = [];
@@ -458,10 +489,10 @@ function ago(iso) {
   const t = new Date(iso).getTime();
   if (!t) return "";
   const s = Math.max(1, Math.floor((Date.now() - t) / 1000));
-  if (s < 3600)    return lang === "en" ? "just now" : "たった今";
-  if (s < 86400)   return Math.floor(s/3600)  + (lang==="en" ? "h ago" : "時間前");
-  if (s < 2592000) return Math.floor(s/86400) + (lang==="en" ? "d ago" : "日前");
-  return Math.floor(s/2592000) + (lang==="en" ? "mo ago" : "か月前");
+  if (s < 3600)    return T("just now", "たった今");
+  if (s < 86400)   return Math.floor(s/3600)  + T("h ago",  "時間前");
+  if (s < 2592000) return Math.floor(s/86400) + T("d ago",  "日前");
+  return Math.floor(s/2592000) + T("mo ago", "か月前");
 }
 function yen(n) { return "¥" + Number(n).toLocaleString("ja-JP"); }
 function catOf(id) { return CATS.filter(function (c) { return c.id === id; })[0] || CATS[CATS.length-1]; }
@@ -858,20 +889,24 @@ function buildTools() {
 function applyLang() {
   document.documentElement.lang = lang;
   document.querySelectorAll("[data-en]").forEach(function (el) {
-    const v = el.getAttribute("data-" + lang);
-    if (v != null) el.innerHTML = v;
+    const en = el.getAttribute("data-en");
+    let v = el.getAttribute("data-" + lang);
+    if (v == null) { const t = tr_(en); v = (t && t[lang]) || en; }
+    el.innerHTML = v;
   });
   document.querySelectorAll("[data-ph-en]").forEach(function (el) {
-    const v = el.getAttribute("data-ph-" + lang);
-    if (v != null) el.placeholder = v;
+    const en = el.getAttribute("data-ph-en");
+    let v = el.getAttribute("data-ph-" + lang);
+    if (v == null) { const t = tr_(en); v = (t && t[lang]) || en; }
+    el.placeholder = unent_(v);   // placeholder は素のテキスト。&ldquo; がそのまま出てしまう
   });
-  $("lang").textContent = lang === "en" ? "日本語" : "English";
+  $("lang").value = lang;
   try { localStorage.setItem("mj-lang", lang); } catch (e) {}
   buildTools(); drawKindPick(); drawThumbs(); render();
 }
 
-$("lang").addEventListener("click", function () {
-  lang = lang === "en" ? "ja" : "en";
+$("lang").addEventListener("change", function () {
+  lang = $("lang").value;
   applyLang();
 });
 $("postBtn").addEventListener("click", openSheet);
@@ -907,7 +942,16 @@ Array.prototype.forEach.call(document.querySelectorAll("[data-av]"), function (b
 window.addEventListener("hashchange", render);
 document.addEventListener("keydown", function (e) { if (e.key === "Escape") closeSheet(); });
 
-try { const s = localStorage.getItem("mj-lang"); if (s) lang = s; } catch (e) {}
+/* はじめて来た人は端末の言語で開く。一度でも自分で選んだら、その記録が勝つ */
+(function () {
+  let saved = null;
+  try { saved = localStorage.getItem("mj-lang"); } catch (e) {}
+  if (saved) { lang = saved; return; }
+  const n = (navigator.languages && navigator.languages[0] || navigator.language || "en").toLowerCase();
+  lang = n.indexOf("ja") === 0 ? "ja"
+       : n.indexOf("zh") === 0 ? "zh"
+       : n.indexOf("vi") === 0 ? "vi" : "en";
+})();
 $("yr").textContent = new Date().getFullYear();
 applyLang();
 load(false);

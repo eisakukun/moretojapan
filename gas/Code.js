@@ -488,12 +488,19 @@ function validMail_(s) {
 
 /* ============================================================ こまごま */
 
-/* 英語の文に「保険証」が1語まざっただけで日本語の投稿にはしない。
-   かなと漢字が全体の2割を超えていたら日本語とみなす。 */
+/* 投稿が何語で書かれているかを見る。読める人に届けるための印で、翻訳はしない。
+   かな があれば日本語。かな が無くて漢字だけなら中国語。
+   ベトナム語はラテン文字に独特の記号（ă â đ ê ô ơ ư と声調）が必ず混じる。
+   英語の文に「保険証」が1語まざっただけで日本語あつかいにはしない（割合で見る）。 */
 function langOf_(text) {
   const t = String(text);
-  const ja = (t.match(/[\u3040-\u30ff\u4e00-\u9faf]/g) || []).length;
-  return ja / Math.max(1, t.length) > 0.2 ? 'ja' : 'en';
+  const kana = (t.match(/[\u3040-\u30ff]/g) || []).length;
+  const han  = (t.match(/[\u4e00-\u9faf]/g) || []).length;
+  const viet = (t.match(/[ăâđêôơưĂÂĐÊÔƠƯáàảãạắằẳẵặấầẩẫậéèẻẽẹếềểễệíìỉĩịóòỏõọốồổỗộớờởỡợúùủũụứừửữựýỳỷỹỵ]/g) || []).length;
+  const n = Math.max(1, t.length);
+  if ((kana + han) / n > 0.2) return kana > 0 ? 'ja' : 'zh';
+  if (viet / n > 0.02) return 'vi';
+  return 'en';
 }
 
 function clean_(s, max) {
