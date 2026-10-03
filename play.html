@@ -3,11 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Something to do — More to Japan</title>
-<meta name="description" content="Not a language exchange. A board for finding someone in Japan to actually do something with — games, bouldering, football, cooking, karaoke. Free, no sign-up, and you say which languages you can get by in.">
+<title>Gamers' language exchange — More to Japan</title>
+<meta name="description" content="A language exchange for gamers in Japan. Pick the game you already play — VALORANT, Apex, Minecraft, Monster Hunter, Splatoon, arcade rhythm games — and find someone who speaks the language you want and wants the one you have. Free, no sign-up.">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Something to do — More to Japan">
-<meta property="og:description" content="Talking in order to talk runs out in twenty minutes. A controller, a basketball, a frying pan do not. Find someone in Japan to do the thing with.">
+<meta property="og:title" content="Gamers' language exchange — More to Japan">
+<meta property="og:description" content="Language exchange runs out of things to say in twenty minutes. A match does not. Pick your game, find your partner.">
 <meta property="og:url" content="https://moretojapan.com/play.html">
 <meta property="og:locale" content="en_US">
 <meta property="og:locale:alternate" content="ja_JP">
@@ -17,7 +17,7 @@
 <style>
   :root{
     --paper:#faf7f2; --ink:#1b1f26; --sub:#5d6673; --line:#e4ddd2;
-    --ai:#22406e; --aka:#d94f2b; --card:#ffffff; --ok:#2f7d4f; --mido:#2f7d4f; --murasaki:#7a3fb5;
+    --ai:#22406e; --aka:#d94f2b; --card:#ffffff; --mido:#2f7d4f; --murasaki:#7a3fb5;
   }
   *{box-sizing:border-box}
   body{margin:0;background:var(--paper);color:var(--ink);line-height:1.75;
@@ -52,51 +52,63 @@
   .btn.s:hover{border-color:var(--ai)}
   .btn[disabled]{opacity:.5;cursor:default}
 
-  .hero{padding:44px 0 24px}
+  .hero{padding:44px 0 20px}
   .kicker{color:var(--aka);font-weight:700;font-size:12px;letter-spacing:.16em;text-transform:uppercase}
   h1{font-size:clamp(27px,4.4vw,40px);line-height:1.22;margin:10px 0 14px;letter-spacing:-.01em}
   .hero p{font-size:17px;color:var(--sub);margin:0 0 22px;max-width:38em}
   .heroBtns{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
 
-  .tools{position:sticky;top:64px;z-index:40;background:var(--paper);
-    padding:12px 0 10px;border-bottom:1px solid var(--line)}
-  .kinds{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
-  .kindBtn{border:1px solid var(--line);background:#fff;border-radius:12px;padding:8px 16px;
-    font:inherit;font-size:14.5px;cursor:pointer;color:var(--sub);font-weight:700}
-  .kindBtn:hover{border-color:var(--ai);color:var(--ai)}
-  .kindBtn.on{background:var(--ai);border-color:var(--ai);color:#fff}
-  .kindBtn.on.online{background:var(--murasaki);border-color:var(--murasaki)}
+  /* ---- 大きな分け方（いまはゲームだけ・あとでダンスや絵が入る） ---- */
+  .groups{display:flex;gap:8px;flex-wrap:wrap;margin:26px 0 4px}
+  .grp{border:1px solid var(--line);background:#fff;border-radius:12px;padding:8px 16px;
+    font:inherit;font-size:14.5px;color:var(--sub);font-weight:700;cursor:pointer}
+  .grp.on{background:var(--ai);border-color:var(--ai);color:#fff}
+  .grp.soon{opacity:.55;cursor:default;font-weight:400}
+  .grp.soon s{text-decoration:none;font-size:11px;display:block;letter-spacing:.04em}
+  .soonNote{color:var(--sub);font-size:13.5px;margin:10px 0 0}
+
+  .tools{padding:14px 0 10px}
   .srch{display:flex;gap:8px;align-items:center;background:#fff;border:1px solid var(--line);
     border-radius:12px;padding:10px 14px}
   .srch input{border:0;outline:0;font:inherit;font-size:16px;flex:1;background:transparent;
     color:var(--ink);-webkit-appearance:none;appearance:none;padding:0;min-width:0}
   .srch b{color:var(--sub);font-weight:400}
-  .chips{display:flex;gap:7px;overflow-x:auto;padding:10px 0 2px;scrollbar-width:none}
-  .chips::-webkit-scrollbar{display:none}
-  .chip{white-space:nowrap;border:1px solid var(--line);background:#fff;border-radius:999px;
-    padding:6px 13px;font-size:13.5px;color:var(--sub);cursor:pointer;font-family:inherit}
-  .chip:hover{border-color:var(--ai);color:var(--ai)}
-  .chip.on{background:var(--ai);border-color:var(--ai);color:#fff}
-  .subTools{display:flex;gap:14px;align-items:center;padding:8px 0 0;font-size:13px;
+  .subTools{display:flex;gap:14px;align-items:center;padding:10px 0 0;font-size:13px;
     color:var(--sub);flex-wrap:wrap}
-  .subTools button{border:0;background:transparent;font:inherit;font-size:13px;color:var(--sub);
-    cursor:pointer;padding:2px 0;border-bottom:1.5px solid transparent;white-space:nowrap}
-  .subTools button.on{color:var(--ink);font-weight:700;border-bottom-color:var(--aka)}
-  .subTools .gp{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
-  @media(max-width:700px){ .subTools .gp{margin-left:0 !important} }
+  .subTools .gp{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
 
-  main{padding:20px 0 70px;min-height:50vh}
+  main{padding:8px 0 70px;min-height:50vh}
+  .secH{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin:26px 0 12px}
+  .secH h2{font-size:19px;margin:0}
+  .secH span{color:var(--sub);font-size:13.5px}
+
+  /* ---- ゲームの部屋（あらかじめ作ってある） ---- */
+  .rooms{display:grid;grid-template-columns:repeat(auto-fill,minmax(166px,1fr));gap:12px}
+  .room{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px 15px 13px;
+    cursor:pointer;transition:.14s;display:flex;flex-direction:column;gap:5px;text-align:left;
+    font:inherit;color:var(--ink)}
+  .room:hover{border-color:#cfd8e6;box-shadow:0 7px 22px #22406e0f;transform:translateY(-1px)}
+  .room .ic{font-size:26px;line-height:1.1}
+  .room .nm{font-weight:700;font-size:14.5px;line-height:1.35}
+  .room .mt{margin-top:auto;padding-top:6px;display:flex;gap:7px;align-items:center;flex-wrap:wrap}
+  .cnt{font-size:12.5px;font-weight:700;color:var(--mido);white-space:nowrap}
+  .cnt.zero{color:#aab2bd;font-weight:400}
+  .pill{font-size:10.5px;border-radius:999px;padding:2px 8px;white-space:nowrap;
+    background:#f3f1ed;color:var(--sub)}
+  .pill.irl{background:#fdeeea;color:var(--aka)}
+  .pill.talk{background:#eaf4ee;color:var(--mido)}
+
+  /* ---- 募集カード ---- */
   .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:16px}
   .it{background:var(--card);border:1px solid var(--line);border-radius:16px;
     cursor:pointer;transition:.14s;display:flex;flex-direction:column;padding:16px 17px 15px;gap:7px}
   .it:hover{border-color:#cfd8e6;box-shadow:0 7px 22px #22406e0f;transform:translateY(-1px)}
   .it.closed{opacity:.6}
   .itHead{display:flex;gap:7px;align-items:center;flex-wrap:wrap}
-  .big{font-size:27px;line-height:1}
+  .big{font-size:25px;line-height:1}
   .itT{font-size:16px;line-height:1.45;margin:0;font-weight:700;display:-webkit-box;
     -webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-  .itW{font-size:14px;color:var(--ink);display:flex;gap:8px;flex-wrap:wrap;align-items:center}
-  .itW b{font-weight:700}
+  .itW{font-size:13.5px;color:var(--ink);display:flex;gap:8px;flex-wrap:wrap;align-items:center}
   .itM{margin-top:auto;padding-top:8px;color:var(--sub);font-size:12.5px;
     display:flex;gap:9px;flex-wrap:wrap;align-items:center}
   .tag{font-size:11px;border-radius:999px;padding:2px 9px;white-space:nowrap}
@@ -106,8 +118,15 @@
   .tag.lv{background:#f3f1ed;color:var(--sub)}
   .tag.lv.new{background:#eaf4ee;color:var(--mido)}
   .tag.lv.serious{background:#fdeeea;color:var(--aka)}
-  .going{font-size:12.5px;color:var(--mido);font-weight:700;white-space:nowrap}
   .doneTag{font-size:11px;border-radius:999px;padding:2px 9px;background:#1b1f2612;color:var(--sub)}
+
+  /* ---- ことばの行（この掲示板の土台） ---- */
+  .lx{display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:12.5px;
+    background:#fbfaf7;border:1px solid var(--line);border-radius:11px;padding:7px 10px}
+  .lx i{font-style:normal;font-size:11.5px;border-radius:999px;padding:1px 8px;white-space:nowrap;
+    background:#fff;border:1px solid var(--line);color:var(--sub)}
+  .lx i.w{background:#eef2f9;border-color:#cfd8e6;color:var(--ai);font-weight:700}
+  .lx em{font-style:normal;color:#aab2bd;font-size:14px}
 
   .empty{background:var(--card);border:1px dashed #cfd8e6;border-radius:18px;
     padding:30px 24px;text-align:center}
@@ -123,16 +142,19 @@
   .back{background:none;border:0;font:inherit;color:var(--sub);cursor:pointer;padding:0;
     margin:0 0 14px;font-size:14px}
   .back:hover{color:var(--ink)}
+  .roomHead{display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin:0 0 6px}
+  .roomHead .ic{font-size:38px;line-height:1}
+  .roomHead h2{margin:0;font-size:clamp(21px,3vw,27px)}
   .dBox{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:22px;
     max-width:720px}
   .dBox h2{margin:8px 0 10px;font-size:clamp(21px,3vw,28px);line-height:1.35}
   .dBody{white-space:pre-wrap;font-size:15.5px;margin:12px 0 16px;overflow-wrap:anywhere}
   .facts{border-top:1px solid var(--line);padding-top:12px;display:grid;gap:7px;font-size:14px}
   .facts div{display:flex;gap:10px}
-  .facts b{color:var(--sub);font-weight:400;min-width:6.5em;flex:none}
+  .facts b{color:var(--sub);font-weight:400;min-width:7em;flex:none}
   .joinRow{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin:18px 0 0;
     border-top:1px solid var(--line);padding-top:16px}
-  .joinRow .cnt{font-size:14px;color:var(--sub)}
+  .joinRow .c2{font-size:14px;color:var(--sub)}
   .dActs{display:flex;gap:9px;flex-wrap:wrap;margin-top:14px}
   .act{border:1px solid var(--line);background:#fff;border-radius:999px;padding:7px 15px;
     font:inherit;font-size:13px;cursor:pointer;color:var(--sub)}
@@ -152,7 +174,7 @@
     padding:18px;margin-top:14px;max-width:720px}
   .replyBox textarea{min-height:100px}
 
-  /* ---- 誘う ---- */
+  /* ---- 出すところ ---- */
   .sheet{position:fixed;inset:0;z-index:80;background:#1b1f2659;display:none;
     align-items:flex-end;justify-content:center}
   .sheet.on{display:flex}
@@ -181,10 +203,7 @@
     font:inherit;font-size:14px;cursor:pointer;color:var(--sub)}
   .pickLang button.on{border-color:var(--ai);background:#eef2f9;color:var(--ai);font-weight:700}
   .pickLang button.on::before{content:"\2713 ";font-size:12px}
-  .spk{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
-  .spk i{font-style:normal;font-size:11.5px;border:1px solid var(--line);border-radius:999px;
-    padding:1px 8px;color:var(--sub);background:#fff;white-space:nowrap}
-  .itM .spk i{background:#f7f5f1}
+  .pickLang.want button.on{border-color:var(--aka);background:#fdeeea;color:var(--aka)}
   .hp{position:absolute;left:-9999px;width:1px;height:1px;opacity:0}
   .sheetFoot{display:flex;gap:10px;align-items:center;margin-top:20px;flex-wrap:wrap}
   .msg{font-size:13.5px;color:var(--aka);margin-left:auto}
@@ -226,40 +245,41 @@
 
 <div class="wrap">
   <div class="hero">
-    <div class="kicker" data-en="Free · no sign-up · not a language exchange"
-         data-ja="無料 ・ 登録なし ・ 言語交換ではありません">Free · no sign-up · not a language exchange</div>
-    <h1 data-en="Not a language exchange. Someone to play with."
-        data-ja="言語交換ではありません。いっしょに遊ぶ人です。">Not a language exchange. Someone to play with.</h1>
-    <p data-en="Talking in order to talk runs out in about twenty minutes. A controller, a basketball, a climbing wall, a frying pan — those do not run out, and they let you be quiet. So put up the thing you were going to do anyway, say which languages you can get by in, and let the Japanese happen on the side."
-       data-ja="話すために話す会は、20分で種が尽きます。コントローラー、バスケットボール、ボルダリングの壁、フライパン。こっちは尽きないし、黙っていてもいい時間ができます。だから、もともとやるつもりだったことを書いて、通じることばを選んでおくだけにしました。日本語はそのついでに伸びます。">
-      Talking in order to talk runs out in about twenty minutes. A controller, a basketball, a climbing wall, a frying pan — those do not run out, and they let you be quiet. So put up the thing you were going to do anyway, say which languages you can get by in, and let the Japanese happen on the side.</p>
+    <div class="kicker" data-en="Language exchange · free · no sign-up"
+         data-ja="言語交換 ・ 無料 ・ 登録なし">Language exchange · free · no sign-up</div>
+    <h1 data-en="A language exchange that starts with the game you already play."
+        data-ja="言語交換を、いまやっているゲームから始める。">A language exchange that starts with the game you already play.</h1>
+    <p data-en="A normal language exchange runs out of things to say in about twenty minutes, and then it is two people doing homework. A match does not run out. You are already shouting at the same screen, and half of what you need to say is already on it. Pick your game, say which language you have and which one you want, and talk while you play."
+       data-ja="ふつうの言語交換は、だいたい20分で話す種が尽きます。そこから先は二人で宿題をしている時間です。試合は尽きません。同じ画面に向かって叫んでいるし、言いたいことの半分はもう画面の中にあります。ゲームを選んで、自分が話せることばと習いたいことばを書いて、遊びながら喋ってください。">
+      A normal language exchange runs out of things to say in about twenty minutes, and then it is two people doing homework. A match does not run out. You are already shouting at the same screen, and half of what you need to say is already on it. Pick your game, say which language you have and which one you want, and talk while you play.</p>
     <div class="heroBtns">
-      <button class="btn p" id="postBtn" data-en="Put up something to do" data-ja="誘ってみる">Put up something to do</button>
+      <button class="btn p" id="postBtn" data-en="Put yourself up" data-ja="自分を出してみる">Put yourself up</button>
       <a class="btn s" href="/help.html" data-en="Stuck on something instead? → Help board"
          data-ja="困っていることのほうは → こまりごと掲示板">Stuck on something instead? → Help board</a>
     </div>
+
+    <div class="groups" id="groups"></div>
+    <p class="soonNote" id="soonNote"
+       data-en="Games first, because gamers are already online and already talking. Dance and drawing come next — the structure is the same, only the room changes."
+       data-ja="まずゲームからにしました。ゲーマーはもう画面の前にいて、もう喋っているからです。ダンスと絵はこの次です。仕組みは同じで、部屋が変わるだけ。">Games first, because gamers are already online and already talking. Dance and drawing come next — the structure is the same, only the room changes.</p>
   </div>
 </div>
 
-<div class="tools" id="tools">
-  <div class="wrap">
-    <div class="kinds" id="kinds"></div>
+<div class="wrap">
+  <div class="tools" id="tools">
     <div class="srch">
       <b>🔍</b>
-      <input id="q" type="text" data-ph-en="Search — a game, a sport, a station (&ldquo;Smash&rdquo;, &ldquo;futsal&rdquo;, &ldquo;Koenji&rdquo;)"
-             data-ph-ja="さがす ─ ゲームでも競技でも駅でも（「スマブラ」「フットサル」「高円寺」）" autocomplete="off">
+      <input id="q" type="text" data-ph-en="Search — a game, a platform, a time of day"
+             data-ph-ja="さがす ─ ゲーム名、機種、時間帯" autocomplete="off">
     </div>
-    <div class="chips" id="chips"></div>
     <div class="subTools">
       <div class="gp">
-        <span data-en="Sort:" data-ja="並び：">Sort:</span>
-        <button data-sort="new" class="on" data-en="Newest" data-ja="新しい順">Newest</button>
-        <button data-sort="going" data-en="Most people going" data-ja="人が集まっている順">Most people going</button>
+        <span data-en="They speak" data-ja="話せることば">They speak</span>
+        <select id="spkFilter" class="lang"></select>
       </div>
-      <div class="gp" style="margin-left:auto">
-        <button data-av="all" class="on" data-en="Everything" data-ja="ぜんぶ">Everything</button>
-        <button data-av="open" data-en="Still open" data-ja="まだ入れるものだけ">Still open</button>
-        <select id="spkFilter" class="lang" style="margin-left:6px"></select>
+      <div class="gp">
+        <span data-en="They want to practise" data-ja="習いたいことば">They want to practise</span>
+        <select id="wantFilter" class="lang"></select>
       </div>
     </div>
   </div>
@@ -273,9 +293,9 @@
 
 <div class="wrap">
   <div class="rules">
-    <b data-en="Why this is not a language exchange" data-ja="なぜ言語交換にしないのか">Why this is not a language exchange</b><br>
-    <span data-en="&bull; A language exchange makes the conversation itself the job. Thirty minutes in, you are both working. A game, a wall, a kitchen has its own reason to be there, so the silences are allowed &mdash; and that is exactly when people start talking.<br>&bull; Say your languages honestly, &ldquo;a little&rdquo; included. Nobody should have to be afraid of the first ten minutes. That is the whole point of this board.<br>&bull; Meet the first time somewhere public &mdash; the gym, the climbing wall, the café, the ticket gate. Not your flat, not theirs.<br>&bull; No money moves through this site. If the place costs money (a court, a studio, a lane, a karaoke room), write the amount in the post so nobody is surprised.<br>&bull; Not for dating, not for recruiting, selling, or religion. Those get reported and disappear.<br>&bull; You can take your own post down yourself, at any time. Old posts fall off the board on their own after about six weeks."
-          data-ja="・ 言語交換は、会話そのものを仕事にします。30分すると二人とも労働です。ゲームにも壁にも台所にも、そこに居る理由が最初からあるので、黙っていてもいい。人が喋りはじめるのはだいたいそこからです。<br>・ 話せることばは正直に。「少しだけ」も入れてください。最初の10分を怖がらないで済むこと、それがこの掲示板の全部です。<br>・ 初めて会うのは人のいる場所で。ジム、壁、喫茶店、改札前。自分の部屋にも、相手の部屋にも行かない。<br>・ このサイトを通ってお金は動きません。場所代がかかるなら（コート、スタジオ、レーン、カラオケ）いくらかかるかを先に書いてください。<br>・ 出会い目的、勧誘、宣伝、宗教はここには書けません。通報されたら消えます。<br>・ 自分の誘いはいつでも自分で下ろせます。古いものは6週間ほどで勝手に一覧から落ちます。">
+    <b data-en="How to not waste each other's evening" data-ja="おたがいの夜を無駄にしないために">How to not waste each other's evening</b><br>
+    <span data-en="&bull; Write both languages honestly, &ldquo;a little&rdquo; included. The whole point is that neither of you has to be afraid of the first ten minutes.<br>&bull; Agree out loud how you will split it &mdash; one match in Japanese, one match in English is the simplest rule that actually works. Without a rule you will both default to English and only one of you learns anything.<br>&bull; Do not post your game ID, Discord tag, LINE ID or phone number in the open. Say you have one, and swap it in the messages after you have spoken.<br>&bull; Meeting in person (an arcade, a smash night, a board game café) &mdash; go somewhere public, in daylight if you can. Not your flat, not theirs.<br>&bull; No money moves through this site. If the place costs money, write the amount in the post.<br>&bull; Not for dating, not for recruiting, selling, boosting or account trading. Those get reported and disappear.<br>&bull; You can take your own post down yourself, at any time. Old posts fall off on their own after about six weeks."
+          data-ja="・ 話せることばも習いたいことばも正直に。「少しだけ」も入れてください。おたがい最初の10分を怖がらないで済むこと、それがこの掲示板の全部です。<br>・ どう半分に分けるかを声に出して決めてください。「1試合は日本語、次の1試合は英語」がいちばん単純で、実際に続く決め方です。決めないと二人とも英語に流れて、学べるのは片方だけになります。<br>・ ゲームのID、Discordのタグ、LINEのID、電話番号は表に書かないこと。「持っています」とだけ書いて、やりとりの中で渡してください。<br>・ 会って遊ぶとき（ゲーセン、スマブラ会、ボードゲームカフェ）は、人のいる場所で、できれば明るいうちに。自分の部屋にも、相手の部屋にも行かない。<br>・ このサイトを通ってお金は動きません。場所代がかかるなら金額を先に書いてください。<br>・ 出会い目的、勧誘、宣伝、代行（ブースト）、アカウント売買は書けません。通報されたら消えます。<br>・ 自分の投稿はいつでも自分で下ろせます。古いものは6週間ほどで勝手に落ちます。">
     </span>
   </div>
 </div>
@@ -290,59 +310,67 @@
   </div>
 </footer>
 
-<!-- ========================= 誘うところ ========================= -->
+<!-- ========================= 出すところ ========================= -->
 <div class="sheet" id="sheet">
   <div class="sheetIn">
-    <h3 data-en="Put up something to do" data-ja="誘ってみる">Put up something to do</h3>
-    <p class="note" data-en="Free. No account. Four things to fill in. You can take it down yourself at any time."
-       data-ja="無料です。登録は要りません。埋めるのは4つだけ。自分でいつでも下ろせます。">Free. No account. Four things to fill in. You can take it down yourself at any time.</p>
+    <h3 data-en="Put yourself up" data-ja="自分を出してみる">Put yourself up</h3>
+    <p class="note" data-en="Free. No account. The two language lines are the ones that matter — everything else can stay rough."
+       data-ja="無料です。登録は要りません。大事なのはことばの2行だけ。ほかは雑でかまいません。">Free. No account. The two language lines are the ones that matter — everything else can stay rough.</p>
+
+    <label data-en="Which game?" data-ja="どのゲーム？">Which game?</label>
+    <select id="fCat"></select>
+
+    <div class="row2">
+      <div>
+        <label data-en="Which languages can you speak?" data-ja="あなたが話せることば">Which languages can you speak?</label>
+        <div class="pickLang" id="fLangs"></div>
+      </div>
+      <div>
+        <label data-en="Which language do you want to practise?" data-ja="習いたいことば">Which language do you want to practise?</label>
+        <div class="pickLang want" id="fLearn"></div>
+      </div>
+    </div>
+    <p class="note" style="margin-top:8px"
+       data-en="&ldquo;A little&rdquo; counts on the left. The right side is why the other person writes back."
+       data-ja="左は「少しだけ」でも入れてかまいません。右があるから、相手は返事を書きます。">&ldquo;A little&rdquo; counts on the left. The right side is why the other person writes back.</p>
 
     <div class="pick" id="kindPick"></div>
 
-    <label data-en="What are you doing?" data-ja="何をしますか？">What are you doing?</label>
+    <label data-en="Say it in one line" data-ja="ひとことで">Say it in one line</label>
     <input id="fTitle" type="text" maxlength="120"
-           data-ph-en="e.g. Bouldering on Saturday afternoon, beginners fine"
-           data-ph-ja="例：土曜の午後にボルダリング。はじめてでも大丈夫">
+           data-ph-en="e.g. Plat 2, happy to call the map in Japanese if you fix my grammar"
+           data-ph-ja="例：プラチナ2。日本語で指示を出すので、英語を直してください">
 
     <div class="row2">
-      <div>
-        <label data-en="Which kind of thing?" data-ja="種類">Which kind of thing?</label>
-        <select id="fCat"></select>
-      </div>
       <div>
         <label id="whenLbl" data-en="When?" data-ja="いつ？">When?</label>
         <input id="fWhen" type="text" maxlength="60"
-               data-ph-en="e.g. Saturday 2pm — or just &ldquo;most Sundays&rdquo;"
-               data-ph-ja="例：土曜14時 ─ 「だいたい毎週日曜」でもいい">
+               data-ph-en="e.g. weeknights after 10, JST"
+               data-ph-ja="例：平日の22時すぎ（日本時間）">
+      </div>
+      <div>
+        <label id="areaLbl" data-en="On what?" data-ja="どこで？">On what?</label>
+        <input id="fArea" type="text" maxlength="60"
+               data-ph-en="e.g. PC + Discord, or Switch"
+               data-ph-ja="例：PCとDiscord／Switch">
       </div>
     </div>
 
-    <label id="areaLbl" data-en="Where?" data-ja="どこで？">Where?</label>
-    <input id="fArea" type="text" maxlength="60"
-           data-ph-en="e.g. Koenji — or anywhere on the Yamanote line"
-           data-ph-ja="例：高円寺 ─ 「山手線沿いならどこでも」でもいい">
-
     <div class="row2">
       <div>
-        <label data-en="How many people do you want?" data-ja="何人ほしい？">How many people do you want?</label>
+        <label data-en="How many people?" data-ja="何人ほしい？">How many people?</label>
         <select id="fSize"></select>
       </div>
       <div>
-        <label data-en="How serious is it?" data-ja="どれくらい本気？">How serious is it?</label>
+        <label data-en="How serious about the game?" data-ja="ゲームはどれくらい本気？">How serious about the game?</label>
         <select id="fLevel"></select>
       </div>
     </div>
 
-    <label data-en="Which languages can you actually talk in?" data-ja="あなたが話せることば">Which languages can you actually talk in?</label>
-    <div class="pickLang" id="fLangs"></div>
-    <p class="note" style="margin-top:8px"
-       data-en="Pick every language you could get through an afternoon in. &ldquo;A little&rdquo; counts &mdash; the point is that the other person knows before they come, not that you are good."
-       data-ja="午後のあいだ何とかなることばを全部えらんでください。「少しだけ」でも入れてかまいません。大事なのは上手いことではなく、来る前に相手が分かっていることです。">Pick every language you could get through an afternoon in. &ldquo;A little&rdquo; counts &mdash; the point is that the other person knows before they come, not that you are good.</p>
-
     <label data-en="The boring details" data-ja="地味なところ">The boring details</label>
     <textarea id="fBody" maxlength="4000"
-      data-ph-en="Which game, which exit of which station, what time you stop, whether it costs anything, whether you have a spare racket. The boring details are what make somebody actually turn up."
-      data-ph-ja="どのゲーム、どの駅のどの出口、何時までやるか、お金がかかるか、ラケットの余りがあるか。人が本当に来るかどうかは、この地味なところで決まります。"></textarea>
+      data-ph-en="Your rank, your region, whether you use voice, how much Japanese you really have, what you want fixed. Do not write your game ID or Discord tag here — say you have one and swap it in the messages."
+      data-ph-ja="ランク、サーバー、ボイスを使うか、日本語がどのくらい本当に話せるか、何を直してほしいか。ゲームのIDやDiscordのタグはここに書かないこと（「あります」とだけ書いて、やりとりの中で渡す）。"></textarea>
 
     <div class="row2">
       <div>
@@ -353,7 +381,7 @@
         <label data-en="Your email — never shown (optional)" data-ja="メール ─ 表には出ません（任意）">Your email — never shown (optional)</label>
         <input id="fMail" type="email" maxlength="120"
                data-ph-en="so we can tell you when somebody says they are in"
-               data-ph-ja="行きたい人が出たときだけ知らせます">
+               data-ph-ja="やりたい人が出たときだけ知らせます">
       </div>
     </div>
 
@@ -367,61 +395,82 @@
   </div>
 </div>
 
-<script src="/i18n.js?v=3"></script>
+<script src="/i18n.js?v=4"></script>
 <script>
 /* =========================================================================
-   More to Japan — いっしょに何かやる（play.html）
+   More to Japan — ゲーマーのための言語交換（play.html）
    help.html / market.html と同じ裏側（GAS1つ・スプレッドシート1枚）。シートだけ別。
 
-   言語交換の掲示板にはしない。会話そのものが目的だと、気まずさが全部表に出て
-   20分で終わる。ゲーム・ボルダリング・餃子を包む、なんでもいいが手元に共通の対象が
-   あると「黙っていていい時間」ができて、言葉が下手でも成り立つ。言葉は副産物。
+   土台は言語交換。ただしふつうの言語交換は20分で話す種が尽きて、そこから先は
+   二人で宿題をしている時間になる。試合は尽きない。同じ画面を見て叫んでいるし、
+   言いたいことの半分はもう画面の中にある。だから入口を「どのゲームをやっているか」にした。
 
-   だから単位は「人（プロフィール）」ではなく「やること（誘い）」にした。
-   登録が要らないのも、古いものが勝手に落ちるのも、それが誘いだから。
-   写真もわざと付けていない。誘いは文字で足りるし、1つ減るだけで人は書く。
+   部屋（ゲーム）はこのファイルに直書きしてある。DBに入れない理由は、
+   1件も無い掲示板は死んで見えるから。中身が空でも部屋は先に建っていてほしい。
+   あとでダンス・絵の GROUP を足すときも、TOPICS を増やすだけで済む形にしてある。
    ========================================================================= */
 
 const API = "https://script.google.com/macros/s/AKfycbz09z8z5zorue3p6xFwtt01Q3KQgh-7bm-SGTSZj6ILNRxXS-KbASTooYulq3fo7TBL/exec";
 
-const KINDS = [
-  { id:"meet",   ic:"📅", en:"Meet up",     ja:"会ってやる",       subEn:"a place and a day", subJa:"場所と日を決める" },
-  { id:"online", ic:"🎮", en:"Online only", ja:"オンラインだけ",   subEn:"no meeting up",     subJa:"会わずに遊ぶ" },
-  { id:"open",   ic:"🔁", en:"No date yet", ja:"日はまだ決めてない", subEn:"find someone first", subJa:"まず相手をさがす" }
+/* 大きな分け方。いまはゲームだけ開いていて、あとの2つは場所取り。
+   「これも来る」と見えているほうが、ゲームをやらない人も戻ってくる */
+const GROUPS = [
+  { id:"game",  ic:"🎮", en:"Games",   ja:"ゲーム", on:true },
+  { id:"dance", ic:"🕺", en:"Dance",   ja:"ダンス", on:false },
+  { id:"draw",  ic:"🎨", en:"Drawing", ja:"絵",     on:false }
 ];
 
-const CATS = [
-  { id:"game",     ic:"🎮", en:"Video games",          ja:"テレビゲーム" },
-  { id:"tabletop", ic:"🀄", en:"Board games & mahjong", ja:"ボードゲーム・麻雀" },
-  { id:"ball",     ic:"🏀", en:"Ball sports",           ja:"球技" },
-  { id:"climb",    ic:"🧗", en:"Climbing",              ja:"クライミング" },
-  { id:"run",      ic:"🏃", en:"Running & walking",     ja:"走る・歩く" },
-  { id:"train",    ic:"🥊", en:"Gym & martial arts",    ja:"筋トレ・格闘技" },
-  { id:"cook",     ic:"🍳", en:"Cooking & eating out",  ja:"料理・食べに行く" },
-  { id:"music",    ic:"🎸", en:"Music & karaoke",       ja:"音楽・カラオケ" },
-  { id:"dance",    ic:"💃", en:"Dance",                 ja:"ダンス" },
-  { id:"make",     ic:"🛠", en:"Making things",         ja:"作る" },
-  { id:"watch",    ic:"🎬", en:"Film, anime, books",    ja:"映画・アニメ・本" },
-  { id:"outdoor",  ic:"🎣", en:"Fishing & outdoors",    ja:"釣り・外遊び" },
-  { id:"other",    ic:"🌀", en:"Something else",        ja:"そのほか" }
+/* 部屋。選び方は「プレイ人口」ではなく
+   「日本にいる外国人と日本人が、実際に一緒にやって喋れるか」。
+   だから世界1位でも日本人口の薄いものは下に置き、
+   ゲーセン・麻雀・スマブラのような “会って遊ぶ” ものを同じ重さで入れてある。
+   irl:true＝会ってやるのが主。talk:true＝しゃべる時間が実際にあるゲーム。 */
+const TOPICS = [
+  { id:"valorant", ic:"🎯", en:"VALORANT",        ja:"VALORANT" },
+  { id:"apex",     ic:"🔺", en:"Apex Legends",    ja:"Apex Legends" },
+  { id:"fortnite", ic:"🏝", en:"Fortnite",        ja:"フォートナイト" },
+  { id:"minecraft",ic:"⛏", en:"Minecraft",       ja:"マインクラフト", talk:true },
+  { id:"monhun",   ic:"🐉", en:"Monster Hunter",  ja:"モンスターハンター", talk:true },
+  { id:"splatoon", ic:"🦑", en:"Splatoon",        ja:"スプラトゥーン" },
+  { id:"smash",    ic:"💥", en:"Super Smash Bros.", ja:"スマブラ", irl:true },
+  { id:"mariokart",ic:"🏎", en:"Mario Kart",      ja:"マリオカート", irl:true },
+  { id:"pokemon",  ic:"⚡", en:"Pokémon",         ja:"ポケモン", irl:true },
+  { id:"fighting", ic:"🥊", en:"Fighting games",  ja:"格ゲー", irl:true },
+  { id:"mahjong",  ic:"🀄", en:"Mahjong",         ja:"麻雀・雀魂", irl:true, talk:true },
+  { id:"arcade",   ic:"🕹", en:"Arcade & rhythm", ja:"ゲーセン・音ゲー", irl:true, talk:true },
+  { id:"ff14",     ic:"⚔️", en:"Final Fantasy XIV", ja:"FF14", talk:true },
+  { id:"hoyo",     ic:"🌠", en:"Genshin & HoYo",  ja:"原神・スターレイル" },
+  { id:"rivals",   ic:"🦸", en:"Marvel Rivals",   ja:"マーベル・ライバルズ" },
+  { id:"cs2",      ic:"🔫", en:"Counter-Strike 2", ja:"カウンターストライク2" },
+  { id:"party",    ic:"👾", en:"Party games",     ja:"パーティーゲーム", talk:true },
+  { id:"coop",     ic:"🧟", en:"Co-op survival",  ja:"協力サバイバル", talk:true },
+  { id:"sports",   ic:"⚽", en:"Football & sports games", ja:"サッカー・スポーツゲーム" },
+  { id:"board",    ic:"🎲", en:"Board games & TRPG", ja:"ボードゲーム・TRPG", irl:true, talk:true },
+  { id:"other",    ic:"➕", en:"Another game",    ja:"そのほかのゲーム" }
+];
+
+const KINDS = [
+  { id:"online", ic:"🎮", en:"Online",      ja:"オンラインで",   subEn:"play from home", subJa:"家から" },
+  { id:"meet",   ic:"📅", en:"In person",   ja:"会って遊ぶ",     subEn:"arcade, smash night", subJa:"ゲーセン・対戦会" },
+  { id:"open",   ic:"🔁", en:"Either, ask me", ja:"どっちでもいい", subEn:"nothing fixed yet", subJa:"まだ決めてない" }
 ];
 
 const LEVELS = [
-  { id:"any",     en:"Anyone, any level",  ja:"だれでも・どんな腕でも" },
-  { id:"new",     en:"Never done it? Good", ja:"はじめてのほうがいい" },
-  { id:"serious", en:"I take it seriously", ja:"本気でやる" }
+  { id:"any",     en:"Any level, I just want to talk", ja:"腕は問わない・喋れれば" },
+  { id:"new",     en:"I am new to it",                 ja:"はじめたばかり" },
+  { id:"serious", en:"I play to win",                  ja:"ガチでやる" }
 ];
 
 /* 一人目が書きやすいように「こういうのでいい」の見本。投稿のふりはさせない */
 const EXAMPLES = [
-  { k:"online", en:"Smash Bros most weeknights after 10. I am bad at it. Mic optional, Switch only.",
-    ja:"スマブラ、平日22時すぎならだいたい居ます。弱いです。マイクはなくても。Switchだけ。" },
-  { k:"meet", en:"Bouldering in Shin-Okubo, Saturday 2pm. First time is fine — I will show you how to rent the shoes. ¥2,000 for the day.",
-    ja:"土曜14時、新大久保でボルダリング。はじめてでも大丈夫、靴の借り方は教えます。1日2,000円くらい。" },
-  { k:"open", en:"Looking for one person to run 5km along the Arakawa. Any morning. I am slow and I stop at the convenience store.",
-    ja:"荒川沿いを5km走る人を1人さがしています。朝ならいつでも。遅いし、途中でコンビニに寄ります。" },
-  { k:"meet", en:"Making gyoza at my place in Nerima, Sunday. Four pairs of hands needed. You take some home.",
-    ja:"日曜、練馬の家で餃子を包みます。手が4人分ほしい。持って帰れます。" }
+  { t:"valorant", en:"Immortal, Tokyo server. I will call the map in Japanese slowly if you fix my English after the match.",
+    ja:"イモータル、東京サーバー。日本語でゆっくり指示を出すので、試合のあと英語を直してください。" },
+  { t:"minecraft", en:"Building a village on my server. We can be quiet for an hour and it is still fine. Japanese N4, want to hear real speed.",
+    ja:"自鯖で村を作っています。1時間黙っていても成り立つゲームです。日本語はN4。本当の速さで聞きたい。" },
+  { t:"arcade", en:"maimai in Akihabara on Saturdays. I will teach you the machine, you teach me how to order food.",
+    ja:"土曜に秋葉原でmaimai。筐体の使い方は教えます。かわりに注文の仕方を教えてください。" },
+  { t:"monhun", en:"Looking for one person for hunts on weeknights. Voice on. I am Japanese and I want to practise English swearing at a monster.",
+    ja:"平日の夜に一緒に狩る人を1人。ボイスあり。日本人です。モンスターに英語で悪態をつく練習がしたい。" }
 ];
 
 const LANGS = (window.MTJ_LANGS || [{id:"en",name:"English"},{id:"ja",name:"日本語"}]);
@@ -437,7 +486,7 @@ const esc = function (s) {
   });
 };
 /* 英語の原文を鍵にして i18n.js から訳を引く。訳が無ければ英語のまま出す。
-   半端な機械訳より、そのほうが親切。 */
+   ゲーム名は固有名詞なので、訳が無くて英語のまま出るのが正しい。 */
 const TR = (window.MTJ_TR || {});
 /* HTMLの属性は読み出した時点で &mdash; が — にほどけている。
    そのままだと鍵が合わないので、ほどいた鍵の控えも作る。 */
@@ -450,13 +499,11 @@ function buildTRD_() {
 buildTRD_();
 function tr_(en) { return TR[en] || TRD[en]; }
 
-/** その言語の訳を取りに行ってから描き直す。英語と日本語はページの中にあるので何も読まない */
 async function setLang(l) {
   lang = l;
   if (window.MTJ_LOAD) { await window.MTJ_LOAD(l); buildTRD_(); }
   applyLang();
 }
-/* 実体参照をほどく。innerHTML と違って placeholder は自分でほどかないといけない */
 const unentBox_ = document.createElement("textarea");
 function unent_(s) {
   if (String(s).indexOf("&") < 0) return s;
@@ -472,14 +519,13 @@ function T(en, ja) {
 
 let lang  = "en";
 let plans = [];
-let state = { kind:"", cat:"", q:"", sort:"new", av:"all", spk:"" };
+let state = { q:"", spk:"", want:"" };
 let apiDown = false, loaded = false;
-let pickKind = "meet";
-let myLangs = [];            // 誘う人が話せることば
-let langsTouched = false;    // さわるまでは画面の言語について回る
+let pickKind = "online";
+let myLangs = [], myLearn = [];
+let langsTouched = false, learnTouched = false;
 
 /* ---------------------------------------------------------------- 端末の印 */
-/* help / market と同じ印を使う。同じサイトの同じ人なので分ける理由がない */
 function dev() {
   let d = "";
   try { d = localStorage.getItem("mj-board-dev") || ""; } catch (e) {}
@@ -496,7 +542,6 @@ function markMine(id) {
   const m = mine(); m.push(id);
   try { localStorage.setItem("mj-board-mine", JSON.stringify(m.slice(-200))); } catch (e) {}
 }
-/* 「行きます」を押したものを覚えておく。押したあと画面が戻るのが気持ち悪いので */
 function joined() {
   try { return JSON.parse(localStorage.getItem("mj-play-in") || "[]"); } catch (e) { return []; }
 }
@@ -529,7 +574,7 @@ async function apiPost(body) {
   } catch (e) { apiDown = true; return { ok:false, err:"notready" }; }
 }
 
-/* ---------------------------------------------------------------- 見た目の部品 */
+/* ---------------------------------------------------------------- 部品 */
 function ago(iso) {
   const t = new Date(iso).getTime();
   if (!t) return "";
@@ -539,9 +584,9 @@ function ago(iso) {
   if (s < 2592000) return Math.floor(s/86400) + T("d ago",  "日前");
   return Math.floor(s/2592000) + T("mo ago", "か月前");
 }
-function catOf(id)  { return CATS.filter(function (c) { return c.id === id; })[0] || CATS[CATS.length-1]; }
-function kindOf(id) { return KINDS.filter(function (k) { return k.id === id; })[0] || KINDS[0]; }
-function lvOf(id)   { return LEVELS.filter(function (l) { return l.id === id; })[0] || LEVELS[0]; }
+function topicOf(id) { return TOPICS.filter(function (c) { return c.id === id; })[0] || TOPICS[TOPICS.length-1]; }
+function kindOf(id)  { return KINDS.filter(function (k) { return k.id === id; })[0] || KINDS[0]; }
+function lvOf(id)    { return LEVELS.filter(function (l) { return l.id === id; })[0] || LEVELS[0]; }
 
 function sizeTxt(n) {
   if (!n) return T("Any number of people", "何人でも");
@@ -550,32 +595,51 @@ function sizeTxt(n) {
 }
 /* 1人のときだけ単数にする。英語で「1 people」と出ると素人くさい */
 function goingTxt(n) {
-  return n === 1 ? T("1 person said they are in", "1人が行くと言っています")
-                 : n + T(" people said they are in", "人が行くと言っています");
+  return n === 1 ? T("1 person said they are in", "1人がやりたいと言っています")
+                 : n + T(" people said they are in", "人がやりたいと言っています");
 }
 function whenTxt(g) {
   if (g.when) return g.when;
-  return g.kind === "open" ? T("No date yet", "日はまだ決めてない") : T("Whenever", "いつでも");
+  return g.kind === "open" ? T("Nothing fixed yet", "まだ決めてない") : T("Whenever", "いつでも");
 }
-/* 「どこ」は種類で意味が変わる。オンラインなら Switch / Discord / Steam のこと */
 function whereLabel(kind) {
-  return kind === "online" ? T("On what?", "どこで（Switch・Discord など）")
-       : kind === "open"   ? T("Roughly where?", "だいたいどのへん？")
-                           : T("Where?", "どこで？");
-}
-function whenLabel(kind) {
-  return kind === "open" ? T("When could you? (optional)", "いつなら動ける？（任意）")
-                         : T("When?", "いつ？");
+  return kind === "meet" ? T("Where?", "どこで？") : T("On what?", "どこで（機種・Discordなど）");
 }
 
-/* ---------------------------------------------------------------- 一覧 */
+/* ことばの2行。この掲示板の土台なので、カードでも1件でも同じ形で出す */
+function lxHtml(g) {
+  const sp = (g.langs || []).map(function (l) { return "<i>" + esc(langName(l)) + "</i>"; }).join("");
+  const wa = (g.learn || []).map(function (l) { return '<i class="w">' + esc(langName(l)) + "</i>"; }).join("");
+  if (!sp && !wa) return "";
+  return '<div class="lx">🗣' + sp + "<em>→</em>📚" + (wa || "<i>?</i>") + "</div>";
+}
+
+/* ---------------------------------------------------------------- 道順 */
 function render() {
-  if (location.hash.indexOf("#g/") === 0) { renderDetail(); return; }
+  const h = location.hash;
+  if (h.indexOf("#g/") === 0) { renderDetail(); return; }
   $("tools").style.display = "";
-  renderList();
+  if (h.indexOf("#t/") === 0) { renderRoom(h.slice(3)); return; }
+  renderHome();
 }
 
-function renderList() {
+function filtered(list) {
+  let ls = list.slice();
+  if (state.spk)  ls = ls.filter(function (x) { return (x.langs || []).indexOf(state.spk) >= 0; });
+  if (state.want) ls = ls.filter(function (x) { return (x.learn || []).indexOf(state.want) >= 0; });
+  if (state.q) {
+    const w = state.q.toLowerCase().split(/\s+/).filter(Boolean);
+    ls = ls.filter(function (x) {
+      const t = topicOf(x.cat);
+      const hay = (x.title + " " + x.preview + " " + x.area + " " + x.when + " " + t.en + " " + t.ja).toLowerCase();
+      return w.every(function (k) { return hay.indexOf(k) >= 0; });
+    });
+  }
+  return ls;
+}
+
+/* ---------------------------------------------------------------- トップ */
+function renderHome() {
   const v = $("view");
   if (apiDown) {
     v.innerHTML = '<div class="banner">' + T(
@@ -583,73 +647,114 @@ function renderList() {
       "いま裏側を用意しているところです。もう少し待ってください。") + "</div>";
     return;
   }
-  let ls = plans.slice();
-  if (state.kind) ls = ls.filter(function (x) { return x.kind === state.kind; });
-  if (state.cat)  ls = ls.filter(function (x) { return x.cat === state.cat; });
-  if (state.av === "open") ls = ls.filter(function (x) { return !x.closed; });
-  if (state.spk) ls = ls.filter(function (x) { return (x.langs || []).indexOf(state.spk) >= 0; });
-  if (state.q) {
-    const w = state.q.toLowerCase().split(/\s+/).filter(Boolean);
-    ls = ls.filter(function (x) {
-      const hay = (x.title + " " + x.preview + " " + x.area + " " + x.when).toLowerCase();
-      return w.every(function (t) { return hay.indexOf(t) >= 0; });
-    });
-  }
-  if (state.sort === "going") ls.sort(function (a, b) { return b.going - a.going; });
+  const ls = filtered(plans).filter(function (x) { return !x.closed; });
+  const byTopic = {};
+  ls.forEach(function (x) { byTopic[x.cat] = (byTopic[x.cat] || 0) + 1; });
 
-  if (!ls.length) {
-    if (!loaded) { v.innerHTML = '<div class="loading">' + T("Loading…", "読み込み中…") + "</div>"; return; }
-    v.innerHTML = plans.length ? emptyFilter() : emptyBoard();
-    const b = $("emptyAsk");
-    if (b) b.addEventListener("click", function () { openSheet(); });
-    return;
+  let h = '<div class="secH"><h2>' + T("Which game?", "どのゲーム？") + "</h2><span>"
+    + T("Every room is already open. Walk into an empty one and you are the first.",
+        "部屋はぜんぶもう建っています。空の部屋に入れば、あなたが1人目です。") + "</span></div>";
+
+  h += '<div class="rooms">' + TOPICS.map(function (t) {
+    const n = byTopic[t.id] || 0;
+    return '<button class="room" data-t="' + t.id + '">'
+      + '<span class="ic">' + t.ic + "</span>"
+      + '<span class="nm">' + esc(T(t.en, t.ja)) + "</span>"
+      + '<span class="mt"><span class="cnt' + (n ? "" : " zero") + '">'
+      +   (n ? "🙋 " + n : T("empty", "だれもいない")) + "</span>"
+      +   (t.irl  ? '<span class="pill irl">' + T("in person too", "会ってもできる") + "</span>" : "")
+      +   (t.talk ? '<span class="pill talk">' + T("good for talking", "しゃべりやすい") + "</span>" : "")
+      + "</span></button>";
+  }).join("") + "</div>";
+
+  const recent = ls.slice(0, 8);
+  h += '<div class="secH"><h2>' + T("Up right now", "いま出ている人") + "</h2><span>"
+    + (!loaded ? "" : recent.length ? "" : T("Nobody yet. The first one decides whether this place lives.",
+                              "まだ誰もいません。ここが生きるかどうかは1人目で決まります。")) + "</span></div>";
+  // 部屋は中身を待たずに出す（空でも建っていてほしいのがこのページの要）。
+  // 人のほうだけ、読み終わるまで「まだ誰もいません」と言わない
+  h += !loaded ? '<div class="loading">' + T("Loading…", "読み込み中…") + "</div>"
+      : recent.length ? '<div class="grid">' + recent.map(card).join("") + "</div>"
+      : emptyBoard();
+
+  v.innerHTML = h;
+  bindRooms(v);
+  bindCards(v);
+  const b = $("emptyAsk");
+  if (b) b.addEventListener("click", function () { openSheet(); });
+}
+
+/* ---------------------------------------------------------------- 部屋のなか */
+function renderRoom(id) {
+  const t = topicOf(id);
+  const v = $("view");
+  const ls = filtered(plans).filter(function (x) { return x.cat === t.id; });
+
+  let h = '<button class="back" id="back">&larr; ' + T("All games", "ぜんぶのゲーム") + "</button>"
+    + '<div class="roomHead"><span class="ic">' + t.ic + "</span><h2>" + esc(T(t.en, t.ja)) + "</h2>"
+    + '<span style="flex:1"></span>'
+    + '<button class="btn p" id="roomPost">' + T("Put yourself up here", "この部屋に出す") + "</button></div>";
+
+  if (!loaded) {
+    h += '<div class="loading">' + T("Loading…", "読み込み中…") + "</div>";
+  } else if (!ls.length) {
+    h += '<div class="empty"><h3>' + T("Nobody in this room yet.", "この部屋にはまだ誰もいません。") + "</h3>"
+      + "<p>" + T("That is not a problem, it is the opening. Whoever writes first gets to set the rule for how you split the two languages.",
+                  "それは困ったことではなく、入口です。最初に書いた人が、ことばをどう半分に分けるかを決められます。") + "</p>"
+      + '<button class="btn p" id="emptyAsk">' + T("Be the first one in", "1人目になる") + "</button></div>";
+  } else {
+    h += '<div class="grid">' + ls.map(card).join("") + "</div>";
   }
-  v.innerHTML = '<div class="grid">' + ls.map(card).join("") + "</div>";
+  v.innerHTML = h;
+  $("back").addEventListener("click", function () { location.hash = ""; });
+  $("roomPost").addEventListener("click", function () { openSheet(t.id); });
+  const b = $("emptyAsk");
+  if (b) b.addEventListener("click", function () { openSheet(t.id); });
+  bindCards(v);
+  window.scrollTo(0, 0);
+}
+
+function bindRooms(v) {
+  Array.prototype.forEach.call(v.querySelectorAll("[data-t]"), function (el) {
+    el.addEventListener("click", function () { location.hash = "#t/" + el.dataset.t; });
+  });
+}
+function bindCards(v) {
   Array.prototype.forEach.call(v.querySelectorAll(".it"), function (el) {
     el.addEventListener("click", function () { location.hash = "#g/" + el.dataset.id; });
   });
 }
 
 function card(g) {
-  const c = catOf(g.cat), k = kindOf(g.kind), lv = lvOf(g.level);
+  const t = topicOf(g.cat), k = kindOf(g.kind), lv = lvOf(g.level);
   return '<div class="it' + (g.closed ? " closed" : "") + '" data-id="' + esc(g.id) + '">'
-    + '<div class="itHead"><span class="big">' + c.ic + "</span>"
+    + '<div class="itHead"><span class="big">' + t.ic + "</span>"
     +   '<span class="tag ' + g.kind + '">' + k.ic + " " + esc(T(k.en, k.ja)) + "</span>"
     +   (g.level !== "any" ? '<span class="tag lv ' + g.level + '">' + esc(T(lv.en, lv.ja)) + "</span>" : "")
     +   (g.closed ? '<span class="doneTag">' + T("Full", "埋まりました") + "</span>" : "")
     + "</div>"
     + '<p class="itT">' + esc(g.title) + "</p>"
-    + '<div class="itW"><b>🕐 ' + esc(whenTxt(g)) + "</b>"
-    +   (g.area ? "<span>· " + (g.kind === "online" ? "🎧 " : "📍 ") + esc(g.area) + "</span>" : "")
+    + lxHtml(g)
+    + '<div class="itW">🕐 ' + esc(whenTxt(g))
+    +   (g.area ? "<span>· " + esc(g.area) + "</span>" : "")
     + "</div>"
-    + '<div class="itM"><span>' + esc(sizeTxt(g.size)) + "</span>"
-    +   (g.going ? '<span class="going">🙋 ' + g.going + T(" in", "人行きます") + "</span>" : "")
+    + '<div class="itM"><span>' + esc(T(t.en, t.ja)) + "</span>"
+    +   (g.going ? '<span class="cnt">🙋 ' + g.going + "</span>" : "")
     +   (g.comments ? "<span>💬 " + g.comments + "</span>" : "")
     +   "<span>" + ago(g.ts) + "</span>"
-    + "</div>"
-    + (g.langs && g.langs.length
-        ? '<div class="itM spk">🗣' + g.langs.map(function (l) {
-            return "<i>" + esc(langName(l)) + "</i>"; }).join("") + "</div>"
-        : "")
-    + "</div>";
+    + "</div></div>";
 }
 
 function emptyBoard() {
   return '<div class="empty"><h3>' + T("Nothing here yet.", "まだ何もありません。") + "</h3>"
-    + "<p>" + T("The first invitation is the hard one. After that it fills itself.",
+    + "<p>" + T("The first one is the hard one. After that it fills itself.",
                 "最初の1つがいちばん難しいところです。そこを越えると、あとは勝手に増えます。") + "</p>"
     + '<div class="egs">' + EXAMPLES.map(function (e) {
-        const k = kindOf(e.k);
-        return '<div class="eg"><s>' + k.ic + " " + T(k.en, k.ja) + " — " + T("for example", "たとえば")
+        const t = topicOf(e.t);
+        return '<div class="eg"><s>' + t.ic + " " + esc(T(t.en, t.ja)) + " — " + T("for example", "たとえば")
           + "</s>" + esc(T(e.en, e.ja)) + "</div>";
       }).join("") + "</div>"
     + '<button class="btn p" id="emptyAsk">' + T("Put the first one up", "最初の1つを出す") + "</button></div>";
-}
-function emptyFilter() {
-  return '<div class="empty"><h3>' + T("Nothing matches that.", "その条件では何もありません。") + "</h3>"
-    + "<p>" + T("Try fewer filters — or put up your own and let people come to you.",
-                "条件をゆるめるか、自分から誘っておくと向こうから来ます。") + "</p>"
-    + '<button class="btn p" id="emptyAsk">' + T("Put up your own", "自分から誘う") + "</button></div>";
 }
 
 /* ---------------------------------------------------------------- 1件 */
@@ -659,38 +764,38 @@ async function renderDetail() {
   $("view").innerHTML = '<div class="loading">' + T("Loading…", "読み込み中…") + "</div>";
   const r = await apiGet({ a:"plan", id:id });
   if (!r.ok) { location.hash = ""; return; }
-  const g = r.plan, c = catOf(g.cat), k = kindOf(g.kind), lv = lvOf(g.level);
+  const g = r.plan, t = topicOf(g.cat), k = kindOf(g.kind), lv = lvOf(g.level);
   const isMine = mine().indexOf(g.id) >= 0;
   const isIn   = joined().indexOf(g.id) >= 0;
 
-  let h = '<button class="back" id="back">&larr; ' + T("Everything on the board", "一覧へ戻る") + "</button>"
+  let h = '<button class="back" id="back">&larr; ' + esc(T(t.en, t.ja)) + "</button>"
     + '<div class="dBox">'
     +   (g.closed ? '<div class="soldNote">' + T("This one is full or already happened.",
                       "これはもう埋まった／終わりました。") + "</div>" : "")
-    +   '<div class="itHead"><span class="big">' + c.ic + "</span>"
+    +   '<div class="itHead"><span class="big">' + t.ic + "</span>"
     +     '<span class="tag ' + g.kind + '">' + k.ic + " " + esc(T(k.en, k.ja)) + "</span>"
     +     '<span class="tag lv ' + g.level + '">' + esc(T(lv.en, lv.ja)) + "</span></div>"
     +   "<h2>" + esc(g.title) + "</h2>"
+    +   lxHtml(g)
     +   '<div class="dBody">' + linkify(g.body) + "</div>"
     +   '<div class="facts">'
+    +     "<div><b>" + T("Game", "ゲーム") + "</b><span>" + t.ic + " " + esc(T(t.en, t.ja)) + "</span></div>"
     +     "<div><b>" + T("When", "いつ") + "</b><span>🕐 " + esc(whenTxt(g)) + "</span></div>"
-    +     (g.area ? "<div><b>" + (g.kind === "online" ? T("On what", "どこで") : T("Where", "場所"))
-            + "</b><span>" + (g.kind === "online" ? "🎧 " : "📍 ") + esc(g.area) + "</span></div>" : "")
+    +     (g.area ? "<div><b>" + (g.kind === "meet" ? T("Where", "場所") : T("On what", "どこで"))
+            + "</b><span>" + (g.kind === "meet" ? "📍 " : "🎧 ") + esc(g.area) + "</span></div>" : "")
+    +     "<div><b>" + T("Speaks", "話せることば") + "</b><span>"
+    +       esc((g.langs || []).map(langName).join(" / ") || "—") + "</span></div>"
+    +     "<div><b>" + T("Wants to practise", "習いたいことば") + "</b><span>"
+    +       esc((g.learn || []).map(langName).join(" / ") || "—") + "</span></div>"
     +     "<div><b>" + T("People", "人数") + "</b><span>" + esc(sizeTxt(g.size)) + "</span></div>"
-    +     (g.langs && g.langs.length
-            ? "<div><b>" + T("Speaks", "話せることば") + '</b><span class="spk">'
-              + g.langs.map(function (l) { return "<i>" + esc(langName(l)) + "</i>"; }).join("")
-              + "</span></div>"
-            : "")
-    +     "<div><b>" + T("Kind", "種類") + "</b><span>" + c.ic + " " + esc(T(c.en, c.ja)) + "</span></div>"
-    +     "<div><b>" + T("Put up by", "誘った人") + "</b><span>"
+    +     "<div><b>" + T("Put up by", "出した人") + "</b><span>"
     +       esc(g.nick || T("Anonymous", "名無し")) + " · " + ago(g.ts) + "</span></div>"
     +   "</div>"
     +   '<div class="joinRow">'
     +     (isMine || g.closed ? ""
           : '<button class="btn p" id="joinB"' + (isIn ? " disabled" : "") + ">"
-            + (isIn ? T("You said you are in", "行くと伝えました") : T("I'm in", "行きます")) + "</button>")
-    +     '<span class="cnt" id="goCnt">' + (g.going
+            + (isIn ? T("You said you are in", "やりたいと伝えました") : T("I'm in", "やりたい")) + "</button>")
+    +     '<span class="c2" id="goCnt">' + (g.going
             ? "🙋 " + goingTxt(g.going)
             : T("Nobody has said yes yet. Being the first one is how it starts.",
                 "まだ誰も手を挙げていません。最初の1人がいちばん効きます。")) + "</span>"
@@ -708,8 +813,8 @@ async function renderDetail() {
         ? (r.comments.length + " " + T(r.comments.length === 1 ? "message" : "messages", "件のやりとり"))
         : T("No messages yet", "まだやりとりはありません")) + "</h3>"
     + '<p class="hint">' + T(
-        "Everything written here is public — everyone can read it. Use it to settle the time and the place. Do not put your phone number, your address, or your LINE ID in the open.",
-        "ここに書いたことは誰でも読めます。時間と場所を決めるのに使ってください。電話番号・住所・LINEのIDは書かないこと。") + "</p>";
+        "Everything written here is public — everyone can read it. Settle the time here, and swap game IDs or Discord tags only after you have actually spoken. Do not put your phone number or address in the open.",
+        "ここに書いたことは誰でも読めます。時間を決めるのに使って、ゲームIDやDiscordのタグは一度ちゃんと話してから渡してください。電話番号や住所は書かないこと。") + "</p>";
   h += r.comments.map(function (a) {
     return '<div class="ans"><div class="t">' + linkify(a.body) + "</div>"
       + '<div class="m"><span>' + esc(a.nick || T("Anonymous", "名無し")) + "</span><span>" + ago(a.ts) + "</span>"
@@ -717,11 +822,11 @@ async function renderDetail() {
   }).join("");
   h += "</div>";
 
-  h += '<div class="replyBox"><label>' + T("Ask something, or say when you can make it.",
-        "聞きたいこと、来られる時間などをここに。") + "</label>"
+  h += '<div class="replyBox"><label>' + T("Ask something, or say when you can play.",
+        "聞きたいこと、遊べる時間などをここに。") + "</label>"
     + '<textarea id="rBody" maxlength="4000" placeholder="'
-    +   T("e.g. I have never done this. Is Saturday still open? I can be there by 2.",
-          "例：やったことがありません。土曜はまだ空いていますか。14時までには行けます。") + '"></textarea>'
+    +   T("e.g. I am N3 and I want English. Weeknights after 10 works. Shall we do one match in each?",
+          "例：N3で、習いたいのは英語です。平日22時すぎなら行けます。1試合ずつで分けませんか。") + '"></textarea>'
     + '<div class="row2" style="margin-top:10px"><input id="rNick" type="text" maxlength="24" placeholder="'
     +   T("Call yourself something (optional)", "呼び名（任意）") + '"><div></div></div>'
     + '<div class="sheetFoot"><button class="btn p" id="rSend">' + T("Send", "送る") + "</button>"
@@ -733,7 +838,7 @@ async function renderDetail() {
 }
 
 function bindDetail(g) {
-  $("back").addEventListener("click", function () { location.hash = ""; });
+  $("back").addEventListener("click", function () { location.hash = "#t/" + topicOf(g.cat).id; });
   $("flagI").addEventListener("click", function () { doFlag("plan", g.id); });
 
   const jb = $("joinB");
@@ -742,9 +847,8 @@ function bindDetail(g) {
     const r = await apiPost({ a:"vote", kind:"going", id:g.id });
     if (!r.ok) { jb.disabled = false; return; }
     markJoined(g.id);
-    jb.textContent = T("You said you are in", "行くと伝えました");
-    const n = r.going || (g.going + 1);
-    $("goCnt").textContent = "🙋 " + goingTxt(n);
+    jb.textContent = T("You said you are in", "やりたいと伝えました");
+    $("goCnt").textContent = "🙋 " + goingTxt(r.going || (g.going + 1));
     load(true);
   });
 
@@ -756,7 +860,7 @@ function bindDetail(g) {
   });
   const db = $("delI");
   if (db) db.addEventListener("click", async function () {
-    if (!confirm(T("Take this down for good?", "この誘いを取り下げますか？"))) return;
+    if (!confirm(T("Take this down for good?", "これを取り下げますか？"))) return;
     await apiPost({ a:"remove", kind:"plan", id:g.id });
     location.hash = ""; load(true);
   });
@@ -794,10 +898,12 @@ function linkify(s) {
 }
 function errText(r) {
   const m = {
-    "short-title": T("Say what you are doing, in a few words.", "何をするのか、ひとこと書いてください。"),
+    "short-title": T("Say it in one line first.", "まずひとことだけ書いてください。"),
     "short-body":  T("A little more detail, please.", "もう少しだけ、くわしく。"),
     "no-area":     T("Where? A station or a ward is enough.", "どこでやりますか。駅か区まででいいです。"),
-    "no-langs":    T("Pick at least one language you can talk in.", "話せることばを1つ以上えらんでください。"),
+    "no-langs":    T("Pick at least one language you can speak.", "話せることばを1つ以上えらんでください。"),
+    "no-learn":    T("Pick the language you want to practise — that is the whole exchange.",
+                     "習いたいことばをえらんでください。交換はそこで成り立ちます。"),
     "toofast":     T("Just a moment — one at a time.", "少しだけ待ってください。続けては出せません。"),
     "spam":        T("That looked like spam. Try fewer links.", "宣伝のように見えました。リンクを減らしてみてください。"),
     "notready":    T("Not open yet. Please come back soon.", "まだ開いていません。少し待ってください。"),
@@ -806,41 +912,53 @@ function errText(r) {
   return m[r.err] || T("Could not send. Try again.", "送れませんでした。もう一度ためしてください。");
 }
 
-/* ---------------------------------------------------------------- 誘う */
-function openSheet() {
+/* ---------------------------------------------------------------- 出す */
+function openSheet(topic) {
   $("sheet").classList.add("on");
   $("fMsg").textContent = "";
+  if (topic) $("fCat").value = topic;
   drawKindPick();
   drawLangPick();
   setTimeout(function () { $("fTitle").focus(); }, 50);
 }
 function closeSheet() { $("sheet").classList.remove("on"); }
 
-/* 話せることばのえらび方。いま見ている言語は最初から入れておく
-   （その言語で読んでいる人は、まずその言語が話せる） */
+/* 話せることばは、いま読んでいる言語を最初から入れておく
+   （その言語で読んでいる人は、まずその言語が話せる）。
+   習いたいほうは勝手に決めない。ここは本人にしか分からない */
 function drawLangPick() {
   if (!langsTouched) myLangs = [lang];
-  $("fLangs").innerHTML = LANGS.map(function (l) {
-    return '<button type="button" data-l="' + l.id + '"'
-      + (myLangs.indexOf(l.id) >= 0 ? ' class="on"' : "") + ">" + esc(l.name) + "</button>";
-  }).join("");
-  Array.prototype.forEach.call($("fLangs").querySelectorAll("[data-l]"), function (b) {
-    b.addEventListener("click", function () {
-      langsTouched = true;
-      const i = myLangs.indexOf(b.dataset.l);
-      if (i >= 0) myLangs.splice(i, 1); else myLangs.push(b.dataset.l);
-      drawLangPick();
+  if (!learnTouched && !myLearn.length) myLearn = lang === "ja" ? ["en"] : ["ja"];
+  [["fLangs", myLangs, true], ["fLearn", myLearn, false]].forEach(function (p) {
+    const box = $(p[0]), sel = p[1];
+    box.innerHTML = LANGS.map(function (l) {
+      return '<button type="button" data-l="' + l.id + '"'
+        + (sel.indexOf(l.id) >= 0 ? ' class="on"' : "") + ">" + esc(l.name) + "</button>";
+    }).join("");
+    Array.prototype.forEach.call(box.querySelectorAll("[data-l]"), function (b) {
+      b.addEventListener("click", function () {
+        if (p[2]) langsTouched = true; else learnTouched = true;
+        const i = sel.indexOf(b.dataset.l);
+        if (i >= 0) sel.splice(i, 1); else sel.push(b.dataset.l);
+        drawLangPick();
+      });
     });
   });
 }
 
-function drawSpkFilter() {
-  const sel = $("spkFilter");
-  sel.innerHTML = '<option value="">🗣 ' + T("Any language", "ことばは問わない") + "</option>"
-    + LANGS.map(function (l) {
-        return '<option value="' + l.id + '">🗣 ' + esc(l.name) + "</option>";
-      }).join("");
-  sel.value = state.spk;
+/* 言語名だけを並べる。意味は横のラベルと絵文字が持つ。
+   「English が話せる」のように文を組み立てると語順が言語ごとに壊れる */
+function drawFilters() {
+  const opts = function (ic) {
+    return '<option value="">' + ic + " " + T("any", "問わない") + "</option>"
+      + LANGS.map(function (l) {
+          return '<option value="' + l.id + '">' + ic + " " + esc(l.name) + "</option>";
+        }).join("");
+  };
+  $("spkFilter").innerHTML  = opts("🗣");
+  $("wantFilter").innerHTML = opts("📚");
+  $("spkFilter").value  = state.spk;
+  $("wantFilter").value = state.want;
 }
 
 function drawKindPick() {
@@ -853,24 +971,15 @@ function drawKindPick() {
   });
   applyKind();
 }
-/* 「どこ」の意味が種類で変わる。オンラインなら Switch や Discord のこと。
-   日が決まっていない誘いは、いつ・どこも空のままでいい */
+/* 「どこ」の意味が変わる。会って遊ぶなら駅、オンラインなら機種やDiscord */
 function applyKind() {
   $("areaLbl").innerHTML = whereLabel(pickKind);
-  $("whenLbl").innerHTML = whenLabel(pickKind);
-  $("fArea").placeholder = pickKind === "online"
-    ? T("e.g. Switch, or Discord + Steam", "例：Switch／DiscordとSteam")
-    : pickKind === "open"
-      ? T("e.g. somewhere on the Chuo line (optional)", "例：中央線沿いならどこでも（任意）")
-      : T("e.g. Koenji — or anywhere on the Yamanote line", "例：高円寺 ─ 「山手線沿いならどこでも」でもいい");
+  $("fArea").placeholder = pickKind === "meet"
+    ? T("e.g. an arcade in Akihabara, or Koenji", "例：秋葉原のゲーセン／高円寺")
+    : T("e.g. PC + Discord, or Switch", "例：PCとDiscord／Switch");
   $("fWhen").placeholder = pickKind === "open"
     ? T("e.g. weekends, or any evening (optional)", "例：週末／夜ならいつでも（任意）")
-    : T("e.g. Saturday 2pm — or just “most Sundays”", "例：土曜14時 ─ 「だいたい毎週日曜」でもいい");
-  $("fTitle").placeholder = pickKind === "online"
-    ? T("e.g. Smash Bros on weeknights, I am bad at it", "例：平日の夜にスマブラ。弱いです")
-    : pickKind === "open"
-      ? T("e.g. Looking for one person to run with", "例：いっしょに走る人を1人さがしています")
-      : T("e.g. Bouldering on Saturday afternoon, beginners fine", "例：土曜の午後にボルダリング。はじめてでも大丈夫");
+    : T("e.g. weeknights after 10, JST", "例：平日の22時すぎ（日本時間）");
 }
 
 async function send() {
@@ -885,15 +994,19 @@ async function send() {
     size:  Number($("fSize").value) || 0,
     nick:  $("fNick").value.trim(),
     mail:  $("fMail").value.trim(),
-    langs: myLangs,
+    langs: myLangs, learn: myLearn,
     hp:    $("fHp").value
   };
-  if (b.title.length < 3) { $("fMsg").textContent = T("Say what you are doing.", "何をするのか書いてください。"); return; }
+  if (b.title.length < 3) { $("fMsg").textContent = T("Say it in one line first.", "まずひとことだけ書いてください。"); return; }
   if (b.body.length  < 5) { $("fMsg").textContent = T("A bit more detail, please.", "もう少しだけ、くわしく。"); return; }
   if (pickKind === "meet" && !b.area) {
     $("fMsg").textContent = T("Where? A station or a ward is enough.", "どこでやりますか。駅か区まででいいです。"); return;
   }
-  if (!b.langs.length) { $("fMsg").textContent = T("Pick at least one language you can talk in.", "話せることばを1つ以上えらんでください。"); return; }
+  if (!b.langs.length) { $("fMsg").textContent = T("Pick at least one language you can speak.", "話せることばを1つ以上えらんでください。"); return; }
+  if (!b.learn.length) {
+    $("fMsg").textContent = T("Pick the language you want to practise — that is the whole exchange.",
+                              "習いたいことばをえらんでください。交換はそこで成り立ちます。"); return;
+  }
 
   $("fSend").disabled = true;
   $("fMsg").textContent = T("Sending…", "送っています…");
@@ -912,14 +1025,14 @@ async function send() {
 async function load(quiet) {
   if (!quiet) {
     try {
-      const c = localStorage.getItem("mj-play-cache");
+      const c = localStorage.getItem("mj-play-cache2");
       if (c) { plans = JSON.parse(c); render(); }
     } catch (e) {}
   }
   const r = await apiGet({ a:"plans" });
   if (r.ok) {
     plans = r.plans || [];
-    try { localStorage.setItem("mj-play-cache", JSON.stringify(plans)); } catch (e) {}
+    try { localStorage.setItem("mj-play-cache2", JSON.stringify(plans)); } catch (e) {}
   }
   loaded = true;
   render();
@@ -927,29 +1040,14 @@ async function load(quiet) {
 
 /* ---------------------------------------------------------------- 組み立て */
 function buildTools() {
-  $("kinds").innerHTML = '<button class="kindBtn' + (state.kind ? "" : " on") + '" data-kind="">'
-      + T("Everything", "ぜんぶ") + "</button>"
-    + KINDS.map(function (k) {
-        return '<button class="kindBtn' + (state.kind === k.id ? " on" : "")
-          + (k.id === "online" ? " online" : "") + '" data-kind="' + k.id + '">'
-          + k.ic + " " + esc(T(k.en, k.ja)) + "</button>";
-      }).join("");
-  Array.prototype.forEach.call($("kinds").querySelectorAll("[data-kind]"), function (b) {
-    b.addEventListener("click", function () { state.kind = b.dataset.kind; buildTools(); renderList(); });
-  });
+  $("groups").innerHTML = GROUPS.map(function (g) {
+    return '<button class="grp' + (g.on ? " on" : " soon") + '" data-g="' + g.id + '"'
+      + (g.on ? "" : " disabled") + ">" + g.ic + " " + esc(T(g.en, g.ja))
+      + (g.on ? "" : "<s>" + T("later", "そのうち") + "</s>") + "</button>";
+  }).join("");
 
-  $("chips").innerHTML = '<button class="chip' + (state.cat ? "" : " on") + '" data-cat="">'
-      + T("All kinds", "すべての種類") + "</button>"
-    + CATS.map(function (c) {
-        return '<button class="chip' + (state.cat === c.id ? " on" : "") + '" data-cat="' + c.id + '">'
-          + c.ic + " " + esc(T(c.en, c.ja)) + "</button>";
-      }).join("");
-  Array.prototype.forEach.call($("chips").querySelectorAll("[data-cat]"), function (b) {
-    b.addEventListener("click", function () { state.cat = b.dataset.cat; buildTools(); renderList(); });
-  });
-
-  $("fCat").innerHTML = CATS.map(function (c) {
-    return '<option value="' + c.id + '">' + c.ic + " " + esc(T(c.en, c.ja)) + "</option>";
+  $("fCat").innerHTML = TOPICS.map(function (t) {
+    return '<option value="' + t.id + '">' + t.ic + " " + esc(T(t.en, t.ja)) + "</option>";
   }).join("");
   $("fLevel").innerHTML = LEVELS.map(function (l) {
     return '<option value="' + l.id + '">' + esc(T(l.en, l.ja)) + "</option>";
@@ -975,11 +1073,11 @@ function applyLang() {
   });
   $("lang").value = lang;
   try { localStorage.setItem("mj-lang", lang); } catch (e) {}
-  buildTools(); drawKindPick(); drawLangPick(); drawSpkFilter(); render();
+  buildTools(); drawKindPick(); drawLangPick(); drawFilters(); render();
 }
 
 $("lang").addEventListener("change", function () { setLang($("lang").value); });
-$("postBtn").addEventListener("click", openSheet);
+$("postBtn").addEventListener("click", function () { openSheet(); });
 $("fCancel").addEventListener("click", closeSheet);
 $("fSend").addEventListener("click", send);
 $("sheet").addEventListener("click", function (e) { if (e.target === $("sheet")) closeSheet(); });
@@ -987,30 +1085,10 @@ $("sheet").addEventListener("click", function (e) { if (e.target === $("sheet"))
 let qTimer = 0;
 $("q").addEventListener("input", function () {
   clearTimeout(qTimer);
-  qTimer = setTimeout(function () { state.q = $("q").value.trim(); renderList(); }, 150);
+  qTimer = setTimeout(function () { state.q = $("q").value.trim(); render(); }, 150);
 });
-Array.prototype.forEach.call(document.querySelectorAll("[data-sort]"), function (b) {
-  b.addEventListener("click", function () {
-    state.sort = b.dataset.sort;
-    Array.prototype.forEach.call(document.querySelectorAll("[data-sort]"), function (x) {
-      x.classList.toggle("on", x === b);
-    });
-    renderList();
-  });
-});
-Array.prototype.forEach.call(document.querySelectorAll("[data-av]"), function (b) {
-  b.addEventListener("click", function () {
-    state.av = b.dataset.av;
-    Array.prototype.forEach.call(document.querySelectorAll("[data-av]"), function (x) {
-      x.classList.toggle("on", x === b);
-    });
-    renderList();
-  });
-});
-$("spkFilter").addEventListener("change", function () {
-  state.spk = $("spkFilter").value;
-  renderList();
-});
+$("spkFilter").addEventListener("change", function () { state.spk = $("spkFilter").value; render(); });
+$("wantFilter").addEventListener("change", function () { state.want = $("wantFilter").value; render(); });
 window.addEventListener("hashchange", render);
 document.addEventListener("keydown", function (e) { if (e.key === "Escape") closeSheet(); });
 

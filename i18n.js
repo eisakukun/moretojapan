@@ -34,7 +34,7 @@ window.MTJ_LOAD = function (lang) {
   if (window.MTJ_READY[lang]) return Promise.resolve();
   return new Promise(function (res) {
     const s = document.createElement("script");
-    s.src = "/i18n/" + lang + ".js?v=3";
+    s.src = "/i18n/" + lang + ".js?v=4";
     s.onload = res;
     s.onerror = function () { window.MTJ_READY[lang] = true; res(); };  // 無い言語でも止まらない
     document.head.appendChild(s);

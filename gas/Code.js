@@ -28,7 +28,8 @@ const COLS = {
             'photos','langs','nick','dev','mail','status','comments','flags'],
   // いっしょに何かやる（趣味で集まるほう）
   plans:   ['id','ts','updated','kind','title','body','cat','when','area','level','size',
-            'langs','nick','dev','mail','status','going','comments','flags']
+            'langs','nick','dev','mail','status','going','comments','flags',
+            'learn']   // ← 足すときは必ず末尾に（途中だと既存行の読む位置がずれる）
 };
 
 const OK_LANGS = ['en','ja','zh','vi','ko','tl','ne'];   // 話せることばに書ける言語
@@ -586,6 +587,7 @@ function plans_(q) {
         cat: g.cat, when: String(g.when || ''), area: String(g.area || ''),
         level: g.level || 'any', size: Number(g.size) || 0,
         langs: String(g.langs || '').split(',').filter(Boolean),
+        learn: String(g.learn || '').split(',').filter(Boolean),
         nick: g.nick, going: Number(g.going) || 0,
         comments: Number(g.comments) || 0,
         closed: g.status === 'closed'
@@ -613,6 +615,7 @@ function onePlan_(id) {
       cat: g.cat, when: String(g.when || ''), area: String(g.area || ''),
       level: g.level || 'any', size: Number(g.size) || 0,
       langs: String(g.langs || '').split(',').filter(Boolean),
+      learn: String(g.learn || '').split(',').filter(Boolean),
       nick: g.nick, going: Number(g.going) || 0, closed: g.status === 'closed'
       // mail はここには絶対に入れない
     },
@@ -635,6 +638,10 @@ function newPlan_(b) {
   if (kind === 'meet' && !area) return { ok: false, err: 'no-area' };
   const langs = (b.langs || []).filter(function (x) { return OK_LANGS.indexOf(x) >= 0; });
   if (!langs.length) return { ok: false, err: 'no-langs' };
+  // ここは言語交換が土台なので、習いたいことばも必ず要る。
+  // 片方しか無い投稿は「遊ぶ相手募集」になってしまい、別の掲示板になる
+  const learn = (b.learn || []).filter(function (x) { return OK_LANGS.indexOf(x) >= 0; });
+  if (!learn.length) return { ok: false, err: 'no-learn' };
   const bad = spam_(title + '\n' + body);
   if (bad) return { ok: false, err: 'spam', why: bad };
 
@@ -646,7 +653,7 @@ function newPlan_(b) {
     when: clean_(b.when, 60), area: area,
     level: PLAN_LEVELS.indexOf(b.level) >= 0 ? b.level : 'any',
     size: Math.max(0, Math.min(99, Math.floor(Number(b.size) || 0))),
-    langs: langs.join(','),
+    langs: langs.join(','), learn: learn.join(','),
     nick: clean_(b.nick, 24), dev: dev, mail: validMail_(b.mail),
     status: 'open', going: 0, comments: 0, flags: 0
   });

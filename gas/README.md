@@ -4,11 +4,15 @@
 
 - `/help.html` 暮らしのこまりごと掲示板（posts / replies）
 - `/market.html` ゆずります・さがしています（items / replies を共用）
-- `/play.html` いっしょに何かやる（plans / replies を共用）
+- `/play.html` ゲーマーのための言語交換（plans / replies を共用）
 
 返事はどのページも `replies` 1枚に入る。どこへの返事かは **id の頭文字**で分ける
 （`p…`＝こまりごと、`i…`＝ゆずります、`g…`＝いっしょにやる）。
 `plans` のシートは最初に呼ばれたときに勝手に作られるので、▶ を押し直す必要はない。
+
+⚠️ **`plans` に列を足すときは必ず `COLS.plans` の末尾に足すこと。**途中に差し込むと、
+▶（`setup`）を押して `fixCols_` が直すまで、既存行の読む位置が黙ってずれる。
+末尾なら何もしなくても壊れない（シートの見出しだけ空のままになる）。
 
 写真は Drive の「More to Japan 掲示板の写真」に入り、1枚ずつ「リンクを知っている全員」にして
 `drive.google.com/thumbnail?id=…` で直接表に出す（GASを通さないので速い）。
