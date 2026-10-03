@@ -25,13 +25,17 @@ const COLS = {
   votes:   ['ts','key'],
   // ゆずります・さがしています（ジモティーにあたるほう）
   items:   ['id','ts','updated','kind','title','body','price','nego','cat','area','deliver',
-            'photos','langs','nick','dev','mail','status','comments','flags']
+            'photos','langs','nick','dev','mail','status','comments','flags'],
+  // いっしょに何かやる（趣味で集まるほう）
+  plans:   ['id','ts','updated','kind','title','body','cat','when','area','level','size',
+            'langs','nick','dev','mail','status','going','comments','flags']
 };
 
 const OK_LANGS = ['en','ja','zh','vi','ko','tl','ne'];   // 話せることばに書ける言語
 const PROP_PHOTOS = 'PHOTO_FOLDER_ID';   // 写真の置き場（setup が作る）
 const MAX_PHOTOS  = 3;
 const ITEM_DAYS   = 60;                  // これより古いものは一覧から落とす
+const PLAN_DAYS   = 45;                  // 誘いは古くなるのが早い。45日で一覧から落とす
 
 /* ============================================================ 置き場所 */
 
@@ -156,6 +160,8 @@ function doGet(e) {
     if (a === 'post')  return json_(one_(q.id));
     if (a === 'items') return json_(items_(q));
     if (a === 'item')  return json_(oneItem_(q.id));
+    if (a === 'plans') return json_(plans_(q));
+    if (a === 'plan')  return json_(onePlan_(q.id));
     return json_({ ok: false, err: 'unknown' });
   } catch (err) {
     return json_({ ok: false, err: String(err && err.message || err) });
@@ -174,6 +180,8 @@ function doPost(e) {
       if (a === 'new')     return json_(newPost_(b));
       if (a === 'newitem') return json_(newItem_(b));
       if (a === 'sold')    return json_(sold_(b));
+      if (a === 'newplan') return json_(newPlan_(b));
+      if (a === 'close')   return json_(close_(b));
       if (a === 'reply')   return json_(newReply_(b));
       if (a === 'vote')   return json_(vote_(b));
       if (a === 'solve')  return json_(solve_(b));
@@ -277,9 +285,11 @@ function newReply_(b) {
   const bad = spam_(body);
   if (bad) return { ok: false, err: 'spam', why: bad };
 
-  // こまりごと（posts）と、ゆずります（items）の両方に返事がつく
-  const isItem = String(b.id).charAt(0) === 'i';
-  const sheet  = isItem ? 'items' : 'posts';
+  // こまりごと（posts）・ゆずります（items）・いっしょにやる（plans）の3つに返事がつく
+  const head   = String(b.id).charAt(0);
+  const isItem = head === 'i';
+  const isPlan = head === 'g';
+  const sheet  = isItem ? 'items' : isPlan ? 'plans' : 'posts';
   const parent = rows_(sheet).filter(function (x) { return String(x.id) === String(b.id); })[0];
   if (!parent) return { ok: false, err: 'notfound' };
 
@@ -288,17 +298,18 @@ function newReply_(b) {
   append_('replies', { id: id, ts: now, postId: parent.id, body: body,
                        nick: clean_(b.nick, 24), dev: dev, helpful: 0, status: 'open', flags: 0 });
   patch_(sheet, parent.id,
-    isItem ? { comments: (Number(parent.comments) || 0) + 1, updated: now }
-           : { replies:  (Number(parent.replies)  || 0) + 1, updated: now });
-  CacheService.getScriptCache().removeAll(['list', 'items']);
+    (isItem || isPlan) ? { comments: (Number(parent.comments) || 0) + 1, updated: now }
+                       : { replies:  (Number(parent.replies)  || 0) + 1, updated: now });
+  CacheService.getScriptCache().removeAll(['list', 'items', 'plans']);
 
   const url = isItem ? 'https://moretojapan.com/market.html#i/' + parent.id
+            : isPlan ? 'https://moretojapan.com/play.html#g/' + parent.id
                      : 'https://moretojapan.com/help.html#p/' + parent.id;
-  notify_(isItem ? '🛒 ゆずりますにコメント' : '💬 返事がつきました',
+  notify_(isItem ? '🛒 ゆずりますにコメント' : isPlan ? '🎮 いっしょにやるに書き込み' : '💬 返事がつきました',
           parent.title + '\n' + body.slice(0, 300) + '\n' + url);
 
   // 出した本人がメールを入れていたら、そこにだけ知らせる。メールは表には出さない
-  if (isItem && parent.mail && String(parent.dev) !== String(dev)) {
+  if ((isItem || isPlan) && parent.mail && String(parent.dev) !== String(dev)) {
     try {
       MailApp.sendEmail(String(parent.mail),
         '[More to Japan] 「' + parent.title + '」にコメントがつきました',
@@ -313,13 +324,35 @@ function newReply_(b) {
 /** 「わたしも」「役に立った」。同じ端末からの二度押しは数えない */
 function vote_(b) {
   const dev  = clean_(b.dev, 64);
-  const kind = b.kind === 'helpful' ? 'helpful' : 'same';
+  const kind = b.kind === 'helpful' ? 'helpful' : b.kind === 'going' ? 'going' : 'same';
   const key  = dev + '|' + kind + '|' + b.id;
   if (!dev) return { ok: false, err: 'nodev' };
   const seen = rows_('votes').some(function (v) { return v.key === key; });
   if (seen) return { ok: true, dup: true };
   append_('votes', { ts: new Date().toISOString(), key: key });
 
+  if (kind === 'going') {
+    // 「行きます」。人数が見えることがこの掲示板の全部なので、二度押しは数えない
+    const g = rows_('plans').filter(function (x) { return String(x.id) === String(b.id); })[0];
+    if (!g) return { ok: false, err: 'notfound' };
+    const n = (Number(g.going) || 0) + 1;
+    patch_('plans', g.id, { going: n, updated: new Date().toISOString() });
+    CacheService.getScriptCache().remove('plans');
+    if (String(g.dev) !== String(dev)) {
+      notify_('🙋 行きます（' + n + '人）',
+              g.title + '\nhttps://moretojapan.com/play.html#g/' + g.id);
+      if (g.mail) {
+        try {
+          MailApp.sendEmail(String(g.mail),
+            '[More to Japan] 「' + g.title + '」に行きたい人がいます（' + n + '人）',
+            'https://moretojapan.com/play.html#g/' + g.id +
+            '\n\n--\nこの知らせは、出すときに自分で入れたアドレスにだけ届きます。' +
+            '相手にはあなたのアドレスは見えていません。');
+        } catch (err) {}
+      }
+    }
+    return { ok: true, going: n };
+  }
   if (kind === 'same') {
     const p = rows_('posts').filter(function (x) { return String(x.id) === String(b.id); })[0];
     if (!p) return { ok: false, err: 'notfound' };
@@ -345,7 +378,10 @@ function solve_(b) {
 
 /** 自分が書いたものを自分で消す */
 function sheetOf_(kind) {
-  return kind === 'reply' ? 'replies' : kind === 'item' ? 'items' : 'posts';
+  return kind === 'reply' ? 'replies'
+       : kind === 'item'  ? 'items'
+       : kind === 'plan'  ? 'plans'
+                          : 'posts';
 }
 
 function remove_(b) {
@@ -355,14 +391,14 @@ function remove_(b) {
   if (String(row.dev) !== String(b.dev)) return { ok: false, err: 'notyours' };
   patch_(name, row.id, { status: 'hidden' });
   if (name === 'replies') {
-    const isItem = String(row.postId).charAt(0) === 'i';
-    const sh = isItem ? 'items' : 'posts';
+    const head = String(row.postId).charAt(0);
+    const sh = head === 'i' ? 'items' : head === 'g' ? 'plans' : 'posts';
     const par = rows_(sh).filter(function (x) { return String(x.id) === String(row.postId); })[0];
-    if (par) patch_(sh, par.id, isItem
-      ? { comments: Math.max(0, (Number(par.comments) || 0) - 1) }
-      : { replies:  Math.max(0, (Number(par.replies)  || 0) - 1) });
+    if (par) patch_(sh, par.id, sh === 'posts'
+      ? { replies:  Math.max(0, (Number(par.replies)  || 0) - 1) }
+      : { comments: Math.max(0, (Number(par.comments) || 0) - 1) });
   }
-  CacheService.getScriptCache().removeAll(['list', 'items']);
+  CacheService.getScriptCache().removeAll(['list', 'items', 'plans']);
   return { ok: true };
 }
 
@@ -379,7 +415,7 @@ function flag_(b) {
   const patch = { flags: n };
   if (n >= AUTO_HIDE_FLAGS) patch.status = 'hidden';
   patch_(name, row.id, patch);
-  CacheService.getScriptCache().removeAll(['list', 'items']);
+  CacheService.getScriptCache().removeAll(['list', 'items', 'plans']);
   notify_('🚩 通報 ' + n + '件目' + (n >= AUTO_HIDE_FLAGS ? '（自動で隠しました）' : ''),
           (row.title || row.body || '').toString().slice(0, 300) + '\nid: ' + row.id +
           '\n理由: ' + clean_(b.why, 200) + '\n' + ssUrl_(PropertiesService.getScriptProperties().getProperty(PROP_SHEET)));
@@ -519,6 +555,117 @@ function savePhotos_(arr) {
 function validMail_(s) {
   const v = clean_(s, 120);
   return /^[^@\s]+@[^@\s.]+\.[^@\s]+$/.test(v) ? v : '';
+}
+
+/* ============================================================ いっしょに何かやる
+ *
+ *  言語交換の掲示板にはしない。会話そのものが目的だと、気まずさが全部表に出て
+ *  20分で終わる。ゲームでもバスケでもボルダリングでも、手元に共通の対象があると
+ *  黙っていい時間ができて、言葉が下手でも成り立つ。言葉はその副産物として伸びる。
+ *
+ *  だから単位は「人（プロフィール）」ではなく「やること（誘い）」。
+ *  登録が要らないのも、古いものが勝手に落ちるのも、それが誘いだから。
+ */
+
+const PLAN_KINDS  = ['meet', 'online', 'open'];   // 会ってやる／オンライン／日はまだ無い
+const PLAN_LEVELS = ['any', 'new', 'serious'];    // だれでも／はじめて／本気
+
+function plans_(q) {
+  const cache = CacheService.getScriptCache();
+  const hit = cache.get('plans');
+  if (hit) return JSON.parse(hit);
+
+  const limit = Date.now() - PLAN_DAYS * 86400000;
+  const list = rows_('plans')
+    .filter(function (g) { return g.status !== 'hidden'; })
+    .filter(function (g) { return new Date(g.ts).getTime() > limit; })
+    .map(function (g) {
+      return {
+        id: g.id, ts: String(g.ts), kind: g.kind,
+        title: g.title, preview: String(g.body).slice(0, 200),
+        cat: g.cat, when: String(g.when || ''), area: String(g.area || ''),
+        level: g.level || 'any', size: Number(g.size) || 0,
+        langs: String(g.langs || '').split(',').filter(Boolean),
+        nick: g.nick, going: Number(g.going) || 0,
+        comments: Number(g.comments) || 0,
+        closed: g.status === 'closed'
+      };
+    })
+    .sort(function (a, b) { return a.ts < b.ts ? 1 : -1; })
+    .slice(0, LIST_LIMIT);
+
+  const out = { ok: true, plans: list, now: new Date().toISOString() };
+  cache.put('plans', JSON.stringify(out), 20);
+  return out;
+}
+
+function onePlan_(id) {
+  const g = rows_('plans').filter(function (x) { return String(x.id) === String(id); })[0];
+  if (!g || g.status === 'hidden') return { ok: false, err: 'notfound' };
+  const cs = rows_('replies')
+    .filter(function (r) { return String(r.postId) === String(id) && r.status !== 'hidden'; })
+    .map(function (r) { return { id: r.id, ts: String(r.ts), body: r.body, nick: r.nick }; })
+    .sort(function (a, b) { return a.ts > b.ts ? 1 : -1; });
+  return {
+    ok: true,
+    plan: {
+      id: g.id, ts: String(g.ts), kind: g.kind, title: g.title, body: g.body,
+      cat: g.cat, when: String(g.when || ''), area: String(g.area || ''),
+      level: g.level || 'any', size: Number(g.size) || 0,
+      langs: String(g.langs || '').split(',').filter(Boolean),
+      nick: g.nick, going: Number(g.going) || 0, closed: g.status === 'closed'
+      // mail はここには絶対に入れない
+    },
+    comments: cs
+  };
+}
+
+function newPlan_(b) {
+  const dev = clean_(b.dev, 64);
+  const gate = limit_(dev, 'plan', 40);
+  if (!gate.ok) return gate;
+
+  const kind  = PLAN_KINDS.indexOf(b.kind) >= 0 ? b.kind : 'meet';
+  const title = clean_(b.title, 120);
+  const body  = clean_(b.body, 4000);
+  const area  = clean_(b.area, 60);
+  if (title.length < 3) return { ok: false, err: 'short-title' };
+  if (body.length  < 5) return { ok: false, err: 'short-body' };
+  // 会ってやるなら場所だけは要る。オンラインと「日はまだ無い」は要らない
+  if (kind === 'meet' && !area) return { ok: false, err: 'no-area' };
+  const langs = (b.langs || []).filter(function (x) { return OK_LANGS.indexOf(x) >= 0; });
+  if (!langs.length) return { ok: false, err: 'no-langs' };
+  const bad = spam_(title + '\n' + body);
+  if (bad) return { ok: false, err: 'spam', why: bad };
+
+  const id  = 'g' + Date.now().toString(36) + Math.floor(Math.random() * 1296).toString(36);
+  const now = new Date().toISOString();
+  append_('plans', {
+    id: id, ts: now, updated: now, kind: kind, title: title, body: body,
+    cat: clean_(b.cat, 24) || 'other',
+    when: clean_(b.when, 60), area: area,
+    level: PLAN_LEVELS.indexOf(b.level) >= 0 ? b.level : 'any',
+    size: Math.max(0, Math.min(99, Math.floor(Number(b.size) || 0))),
+    langs: langs.join(','),
+    nick: clean_(b.nick, 24), dev: dev, mail: validMail_(b.mail),
+    status: 'open', going: 0, comments: 0, flags: 0
+  });
+  CacheService.getScriptCache().remove('plans');
+  notify_(kind === 'online' ? '🎮 オンラインで' : kind === 'open' ? '🔁 仲間さがし' : '📅 いっしょにやる',
+          title + '（' + (clean_(b.when, 60) || '日はまだ') + (area ? '・' + area : '') + '）\n' +
+          body.slice(0, 200) + '\nhttps://moretojapan.com/play.html#g/' + id);
+  return { ok: true, id: id };
+}
+
+/** 出した本人だけが「もう埋まりました／終わりました」にできる */
+function close_(b) {
+  const g = rows_('plans').filter(function (x) { return String(x.id) === String(b.id); })[0];
+  if (!g) return { ok: false, err: 'notfound' };
+  if (String(g.dev) !== String(b.dev)) return { ok: false, err: 'notyours' };
+  patch_('plans', g.id, { status: g.status === 'closed' ? 'open' : 'closed',
+                          updated: new Date().toISOString() });
+  CacheService.getScriptCache().remove('plans');
+  return { ok: true, closed: g.status !== 'closed' };
 }
 
 /* ============================================================ こまごま */
