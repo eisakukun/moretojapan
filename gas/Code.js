@@ -22,8 +22,15 @@ const PREVIEW_LEN     = 300;           // 一覧に載せる本文の長さ
 const COLS = {
   posts:   ['id','ts','updated','cat','lang','title','body','nick','area','dev','status','same','replies','solved','flags'],
   replies: ['id','ts','postId','body','nick','dev','helpful','status','flags'],
-  votes:   ['ts','key']
+  votes:   ['ts','key'],
+  // ゆずります・さがしています（ジモティーにあたるほう）
+  items:   ['id','ts','updated','kind','title','body','price','nego','cat','area','deliver',
+            'photos','nick','dev','mail','status','comments','flags']
 };
+
+const PROP_PHOTOS = 'PHOTO_FOLDER_ID';   // 写真の置き場（setup が作る）
+const MAX_PHOTOS  = 3;
+const ITEM_DAYS   = 60;                  // これより古いものは一覧から落とす
 
 /* ============================================================ 置き場所 */
 
@@ -40,7 +47,18 @@ function setup() {
     sh.setFrozenRows(1);
   });
   p.setProperty(PROP_SHEET, ss.getId());
+  photoFolder_();
   return 'created: ' + ss.getUrl();
+}
+
+/** 写真の置き場。1枚ずつ「リンクを知っている全員」にして、表からは直接読ませる */
+function photoFolder_() {
+  const p = PropertiesService.getScriptProperties();
+  const id = p.getProperty(PROP_PHOTOS);
+  if (id) { try { return DriveApp.getFolderById(id); } catch (err) {} }
+  const f = DriveApp.createFolder('More to Japan 掲示板の写真');
+  p.setProperty(PROP_PHOTOS, f.getId());
+  return f;
 }
 
 function ssUrl_(id) { return 'https://docs.google.com/spreadsheets/d/' + id + '/edit'; }
@@ -105,8 +123,10 @@ function doGet(e) {
     const q = (e && e.parameter) || {};
     const a = q.a || 'list';
     if (a === 'ping') return json_({ ok: true, ready: !!PropertiesService.getScriptProperties().getProperty(PROP_SHEET) });
-    if (a === 'list') return json_(list_(q));
-    if (a === 'post') return json_(one_(q.id));
+    if (a === 'list')  return json_(list_(q));
+    if (a === 'post')  return json_(one_(q.id));
+    if (a === 'items') return json_(items_(q));
+    if (a === 'item')  return json_(oneItem_(q.id));
     return json_({ ok: false, err: 'unknown' });
   } catch (err) {
     return json_({ ok: false, err: String(err && err.message || err) });
@@ -122,8 +142,10 @@ function doPost(e) {
     const lock = LockService.getScriptLock();
     lock.waitLock(20000);
     try {
-      if (a === 'new')    return json_(newPost_(b));
-      if (a === 'reply')  return json_(newReply_(b));
+      if (a === 'new')     return json_(newPost_(b));
+      if (a === 'newitem') return json_(newItem_(b));
+      if (a === 'sold')    return json_(sold_(b));
+      if (a === 'reply')   return json_(newReply_(b));
       if (a === 'vote')   return json_(vote_(b));
       if (a === 'solve')  return json_(solve_(b));
       if (a === 'flag')   return json_(flag_(b));
@@ -226,16 +248,36 @@ function newReply_(b) {
   const bad = spam_(body);
   if (bad) return { ok: false, err: 'spam', why: bad };
 
-  const post = rows_('posts').filter(function (x) { return String(x.id) === String(b.id); })[0];
-  if (!post) return { ok: false, err: 'notfound' };
+  // こまりごと（posts）と、ゆずります（items）の両方に返事がつく
+  const isItem = String(b.id).charAt(0) === 'i';
+  const sheet  = isItem ? 'items' : 'posts';
+  const parent = rows_(sheet).filter(function (x) { return String(x.id) === String(b.id); })[0];
+  if (!parent) return { ok: false, err: 'notfound' };
 
   const id  = 'r' + Date.now().toString(36) + Math.floor(Math.random() * 1296).toString(36);
   const now = new Date().toISOString();
-  append_('replies', { id: id, ts: now, postId: post.id, body: body,
+  append_('replies', { id: id, ts: now, postId: parent.id, body: body,
                        nick: clean_(b.nick, 24), dev: dev, helpful: 0, status: 'open', flags: 0 });
-  patch_('posts', post.id, { replies: (Number(post.replies) || 0) + 1, updated: now });
-  CacheService.getScriptCache().remove('list');
-  notify_('💬 返事がつきました', post.title + '\n' + body.slice(0, 300) + '\nhttps://moretojapan.com/help.html#p/' + post.id);
+  patch_(sheet, parent.id,
+    isItem ? { comments: (Number(parent.comments) || 0) + 1, updated: now }
+           : { replies:  (Number(parent.replies)  || 0) + 1, updated: now });
+  CacheService.getScriptCache().removeAll(['list', 'items']);
+
+  const url = isItem ? 'https://moretojapan.com/market.html#i/' + parent.id
+                     : 'https://moretojapan.com/help.html#p/' + parent.id;
+  notify_(isItem ? '🛒 ゆずりますにコメント' : '💬 返事がつきました',
+          parent.title + '\n' + body.slice(0, 300) + '\n' + url);
+
+  // 出した本人がメールを入れていたら、そこにだけ知らせる。メールは表には出さない
+  if (isItem && parent.mail && String(parent.dev) !== String(dev)) {
+    try {
+      MailApp.sendEmail(String(parent.mail),
+        '[More to Japan] 「' + parent.title + '」にコメントがつきました',
+        body.slice(0, 500) + '\n\n' + url +
+        '\n\n--\nこの知らせは、出すときに自分で入れたアドレスにだけ届きます。' +
+        '相手にはあなたのアドレスは見えていません。');
+    } catch (err) {}
+  }
   return { ok: true, id: id };
 }
 
@@ -273,23 +315,31 @@ function solve_(b) {
 }
 
 /** 自分が書いたものを自分で消す */
+function sheetOf_(kind) {
+  return kind === 'reply' ? 'replies' : kind === 'item' ? 'items' : 'posts';
+}
+
 function remove_(b) {
-  const name = b.kind === 'reply' ? 'replies' : 'posts';
+  const name = sheetOf_(b.kind);
   const row = rows_(name).filter(function (x) { return String(x.id) === String(b.id); })[0];
   if (!row) return { ok: false, err: 'notfound' };
   if (String(row.dev) !== String(b.dev)) return { ok: false, err: 'notyours' };
   patch_(name, row.id, { status: 'hidden' });
   if (name === 'replies') {
-    const p = rows_('posts').filter(function (x) { return String(x.id) === String(row.postId); })[0];
-    if (p) patch_('posts', p.id, { replies: Math.max(0, (Number(p.replies) || 0) - 1) });
+    const isItem = String(row.postId).charAt(0) === 'i';
+    const sh = isItem ? 'items' : 'posts';
+    const par = rows_(sh).filter(function (x) { return String(x.id) === String(row.postId); })[0];
+    if (par) patch_(sh, par.id, isItem
+      ? { comments: Math.max(0, (Number(par.comments) || 0) - 1) }
+      : { replies:  Math.max(0, (Number(par.replies)  || 0) - 1) });
   }
-  CacheService.getScriptCache().remove('list');
+  CacheService.getScriptCache().removeAll(['list', 'items']);
   return { ok: true };
 }
 
 /** 通報。3件でひとまず隠して、本人（管理者）に知らせる */
 function flag_(b) {
-  const name = b.kind === 'reply' ? 'replies' : 'posts';
+  const name = sheetOf_(b.kind);
   const row = rows_(name).filter(function (x) { return String(x.id) === String(b.id); })[0];
   if (!row) return { ok: false, err: 'notfound' };
   const key = clean_(b.dev, 64) + '|flag|' + b.id;
@@ -300,11 +350,140 @@ function flag_(b) {
   const patch = { flags: n };
   if (n >= AUTO_HIDE_FLAGS) patch.status = 'hidden';
   patch_(name, row.id, patch);
-  CacheService.getScriptCache().remove('list');
+  CacheService.getScriptCache().removeAll(['list', 'items']);
   notify_('🚩 通報 ' + n + '件目' + (n >= AUTO_HIDE_FLAGS ? '（自動で隠しました）' : ''),
           (row.title || row.body || '').toString().slice(0, 300) + '\nid: ' + row.id +
           '\n理由: ' + clean_(b.why, 200) + '\n' + ssUrl_(PropertiesService.getScriptProperties().getProperty(PROP_SHEET)));
   return { ok: true, hidden: n >= AUTO_HIDE_FLAGS };
+}
+
+
+/* ============================================================ ゆずります・さがしています
+ *
+ *  ジモティーにあたるほう。ちがうのは客で、ここは「日本を出ていく人」と
+ *  「来たばかりの人」をつなぐ。出ていく人は冷蔵庫も自転車も置いていくしかなく、
+ *  来た人は同じものを全部買わされる。その2人が今はすれ違っている。
+ *  だから 0円（あげます）を一等地に置く。ジモティーでも0円が主役になっている。
+ */
+
+function items_(q) {
+  const cache = CacheService.getScriptCache();
+  const hit = cache.get('items');
+  if (hit) return JSON.parse(hit);
+
+  const limit = Date.now() - ITEM_DAYS * 86400000;
+  const list = rows_('items')
+    .filter(function (it) { return it.status !== 'hidden'; })
+    .filter(function (it) { return new Date(it.ts).getTime() > limit; })
+    .map(function (it) {
+      return {
+        id: it.id, ts: String(it.ts), kind: it.kind,
+        title: it.title, preview: String(it.body).slice(0, 200),
+        price: Number(it.price) || 0, nego: !!it.nego,
+        cat: it.cat, area: it.area, deliver: it.deliver,
+        photos: String(it.photos || '').split(',').filter(Boolean),
+        nick: it.nick, comments: Number(it.comments) || 0,
+        sold: it.status === 'sold'
+      };
+    })
+    .sort(function (a, b) { return a.ts < b.ts ? 1 : -1; })
+    .slice(0, LIST_LIMIT);
+
+  const out = { ok: true, items: list, now: new Date().toISOString() };
+  cache.put('items', JSON.stringify(out), 20);
+  return out;
+}
+
+function oneItem_(id) {
+  const it = rows_('items').filter(function (x) { return String(x.id) === String(id); })[0];
+  if (!it || it.status === 'hidden') return { ok: false, err: 'notfound' };
+  const cs = rows_('replies')
+    .filter(function (r) { return String(r.postId) === String(id) && r.status !== 'hidden'; })
+    .map(function (r) { return { id: r.id, ts: String(r.ts), body: r.body, nick: r.nick }; })
+    .sort(function (a, b) { return a.ts > b.ts ? 1 : -1; });
+  return {
+    ok: true,
+    item: {
+      id: it.id, ts: String(it.ts), kind: it.kind, title: it.title, body: it.body,
+      price: Number(it.price) || 0, nego: !!it.nego, cat: it.cat, area: it.area,
+      deliver: it.deliver, photos: String(it.photos || '').split(',').filter(Boolean),
+      nick: it.nick, sold: it.status === 'sold'
+      // mail はここには絶対に入れない
+    },
+    comments: cs
+  };
+}
+
+function newItem_(b) {
+  const dev = clean_(b.dev, 64);
+  const gate = limit_(dev, 'item', 40);
+  if (!gate.ok) return gate;
+
+  const title = clean_(b.title, 120);
+  const body  = clean_(b.body, 4000);
+  const area  = clean_(b.area, 60);
+  const kind  = ['sell', 'free', 'want'].indexOf(b.kind) >= 0 ? b.kind : 'sell';
+  if (title.length < 3) return { ok: false, err: 'short-title' };
+  if (body.length  < 5) return { ok: false, err: 'short-body' };
+  if (!area)            return { ok: false, err: 'no-area' };
+  const bad = spam_(title + '\n' + body);
+  if (bad) return { ok: false, err: 'spam', why: bad };
+
+  let price = Math.max(0, Math.min(9999999, Math.floor(Number(b.price) || 0)));
+  if (kind === 'free') price = 0;
+
+  const photos = savePhotos_(b.photos);
+  const id  = 'i' + Date.now().toString(36) + Math.floor(Math.random() * 1296).toString(36);
+  const now = new Date().toISOString();
+  append_('items', {
+    id: id, ts: now, updated: now, kind: kind, title: title, body: body,
+    price: price, nego: b.nego ? 1 : '', cat: clean_(b.cat, 24) || 'misc',
+    area: area, deliver: clean_(b.deliver, 16) || 'pickup',
+    photos: photos.join(','), nick: clean_(b.nick, 24), dev: dev,
+    mail: validMail_(b.mail), status: 'open', comments: 0, flags: 0
+  });
+  CacheService.getScriptCache().remove('items');
+  notify_(kind === 'want' ? '🔎 さがしています' : kind === 'free' ? '🎁 あげます（0円）' : '🛒 売ります',
+          title + '（' + (price ? '¥' + price : '0円') + '・' + area + '）\n' +
+          body.slice(0, 200) + '\nhttps://moretojapan.com/market.html#i/' + id);
+  return { ok: true, id: id };
+}
+
+/** 出した本人だけが「もう無くなりました」にできる */
+function sold_(b) {
+  const it = rows_('items').filter(function (x) { return String(x.id) === String(b.id); })[0];
+  if (!it) return { ok: false, err: 'notfound' };
+  if (String(it.dev) !== String(b.dev)) return { ok: false, err: 'notyours' };
+  patch_('items', it.id, { status: it.status === 'sold' ? 'open' : 'sold',
+                           updated: new Date().toISOString() });
+  CacheService.getScriptCache().remove('items');
+  return { ok: true, sold: it.status !== 'sold' };
+}
+
+/** 写真。表で小さくしてから送ってもらう。ここでは形と大きさだけ見る */
+function savePhotos_(arr) {
+  if (!arr || !arr.length) return [];
+  const folder = photoFolder_();
+  const out = [];
+  arr.slice(0, MAX_PHOTOS).forEach(function (d) {
+    const m = /^data:(image\/(?:jpeg|png|webp));base64,([A-Za-z0-9+/=]+)$/.exec(String(d || ''));
+    if (!m) return;
+    if (m[2].length > 900000) return;            // 約650KB。これより大きいのは表の縮小が効いていない
+    try {
+      const blob = Utilities.newBlob(Utilities.base64Decode(m[2]), m[1],
+        'mtj' + Date.now() + Math.floor(Math.random() * 1e6) + '.jpg');
+      const f = folder.createFile(blob);
+      f.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
+      out.push(f.getId());
+    } catch (err) {}
+  });
+  return out;
+}
+
+/** 知らせる先。形だけ見る。表には絶対に返さない列に入る */
+function validMail_(s) {
+  const v = clean_(s, 120);
+  return /^[^@\s]+@[^@\s.]+\.[^@\s]+$/.test(v) ? v : '';
 }
 
 /* ============================================================ こまごま */
