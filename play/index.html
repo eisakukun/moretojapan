@@ -1,0 +1,1763 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Gamers' language exchange — More to Japan</title>
+<meta name="description" content="A language exchange board for gamers in Japan. Pick the game you already play, say which language you speak and which one you want, look up anything you do not understand on the spot, and talk.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Gamers' language exchange — More to Japan">
+<meta property="og:description" content="Language exchange runs out of things to say in twenty minutes. A match does not. Pick your game, find your partner.">
+<meta property="og:url" content="https://moretojapan.com/play/">
+<meta property="og:locale" content="en_US">
+<meta property="og:locale:alternate" content="ja_JP">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#05070a">
+<link rel="canonical" href="https://moretojapan.com/play/">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%2305070a'/%3E%3Crect x='3' y='3' width='58' height='58' rx='10' fill='none' stroke='%2300f0ff' stroke-width='2'/%3E%3Ctext x='32' y='45' font-size='36' text-anchor='middle' fill='%2300f0ff' font-family='Hiragino Sans,sans-serif'%3E%E9%81%8A%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@600;800&display=swap" rel="stylesheet">
+<style>
+  /*  ゲームの言語交換板 — Discordの形 × サイバーパンク
+   *  色は kurabe / net-check と同じ family（cyan #00f0ff / magenta #ff2bd6）。
+   *  形だけDiscordから借りる：左に板（チャンネル）、右に本文。
+   *  ただし角は丸めすぎない。丸いと和やかになって、ネオンが浮く。
+   *  日本語の本文は明朝でもモノでもなく、ふつうのゴシックのまま読ませる。 */
+  :root{
+    --bg:#05070a; --side:#070b11; --panel:#0a0f16; --panel2:#0c1219; --raise:#101922;
+    --line:rgba(0,240,255,.14); --line2:rgba(0,240,255,.32);
+    --txt:#cfe9f0; --sub:#7f99a4; --dim:#4a646f;
+    --cy:#00f0ff; --mg:#ff2bd6; --lime:#9dff3c; --red:#ff4d6d; --amber:#fcee0a;
+    --disp:"Orbitron","Share Tech Mono",ui-monospace,sans-serif;
+    --mono:"Share Tech Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+    --jp:"Hiragino Sans","Noto Sans JP",system-ui,-apple-system,"Segoe UI",sans-serif;
+    --side-w:258px;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{margin:0;background:var(--bg);color:var(--txt);line-height:1.7;font-family:var(--jp);
+    -webkit-font-smoothing:antialiased;overflow:hidden}
+  /* 走査線。弱くかける。強いと文字が読めなくなる */
+  body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:200;
+    background:repeating-linear-gradient(0deg,rgba(0,240,255,.035) 0 1px,transparent 1px 3px);
+    mix-blend-mode:screen;opacity:.5}
+  a{color:var(--cy);text-decoration:none}
+  a:hover{text-decoration:underline}
+  ::-webkit-scrollbar{width:9px;height:9px}
+  ::-webkit-scrollbar-thumb{background:#14212b;border-radius:0}
+  ::-webkit-scrollbar-thumb:hover{background:#1d3240}
+  ::-webkit-scrollbar-track{background:transparent}
+
+  .app{display:flex;height:100%;min-height:0}
+
+  /* ---------------- 左：板の一覧（Discordでいうチャンネル） ---------------- */
+  .side{width:var(--side-w);flex:none;background:var(--side);display:flex;flex-direction:column;
+    border-right:1px solid var(--line);position:relative}
+  .side::after{content:"";position:absolute;top:0;right:-1px;width:1px;height:100%;
+    background:linear-gradient(180deg,transparent,var(--cy),transparent);opacity:.5}
+  .brand{padding:14px 16px 12px;border-bottom:1px solid var(--line);display:flex;gap:10px;align-items:center}
+  .brand i{display:grid;place-items:center;width:34px;height:34px;flex:none;font-style:normal;
+    font-size:17px;color:var(--cy);border:1px solid var(--line2);background:#00f0ff0f;
+    clip-path:polygon(0 0,100% 0,100% 72%,72% 100%,0 100%)}
+  .brand a{display:block;color:var(--txt);line-height:1.2}
+  .brand b{display:block;font-family:var(--disp);font-weight:800;font-size:12.5px;letter-spacing:.1em}
+  .brand s{display:block;text-decoration:none;font-family:var(--mono);font-size:10.5px;
+    color:var(--cy);letter-spacing:.22em}
+  .sideScroll{flex:1;overflow:auto;padding:12px 10px 18px;min-height:0}
+  .sideHead{font-family:var(--mono);font-size:10.5px;letter-spacing:.22em;color:var(--dim);
+    padding:10px 8px 7px;display:flex;align-items:center;gap:8px}
+  .sideHead::after{content:"";flex:1;height:1px;background:var(--line)}
+  #boards{display:flex;flex-direction:column;gap:1px}
+
+  .bd{display:flex;gap:9px;align-items:center;width:100%;text-align:left;cursor:pointer;
+    font:inherit;font-size:14px;color:var(--sub);background:transparent;border:0;
+    padding:7px 10px;border-left:2px solid transparent;position:relative;white-space:nowrap}
+  .bd:hover{background:#00f0ff0a;color:var(--txt)}
+  .bd.on{background:linear-gradient(90deg,#00f0ff1f,transparent);color:var(--cy);
+    border-left-color:var(--cy);text-shadow:0 0 12px #00f0ff66}
+  .bd span.nm{flex:1;overflow:hidden;text-overflow:ellipsis}
+  .bd b{font-family:var(--mono);font-weight:400;font-size:11px;color:var(--dim);
+    background:#ffffff08;padding:1px 6px;border:1px solid var(--line)}
+  .bd.on b{color:var(--cy);border-color:var(--line2)}
+  .bd i{font-style:normal;font-family:var(--mono);font-size:10.5px;color:var(--lime)}
+
+  #groups{display:flex;flex-direction:column;gap:1px}
+  .grp{display:flex;gap:9px;align-items:center;width:100%;text-align:left;cursor:pointer;
+    font:inherit;font-size:13.5px;color:var(--sub);background:transparent;border:0;
+    padding:7px 10px;border-left:2px solid transparent}
+  .grp.on{color:var(--mg);border-left-color:var(--mg);background:linear-gradient(90deg,#ff2bd61f,transparent)}
+  .grp.soon{opacity:.45;cursor:default}
+  .grp.soon s{text-decoration:none;font-family:var(--mono);font-size:10px;letter-spacing:.18em;
+    margin-left:auto;color:var(--dim)}
+  .sideFoot{border-top:1px solid var(--line);padding:11px 12px;display:flex;gap:9px;
+    align-items:center;flex-wrap:wrap;font-size:12px}
+  .sideFoot a{color:var(--dim);font-size:12px}
+  .sideFoot a:hover{color:var(--cy)}
+
+  /* ---------------- 右：本文 ---------------- */
+  .mainCol{flex:1;min-width:0;display:flex;flex-direction:column;background:var(--panel)}
+  .topbar{flex:none;border-bottom:1px solid var(--line);background:#070b11cc;
+    backdrop-filter:blur(8px);padding:10px 18px 11px;position:relative}
+  .topbar::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:1px;
+    background:linear-gradient(90deg,transparent,var(--cy),transparent);opacity:.45}
+  .tools{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+  .srch{display:flex;gap:8px;align-items:center;background:#05070a;border:1px solid var(--line);
+    padding:7px 12px;flex:1 1 230px;min-width:0}
+  .srch:focus-within{border-color:var(--line2);box-shadow:0 0 0 1px #00f0ff22}
+  .srch b{color:var(--dim);font-weight:400}
+  .srch input{border:0;outline:0;font:inherit;font-size:15px;flex:1;background:transparent;
+    color:var(--txt);-webkit-appearance:none;appearance:none;padding:0;min-width:0}
+  .subTools{display:flex;gap:12px;align-items:center;flex-wrap:wrap;font-family:var(--mono);
+    font-size:11px;letter-spacing:.1em;color:var(--dim);text-transform:uppercase}
+  .subTools .gp{display:flex;gap:7px;align-items:center}
+  .lang{border:1px solid var(--line);background:#05070a;padding:6px 26px 6px 10px;
+    font:inherit;font-family:var(--mono);font-size:12px;cursor:pointer;color:var(--sub);
+    -webkit-appearance:none;appearance:none;letter-spacing:.06em;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%2300f0ff' stroke-width='1.4'/%3E%3C/svg%3E");
+    background-repeat:no-repeat;background-position:right 9px center;background-size:9px}
+  .lang:hover,.lang:focus{border-color:var(--line2);color:var(--cy);outline:0}
+  .chk{display:flex;gap:6px;align-items:center;cursor:pointer;white-space:nowrap;color:var(--sub)}
+  .chk input{width:auto;-webkit-appearance:auto;appearance:auto;margin:0;accent-color:#9dff3c}
+
+  .scroll{flex:1;overflow:auto;min-height:0;padding:0 0 110px}
+  .wrap{max-width:1000px;margin:0 auto;padding:0 20px}
+
+  /* ---------------- ボタン ---------------- */
+  .btn{display:inline-block;font-weight:700;font-family:var(--disp);letter-spacing:.08em;
+    font-size:12.5px;text-transform:uppercase;padding:11px 20px;border:1px solid var(--line2);
+    cursor:pointer;transition:.14s;background:transparent;color:var(--cy)}
+  .btn.p{background:#00f0ff14;box-shadow:inset 0 0 22px #00f0ff14;
+    clip-path:polygon(0 0,100% 0,100% 64%,calc(100% - 11px) 100%,0 100%)}
+  .btn.p:hover{background:#00f0ff2b;box-shadow:inset 0 0 26px #00f0ff26,0 0 18px #00f0ff33}
+  .btn.s{color:var(--sub);border-color:var(--line)}
+  .btn.s:hover{color:var(--cy);border-color:var(--line2)}
+  .btn.sm{padding:7px 14px;font-size:11px}
+  .btn[disabled]{opacity:.4;cursor:default}
+  .act{border:1px solid var(--line);background:transparent;padding:6px 13px;
+    font:inherit;font-family:var(--mono);font-size:12px;letter-spacing:.06em;cursor:pointer;color:var(--sub)}
+  .act:hover{border-color:var(--line2);color:var(--cy)}
+  .act.ghost{border-color:transparent}
+  .act.go{border-color:#9dff3c55;color:var(--lime)}
+  .act.go:hover{border-color:var(--lime);box-shadow:0 0 14px #9dff3c33}
+
+  /* ---------------- 入口の口上（トップだけ） ---------------- */
+  .hero{padding:30px 0 8px}
+  .kicker{font-family:var(--mono);color:var(--mg);font-size:11px;letter-spacing:.26em;
+    text-transform:uppercase}
+  h1{font-size:clamp(23px,3.4vw,33px);line-height:1.25;margin:12px 0 12px;letter-spacing:-.01em;
+    font-weight:800}
+  h1 .gl{color:var(--cy);text-shadow:0 0 24px #00f0ff55}
+  .hero p{font-size:15.5px;color:var(--sub);margin:0 0 18px;max-width:40em}
+  .heroBtns{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+  .soonNote{color:var(--dim);font-size:12.5px;margin:16px 0 0;max-width:40em}
+
+  .secH{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:24px 0 12px}
+  .secH h2{font-size:15px;margin:0;font-family:var(--disp);letter-spacing:.1em;
+    text-transform:uppercase;color:var(--txt);font-weight:600}
+  .secH span{font-family:var(--mono);color:var(--dim);font-size:11.5px;letter-spacing:.14em}
+
+  /* ---------------- スレの行 ---------------- */
+  .board{border:1px solid var(--line);background:var(--panel2)}
+  .brow{display:flex;gap:12px;align-items:flex-start;padding:12px 15px;cursor:pointer;
+    border-bottom:1px solid rgba(0,240,255,.07);border-left:2px solid transparent;transition:.12s}
+  .brow:last-child{border-bottom:0}
+  .brow:hover{background:#00f0ff0a;border-left-color:var(--cy)}
+  .brow.closed{opacity:.45}
+  .bic{font-size:20px;line-height:1.4;flex:none;width:34px;height:34px;display:grid;place-items:center;
+    border:1px solid var(--line);background:#05070a}
+  .bmain{flex:1;min-width:0}
+  .btitle{font-weight:700;font-size:15px;line-height:1.45;display:flex;gap:8px;
+    align-items:baseline;flex-wrap:wrap;color:var(--txt)}
+  .btitle span.tx{overflow-wrap:anywhere}
+  .bsub{color:var(--sub);font-size:12px;display:flex;gap:9px;flex-wrap:wrap;
+    align-items:center;margin-top:4px;font-family:var(--mono)}
+  .bmeta{flex:none;text-align:right;color:var(--dim);font-size:11px;line-height:1.6;min-width:74px;
+    font-family:var(--mono);letter-spacing:.06em}
+  .bmeta b{display:block;color:var(--cy);font-size:12px;font-weight:400}
+
+  /* ことばの旗。ここがこの板の土台なので、いちばん目立つ色を使う */
+  .lxs{display:inline-flex;gap:3px;align-items:center;flex-wrap:wrap}
+  .fl{font-family:var(--mono);font-size:11px;padding:0 6px;white-space:nowrap;letter-spacing:.08em;
+    border:1px solid var(--line2);background:#00f0ff12;color:var(--cy)}
+  .fl.w{border-color:#ff2bd655;background:#ff2bd614;color:var(--mg)}
+  .lxs em{font-style:normal;color:var(--dim);font-size:12px;margin:0 2px}
+  .live{font-family:var(--mono);font-size:10.5px;padding:0 7px;letter-spacing:.1em;
+    border:1px solid #9dff3c55;background:#9dff3c14;color:var(--lime);white-space:nowrap;
+    animation:pulse 2.4s ease-in-out infinite}
+  @keyframes pulse{0%,100%{box-shadow:0 0 0 #9dff3c00}50%{box-shadow:0 0 12px #9dff3c55}}
+  .tag{font-family:var(--mono);font-size:10.5px;padding:0 7px;white-space:nowrap;letter-spacing:.08em;
+    border:1px solid var(--line);color:var(--sub)}
+  .tag.online{border-color:#ff2bd644;color:var(--mg)}
+  .tag.meet{border-color:var(--line2);color:var(--cy)}
+  .tag.open{border-color:#fcee0a44;color:var(--amber)}
+  .doneTag{font-family:var(--mono);font-size:10.5px;padding:0 7px;border:1px solid #ffffff1a;
+    color:var(--dim);letter-spacing:.08em}
+
+  .empty{border:1px dashed var(--line2);background:#00f0ff06;padding:30px 24px;text-align:center}
+  .empty h3{margin:0 0 8px;font-size:17px;font-family:var(--disp);letter-spacing:.06em;font-weight:600}
+  .empty p{color:var(--sub);margin:0 0 18px;font-size:14.5px}
+  .egs{display:grid;gap:8px;text-align:left;max-width:560px;margin:0 auto 20px}
+  .eg{background:#05070a;border:1px solid var(--line);padding:11px 14px;color:var(--sub);font-size:13.5px}
+  .eg s{display:block;text-decoration:none;font-family:var(--mono);font-size:10.5px;color:var(--cy);
+    letter-spacing:.16em;text-transform:uppercase;margin-bottom:3px;opacity:.75}
+
+  /* ---------------- スレッド ---------------- */
+  .back{background:none;border:0;font:inherit;font-family:var(--mono);color:var(--dim);cursor:pointer;
+    padding:0;margin:22px 0 12px;font-size:12px;letter-spacing:.12em;text-transform:uppercase}
+  .back:hover{color:var(--cy)}
+  .thHead{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin:0 0 14px;
+    padding-bottom:12px;border-bottom:1px solid var(--line)}
+  .thHead .ic{font-size:26px;line-height:1}
+  .thHead h2{margin:0;font-size:clamp(18px,2.6vw,23px);line-height:1.35;flex:1;min-width:200px;
+    font-weight:700}
+  .post{background:var(--panel2);border:1px solid var(--line);border-left:2px solid var(--line2);
+    padding:14px 17px;margin-bottom:10px}
+  .pno{display:flex;gap:10px;align-items:center;color:var(--dim);font-size:11.5px;
+    margin-bottom:6px;flex-wrap:wrap;font-family:var(--mono);letter-spacing:.08em}
+  .pno b{color:var(--cy);font-weight:400;font-size:12px;border:1px solid var(--line2);
+    padding:0 7px;background:#00f0ff10}
+  .pbody{white-space:pre-wrap;font-size:15px;overflow-wrap:anywhere;margin:8px 0 0;color:var(--txt)}
+  .pbody::selection,.btitle::selection,.facts::selection{background:var(--mg);color:#05070a}
+  .pbody ::selection{background:var(--mg);color:#05070a}
+  .facts{border-top:1px solid var(--line);margin-top:13px;padding-top:11px;display:grid;gap:5px;
+    font-size:13px}
+  .facts div{display:flex;gap:10px}
+  .facts b{color:var(--dim);font-weight:400;min-width:8em;flex:none;font-family:var(--mono);
+    font-size:11px;letter-spacing:.1em;text-transform:uppercase;padding-top:3px}
+  .acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px;align-items:center}
+  .soldNote{background:#ff4d6d12;border:1px solid #ff4d6d33;padding:8px 13px;color:#ffa8b8;
+    font-size:13px;margin-bottom:10px}
+  .reHead{font-family:var(--disp);font-size:12px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--cy);margin:26px 0 8px}
+  .hint{color:var(--dim);font-size:12px;margin:0 0 12px}
+  .replyBox{background:var(--panel2);border:1px solid var(--line);padding:15px;margin-top:14px}
+  .replyBox textarea{min-height:92px}
+  .askBox{border:1px dashed var(--line2);background:#00f0ff06;padding:14px 16px;margin-top:14px}
+  .askRow{display:flex;gap:8px;margin-top:9px;flex-wrap:wrap;align-items:center}
+
+  .rules{color:var(--dim);font-size:12.5px;line-height:1.85;margin-top:34px;
+    border-top:1px solid var(--line);padding-top:18px}
+  .rules b{color:var(--cy);font-family:var(--disp);font-size:12px;letter-spacing:.12em;
+    text-transform:uppercase}
+  .siteFoot{border-top:1px solid var(--line);margin-top:26px;padding:18px 0 30px;color:var(--dim);
+    font-size:12px;font-family:var(--mono);letter-spacing:.08em;display:flex;gap:16px;flex-wrap:wrap}
+
+  .loading{text-align:center;color:var(--dim);padding:36px 0;font-size:12px;
+    font-family:var(--mono);letter-spacing:.3em;text-transform:uppercase}
+  .banner{background:#fcee0a0d;border:1px solid #fcee0a33;padding:13px 16px;margin:18px 0;
+    font-size:13.5px;color:var(--amber)}
+
+  /* ---------------- 入れ物（フォーム） ---------------- */
+  label{display:block;font-family:var(--mono);font-size:11px;color:var(--cy);margin:14px 0 6px;
+    letter-spacing:.12em;text-transform:uppercase}
+  input[type=text],input[type=email],textarea,select{width:100%;font:inherit;font-size:15px;
+    padding:10px 12px;border:1px solid var(--line);background:#05070a;color:var(--txt);outline:0;
+    -webkit-appearance:none;appearance:none;font-family:var(--jp)}
+  input:focus,textarea:focus,select:focus{border-color:var(--line2);box-shadow:0 0 0 1px #00f0ff22}
+  input::placeholder,textarea::placeholder{color:#3d555f}
+  textarea{min-height:100px;resize:vertical;line-height:1.7}
+  select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%2300f0ff' stroke-width='1.4'/%3E%3C/svg%3E");
+    background-repeat:no-repeat;background-position:right 12px center;background-size:10px;padding-right:32px}
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  @media(max-width:600px){ .row2{grid-template-columns:1fr} }
+  .pick{display:flex;gap:8px;flex-wrap:wrap}
+  .pick button{flex:1 1 150px;border:1px solid var(--line);background:#05070a;padding:10px;
+    font:inherit;font-size:13.5px;cursor:pointer;color:var(--sub);font-weight:700;text-align:center}
+  .pick button.on{border-color:var(--line2);background:#00f0ff12;color:var(--cy)}
+  .pick button.on[data-k=online]{border-color:#ff2bd655;background:#ff2bd612;color:var(--mg)}
+  .pick small{display:block;font-weight:400;font-size:10.5px;color:var(--dim);margin-top:2px;
+    font-family:var(--mono);letter-spacing:.06em}
+  .pickLang{display:flex;gap:6px;flex-wrap:wrap}
+  .pickLang button{border:1px solid var(--line);background:#05070a;padding:6px 12px;
+    font:inherit;font-size:13.5px;cursor:pointer;color:var(--sub)}
+  .pickLang button.on{border-color:var(--line2);background:#00f0ff14;color:var(--cy);font-weight:700}
+  .pickLang button.on::before{content:"\2713 ";font-size:11px}
+  .pickLang.want button.on{border-color:#ff2bd655;background:#ff2bd614;color:var(--mg)}
+  .hp{position:absolute;left:-9999px;width:1px;height:1px;opacity:0}
+  .sheetFoot{display:flex;gap:10px;align-items:center;margin-top:20px;flex-wrap:wrap}
+  .msg{font-size:12.5px;color:var(--red);margin-left:auto;font-family:var(--mono)}
+
+  .sheet{position:fixed;inset:0;z-index:120;background:#02040799;backdrop-filter:blur(3px);
+    display:none;align-items:flex-end;justify-content:center}
+  .sheet.on{display:flex}
+  .sheetIn{background:var(--panel);width:100%;max-width:700px;padding:22px 22px 26px;
+    max-height:92vh;overflow:auto;border:1px solid var(--line2);border-bottom:0;
+    box-shadow:0 -10px 60px #00f0ff1a}
+  @media(min-width:700px){ .sheet{align-items:center} .sheetIn{border-bottom:1px solid var(--line2)} }
+  .sheetIn h3{margin:0 0 4px;font-size:17px;font-family:var(--disp);letter-spacing:.1em;
+    text-transform:uppercase;color:var(--cy)}
+  .sheetIn .note{color:var(--dim);font-size:12.5px;margin:0 0 16px}
+
+  /* ---------------- 意味を見る ---------------- */
+  #lkBtn{position:absolute;z-index:130;display:none;background:#05070a;color:var(--mg);
+    border:1px solid #ff2bd677;padding:5px 12px;font:inherit;font-family:var(--mono);font-size:12px;
+    letter-spacing:.1em;cursor:pointer;box-shadow:0 0 20px #ff2bd655}
+  #lkBtn:hover{background:#ff2bd618}
+  #lk{position:fixed;right:16px;bottom:16px;z-index:135;width:min(380px,calc(100vw - 32px));
+    background:var(--panel2);border:1px solid #ff2bd655;padding:15px 16px;display:none;
+    box-shadow:0 16px 60px #00000099,0 0 40px #ff2bd622}
+  #lk.on{display:block}
+  #lk h4{margin:0 0 9px;font-family:var(--mono);font-size:11px;color:var(--mg);letter-spacing:.16em;
+    text-transform:uppercase;display:flex;gap:8px;align-items:center;font-weight:400}
+  #lk h4 span{flex:1}
+  #lk .src{background:#05070a;border:1px solid var(--line);padding:8px 10px;font-size:13.5px;
+    max-height:120px;overflow:auto;overflow-wrap:anywhere;white-space:pre-wrap;color:var(--sub)}
+  #lk .out{font-size:15.5px;margin:10px 0 0;overflow-wrap:anywhere;white-space:pre-wrap;
+    line-height:1.65;color:var(--txt)}
+  #lk .out.wait{color:var(--dim);font-size:13px;font-family:var(--mono);letter-spacing:.1em}
+  #lk .foot{display:flex;gap:8px;margin-top:13px;flex-wrap:wrap}
+
+  /* ---------------- 通話 ---------------- */
+  .callBar{position:fixed;left:0;right:0;bottom:0;z-index:125;background:#05070af2;
+    border-top:1px solid var(--line2);padding:10px 16px;display:none;align-items:center;gap:12px;
+    flex-wrap:wrap;box-shadow:0 -8px 40px #00f0ff1f}
+  .callBar.on{display:flex}
+  .callBar .st{font-family:var(--mono);font-size:12.5px;letter-spacing:.1em;color:var(--lime);
+    display:flex;gap:8px;align-items:center}
+  .callBar .tm{font-family:var(--disp);font-variant-numeric:tabular-nums;font-size:20px;
+    font-weight:800;letter-spacing:.04em;color:var(--cy);text-shadow:0 0 16px #00f0ff66}
+  .callBar .tm.low{color:var(--red);text-shadow:0 0 16px #ff4d6d88}
+  .callBar .sp{flex:1}
+  .cbtn{border:1px solid var(--line);background:transparent;color:var(--sub);padding:6px 13px;
+    font:inherit;font-family:var(--mono);font-size:12px;letter-spacing:.08em;cursor:pointer}
+  .cbtn:hover{border-color:var(--line2);color:var(--cy)}
+  .cbtn.end{border-color:#ff4d6d66;color:var(--red)}
+  .cbtn.end:hover{background:#ff4d6d1a;box-shadow:0 0 16px #ff4d6d33}
+  .callChat{position:fixed;right:16px;bottom:72px;z-index:124;width:min(340px,calc(100vw - 32px));
+    background:var(--panel2);border:1px solid var(--line2);padding:12px;display:none;
+    box-shadow:0 16px 60px #00000099}
+  .callChat.on{display:block}
+  .callChat .log{max-height:180px;overflow:auto;font-size:13.5px;display:grid;gap:6px;margin-bottom:9px}
+  .callChat .log div{background:#05070a;border:1px solid var(--line);padding:6px 9px;
+    overflow-wrap:anywhere;color:var(--sub)}
+  .callChat .log div.me{border-color:var(--line2);color:var(--cy)}
+  .callChat .row{display:flex;gap:7px}
+  .callChat input{flex:1}
+
+  /* ---------------- 狭いとき：左の板を上の帯にする ---------------- */
+  /* 狭いとき：左の欄をいったん箱から出して（display:contents）、
+     板の帯だけをページの天井に貼る。箱に入れたままだと sticky が箱の中でしか効かず、
+     少しスクロールしただけで板が消える */
+  @media(max-width:900px){
+    body{overflow:auto}
+    .app{flex-direction:column;height:auto;min-height:100%}
+    .side,.sideScroll{display:contents}
+    .brand{padding:10px 14px 9px;background:var(--side)}
+    .sideHead{display:none}
+    #boards{flex-direction:row;overflow-x:auto;gap:0;padding:0 6px;scrollbar-width:none;
+      position:sticky;top:0;z-index:60;background:#070b11f2;backdrop-filter:blur(8px);
+      border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+    #boards::-webkit-scrollbar{display:none}
+    .bd{width:auto;border-left:0;border-bottom:2px solid transparent;padding:9px 11px}
+    .bd.on{border-left:0;border-bottom-color:var(--cy);background:#00f0ff14}
+    .bd b,.bd i{font-size:10px}
+    #groups{flex-direction:row;padding:7px 12px;gap:6px;overflow-x:auto;scrollbar-width:none;
+      background:var(--side)}
+    #groups::-webkit-scrollbar{display:none}
+    .grp{width:auto;border-left:0;border:1px solid var(--line);padding:4px 10px;font-size:12px}
+    .grp.on{border-color:var(--mg);background:#ff2bd614}
+    .grp.soon s{margin-left:6px}
+    .sideFoot{border-top:0;border-bottom:1px solid var(--line);padding:7px 12px;gap:10px;
+      background:var(--side)}
+    .sideFoot .lang{padding:4px 22px 4px 8px;font-size:11px}
+    .topbar{padding:8px 12px 9px;position:static}
+    .tools{gap:8px}
+    .subTools{gap:9px;font-size:10px}
+    .subTools .gp{gap:5px}
+    .subTools .lang{padding:4px 22px 4px 8px;font-size:11px}
+    .hero{padding:20px 0 6px}
+    .mainCol{min-height:60vh}
+    .scroll{overflow:visible;padding-bottom:120px}
+  }
+  @media(max-width:600px){ .row2{grid-template-columns:1fr} }
+  .pick{display:flex;gap:8px;flex-wrap:wrap}
+  .pick button{flex:1 1 150px;border:1px solid var(--line);background:#05070a;padding:10px;
+    font:inherit;font-size:13.5px;cursor:pointer;color:var(--sub);font-weight:700;text-align:center}
+  .pick button.on{border-color:var(--line2);background:#00f0ff12;color:var(--cy)}
+  .pick button.on[data-k=online]{border-color:#ff2bd655;background:#ff2bd612;color:var(--mg)}
+  .pick small{display:block;font-weight:400;font-size:10.5px;color:var(--dim);margin-top:2px;
+    font-family:var(--mono);letter-spacing:.06em}
+  .pickLang{display:flex;gap:6px;flex-wrap:wrap}
+  .pickLang button{border:1px solid var(--line);background:#05070a;padding:6px 12px;
+    font:inherit;font-size:13.5px;cursor:pointer;color:var(--sub)}
+  .pickLang button.on{border-color:var(--line2);background:#00f0ff14;color:var(--cy);font-weight:700}
+  .pickLang button.on::before{content:"\2713 ";font-size:11px}
+  .pickLang.want button.on{border-color:#ff2bd655;background:#ff2bd614;color:var(--mg)}
+  .hp{position:absolute;left:-9999px;width:1px;height:1px;opacity:0}
+  .sheetFoot{display:flex;gap:10px;align-items:center;margin-top:20px;flex-wrap:wrap}
+  .msg{font-size:12.5px;color:var(--red);margin-left:auto;font-family:var(--mono)}
+
+  .sheet{position:fixed;inset:0;z-index:120;background:#02040799;backdrop-filter:blur(3px);
+    display:none;align-items:flex-end;justify-content:center}
+  .sheet.on{display:flex}
+  .sheetIn{background:var(--panel);width:100%;max-width:700px;padding:22px 22px 26px;
+    max-height:92vh;overflow:auto;border:1px solid var(--line2);border-bottom:0;
+    box-shadow:0 -10px 60px #00f0ff1a}
+  @media(min-width:700px){ .sheet{align-items:center} .sheetIn{border-bottom:1px solid var(--line2)} }
+  .sheetIn h3{margin:0 0 4px;font-size:17px;font-family:var(--disp);letter-spacing:.1em;
+    text-transform:uppercase;color:var(--cy)}
+  .sheetIn .note{color:var(--dim);font-size:12.5px;margin:0 0 16px}
+
+  /* ---------------- 意味を見る ---------------- */
+  #lkBtn{position:absolute;z-index:130;display:none;background:#05070a;color:var(--mg);
+    border:1px solid #ff2bd677;padding:5px 12px;font:inherit;font-family:var(--mono);font-size:12px;
+    letter-spacing:.1em;cursor:pointer;box-shadow:0 0 20px #ff2bd655}
+  #lkBtn:hover{background:#ff2bd618}
+  #lk{position:fixed;right:16px;bottom:16px;z-index:135;width:min(380px,calc(100vw - 32px));
+    background:var(--panel2);border:1px solid #ff2bd655;padding:15px 16px;display:none;
+    box-shadow:0 16px 60px #00000099,0 0 40px #ff2bd622}
+  #lk.on{display:block}
+  #lk h4{margin:0 0 9px;font-family:var(--mono);font-size:11px;color:var(--mg);letter-spacing:.16em;
+    text-transform:uppercase;display:flex;gap:8px;align-items:center;font-weight:400}
+  #lk h4 span{flex:1}
+  #lk .src{background:#05070a;border:1px solid var(--line);padding:8px 10px;font-size:13.5px;
+    max-height:120px;overflow:auto;overflow-wrap:anywhere;white-space:pre-wrap;color:var(--sub)}
+  #lk .out{font-size:15.5px;margin:10px 0 0;overflow-wrap:anywhere;white-space:pre-wrap;
+    line-height:1.65;color:var(--txt)}
+  #lk .out.wait{color:var(--dim);font-size:13px;font-family:var(--mono);letter-spacing:.1em}
+  #lk .foot{display:flex;gap:8px;margin-top:13px;flex-wrap:wrap}
+
+  /* ---------------- 通話 ---------------- */
+  .callBar{position:fixed;left:0;right:0;bottom:0;z-index:125;background:#05070af2;
+    border-top:1px solid var(--line2);padding:10px 16px;display:none;align-items:center;gap:12px;
+    flex-wrap:wrap;box-shadow:0 -8px 40px #00f0ff1f}
+  .callBar.on{display:flex}
+  .callBar .st{font-family:var(--mono);font-size:12.5px;letter-spacing:.1em;color:var(--lime);
+    display:flex;gap:8px;align-items:center}
+  .callBar .tm{font-family:var(--disp);font-variant-numeric:tabular-nums;font-size:20px;
+    font-weight:800;letter-spacing:.04em;color:var(--cy);text-shadow:0 0 16px #00f0ff66}
+  .callBar .tm.low{color:var(--red);text-shadow:0 0 16px #ff4d6d88}
+  .callBar .sp{flex:1}
+  .cbtn{border:1px solid var(--line);background:transparent;color:var(--sub);padding:6px 13px;
+    font:inherit;font-family:var(--mono);font-size:12px;letter-spacing:.08em;cursor:pointer}
+  .cbtn:hover{border-color:var(--line2);color:var(--cy)}
+  .cbtn.end{border-color:#ff4d6d66;color:var(--red)}
+  .cbtn.end:hover{background:#ff4d6d1a;box-shadow:0 0 16px #ff4d6d33}
+  .callChat{position:fixed;right:16px;bottom:72px;z-index:124;width:min(340px,calc(100vw - 32px));
+    background:var(--panel2);border:1px solid var(--line2);padding:12px;display:none;
+    box-shadow:0 16px 60px #00000099}
+  .callChat.on{display:block}
+  .callChat .log{max-height:180px;overflow:auto;font-size:13.5px;display:grid;gap:6px;margin-bottom:9px}
+  .callChat .log div{background:#05070a;border:1px solid var(--line);padding:6px 9px;
+    overflow-wrap:anywhere;color:var(--sub)}
+  .callChat .log div.me{border-color:var(--line2);color:var(--cy)}
+  .callChat .row{display:flex;gap:7px}
+  .callChat input{flex:1}
+
+  /* ---------------- 狭いとき：左の板を上の帯にする ---------------- */
+  @media(max-width:900px){
+    body{overflow:auto}
+    .app{flex-direction:column;height:auto;min-height:100%}
+    .side{width:auto;border-right:0;border-bottom:1px solid var(--line)}
+    .side::after{display:none}
+    .brand{padding:10px 14px 9px}
+    .sideScroll{padding:0;overflow:visible}
+    .sideHead{display:none}
+    /* 板の帯だけを天井に貼る。名札や言語の欄まで貼ると、画面の3割が飾りになる */
+    #boards{flex-direction:row;overflow-x:auto;gap:0;padding:0 6px;scrollbar-width:none;
+      position:sticky;top:0;z-index:60;background:#070b11f2;backdrop-filter:blur(8px);
+      border-bottom:1px solid var(--line)}
+    #boards::-webkit-scrollbar{display:none}
+    .bd{width:auto;border-left:0;border-bottom:2px solid transparent;padding:9px 11px}
+    .bd.on{border-left:0;border-bottom-color:var(--cy);background:#00f0ff14}
+    #groups{flex-direction:row;padding:0 8px 7px;gap:6px;overflow-x:auto;scrollbar-width:none}
+    #groups::-webkit-scrollbar{display:none}
+    .grp{width:auto;border-left:0;border:1px solid var(--line);padding:4px 10px;font-size:12px}
+    .grp.on{border-color:var(--mg);background:#ff2bd614}
+    .grp.soon s{margin-left:6px}
+    .sideFoot{border-top:1px solid var(--line);padding:7px 12px;gap:10px}
+    .sideFoot .lang{padding:4px 22px 4px 8px;font-size:11px}
+    .topbar{padding:8px 12px 9px}
+    .tools{gap:8px}
+    .subTools{gap:9px;font-size:10px}
+    .subTools .gp{gap:5px}
+    .subTools .lang{padding:4px 22px 4px 8px;font-size:11px}
+    .hero{padding:20px 0 6px}
+    .mainCol{min-height:60vh}
+    .scroll{overflow:visible}
+    .topbar{position:static}
+  }
+  @media(max-width:600px){
+    .bmeta{min-width:0;text-align:left;width:100%;display:flex;gap:10px;padding-left:46px}
+    .bmeta b{display:inline}
+    .brow{flex-wrap:wrap}
+    .wrap{padding:0 14px}
+  }
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <aside class="side">
+    <div class="brand">
+      <i>遊</i>
+      <a href="/"><b>MORE TO JAPAN</b><s>GAME × LANG</s></a>
+    </div>
+    <div class="sideScroll">
+      <div class="sideHead" data-en="Boards" data-ja="板">Boards</div>
+      <div id="boards"></div>
+      <div class="sideHead" data-en="Coming" data-ja="そのうち">Coming</div>
+      <div id="groups"></div>
+    </div>
+    <div class="sideFoot">
+      <select class="lang" id="lang" aria-label="Language">
+        <option value="en">English</option>
+        <option value="ja">日本語</option>
+        <option value="zh">中文</option>
+        <option value="vi">Tiếng Việt</option>
+        <option value="ko">한국어</option>
+        <option value="tl">Tagalog</option>
+        <option value="ne">नेपाली</option>
+      </select>
+      <a href="/help/" data-en="Help board" data-ja="こまりごと掲示板">Help board</a>
+      <a href="/market/" data-en="Give &amp; Find" data-ja="ゆずります">Give &amp; Find</a>
+    </div>
+  </aside>
+
+  <div class="mainCol">
+    <div class="topbar">
+      <div class="tools" id="tools">
+        <div class="srch">
+          <b>&gt;</b>
+          <input id="q" type="text" data-ph-en="Search — a game, a platform, a time of day"
+                 data-ph-ja="さがす ─ ゲーム名、機種、時間帯" autocomplete="off">
+        </div>
+        <div class="subTools">
+          <div class="gp">
+            <span data-en="They speak" data-ja="話せることば">They speak</span>
+            <select id="spkFilter" class="lang"></select>
+          </div>
+          <div class="gp">
+            <span data-en="They want to practise" data-ja="習いたいことば">They want to practise</span>
+            <select id="wantFilter" class="lang"></select>
+          </div>
+          <label class="chk"><input type="checkbox" id="liveOnly">
+            <span data-en="🟢 Only people here right now" data-ja="🟢 いま話せる人だけ">🟢 Only people here right now</span></label>
+        </div>
+      </div>
+    </div>
+
+    <div class="scroll">
+      <div class="wrap">
+        <div class="hero" id="heroBox">
+          <div class="kicker" data-en="Language exchange · free · no sign-up"
+               data-ja="言語交換 ・ 無料 ・ 登録なし">Language exchange · free · no sign-up</div>
+          <h1><span class="gl" data-en="A language exchange board" data-ja="言語交換の掲示板。">A language exchange board</span>
+            <span data-en="that starts with the game you already play." data-ja="入口は、いまやっているゲーム。">that starts with the game you already play.</span></h1>
+          <p data-en="A normal language exchange runs out of things to say in about twenty minutes, and then it is two people doing homework. A match does not run out. Post which language you have and which one you want, and anything you cannot read on this board you can look up without leaving the thread."
+             data-ja="ふつうの言語交換は、だいたい20分で話す種が尽きます。そこから先は二人で宿題をしている時間です。試合は尽きません。自分が話せることばと習いたいことばを書いて出すだけ。この掲示板で読めないものがあったら、スレッドを出ずにその場で意味が見られます。">
+            A normal language exchange runs out of things to say in about twenty minutes, and then it is two people doing homework. A match does not run out. Post which language you have and which one you want, and anything you cannot read on this board you can look up without leaving the thread.</p>
+          <div class="heroBtns">
+            <button class="btn p" id="postBtn" data-en="Put yourself up" data-ja="自分を出してみる">Put yourself up</button>
+            <a class="btn s" href="/help/" data-en="Stuck on something instead? → Help board"
+               data-ja="困っていることのほうは → こまりごと掲示板">Stuck on something instead? → Help board</a>
+          </div>
+          <p class="soonNote" id="soonNote"
+             data-en="Games first, because gamers are already online and already talking. Dance and drawing come next — the structure is the same, only the board changes."
+             data-ja="まずゲームからにしました。ゲーマーはもう画面の前にいて、もう喋っているからです。ダンスと絵はこの次です。仕組みは同じで、板が変わるだけ。">Games first, because gamers are already online and already talking. Dance and drawing come next — the structure is the same, only the board changes.</p>
+        </div>
+
+        <div id="view">
+          <div class="loading" data-en="Loading…" data-ja="読み込み中…">Loading…</div>
+        </div>
+
+        <div class="rules">
+          <b data-en="How to not waste each other's evening" data-ja="おたがいの夜を無駄にしないために">How to not waste each other's evening</b><br>
+          <span data-en="&bull; Write both languages honestly, &ldquo;a little&rdquo; included. The whole point is that neither of you has to be afraid of the first ten minutes.<br>&bull; Agree out loud how you will split it &mdash; one match in Japanese, one match in English is the simplest rule that actually works. Without a rule you will both default to English and only one of you learns anything.<br>&bull; Select any text on this board to see what it means. The original always stays where it is: the lookup is a dictionary, not a translation of the post.<br>&bull; Do not post your game ID, Discord tag, LINE ID or phone number in the open. Say you have one, and swap it in the thread after you have spoken.<br>&bull; Meeting in person (an arcade, a smash night, a board game café) &mdash; go somewhere public, in daylight if you can. Not your flat, not theirs.<br>&bull; Not for dating, not for recruiting, selling, boosting or account trading. Those get reported and disappear.<br>&bull; You can take your own post down yourself, at any time. Old posts fall off on their own after about six weeks."
+                data-ja="・ 話せることばも習いたいことばも正直に。「少しだけ」も入れてください。おたがい最初の10分を怖がらないで済むこと、それがこの掲示板の全部です。<br>・ どう半分に分けるかを声に出して決めてください。「1試合は日本語、次の1試合は英語」がいちばん単純で、実際に続く決め方です。決めないと二人とも英語に流れて、学べるのは片方だけになります。<br>・ この掲示板の文字は、なぞると意味が見られます。原文はその場に必ず残ります。これは辞書であって、投稿を翻訳して置き換えるものではありません。<br>・ ゲームのID、Discordのタグ、LINEのID、電話番号は表に書かないこと。「持っています」とだけ書いて、スレッドの中で渡してください。<br>・ 会って遊ぶとき（ゲーセン、スマブラ会、ボードゲームカフェ）は、人のいる場所で、できれば明るいうちに。自分の部屋にも、相手の部屋にも行かない。<br>・ 出会い目的、勧誘、宣伝、代行（ブースト）、アカウント売買は書けません。通報されたら消えます。<br>・ 自分の投稿はいつでも自分で下ろせます。古いものは6週間ほどで勝手に落ちます。">
+          </span>
+        </div>
+
+        <div class="siteFoot">
+          <span>© <span id="yr"></span> MORE TO JAPAN</span>
+          <a href="/" data-en="Home" data-ja="トップ">Home</a>
+          <a href="/why/" data-en="Why" data-ja="なぜ">Why</a>
+          <a href="/#how" data-en="Lessons" data-ja="レッスン">Lessons</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<button id="lkBtn">&gt; <span data-en="meaning" data-ja="意味">meaning</span></button>
+<div id="lk">
+  <h4><span id="lkTitle" data-en="What it means" data-ja="意味">What it means</span>
+    <button class="act ghost" id="lkClose">✕</button></h4>
+  <div class="src" id="lkSrc"></div>
+  <div class="out wait" id="lkOut"></div>
+  <div class="foot">
+    <button class="act" id="lkAsk" data-en="Ask them about it" data-ja="この人に聞く">Ask them about it</button>
+    <button class="act ghost" id="lkCopy" data-en="copy" data-ja="コピー">copy</button>
+  </div>
+</div>
+
+<div class="callBar" id="callBar">
+  <span class="st" id="callSt"></span>
+  <span class="tm" id="callTm"></span>
+  <button class="cbtn" id="callPlan"></button>
+  <span class="sp"></span>
+  <button class="cbtn" id="callChatB" data-en="type" data-ja="字で書く">type</button>
+  <button class="cbtn" id="callMute" data-en="mute" data-ja="ミュート">mute</button>
+  <button class="cbtn end" id="callEnd" data-en="hang up" data-ja="切る">hang up</button>
+</div>
+<div class="callChat" id="callChat">
+  <div class="log" id="chatLog"></div>
+  <div class="row">
+    <input id="chatIn" type="text" maxlength="200"
+           data-ph-en="type the word you cannot say" data-ph-ja="言えなかったことばを書く">
+    <button class="btn p sm" id="chatSend" data-en="send" data-ja="送る">send</button>
+  </div>
+</div>
+<audio id="farAudio" autoplay playsinline></audio>
+
+<div class="sheet" id="sheet">
+  <div class="sheetIn">
+    <h3 data-en="Put yourself up" data-ja="自分を出してみる">Put yourself up</h3>
+    <p class="note" data-en="Free. No account. The two language lines are the ones that matter — everything else can stay rough."
+       data-ja="無料です。登録は要りません。大事なのはことばの2行だけ。ほかは雑でかまいません。">Free. No account. The two language lines are the ones that matter — everything else can stay rough.</p>
+
+    <label data-en="Which game?" data-ja="どのゲーム？">Which game?</label>
+    <select id="fCat"></select>
+
+    <div class="row2">
+      <div>
+        <label data-en="Which languages can you speak?" data-ja="あなたが話せることば">Which languages can you speak?</label>
+        <div class="pickLang" id="fLangs"></div>
+      </div>
+      <div>
+        <label data-en="Which language do you want to practise?" data-ja="習いたいことば">Which language do you want to practise?</label>
+        <div class="pickLang want" id="fLearn"></div>
+      </div>
+    </div>
+    <p class="note" style="margin-top:8px"
+       data-en="&ldquo;A little&rdquo; counts on the left. The right side is why the other person writes back."
+       data-ja="左は「少しだけ」でも入れてかまいません。右があるから、相手は返事を書きます。">&ldquo;A little&rdquo; counts on the left. The right side is why the other person writes back.</p>
+
+    <div class="pick" id="kindPick"></div>
+
+    <label data-en="Say it in one line" data-ja="ひとことで">Say it in one line</label>
+    <input id="fTitle" type="text" maxlength="120"
+           data-ph-en="e.g. Plat 2, happy to call the map in Japanese if you fix my grammar"
+           data-ph-ja="例：プラチナ2。日本語で指示を出すので、英語を直してください">
+
+    <div class="row2">
+      <div>
+        <label id="whenLbl" data-en="When?" data-ja="いつ？">When?</label>
+        <input id="fWhen" type="text" maxlength="60"
+               data-ph-en="e.g. weeknights after 10, JST"
+               data-ph-ja="例：平日の22時すぎ（日本時間）">
+      </div>
+      <div>
+        <label id="areaLbl" data-en="On what?" data-ja="どこで？">On what?</label>
+        <input id="fArea" type="text" maxlength="60"
+               data-ph-en="e.g. PC + Discord, or Switch"
+               data-ph-ja="例：PCとDiscord／Switch">
+      </div>
+    </div>
+
+    <div class="row2">
+      <div>
+        <label data-en="How many people?" data-ja="何人ほしい？">How many people?</label>
+        <select id="fSize"></select>
+      </div>
+      <div>
+        <label data-en="How serious about the game?" data-ja="ゲームはどれくらい本気？">How serious about the game?</label>
+        <select id="fLevel"></select>
+      </div>
+    </div>
+
+    <label data-en="The boring details" data-ja="地味なところ">The boring details</label>
+    <textarea id="fBody" maxlength="4000"
+      data-ph-en="Your rank, your region, whether you use voice, how much Japanese you really have, what you want fixed. Do not write your game ID or Discord tag here — say you have one and swap it in the thread."
+      data-ph-ja="ランク、サーバー、ボイスを使うか、日本語がどのくらい本当に話せるか、何を直してほしいか。ゲームのIDやDiscordのタグはここに書かないこと（「あります」とだけ書いて、スレッドの中で渡す）。"></textarea>
+
+    <div class="row2">
+      <div>
+        <label data-en="Call yourself something (optional)" data-ja="呼び名（任意）">Call yourself something (optional)</label>
+        <input id="fNick" type="text" maxlength="24" data-ph-en="Anonymous" data-ph-ja="名無し">
+      </div>
+      <div>
+        <label data-en="Your email — never shown (optional)" data-ja="メール ─ 表には出ません（任意）">Your email — never shown (optional)</label>
+        <input id="fMail" type="email" maxlength="120"
+               data-ph-en="so we can tell you when somebody says they are in"
+               data-ph-ja="やりたい人が出たときだけ知らせます">
+      </div>
+    </div>
+
+    <input class="hp" id="fHp" type="text" tabindex="-1" autocomplete="off" aria-hidden="true">
+
+    <div class="sheetFoot">
+      <button class="btn p" id="fSend" data-en="Put it up" data-ja="出す">Put it up</button>
+      <button class="btn s" id="fCancel" data-en="Cancel" data-ja="やめる">Cancel</button>
+      <span class="msg" id="fMsg"></span>
+    </div>
+  </div>
+</div>
+
+<div class="sheet" id="passSheet">
+  <div class="sheetIn" style="max-width:460px">
+    <h3 data-en="Longer calls" data-ja="もっと長く話す">Longer calls</h3>
+    <p class="note" id="passNote"></p>
+    <label data-en="Pass code" data-ja="パスの文字列">Pass code</label>
+    <input id="passCode" type="text" maxlength="32" placeholder="MTJ-XXXX-XXXX" autocomplete="off">
+    <div class="sheetFoot">
+      <button class="btn p" id="passSend" data-en="Use it" data-ja="入れる">Use it</button>
+      <button class="btn s" id="passCancel" data-en="Cancel" data-ja="やめる">Cancel</button>
+      <span class="msg" id="passMsg"></span>
+    </div>
+  </div>
+</div>
+
+<script src="/i18n.js?v=5"></script>
+<script>
+/* =========================================================================
+   More to Japan — ゲーマーのための言語交換（掲示板）
+   help.html / market.html と同じ裏側（GAS1つ・スプレッドシート1枚）。シートだけ別。
+
+   土台は言語交換。ただしふつうの言語交換は20分で話す種が尽きて、そこから先は
+   二人で宿題をしている時間になる。試合は尽きない。だから入口を「どのゲームか」にした。
+
+   この版で足したもの：
+   1. 掲示板の形（板＝ゲーム → スレ一覧 → スレッド）。カードより行のほうが数が見える
+   2. ことばの旗（話せる → 習いたい）をどの画面でも同じ形で出し、両方で絞れる
+   3. なぞると意味が出る。原文はその場に必ず残る。
+      「投稿そのものは翻訳しない」方針は変えていない。置き換えるのと辞書は別のこと
+   4. 通話（PeerJS／ブラウザ同士の直結）。時間に区切りがある
+   ========================================================================= */
+
+const API = "https://script.google.com/macros/s/AKfycbz09z8z5zorue3p6xFwtt01Q3KQgh-7bm-SGTSZj6ILNRxXS-KbASTooYulq3fo7TBL/exec";
+
+/* 通話の長さ。短いほうが既定。区切りがあること自体が、知らない人と話す側の守りにもなる */
+const FREE_MIN = 10;
+const PASS_MIN = 60;
+
+const GROUPS = [
+  { id:"game",  ic:"🎮", en:"Games",   ja:"ゲーム", on:true },
+  { id:"dance", ic:"🕺", en:"Dance",   ja:"ダンス", on:false },
+  { id:"draw",  ic:"🎨", en:"Drawing", ja:"絵",     on:false }
+];
+
+/* 板。選び方は「プレイ人口」ではなく
+   「日本にいる外国人と日本人が、実際に一緒にやって喋れるか」。
+   irl:true＝会ってもできる。talk:true＝しゃべる時間が実際にあるゲーム。 */
+const TOPICS = [
+  { id:"valorant", ic:"🎯", en:"VALORANT",        ja:"VALORANT" },
+  { id:"apex",     ic:"🔺", en:"Apex Legends",    ja:"Apex Legends" },
+  { id:"fortnite", ic:"🏝", en:"Fortnite",        ja:"フォートナイト" },
+  { id:"minecraft",ic:"⛏", en:"Minecraft",       ja:"マインクラフト", talk:true },
+  { id:"monhun",   ic:"🐉", en:"Monster Hunter",  ja:"モンスターハンター", talk:true },
+  { id:"splatoon", ic:"🦑", en:"Splatoon",        ja:"スプラトゥーン" },
+  { id:"smash",    ic:"💥", en:"Super Smash Bros.", ja:"スマブラ", irl:true },
+  { id:"mariokart",ic:"🏎", en:"Mario Kart",      ja:"マリオカート", irl:true },
+  { id:"pokemon",  ic:"⚡", en:"Pokémon",         ja:"ポケモン", irl:true },
+  { id:"fighting", ic:"🥊", en:"Fighting games",  ja:"格ゲー", irl:true },
+  { id:"mahjong",  ic:"🀄", en:"Mahjong",         ja:"麻雀・雀魂", irl:true, talk:true },
+  { id:"arcade",   ic:"🕹", en:"Arcade & rhythm", ja:"ゲーセン・音ゲー", irl:true, talk:true },
+  { id:"ff14",     ic:"⚔️", en:"Final Fantasy XIV", ja:"FF14", talk:true },
+  { id:"hoyo",     ic:"🌠", en:"Genshin & HoYo",  ja:"原神・スターレイル" },
+  { id:"rivals",   ic:"🦸", en:"Marvel Rivals",   ja:"マーベル・ライバルズ" },
+  { id:"cs2",      ic:"🔫", en:"Counter-Strike 2", ja:"カウンターストライク2" },
+  { id:"party",    ic:"👾", en:"Party games",     ja:"パーティーゲーム", talk:true },
+  { id:"coop",     ic:"🧟", en:"Co-op survival",  ja:"協力サバイバル", talk:true },
+  { id:"sports",   ic:"⚽", en:"Football & sports games", ja:"サッカー・スポーツゲーム" },
+  { id:"board",    ic:"🎲", en:"Board games & TRPG", ja:"ボードゲーム・TRPG", irl:true, talk:true },
+  { id:"other",    ic:"➕", en:"Another game",    ja:"そのほかのゲーム" }
+];
+
+const KINDS = [
+  { id:"online", ic:"🎮", en:"Online",      ja:"オンラインで",   subEn:"play from home", subJa:"家から" },
+  { id:"meet",   ic:"📅", en:"In person",   ja:"会って遊ぶ",     subEn:"arcade, smash night", subJa:"ゲーセン・対戦会" },
+  { id:"open",   ic:"🔁", en:"Either, ask me", ja:"どっちでもいい", subEn:"nothing fixed yet", subJa:"まだ決めてない" }
+];
+
+const LEVELS = [
+  { id:"any",     en:"Any level, I just want to talk", ja:"腕は問わない・喋れれば" },
+  { id:"new",     en:"I am new to it",                 ja:"はじめたばかり" },
+  { id:"serious", en:"I play to win",                  ja:"ガチでやる" }
+];
+
+const EXAMPLES = [
+  { t:"valorant", en:"Immortal, Tokyo server. I will call the map in Japanese slowly if you fix my English after the match.",
+    ja:"イモータル、東京サーバー。日本語でゆっくり指示を出すので、試合のあと英語を直してください。" },
+  { t:"minecraft", en:"Building a village on my server. We can be quiet for an hour and it is still fine. Japanese N4, want to hear real speed.",
+    ja:"自鯖で村を作っています。1時間黙っていても成り立つゲームです。日本語はN4。本当の速さで聞きたい。" },
+  { t:"arcade", en:"maimai in Akihabara on Saturdays. I will teach you the machine, you teach me how to order food.",
+    ja:"土曜に秋葉原でmaimai。筐体の使い方は教えます。かわりに注文の仕方を教えてください。" },
+  { t:"monhun", en:"Looking for one person for hunts on weeknights. Voice on. I am Japanese and I want to practise English swearing at a monster.",
+    ja:"平日の夜に一緒に狩る人を1人。ボイスあり。日本人です。モンスターに英語で悪態をつく練習がしたい。" }
+];
+
+const LANGS = (window.MTJ_LANGS || [{id:"en",name:"English"},{id:"ja",name:"日本語"}]);
+/* 旗には短い札を使う。名前をそのまま並べると行が折り返して、数が見えなくなる */
+const SHORT = { en:"EN", ja:"JA", zh:"ZH", vi:"VI", ko:"KO", tl:"TL", ne:"NE" };
+function langName(id) {
+  const l = LANGS.filter(function (x) { return x.id === id; })[0];
+  return l ? l.name : id;
+}
+function shortOf(id) { return SHORT[id] || String(id).toUpperCase(); }
+
+const $  = function (id) { return document.getElementById(id); };
+const esc = function (s) {
+  return String(s == null ? "" : s).replace(/[&<>"]/g, function (c) {
+    return ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;" })[c];
+  });
+};
+const TR = (window.MTJ_TR || {});
+let TRD = {};
+function buildTRD_() {
+  TRD = {};
+  const d = document.createElement("textarea");
+  Object.keys(TR).forEach(function (k) { d.innerHTML = k; TRD[d.value] = TR[k]; });
+}
+buildTRD_();
+function tr_(en) { return TR[en] || TRD[en]; }
+
+async function setLang(l) {
+  lang = l;
+  if (window.MTJ_LOAD) { await window.MTJ_LOAD(l); buildTRD_(); }
+  applyLang();
+}
+const unentBox_ = document.createElement("textarea");
+function unent_(s) {
+  if (String(s).indexOf("&") < 0) return s;
+  unentBox_.innerHTML = s;
+  return unentBox_.value;
+}
+function T(en, ja) {
+  if (lang === "ja") return ja;
+  if (lang === "en") return en;
+  const t = tr_(en);
+  return (t && t[lang]) || en;
+}
+
+let lang  = "en";
+let plans = [];
+let state = { q:"", spk:"", want:"", live:false };
+let apiDown = false, loaded = false;
+let pickKind = "online";
+let myLangs = [], myLearn = [];
+let langsTouched = false, learnTouched = false;
+let curPlan = null;          // いま開いているスレッド
+
+/* ---------------------------------------------------------------- 端末の印 */
+function dev() {
+  let d = "";
+  try { d = localStorage.getItem("mj-board-dev") || ""; } catch (e) {}
+  if (!d) {
+    d = "d" + Math.random().toString(36).slice(2) + Date.now().toString(36);
+    try { localStorage.setItem("mj-board-dev", d); } catch (e) {}
+  }
+  return d;
+}
+function mine() {
+  try { return JSON.parse(localStorage.getItem("mj-board-mine") || "[]"); } catch (e) { return []; }
+}
+function markMine(id) {
+  const m = mine(); m.push(id);
+  try { localStorage.setItem("mj-board-mine", JSON.stringify(m.slice(-200))); } catch (e) {}
+}
+function joined() {
+  try { return JSON.parse(localStorage.getItem("mj-play-in") || "[]"); } catch (e) { return []; }
+}
+function markJoined(id) {
+  const m = joined(); m.push(id);
+  try { localStorage.setItem("mj-play-in", JSON.stringify(m.slice(-200))); } catch (e) {}
+}
+/** 通話を長くできる状態か。期限だけを持つ。誰が払ったかは端末にも裏にも持たない */
+function passUntil() {
+  try { return Number(localStorage.getItem("mj-pass") || 0); } catch (e) { return 0; }
+}
+function hasPass() { return passUntil() > Date.now(); }
+function myCallMin() { return hasPass() ? PASS_MIN : FREE_MIN; }
+
+/* ---------------------------------------------------------------- 通信 */
+async function apiGet(params) {
+  try {
+    const u = new URL(API);
+    Object.keys(params).forEach(function (k) { u.searchParams.set(k, params[k]); });
+    const o = JSON.parse(await (await fetch(u.toString())).text());
+    apiDown = false;
+    return o;
+  } catch (e) { apiDown = true; return { ok:false, err:"notready" }; }
+}
+async function apiPost(body) {
+  try {
+    body.dev = dev();
+    const r = await fetch(API, {
+      method: "POST",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify(body)
+    });
+    const o = JSON.parse(await r.text());
+    apiDown = false;
+    return o;
+  } catch (e) { apiDown = true; return { ok:false, err:"notready" }; }
+}
+
+/* ---------------------------------------------------------------- 部品 */
+function ago(iso) {
+  const t = new Date(iso).getTime();
+  if (!t) return "";
+  const s = Math.max(1, Math.floor((Date.now() - t) / 1000));
+  if (s < 3600)    return T("just now", "たった今");
+  if (s < 86400)   return Math.floor(s/3600)  + T("h ago",  "時間前");
+  if (s < 2592000) return Math.floor(s/86400) + T("d ago",  "日前");
+  return Math.floor(s/2592000) + T("mo ago", "か月前");
+}
+function topicOf(id) { return TOPICS.filter(function (c) { return c.id === id; })[0] || TOPICS[TOPICS.length-1]; }
+function kindOf(id)  { return KINDS.filter(function (k) { return k.id === id; })[0] || KINDS[0]; }
+function lvOf(id)    { return LEVELS.filter(function (l) { return l.id === id; })[0] || LEVELS[0]; }
+
+function sizeTxt(n) {
+  if (!n) return T("Any number of people", "何人でも");
+  if (n === 1) return T("1 person wanted", "あと1人");
+  return n + T(" people wanted", "人ほしい");
+}
+function goingTxt(n) {
+  return n === 1 ? T("1 person said they are in", "1人がやりたいと言っています")
+                 : n + T(" people said they are in", "人がやりたいと言っています");
+}
+function whenTxt(g) {
+  if (g.when) return g.when;
+  return g.kind === "open" ? T("Nothing fixed yet", "まだ決めてない") : T("Whenever", "いつでも");
+}
+/** ことばの旗。話せる → 習いたい。短い札にしてあるのは行を折り返さないため */
+function flags(g) {
+  const sp = (g.langs || []).map(function (l) {
+    return '<i class="fl" title="' + esc(langName(l)) + '">' + shortOf(l) + "</i>"; }).join("");
+  const wa = (g.learn || []).map(function (l) {
+    return '<i class="fl w" title="' + esc(langName(l)) + '">' + shortOf(l) + "</i>"; }).join("");
+  if (!sp && !wa) return "";
+  return '<span class="lxs">🗣' + sp + "<em>→</em>📚" + (wa || '<i class="fl w">?</i>') + "</span>";
+}
+
+/** 広いときは中の箱が動き、狭いときはページごと動く。両方に効かせる */
+function toTop() {
+  const sc = document.querySelector(".scroll");
+  if (sc) sc.scrollTop = 0;
+  window.scrollTo(0, 0);
+}
+
+/* ---------------------------------------------------------------- 道順 */
+function render() {
+  const h = location.hash;
+  const topic = h.indexOf("#t/") === 0 ? h.slice(3)
+              : (h.indexOf("#g/") === 0 && curPlan) ? curPlan.cat : "";
+  drawBoards(topic);
+  if (h.indexOf("#g/") === 0) { $("heroBox").style.display = "none"; renderThread(); return; }
+  if (curPlan) { stopLive(); curPlan = null; }
+  // 口上はトップでだけ出す。掲示板に毎回あれを通らせない
+  $("heroBox").style.display = h.indexOf("#t/") === 0 ? "none" : "";
+  renderList(topic);
+}
+
+function filtered(list, topic) {
+  let ls = list.slice();
+  if (topic) ls = ls.filter(function (x) { return x.cat === topic; });
+  if (state.spk)  ls = ls.filter(function (x) { return (x.langs || []).indexOf(state.spk) >= 0; });
+  if (state.want) ls = ls.filter(function (x) { return (x.learn || []).indexOf(state.want) >= 0; });
+  if (state.live) ls = ls.filter(function (x) { return x.live; });
+  if (state.q) {
+    const w = state.q.toLowerCase().split(/\s+/).filter(Boolean);
+    ls = ls.filter(function (x) {
+      const t = topicOf(x.cat);
+      const hay = (x.title + " " + x.preview + " " + x.area + " " + x.when + " " + t.en + " " + t.ja).toLowerCase();
+      return w.every(function (k) { return hay.indexOf(k) >= 0; });
+    });
+  }
+  return ls;
+}
+
+/* ---------------------------------------------------------------- スレ一覧 */
+function renderList(topic) {
+  const v = $("view");
+  if (apiDown) {
+    v.innerHTML = '<div class="banner">' + T(
+      "This page is being set up right now — it will be open very soon.",
+      "いま裏側を用意しているところです。もう少し待ってください。") + "</div>";
+    return;
+  }
+  const ls = filtered(plans, topic);
+  const t  = topic ? topicOf(topic) : null;
+
+  let h = '<div class="secH"><h2>'
+    + (t ? t.ic + " " + esc(T(t.en, t.ja)) : T("Everything on the board", "ぜんぶの書き込み")) + "</h2>"
+    + "<span>" + (loaded ? (ls.length + T(" posts", "件")) : "") + "</span>"
+    + '<span style="flex:1"></span>'
+    + '<button class="btn p sm" id="newB">' + T("Write one", "書く") + "</button></div>";
+
+  if (!loaded) {
+    h += '<div class="loading">' + T("Loading…", "読み込み中…") + "</div>";
+  } else if (!ls.length) {
+    h += t ? emptyRoom() : emptyBoard();
+  } else {
+    h += '<div class="board">' + ls.map(row).join("") + "</div>";
+  }
+  v.innerHTML = h;
+  $("newB").addEventListener("click", function () { openSheet(topic); });
+  const b = $("emptyAsk");
+  if (b) b.addEventListener("click", function () { openSheet(topic); });
+  Array.prototype.forEach.call(v.querySelectorAll(".brow"), function (el) {
+    el.addEventListener("click", function () { location.hash = "#g/" + el.dataset.id; });
+  });
+}
+
+function row(g) {
+  const t = topicOf(g.cat), k = kindOf(g.kind);
+  return '<div class="brow' + (g.closed ? " closed" : "") + '" data-id="' + esc(g.id) + '">'
+    + '<span class="bic">' + t.ic + "</span>"
+    + '<div class="bmain"><div class="btitle"><span class="tx">' + esc(g.title) + "</span>"
+    +   (g.live ? '<span class="live">🟢 ' + T("here now", "いま居ます") + "</span>" : "")
+    +   (g.closed ? '<span class="doneTag">' + T("Full", "埋まりました") + "</span>" : "")
+    + "</div>"
+    + '<div class="bsub">' + flags(g)
+    +   '<span class="tag ' + g.kind + '">' + k.ic + " " + esc(T(k.en, k.ja)) + "</span>"
+    +   "<span>🕐 " + esc(whenTxt(g)) + "</span>"
+    +   (g.area ? "<span>· " + esc(g.area) + "</span>" : "")
+    + "</div></div>"
+    + '<div class="bmeta"><b>' + (g.comments ? "💬 " + g.comments : "—") + "</b>"
+    +   (g.going ? "<span>🙋 " + g.going + "</span>" : "")
+    +   "<span>" + ago(g.ts) + "</span></div>"
+    + "</div>";
+}
+
+function drawBoards(topic) {
+  const n = {};
+  filtered(plans, "").forEach(function (x) { n[x.cat] = (n[x.cat] || 0) + 1; });
+  const liveN = {};
+  filtered(plans, "").forEach(function (x) { if (x.live) liveN[x.cat] = (liveN[x.cat] || 0) + 1; });
+  const all = Object.keys(n).reduce(function (a, k) { return a + n[k]; }, 0);
+  $("boards").innerHTML = '<button class="bd' + (topic ? "" : " on") + '" data-t="">'
+      + '<span>✦</span><span class="nm">' + T("All", "ぜんぶ") + "</span>"
+      + (all ? "<b>" + all + "</b>" : "") + "</button>"
+    + TOPICS.map(function (t) {
+        return '<button class="bd' + (topic === t.id ? " on" : "") + '" data-t="' + t.id + '">'
+          + "<span>" + t.ic + '</span><span class="nm">' + esc(T(t.en, t.ja)) + "</span>"
+          + (liveN[t.id] ? "<i>●" + liveN[t.id] + "</i>" : "")
+          + (n[t.id] ? "<b>" + n[t.id] + "</b>" : "") + "</button>";
+      }).join("");
+  Array.prototype.forEach.call($("boards").querySelectorAll("[data-t]"), function (b) {
+    b.addEventListener("click", function () {
+      location.hash = b.dataset.t ? "#t/" + b.dataset.t : "";
+      if (!b.dataset.t && location.hash === "") render();
+    });
+  });
+}
+
+function emptyRoom() {
+  return '<div class="empty"><h3>' + T("Nobody on this board yet.", "この板にはまだ誰もいません。") + "</h3>"
+    + "<p>" + T("That is not a problem, it is the opening. Whoever writes first gets to set the rule for how you split the two languages.",
+                "それは困ったことではなく、入口です。最初に書いた人が、ことばをどう半分に分けるかを決められます。") + "</p>"
+    + '<button class="btn p" id="emptyAsk">' + T("Be the first one in", "1人目になる") + "</button></div>";
+}
+function emptyBoard() {
+  return '<div class="empty"><h3>' + T("Nothing here yet.", "まだ何もありません。") + "</h3>"
+    + "<p>" + T("The first one is the hard one. After that it fills itself.",
+                "最初の1つがいちばん難しいところです。そこを越えると、あとは勝手に増えます。") + "</p>"
+    + '<div class="egs">' + EXAMPLES.map(function (e) {
+        const t = topicOf(e.t);
+        return '<div class="eg"><s>' + t.ic + " " + esc(T(t.en, t.ja)) + " — " + T("for example", "たとえば")
+          + "</s>" + esc(T(e.en, e.ja)) + "</div>";
+      }).join("") + "</div>"
+    + '<button class="btn p" id="emptyAsk">' + T("Put the first one up", "最初の1つを出す") + "</button></div>";
+}
+
+/* ---------------------------------------------------------------- スレッド */
+async function renderThread() {
+  const id = location.hash.slice(3);
+  $("view").innerHTML = '<div class="loading">' + T("Loading…", "読み込み中…") + "</div>";
+  const r = await apiGet({ a:"plan", id:id });
+  if (!r.ok) {
+    $("view").innerHTML = '<div class="empty"><h3>'
+      + (r.err === "notfound" ? T("This one is gone.", "これはもうありません。")
+                              : T("Could not open it just now.", "いま開けませんでした。")) + "</h3>"
+      + '<button class="btn p" id="again">' + T("Try again", "もう一度") + "</button> "
+      + '<button class="btn s" id="toList">' + T("All", "ぜんぶ") + "</button></div>";
+    $("again").addEventListener("click", renderThread);
+    $("toList").addEventListener("click", function () { location.hash = ""; });
+    return;
+  }
+  const g = r.plan; curPlan = g;
+  const t = topicOf(g.cat), k = kindOf(g.kind), lv = lvOf(g.level);
+  drawBoards(t.id);   // 左の板を、いま見ているスレッドの板に合わせる
+  const isMine = mine().indexOf(g.id) >= 0;
+  const isIn   = joined().indexOf(g.id) >= 0;
+
+  let h = '<button class="back" id="back">&larr; ' + esc(T(t.en, t.ja)) + "</button>"
+    + '<div class="thHead"><span class="ic">' + t.ic + "</span><h2>" + esc(g.title) + "</h2></div>";
+
+  h += '<div class="post">'
+    +   (g.closed ? '<div class="soldNote">' + T("This one is full or already happened.",
+                      "これはもう埋まった／終わりました。") + "</div>" : "")
+    +   '<div class="pno"><b>1</b><span>' + esc(g.nick || T("Anonymous", "名無し")) + "</span>"
+    +     "<span>" + ago(g.ts) + "</span>" + flags(g)
+    +     '<span class="tag ' + g.kind + '">' + k.ic + " " + esc(T(k.en, k.ja)) + "</span>"
+    +     (g.live ? '<span class="live">🟢 ' + T("here now", "いま居ます") + "</span>" : "")
+    +   "</div>"
+    +   '<div class="pbody">' + linkify(g.body) + "</div>"
+    +   '<div class="facts">'
+    +     "<div><b>" + T("Speaks", "話せることば") + "</b><span>"
+    +       esc((g.langs || []).map(langName).join(" / ") || "—") + "</span></div>"
+    +     "<div><b>" + T("Wants to practise", "習いたいことば") + "</b><span>"
+    +       esc((g.learn || []).map(langName).join(" / ") || "—") + "</span></div>"
+    +     "<div><b>" + T("When", "いつ") + "</b><span>🕐 " + esc(whenTxt(g)) + "</span></div>"
+    +     (g.area ? "<div><b>" + (g.kind === "meet" ? T("Where", "場所") : T("On what", "どこで"))
+            + "</b><span>" + (g.kind === "meet" ? "📍 " : "🎧 ") + esc(g.area) + "</span></div>" : "")
+    +     "<div><b>" + T("Game", "ゲーム") + "</b><span>" + t.ic + " " + esc(T(t.en, t.ja))
+    +       " · " + esc(T(lv.en, lv.ja)) + "</span></div>"
+    +     "<div><b>" + T("People", "人数") + "</b><span>" + esc(sizeTxt(g.size)) + "</span></div>"
+    +   "</div>"
+    +   '<div class="acts">'
+    +     (isMine
+          ? '<button class="act go" id="openCall">🎙 ' + T("Open a call here", "通話をひらく") + "</button>"
+          : '<button class="act go" id="ringCall">📞 ' + T("Call them", "通話をかける") + "</button>")
+    +     (isMine || g.closed ? ""
+          : '<button class="act" id="joinB"' + (isIn ? " disabled" : "") + ">"
+            + (isIn ? T("You said you are in", "やりたいと伝えました") : "🙋 " + T("I'm in", "やりたい")) + "</button>")
+    +     '<span style="color:var(--sub);font-size:12.5px" id="goCnt">'
+    +       (g.going ? goingTxt(g.going) : "") + "</span>"
+    +     '<span style="flex:1"></span>'
+    +     (isMine ? '<button class="act" id="closeI">' + (g.closed
+            ? T("Open it again", "まだ空いています")
+            : T("Mark it full", "埋まったことにする")) + "</button>" : "")
+    +     (isMine ? '<button class="act ghost" id="delI">' + T("take it down", "取り下げる") + "</button>" : "")
+    +     '<button class="act ghost" id="flagI">' + T("report", "通報") + "</button>"
+    +   "</div>"
+    + "</div>";
+
+  h += '<div class="reHead">' + (r.comments.length
+        ? (r.comments.length + " " + T(r.comments.length === 1 ? "reply" : "replies", "件の返信"))
+        : T("No replies yet", "まだ返信はありません")) + "</div>"
+    + '<p class="hint">' + T(
+        "Everything here is public. Settle the time here, and swap game IDs or Discord tags only after you have actually spoken. Do not put your phone number or address in the open.",
+        "ここに書いたことは誰でも読めます。時間を決めるのに使って、ゲームIDやDiscordのタグは一度ちゃんと話してから渡してください。電話番号や住所は書かないこと。") + "</p>";
+
+  h += r.comments.map(function (a, i) {
+    return '<div class="post"><div class="pno"><b>' + (i + 2) + "</b><span>"
+      + esc(a.nick || T("Anonymous", "名無し")) + "</span><span>" + ago(a.ts) + "</span>"
+      + '<span style="flex:1"></span>'
+      + '<button class="act ghost" data-flag="' + esc(a.id) + '">' + T("report", "通報") + "</button></div>"
+      + '<div class="pbody">' + linkify(a.body) + "</div></div>";
+  }).join("");
+
+  h += '<div class="replyBox"><label>' + T("Write a reply", "返信を書く") + "</label>"
+    + '<textarea id="rBody" maxlength="4000" placeholder="'
+    +   T("e.g. I am N3 and I want English. Weeknights after 10 works. Shall we do one match in each?",
+          "例：N3で、習いたいのは英語です。平日22時すぎなら行けます。1試合ずつで分けませんか。") + '"></textarea>'
+    + '<div class="row2" style="margin-top:10px"><input id="rNick" type="text" maxlength="24" placeholder="'
+    +   T("Call yourself something (optional)", "呼び名（任意）") + '"><div></div></div>'
+    + '<div class="sheetFoot"><button class="btn p" id="rSend">' + T("Post it", "書き込む") + "</button>"
+    + '<span class="msg" id="rMsg"></span></div></div>';
+
+  /* 読めないものを貼る箱。なぞるのが苦手な端末のための逃げ道でもある */
+  h += '<div class="askBox"><label>🔎 ' + T("Paste anything you cannot read",
+        "読めないものを貼る") + "</label>"
+    + '<p class="hint" style="margin:0 0 6px">' + T(
+        "A word or a whole message. Select text anywhere on this page to do the same thing.",
+        "単語でも長い文でも。このページの文字はなぞるだけでも同じことができます。") + "</p>"
+    + '<textarea id="askIn" maxlength="1200" style="min-height:70px"></textarea>'
+    + '<div class="askRow"><button class="btn s sm" id="askGo">'
+    +   T("What does it mean?", "どういう意味？") + "</button></div></div>";
+
+  $("view").innerHTML = h;
+  bindThread(g);
+  toTop();
+}
+
+function bindThread(g) {
+  $("back").addEventListener("click", function () { location.hash = "#t/" + topicOf(g.cat).id; });
+  $("flagI").addEventListener("click", function () { doFlag("plan", g.id); });
+
+  const jb = $("joinB");
+  if (jb) jb.addEventListener("click", async function () {
+    jb.disabled = true;
+    const r = await apiPost({ a:"vote", kind:"going", id:g.id });
+    if (!r.ok) { jb.disabled = false; return; }
+    markJoined(g.id);
+    jb.textContent = T("You said you are in", "やりたいと伝えました");
+    $("goCnt").textContent = goingTxt(r.going || (g.going + 1));
+    load(true);
+  });
+  const cb = $("closeI");
+  if (cb) cb.addEventListener("click", async function () {
+    cb.disabled = true; await apiPost({ a:"close", id:g.id }); renderThread(); load(true);
+  });
+  const db = $("delI");
+  if (db) db.addEventListener("click", async function () {
+    if (!confirm(T("Take this down for good?", "これを取り下げますか？"))) return;
+    await apiPost({ a:"remove", kind:"plan", id:g.id });
+    location.hash = ""; load(true);
+  });
+  Array.prototype.forEach.call(document.querySelectorAll("[data-flag]"), function (b) {
+    b.addEventListener("click", function () { doFlag("reply", b.dataset.flag); });
+  });
+  const oc = $("openCall"); if (oc) oc.addEventListener("click", function () { hostCall(g); });
+  const rc = $("ringCall"); if (rc) rc.addEventListener("click", function () { ringCall(g); });
+
+  $("rSend").addEventListener("click", async function () {
+    const body = $("rBody").value.trim();
+    if (body.length < 2) { $("rMsg").textContent = T("Write something first.", "まず何か書いてください。"); return; }
+    this.disabled = true;
+    $("rMsg").textContent = T("Sending…", "送っています…");
+    const r = await apiPost({ a:"reply", id:g.id, body:body, nick:$("rNick").value.trim() });
+    this.disabled = false;
+    if (!r.ok) { $("rMsg").textContent = errText(r); return; }
+    markMine(r.id); $("rMsg").textContent = "";
+    renderThread(); load(true);
+  });
+  $("askGo").addEventListener("click", function () {
+    const s = $("askIn").value.trim();
+    if (s) lookup(s);
+  });
+}
+
+async function doFlag(kind, id) {
+  const why = prompt(T("What is wrong with it? (one line)", "どこが問題ですか？（ひとこと）"));
+  if (why === null) return;
+  const r = await apiPost({ a:"flag", kind:kind, id:id, why:why });
+  alert(r.hidden ? T("Thank you. It has been hidden.", "ありがとうございます。隠しました。")
+                 : T("Thank you. Someone will look at it.", "ありがとうございます。人の目で確認します。"));
+  if (r.hidden) { location.hash = ""; load(true); }
+}
+
+function linkify(s) {
+  return esc(s).replace(/(https?:\/\/[^\s<]+)/g, function (u) {
+    return '<a href="' + u + '" target="_blank" rel="noopener nofollow">' + u + "</a>";
+  });
+}
+function errText(r) {
+  const m = {
+    "short-title": T("Say it in one line first.", "まずひとことだけ書いてください。"),
+    "short-body":  T("A little more detail, please.", "もう少しだけ、くわしく。"),
+    "no-area":     T("Where? A station or a ward is enough.", "どこでやりますか。駅か区まででいいです。"),
+    "no-langs":    T("Pick at least one language you can speak.", "話せることばを1つ以上えらんでください。"),
+    "no-learn":    T("Pick the language you want to practise — that is the whole exchange.",
+                     "習いたいことばをえらんでください。交換はそこで成り立ちます。"),
+    "toofast":     T("Just a moment — one at a time.", "少しだけ待ってください。続けては出せません。"),
+    "spam":        T("That looked like spam. Try fewer links.", "宣伝のように見えました。リンクを減らしてみてください。"),
+    "notready":    T("Not open yet. Please come back soon.", "まだ開いていません。少し待ってください。"),
+    "notyours":    T("That is not yours.", "それはあなたのものではありません。")
+  };
+  return m[r.err] || T("Could not send. Try again.", "送れませんでした。もう一度ためしてください。");
+}
+
+/* ================================================================ 意味を見る
+ *
+ *  投稿そのものは翻訳しない、という決めは変えていない。原文は必ずその場に残り、
+ *  読む人が自分で押したときだけ、別の箱に意味が出る。置き換えるのと辞書は別のこと。
+ *  引いた結果は端末に貯める。同じ単語を何度も裏に聞きにいかないため。 */
+let lkText = "";
+
+function lkCache() {
+  try { return JSON.parse(localStorage.getItem("mj-lk") || "{}"); } catch (e) { return {}; }
+}
+function lkSave(k, v) {
+  const c = lkCache(); c[k] = v;
+  const ks = Object.keys(c);
+  if (ks.length > 400) delete c[ks[0]];
+  try { localStorage.setItem("mj-lk", JSON.stringify(c)); } catch (e) {}
+}
+
+async function lookup(text) {
+  lkText = String(text).slice(0, 1200);
+  $("lkSrc").textContent = lkText;
+  $("lkOut").className = "out wait";
+  $("lkOut").textContent = T("Looking it up…", "調べています…");
+  $("lk").classList.add("on");
+  $("lkBtn").style.display = "none";
+
+  const key = lang + "|" + lkText;
+  const hit = lkCache()[key];
+  if (hit) { $("lkOut").className = "out"; $("lkOut").textContent = hit; return; }
+
+  const r = await apiGet({ a:"tr", q:lkText, to:lang });
+  if (!r.ok) {
+    $("lkOut").className = "out wait";
+    $("lkOut").textContent = T("Could not look that one up. Ask the other person — that is what they are here for.",
+                               "これは引けませんでした。相手に聞いてください。そのための相手です。");
+    return;
+  }
+  $("lkOut").className = "out";
+  $("lkOut").textContent = r.text;
+  lkSave(key, r.text);
+}
+
+function initLookup() {
+  const btn = $("lkBtn");
+  function hide() { btn.style.display = "none"; }
+
+  document.addEventListener("selectionchange", function () {
+    const s = window.getSelection();
+    if (!s || s.isCollapsed) hide();
+  });
+
+  ["mouseup", "touchend"].forEach(function (ev) {
+    document.addEventListener(ev, function () {
+      setTimeout(function () {
+        const s = window.getSelection();
+        if (!s || s.isCollapsed) { hide(); return; }
+        const txt = String(s.toString()).trim();
+        if (!txt || txt.length > 1200) { hide(); return; }
+        // 自分で書いている途中の文字は拾わない
+        const a = document.activeElement;
+        if (a && (a.tagName === "TEXTAREA" || a.tagName === "INPUT")) { hide(); return; }
+        // 掲示板の文字だけ。見出しやボタンでは出さない
+        const node = s.anchorNode && (s.anchorNode.nodeType === 1 ? s.anchorNode : s.anchorNode.parentElement);
+        if (!node || !node.closest(".pbody, .btitle, .facts, .src, .log, .eg, .hint")) { hide(); return; }
+        const rect = s.getRangeAt(0).getBoundingClientRect();
+        btn.style.display = "block";
+        btn.style.left = Math.max(8, Math.min(window.innerWidth - 120, rect.left + window.scrollX)) + "px";
+        btn.style.top  = (rect.bottom + window.scrollY + 7) + "px";
+      }, 10);
+    });
+  });
+
+  btn.addEventListener("click", function () {
+    const s = window.getSelection();
+    const txt = s ? String(s.toString()).trim() : "";
+    if (txt) lookup(txt);
+  });
+  $("lkClose").addEventListener("click", function () { $("lk").classList.remove("on"); });
+  $("lkCopy").addEventListener("click", function () {
+    try { navigator.clipboard.writeText($("lkOut").textContent); } catch (e) {}
+  });
+  /* 辞書で終わらせない。分からなかったものを、そのまま相手への質問にできるようにする。
+     言語交換なのだから、最後に教えるのは機械ではなく相手であってほしい */
+  $("lkAsk").addEventListener("click", function () {
+    const box = $("rBody") || $("chatIn");
+    if (!box) return;
+    const q = T('What does "', "「") + lkText + T('" mean?', "」ってどういう意味ですか？");
+    box.value = (box.value ? box.value + "\n" : "") + q;
+    $("lk").classList.remove("on");
+    box.focus();
+    box.scrollIntoView({ behavior:"smooth", block:"center" });
+  });
+}
+
+/* ================================================================ 通話
+ *
+ *  ブラウザ同士の直結（PeerJS）。音は裏を通らない。
+ *  出した本人だけが部屋をひらける。かける側は相手のスレッドから鳴らす。
+ *  時間に区切りがあるのは、長さを売るためだけではなく、
+ *  知らない人と話すときに「終わりが先に決まっている」ほうが入りやすいから。 */
+let peer = null, mediaCall = null, dataConn = null, myStream = null;
+let callTimer = 0, callEndsAt = 0, liveTimer = 0, hostingId = "";
+
+function loadPeer() {
+  if (window.Peer) return Promise.resolve();
+  return new Promise(function (res, rej) {
+    const s = document.createElement("script");
+    s.src = "/vendor-lib/peerjs.min.js";
+    s.onload = res;
+    s.onerror = function () {
+      const s2 = document.createElement("script");   // 置いてなければ外から
+      s2.src = "https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js";
+      s2.onload = res; s2.onerror = rej;
+      document.head.appendChild(s2);
+    };
+    document.head.appendChild(s);
+  });
+}
+function roomId(id) { return "mtj-" + id; }
+
+async function micOn() {
+  if (myStream) return myStream;
+  myStream = await navigator.mediaDevices.getUserMedia({ audio:true, video:false });
+  return myStream;
+}
+function micOff() {
+  if (myStream) { myStream.getTracks().forEach(function (t) { t.stop(); }); myStream = null; }
+}
+
+function callUI(on, label) {
+  $("callBar").classList.toggle("on", !!on);
+  if (label) $("callSt").innerHTML = label;
+  if (!on) { $("callChat").classList.remove("on"); $("chatLog").innerHTML = ""; }
+}
+function fmt(ms) {
+  const s = Math.max(0, Math.round(ms / 1000));
+  return Math.floor(s / 60) + ":" + ("0" + (s % 60)).slice(-2);
+}
+function startClock(minutes) {
+  callEndsAt = Date.now() + minutes * 60000;
+  $("callPlan").textContent = hasPass() ? T("long call", "長い通話") : T(minutes + " min", minutes + "分");
+  clearInterval(callTimer);
+  callTimer = setInterval(function () {
+    const left = callEndsAt - Date.now();
+    $("callTm").textContent = fmt(left);
+    $("callTm").classList.toggle("low", left < 60000);
+    if (left <= 0) {
+      hangUp();
+      // 「もっと話したい人は」を出すのは、ちょうど足りなくなったこの瞬間だけにする
+      openPass(T("Time is up. You can carry on somewhere else, or get a longer call here.",
+                 "時間になりました。続きは別の場所でもできますし、ここで長い通話にもできます。"));
+    }
+  }, 500);
+}
+
+/** 出した本人が部屋をひらく。ひらいているあいだ、一覧に🟢が出る */
+async function hostCall(g) {
+  try { await micOn(); } catch (e) { alert(T("The microphone is not available.", "マイクが使えませんでした。")); return; }
+  await loadPeer();
+  callUI(true, "🎙 " + T("Open — waiting for someone", "ひらいています。相手を待っています"));
+  $("callTm").textContent = "";
+  hostingId = g.id;
+
+  peer = new Peer(roomId(g.id), { debug:0 });
+  peer.on("error", function (e) {
+    if (String(e && e.type) === "unavailable-id") {
+      callUI(true, "🎙 " + T("Already open in another tab", "別のタブでもうひらいています"));
+    }
+  });
+  peer.on("connection", function (c) { wireData(c); });
+  peer.on("call", function (c) {
+    mediaCall = c;
+    c.answer(myStream);
+    c.on("stream", function (far) { $("farAudio").srcObject = far; });
+    c.on("close", function () { hangUp(); });
+    callUI(true, "🔊 " + T("Talking", "通話中"));
+    startClock(myCallMin());
+  });
+
+  // 一覧に「いま居ます」を出し続ける。閉じたら消す
+  apiPost({ a:"live", id:g.id, on:true });
+  clearInterval(liveTimer);
+  liveTimer = setInterval(function () { apiPost({ a:"live", id:g.id, on:true }); }, 60000);
+}
+
+/** かける側 */
+async function ringCall(g) {
+  try { await micOn(); } catch (e) { alert(T("The microphone is not available.", "マイクが使えませんでした。")); return; }
+  await loadPeer();
+  callUI(true, "📞 " + T("Ringing…", "呼んでいます…"));
+  $("callTm").textContent = "";
+
+  peer = new Peer(undefined, { debug:0 });
+  peer.on("open", function () {
+    const c = peer.connect(roomId(g.id), { reliable:true });
+    wireData(c);
+    mediaCall = peer.call(roomId(g.id), myStream);
+    mediaCall.on("stream", function (far) {
+      $("farAudio").srcObject = far;
+      callUI(true, "🔊 " + T("Talking", "通話中"));
+      startClock(myCallMin());
+    });
+    mediaCall.on("close", function () { hangUp(); });
+  });
+  peer.on("error", function (e) {
+    if (String(e && e.type) === "peer-unavailable") {
+      callUI(false);
+      alert(T("They are not at the keyboard right now. Leave a reply instead — they get a notice.",
+              "いまは席にいないようです。返信を置いておくと相手に知らせが行きます。"));
+      cleanupCall();
+    }
+  });
+}
+
+/* 通話中の字。言えなかった単語をそのまま書けるようにしてある。
+   届いた字はなぞればそのまま意味が引ける（辞書とつながっている） */
+function wireData(c) {
+  dataConn = c;
+  c.on("open", function () {
+    // おたがいの持ち時間を知らせ合い、長いほうに合わせる。
+    // 片方だけが長いときに短いほうで切れると、払った側が損をするので
+    c.send({ t:"limit", min: myCallMin() });
+  });
+  c.on("data", function (d) {
+    if (!d) return;
+    if (d.t === "limit") {
+      const want = Math.max(Number(d.min) || FREE_MIN, myCallMin());
+      if (callEndsAt && want * 60000 > (callEndsAt - Date.now())) startClock(want);
+    }
+    if (d.t === "msg") addChat(String(d.s).slice(0, 200), false);
+    if (d.t === "bye") hangUp();
+  });
+}
+function addChat(s, me) {
+  $("callChat").classList.add("on");
+  const d = document.createElement("div");
+  d.textContent = s;
+  if (me) d.className = "me";
+  $("chatLog").appendChild(d);
+  $("chatLog").scrollTop = $("chatLog").scrollHeight;
+}
+function sendChat() {
+  const s = $("chatIn").value.trim();
+  if (!s || !dataConn || !dataConn.open) return;
+  dataConn.send({ t:"msg", s:s });
+  addChat(s, true);
+  $("chatIn").value = "";
+}
+
+function cleanupCall() {
+  clearInterval(callTimer); clearInterval(liveTimer);
+  callEndsAt = 0;
+  try { if (mediaCall) mediaCall.close(); } catch (e) {}
+  try { if (dataConn) dataConn.close(); } catch (e) {}
+  try { if (peer) peer.destroy(); } catch (e) {}
+  mediaCall = dataConn = peer = null;
+  micOff();
+  $("farAudio").srcObject = null;
+}
+function hangUp() {
+  try { if (dataConn && dataConn.open) dataConn.send({ t:"bye" }); } catch (e) {}
+  if (hostingId) { apiPost({ a:"live", id:hostingId, on:false }); hostingId = ""; load(true); }
+  cleanupCall();
+  callUI(false);
+}
+/** スレッドを離れたら部屋を閉じる。開けっ放しの🟢がいちばん嘘になる */
+function stopLive() {
+  if (!hostingId) return;
+  if (mediaCall) return;          // 通話中なら閉じない
+  apiPost({ a:"live", id:hostingId, on:false });
+  hostingId = "";
+  cleanupCall(); callUI(false);
+}
+
+/* ---- 通話を長くする券 ---- */
+function openPass(note) {
+  $("passNote").textContent = note || T(
+    "Calls here run " + FREE_MIN + " minutes. A pass makes them " + PASS_MIN + ".",
+    "ここの通話は" + FREE_MIN + "分で区切れます。パスを入れると" + PASS_MIN + "分になります。");
+  $("passMsg").textContent = "";
+  $("passSheet").classList.add("on");
+}
+
+/* ---------------------------------------------------------------- 出す */
+function openSheet(topic) {
+  $("sheet").classList.add("on");
+  $("fMsg").textContent = "";
+  if (topic) $("fCat").value = topic;
+  drawKindPick();
+  drawLangPick();
+  setTimeout(function () { $("fTitle").focus(); }, 50);
+}
+function closeSheet() { $("sheet").classList.remove("on"); }
+
+function drawLangPick() {
+  if (!langsTouched) myLangs = [lang];
+  if (!learnTouched && !myLearn.length) myLearn = lang === "ja" ? ["en"] : ["ja"];
+  [["fLangs", myLangs, true], ["fLearn", myLearn, false]].forEach(function (p) {
+    const box = $(p[0]), sel = p[1];
+    box.innerHTML = LANGS.map(function (l) {
+      return '<button type="button" data-l="' + l.id + '"'
+        + (sel.indexOf(l.id) >= 0 ? ' class="on"' : "") + ">" + esc(l.name) + "</button>";
+    }).join("");
+    Array.prototype.forEach.call(box.querySelectorAll("[data-l]"), function (b) {
+      b.addEventListener("click", function () {
+        if (p[2]) langsTouched = true; else learnTouched = true;
+        const i = sel.indexOf(b.dataset.l);
+        if (i >= 0) sel.splice(i, 1); else sel.push(b.dataset.l);
+        drawLangPick();
+      });
+    });
+  });
+}
+
+function drawFilters() {
+  const opts = function (ic) {
+    return '<option value="">' + ic + " " + T("any", "問わない") + "</option>"
+      + LANGS.map(function (l) {
+          return '<option value="' + l.id + '">' + ic + " " + esc(l.name) + "</option>";
+        }).join("");
+  };
+  $("spkFilter").innerHTML  = opts("🗣");
+  $("wantFilter").innerHTML = opts("📚");
+  $("spkFilter").value  = state.spk;
+  $("wantFilter").value = state.want;
+  $("liveOnly").checked = state.live;
+}
+
+function drawKindPick() {
+  $("kindPick").innerHTML = KINDS.map(function (k) {
+    return '<button data-k="' + k.id + '"' + (pickKind === k.id ? ' class="on"' : "") + ">"
+      + k.ic + " " + esc(T(k.en, k.ja)) + "<small>" + esc(T(k.subEn, k.subJa)) + "</small></button>";
+  }).join("");
+  Array.prototype.forEach.call($("kindPick").querySelectorAll("[data-k]"), function (b) {
+    b.addEventListener("click", function () { pickKind = b.dataset.k; drawKindPick(); });
+  });
+  applyKind();
+}
+function applyKind() {
+  $("areaLbl").innerHTML = pickKind === "meet" ? T("Where?", "どこで？")
+                                               : T("On what?", "どこで（機種・Discordなど）");
+  $("fArea").placeholder = pickKind === "meet"
+    ? T("e.g. an arcade in Akihabara, or Koenji", "例：秋葉原のゲーセン／高円寺")
+    : T("e.g. PC + Discord, or Switch", "例：PCとDiscord／Switch");
+  $("fWhen").placeholder = pickKind === "open"
+    ? T("e.g. weekends, or any evening (optional)", "例：週末／夜ならいつでも（任意）")
+    : T("e.g. weeknights after 10, JST", "例：平日の22時すぎ（日本時間）");
+  $("fTitle").placeholder = T("e.g. Plat 2, happy to call the map in Japanese if you fix my grammar",
+                              "例：プラチナ2。日本語で指示を出すので、英語を直してください");
+}
+
+async function send() {
+  const b = {
+    a: "newplan", kind: pickKind,
+    title: $("fTitle").value.trim(),
+    body:  $("fBody").value.trim(),
+    cat:   $("fCat").value,
+    when:  $("fWhen").value.trim(),
+    area:  $("fArea").value.trim(),
+    level: $("fLevel").value,
+    size:  Number($("fSize").value) || 0,
+    nick:  $("fNick").value.trim(),
+    mail:  $("fMail").value.trim(),
+    langs: myLangs, learn: myLearn,
+    hp:    $("fHp").value
+  };
+  if (b.title.length < 3) { $("fMsg").textContent = T("Say it in one line first.", "まずひとことだけ書いてください。"); return; }
+  if (b.body.length  < 5) { $("fMsg").textContent = T("A bit more detail, please.", "もう少しだけ、くわしく。"); return; }
+  if (pickKind === "meet" && !b.area) {
+    $("fMsg").textContent = T("Where? A station or a ward is enough.", "どこでやりますか。駅か区まででいいです。"); return;
+  }
+  if (!b.langs.length) { $("fMsg").textContent = T("Pick at least one language you can speak.", "話せることばを1つ以上えらんでください。"); return; }
+  if (!b.learn.length) {
+    $("fMsg").textContent = T("Pick the language you want to practise — that is the whole exchange.",
+                              "習いたいことばをえらんでください。交換はそこで成り立ちます。"); return;
+  }
+
+  $("fSend").disabled = true;
+  $("fMsg").textContent = T("Sending…", "送っています…");
+  const r = await apiPost(b);
+  $("fSend").disabled = false;
+  if (!r.ok) { $("fMsg").textContent = errText(r); return; }
+  markMine(r.id);
+  $("fMsg").textContent = "";
+  $("fTitle").value = ""; $("fBody").value = ""; $("fWhen").value = ""; $("fArea").value = "";
+  closeSheet();
+  await load(true);
+  location.hash = "#g/" + r.id;
+}
+
+/* ---------------------------------------------------------------- 読み込み */
+async function load(quiet) {
+  if (!quiet) {
+    try {
+      const c = localStorage.getItem("mj-play-cache3");
+      if (c) { plans = JSON.parse(c); render(); }
+    } catch (e) {}
+  }
+  const r = await apiGet({ a:"plans" });
+  if (r.ok) {
+    plans = r.plans || [];
+    try { localStorage.setItem("mj-play-cache3", JSON.stringify(plans)); } catch (e) {}
+  }
+  loaded = true;
+  if (location.hash.indexOf("#g/") !== 0) render();
+}
+
+/* ---------------------------------------------------------------- 組み立て */
+function buildTools() {
+  $("groups").innerHTML = GROUPS.map(function (g) {
+    return '<button class="grp' + (g.on ? " on" : " soon") + '" data-g="' + g.id + '"'
+      + (g.on ? "" : " disabled") + ">" + g.ic + " " + esc(T(g.en, g.ja))
+      + (g.on ? "" : "<s>" + T("later", "そのうち") + "</s>") + "</button>";
+  }).join("");
+  $("fCat").innerHTML = TOPICS.map(function (t) {
+    return '<option value="' + t.id + '">' + t.ic + " " + esc(T(t.en, t.ja)) + "</option>";
+  }).join("");
+  $("fLevel").innerHTML = LEVELS.map(function (l) {
+    return '<option value="' + l.id + '">' + esc(T(l.en, l.ja)) + "</option>";
+  }).join("");
+  $("fSize").innerHTML = [0,1,2,3,4,5,6,8,10].map(function (n) {
+    return '<option value="' + n + '">' + esc(sizeTxt(n)) + "</option>";
+  }).join("");
+}
+
+function applyLang() {
+  document.documentElement.lang = lang;
+  document.querySelectorAll("[data-en]").forEach(function (el) {
+    const en = el.getAttribute("data-en");
+    let v = el.getAttribute("data-" + lang);
+    if (v == null) { const t = tr_(en); v = (t && t[lang]) || en; }
+    el.innerHTML = v;
+  });
+  document.querySelectorAll("[data-ph-en]").forEach(function (el) {
+    const en = el.getAttribute("data-ph-en");
+    let v = el.getAttribute("data-ph-" + lang);
+    if (v == null) { const t = tr_(en); v = (t && t[lang]) || en; }
+    el.placeholder = unent_(v);   // placeholder は素のテキスト。&ldquo; がそのまま出てしまう
+  });
+  $("lang").value = lang;
+  try { localStorage.setItem("mj-lang", lang); } catch (e) {}
+  buildTools(); drawKindPick(); drawLangPick(); drawFilters(); render();
+}
+
+$("lang").addEventListener("change", function () { setLang($("lang").value); });
+$("postBtn").addEventListener("click", function () { openSheet(); });
+$("fCancel").addEventListener("click", closeSheet);
+$("fSend").addEventListener("click", send);
+$("sheet").addEventListener("click", function (e) { if (e.target === $("sheet")) closeSheet(); });
+
+$("passCancel").addEventListener("click", function () { $("passSheet").classList.remove("on"); });
+$("passSheet").addEventListener("click", function (e) {
+  if (e.target === $("passSheet")) $("passSheet").classList.remove("on");
+});
+$("passSend").addEventListener("click", async function () {
+  const code = $("passCode").value.trim();
+  if (!code) return;
+  this.disabled = true;
+  $("passMsg").textContent = T("Checking…", "見ています…");
+  const r = await apiPost({ a:"pass", code:code });
+  this.disabled = false;
+  if (!r.ok) {
+    $("passMsg").textContent = r.err === "expired"
+      ? T("That one has run out.", "その券は終わっています。")
+      : T("That code does not work.", "その文字列では通りません。");
+    return;
+  }
+  try { localStorage.setItem("mj-pass", String(new Date(r.until).getTime())); } catch (e) {}
+  $("passMsg").textContent = "";
+  $("passSheet").classList.remove("on");
+  alert(T("Done. Calls are " + PASS_MIN + " minutes now.", "入りました。通話は" + PASS_MIN + "分になります。"));
+});
+
+$("callPlan").addEventListener("click", function () { if (!hasPass()) openPass(); });
+$("callEnd").addEventListener("click", hangUp);
+$("callChatB").addEventListener("click", function () { $("callChat").classList.toggle("on"); });
+$("callMute").addEventListener("click", function () {
+  if (!myStream) return;
+  const t = myStream.getAudioTracks()[0];
+  if (!t) return;
+  t.enabled = !t.enabled;
+  this.textContent = t.enabled ? T("mute", "ミュート") : T("unmute", "ミュート解除");
+});
+$("chatSend").addEventListener("click", sendChat);
+$("chatIn").addEventListener("keydown", function (e) { if (e.key === "Enter") sendChat(); });
+
+let qTimer = 0;
+$("q").addEventListener("input", function () {
+  clearTimeout(qTimer);
+  qTimer = setTimeout(function () { state.q = $("q").value.trim(); render(); }, 150);
+});
+$("spkFilter").addEventListener("change", function () { state.spk = $("spkFilter").value; render(); });
+$("wantFilter").addEventListener("change", function () { state.want = $("wantFilter").value; render(); });
+$("liveOnly").addEventListener("change", function () { state.live = this.checked; render(); });
+window.addEventListener("hashchange", render);
+window.addEventListener("beforeunload", function () {
+  if (hostingId) navigator.sendBeacon && navigator.sendBeacon(API,
+    JSON.stringify({ a:"live", id:hostingId, on:false, dev:dev() }));
+});
+document.addEventListener("keydown", function (e) {
+  if (e.key === "Escape") { closeSheet(); $("passSheet").classList.remove("on"); $("lk").classList.remove("on"); }
+});
+
+/* はじめて来た人は端末の言語で開く。一度でも自分で選んだら、その記録が勝つ */
+(function () {
+  let saved = null;
+  try { saved = localStorage.getItem("mj-lang"); } catch (e) {}
+  if (saved) { lang = saved; return; }
+  const n = (navigator.languages && navigator.languages[0] || navigator.language || "en").toLowerCase();
+  const map = { ja:"ja", zh:"zh", vi:"vi", ko:"ko", ne:"ne", tl:"tl", fil:"tl" };
+  lang = map[n.split("-")[0]] || (n.indexOf("fil") === 0 ? "tl" : "en");
+})();
+$("yr").textContent = new Date().getFullYear();
+initLookup();
+setLang(lang);
+load(false);
+</script>
+</body>
+</html>

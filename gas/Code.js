@@ -279,7 +279,7 @@ function newPost_(b) {
     dev: dev, status: 'open', same: 0, replies: 0, solved: '', flags: 0
   });
   CacheService.getScriptCache().remove('list');
-  notify_('🆕 新しいこまりごと', title + '\n' + body.slice(0, 300) + '\nhttps://moretojapan.com/help.html#p/' + id);
+  notify_('🆕 新しいこまりごと', title + '\n' + body.slice(0, 300) + '\nhttps://moretojapan.com/help/#p/' + id);
   return { ok: true, id: id };
 }
 
@@ -310,9 +310,9 @@ function newReply_(b) {
                        : { replies:  (Number(parent.replies)  || 0) + 1, updated: now });
   CacheService.getScriptCache().removeAll(['list', 'items', 'plans']);
 
-  const url = isItem ? 'https://moretojapan.com/market.html#i/' + parent.id
-            : isPlan ? 'https://moretojapan.com/play.html#g/' + parent.id
-                     : 'https://moretojapan.com/help.html#p/' + parent.id;
+  const url = isItem ? 'https://moretojapan.com/market/#i/' + parent.id
+            : isPlan ? 'https://moretojapan.com/play/#g/' + parent.id
+                     : 'https://moretojapan.com/help/#p/' + parent.id;
   notify_(isItem ? '🛒 ゆずりますにコメント' : isPlan ? '🎮 いっしょにやるに書き込み' : '💬 返事がつきました',
           parent.title + '\n' + body.slice(0, 300) + '\n' + url);
 
@@ -348,12 +348,12 @@ function vote_(b) {
     CacheService.getScriptCache().remove('plans');
     if (String(g.dev) !== String(dev)) {
       notify_('🙋 行きます（' + n + '人）',
-              g.title + '\nhttps://moretojapan.com/play.html#g/' + g.id);
+              g.title + '\nhttps://moretojapan.com/play/#g/' + g.id);
       if (g.mail) {
         try {
           MailApp.sendEmail(String(g.mail),
             '[More to Japan] 「' + g.title + '」に行きたい人がいます（' + n + '人）',
-            'https://moretojapan.com/play.html#g/' + g.id +
+            'https://moretojapan.com/play/#g/' + g.id +
             '\n\n--\nこの知らせは、出すときに自分で入れたアドレスにだけ届きます。' +
             '相手にはあなたのアドレスは見えていません。');
         } catch (err) {}
@@ -524,7 +524,7 @@ function newItem_(b) {
   CacheService.getScriptCache().remove('items');
   notify_(kind === 'want' ? '🔎 さがしています' : kind === 'free' ? '🎁 あげます（0円）' : '🛒 売ります',
           title + '（' + (price ? '¥' + price : '0円') + '・' + area + '）\n' +
-          body.slice(0, 200) + '\nhttps://moretojapan.com/market.html#i/' + id);
+          body.slice(0, 200) + '\nhttps://moretojapan.com/market/#i/' + id);
   return { ok: true, id: id };
 }
 
@@ -669,7 +669,7 @@ function newPlan_(b) {
   CacheService.getScriptCache().remove('plans');
   notify_(kind === 'online' ? '🎮 オンラインで' : kind === 'open' ? '🔁 仲間さがし' : '📅 いっしょにやる',
           title + '（' + (clean_(b.when, 60) || '日はまだ') + (area ? '・' + area : '') + '）\n' +
-          body.slice(0, 200) + '\nhttps://moretojapan.com/play.html#g/' + id);
+          body.slice(0, 200) + '\nhttps://moretojapan.com/play/#g/' + id);
   return { ok: true, id: id };
 }
 

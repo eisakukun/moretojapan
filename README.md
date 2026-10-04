@@ -13,7 +13,7 @@ DNSはXServer側（ns1〜3.xdomain.ne.jp）にAレコード4行＋www CNAMEを�
 集客用の無料ゲーム「カタカナ・キャッチ」。
 
 - `index.html` … トップページ（英語表示、右上のボタンで日本語に切り替わる）
-- `katakana-catch.html` … 体でカタカナを取るゲーム（MediaPipe の姿勢認識）
+- `katakana-catch/index.html` … 体でカタカナを取るゲーム（MediaPipe の姿勢認識）→ `/katakana-catch/`
 - `vendor/` … MediaPipe 本体・wasm・姿勢モデル（約24MB）。**ネットが無くても動くための焼き込み**
 
 ## 見る
@@ -72,7 +72,7 @@ python3 -m http.server 8021 --directory ~/nihongo-site
 ### カメラなしで中身を確認したいとき
 
 ```
-http://localhost:8021/katakana-catch.html?mouse=1
+http://localhost:8021/katakana-catch/?mouse=1
 ```
 
 `?mouse=1` を付けるとマウスの先も「手」として当たる。ふだんの遊びには出てこない。

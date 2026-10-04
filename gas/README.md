@@ -2,9 +2,9 @@
 
 3つのページの保存先。スプレッドシート1枚だけ。
 
-- `/help.html` 暮らしのこまりごと掲示板（posts / replies）
-- `/market.html` ゆずります・さがしています（items / replies を共用）
-- `/play.html` ゲーマーのための言語交換（plans / replies を共用。passes も使う）
+- `/help/` 暮らしのこまりごと掲示板（posts / replies）
+- `/market/` ゆずります・さがしています（items / replies を共用）
+- `/play/` ゲーマーのための言語交換（plans / replies を共用。passes も使う）
 
 返事はどのページも `replies` 1枚に入る。どこへの返事かは **id の頭文字**で分ける
 （`p…`＝こまりごと、`i…`＝ゆずります、`g…`＝いっしょにやる）。
@@ -14,7 +14,7 @@
 ▶（`setup`）を押して `fixCols_` が直すまで、既存行の読む位置が黙ってずれる。
 末尾なら何もしなくても壊れない（シートの見出しだけ空のままになる）。
 
-## play.html のためだけにある3つ
+## play（言語交換）のためだけにある3つ
 
 **意味を引く（`a=tr`）** — `LanguageApp.translate()`。Apps Script に最初から入っていて
 鍵も課金も要らない。引いた結果は6時間キャッシュする（同じ単語を何人も引くので効く）。
@@ -34,6 +34,13 @@ makePasses(5, 30, "10月ぶん")   // 5枚・30日・メモ
 
 写真は Drive の「More to Japan 掲示板の写真」に入り、1枚ずつ「リンクを知っている全員」にして
 `drive.google.com/thumbnail?id=…` で直接表に出す（GASを通さないので速い）。
+
+## 住所について（2026-10-04）
+
+住所は .html を捨てた。`help.html` → `help/index.html` に移してあるので、公開URLは
+**`/help/` `/market/` `/play/`**。GitHub Pages はファイルをそのまま配るだけなので、
+拡張子を消すにはフォルダに入れるしかない。
+古い `help.html` などは転送用の小さいページとして残してある（`#` から後ろも渡す）。
 
 ## 中身
 
@@ -58,7 +65,7 @@ gasctl push ~/nihongo-site/gas
 cd ~/nihongo-site/gas && clasp deploy --deploymentId AKfycbz09z8z5zorue3p6xFwtt01Q3KQgh-7bm-SGTSZj6ILNRxXS-KbASTooYulq3fo7TBL --description "board"
 ```
 
-**`--deploymentId` を付けること。** 付けないと新しいURLが生まれて、`help.html` に書いてある
+**`--deploymentId` を付けること。** 付けないと新しいURLが生まれて、`help/index.html` に書いてある
 アドレスが古いコードを指したままになる。
 
 ## 新着と通報をDiscordに流す（任意）
@@ -100,7 +107,8 @@ HTMLにもJSにも手を入れずに訳を足せる。鍵が無ければ英語�
 そのままでは鍵が合わないので、ほどいた鍵の控え（`TRD`）も作って両方で引いている。
 新しい訳を足すときは、**英語の原文を1文字も変えずに**鍵にすること。
 
-⚠️ 直したら `help.html` / `market.html` の `<script src="/i18n.js?v=1">` の数字を上げる。
+⚠️ 直したら `help/index.html` / `market/index.html` / `play/index.html` の `<script src="/i18n.js?v=N">` と
+`i18n.js` の中の `?v=N` を両方上げる。
 上げないと、前に見た人のブラウザが古い訳を出し続ける。
 
 投稿が何語かは `langOf_()` が見る（かな→日本語／漢字だけ→中国語／声調記号→ベトナム語）。
