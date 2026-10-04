@@ -32,18 +32,25 @@
   /* ---- nav ---- */
   header{position:sticky;top:0;z-index:50;background:#faf7f2e6;backdrop-filter:blur(10px);
     border-bottom:1px solid var(--line)}
-  nav{display:flex;align-items:center;gap:20px;height:64px}
+  /* ヘッダだけ本文より広く取る。本文は読みやすさのため1040のまま。
+     ページが増えるたびにここが足りなくなるので、余裕を持たせておく */
+  header .wrap{max-width:1180px}
+  nav{display:flex;align-items:center;gap:15px;height:64px}
   .logo{font-weight:800;font-size:19px;letter-spacing:.02em;text-decoration:none;color:var(--ink);
-    display:flex;align-items:center;gap:9px}
+    display:flex;align-items:center;gap:9px;white-space:nowrap;flex:none}
   .logo i{display:grid;place-items:center;width:30px;height:30px;border-radius:9px;
     background:var(--ai);color:#fff;font-style:normal;font-size:16px;font-weight:700}
   .logo em{font-style:normal;font-weight:500;font-size:13px;color:var(--sub);
     margin-left:10px;padding-left:10px;border-left:1px solid var(--line);white-space:nowrap}
-  @media(max-width:900px){ .logo em{display:none} }
+  @media(max-width:1100px){ .logo em{display:none} }
   nav .sp{flex:1}
-  nav a.nl{color:var(--sub);text-decoration:none;font-size:15px}
+  /* ページが増えるたびにここが溢れる。nowrap を外すと1文字ずつ折り返して崩れるので必須。
+     そのうえで、狭くなったら「本文を読めば辿り着けるもの」から順に消していく。
+     p3＝道具（本文にカードがある）／p2＝ページ内の見出しへのリンク */
+  nav a.nl{color:var(--sub);text-decoration:none;font-size:14.5px;white-space:nowrap;flex:none}
   nav a.nl:hover{color:var(--ink)}
-  @media(max-width:720px){ nav a.nl{display:none} }
+  @media(max-width:1100px){ nav a.nl.p2{display:none} }
+  @media(max-width:780px){  nav a.nl{display:none} }
   .lang{border:1px solid var(--line);background:#fff;border-radius:999px;padding:6px 14px;
     font:inherit;font-size:13px;cursor:pointer;color:var(--sub)}
   .lang:hover{border-color:var(--ai);color:var(--ai)}
@@ -165,18 +172,12 @@
     <nav>
       <a class="logo" href="#top"><i>奥</i>More to Japan<em>There's more to Japan.</em></a>
       <span class="sp"></span>
-      <a class="nl" href="/why/" data-en="Why"        data-ja="なぜ">Why</a>
-      <a class="nl" href="/shrine-hunt/" data-en="Shrine hunt" data-ja="神社さがし">Shrine hunt</a>
-      <a class="nl" href="/kanji-name/" data-en="Kanji name" data-ja="漢字の名前">Kanji name</a>
-      <a class="nl" href="/kanji-karuta/" data-en="Kanji Karuta" data-ja="漢字カルタ">Kanji Karuta</a>
+      <a class="nl" href="/why/" data-en="Why" data-ja="なぜ">Why</a>
+      <a class="nl" href="/play/" data-en="Language exchange" data-ja="言語交換">Language exchange</a>
       <a class="nl" href="/help/" data-en="Help board" data-ja="掲示板">Help board</a>
-      <a class="nl" href="/market/" data-en="Give &amp; Find" data-ja="ゆずります">Give &amp; Find</a>
-      <a class="nl" href="/play/" data-en="Language exchange" data-ja="ゲームで言語交換">Language exchange</a>
-      <a class="nl" href="#articles" data-en="Articles" data-ja="読みもの">Articles</a>
-      <a class="nl" href="#game"   data-en="Free game"  data-ja="無料ゲーム">Free game</a>
-      <a class="nl" href="#how"    data-en="Lessons"    data-ja="レッスン">Lessons</a>
-      <a class="nl" href="#price"  data-en="Price"      data-ja="料金">Price</a>
-      <a class="nl" href="#about"  data-en="About"      data-ja="講師について">About</a>
+      <a class="nl p2" href="/market/" data-en="Give &amp; Find" data-ja="ゆずります">Give &amp; Find</a>
+      <a class="nl" href="#how" data-en="Lessons" data-ja="レッスン">Lessons</a>
+      <a class="nl p2" href="#price" data-en="Price" data-ja="料金">Price</a>
       <button class="lang" id="lang">日本語</button>
     </nav>
   </div>
@@ -522,10 +523,14 @@
   <div class="wrap">
     <span>© <span id="yr"></span> More to Japan</span>
     <span class="sp" style="flex:1"></span>
+    <a href="/play/" data-en="Language exchange" data-ja="言語交換">Language exchange</a>
+    <a href="/help/" data-en="Help board" data-ja="掲示板">Help board</a>
+    <a href="/market/" data-en="Give &amp; Find" data-ja="ゆずります">Give &amp; Find</a>
     <a href="/katakana-catch/" data-en="Katakana Catch" data-ja="カタカナ・キャッチ">Katakana Catch</a>
-    <a href="/kanji-karuta/" style="margin-left:18px" data-en="Kanji Karuta" data-ja="漢字カルタ">Kanji Karuta</a>
-    <a href="/help/" style="margin-left:18px" data-en="Help board" data-ja="掲示板">Help board</a>
-    <a href="/market/" style="margin-left:18px" data-en="Give &amp; Find" data-ja="ゆずります">Give &amp; Find</a>
+    <a href="/kanji-karuta/" data-en="Kanji Karuta" data-ja="漢字カルタ">Kanji Karuta</a>
+    <a href="/kanji-name/" data-en="Kanji name" data-ja="漢字の名前">Kanji name</a>
+    <a href="/shrine-hunt/" data-en="Shrine hunt" data-ja="神社さがし">Shrine hunt</a>
+    <a href="/why/" data-en="Why" data-ja="なぜ">Why</a>
   </div>
 </footer>
 
