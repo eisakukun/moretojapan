@@ -29,7 +29,9 @@ const COLS = {
   // いっしょに何かやる（趣味で集まるほう）
   plans:   ['id','ts','updated','kind','title','body','cat','when','area','level','size',
             'langs','nick','dev','mail','status','going','comments','flags',
-            'learn']   // ← 足すときは必ず末尾に（途中だと既存行の読む位置がずれる）
+            'learn', 'live'],   // ← 足すときは必ず末尾に（途中だと既存行の読む位置がずれる）
+  // 通話の回数券。払った人に渡す文字列だけを持つ。誰が払ったかは持たない
+  passes:  ['code','ts','until','note','devs']
 };
 
 const OK_LANGS = ['en','ja','zh','vi','ko','tl','ne'];   // 話せることばに書ける言語
@@ -37,6 +39,8 @@ const PROP_PHOTOS = 'PHOTO_FOLDER_ID';   // 写真の置き場（setup が作る
 const MAX_PHOTOS  = 3;
 const ITEM_DAYS   = 60;                  // これより古いものは一覧から落とす
 const PLAN_DAYS   = 45;                  // 誘いは古くなるのが早い。45日で一覧から落とす
+const LIVE_SEC    = 100;                 // これより新しい合図があれば「いま居る」とみなす
+const TR_MAX      = 1200;                // 一度に意味を引ける長さ
 
 /* ============================================================ 置き場所 */
 
@@ -120,7 +124,7 @@ function rows_(name) {
     const o = {};
     COLS[name].forEach(function (c, i) { o[c] = r[i]; });
     return o;
-  }).filter(function (o) { return o.id || o.key; });
+  }).filter(function (o) { return o.id || o.key || o.code; });   // passes は code が主キー
 }
 
 function append_(name, obj) {
@@ -163,6 +167,7 @@ function doGet(e) {
     if (a === 'item')  return json_(oneItem_(q.id));
     if (a === 'plans') return json_(plans_(q));
     if (a === 'plan')  return json_(onePlan_(q.id));
+    if (a === 'tr')    return json_(tr_(q));
     return json_({ ok: false, err: 'unknown' });
   } catch (err) {
     return json_({ ok: false, err: String(err && err.message || err) });
@@ -183,6 +188,8 @@ function doPost(e) {
       if (a === 'sold')    return json_(sold_(b));
       if (a === 'newplan') return json_(newPlan_(b));
       if (a === 'close')   return json_(close_(b));
+      if (a === 'live')    return json_(live_(b));
+      if (a === 'pass')    return json_(pass_(b));
       if (a === 'reply')   return json_(newReply_(b));
       if (a === 'vote')   return json_(vote_(b));
       if (a === 'solve')  return json_(solve_(b));
@@ -588,6 +595,7 @@ function plans_(q) {
         level: g.level || 'any', size: Number(g.size) || 0,
         langs: String(g.langs || '').split(',').filter(Boolean),
         learn: String(g.learn || '').split(',').filter(Boolean),
+        live: liveNow_(g.live),
         nick: g.nick, going: Number(g.going) || 0,
         comments: Number(g.comments) || 0,
         closed: g.status === 'closed'
@@ -616,6 +624,7 @@ function onePlan_(id) {
       level: g.level || 'any', size: Number(g.size) || 0,
       langs: String(g.langs || '').split(',').filter(Boolean),
       learn: String(g.learn || '').split(',').filter(Boolean),
+      live: liveNow_(g.live),
       nick: g.nick, going: Number(g.going) || 0, closed: g.status === 'closed'
       // mail はここには絶対に入れない
     },
@@ -673,6 +682,87 @@ function close_(b) {
                           updated: new Date().toISOString() });
   CacheService.getScriptCache().remove('plans');
   return { ok: true, closed: g.status !== 'closed' };
+}
+
+/* ============================================================ いま居る・意味・回数券 */
+
+/** その合図が新しいか。「いま話せる人」を一覧に出すためだけに使う */
+function liveNow_(v) {
+  const t = v ? new Date(v).getTime() : 0;
+  return !!t && (Date.now() - t) < LIVE_SEC * 1000;
+}
+
+/** 通話をひらいている人が、生きている合図を置きにくる。
+ *  出した本人しか置けない。閉じるときは on:false で消す */
+function live_(b) {
+  const g = rows_('plans').filter(function (x) { return String(x.id) === String(b.id); })[0];
+  if (!g) return { ok: false, err: 'notfound' };
+  if (String(g.dev) !== String(b.dev)) return { ok: false, err: 'notyours' };
+  patch_('plans', g.id, { live: b.on === false ? '' : new Date().toISOString() });
+  CacheService.getScriptCache().remove('plans');
+  return { ok: true };
+}
+
+/* 意味を引く。投稿そのものは翻訳しない方針は変えていない。
+   原文は必ず画面に残したまま、読む人が自分で押したときだけ、その場で意味を出す。
+   機械訳を本文として置くのと、読む人が辞書を引くのは別のこと。 */
+function tr_(q) {
+  const text = clean_(q.q, TR_MAX);
+  const to   = OK_LANGS.indexOf(q.to) >= 0 ? q.to : 'en';
+  if (!text) return { ok: false, err: 'empty' };
+
+  const c   = CacheService.getScriptCache();
+  const key = 'tr|' + to + '|' + hash_(text);
+  const hit = c.get(key);
+  if (hit) return { ok: true, text: hit, from: langOf_(text), cached: true };
+
+  try {
+    // LanguageApp は Apps Script に最初から入っていて鍵が要らない。
+    // 元の言語は '' を渡して自動で見させる（人は何語かを知らずに貼るので）
+    const out = LanguageApp.translate(text, '', to);
+    if (!out) return { ok: false, err: 'notr' };
+    c.put(key, out, 21600);   // 6時間。同じ単語を何人も引くので効く
+    return { ok: true, text: out, from: langOf_(text) };
+  } catch (err) {
+    return { ok: false, err: 'notr', why: String(err && err.message || err) };
+  }
+}
+
+/* 通話の回数券。払った人の名前もメールも持たない。文字列だけ。
+   makePasses() を ▶ で走らせると新しい券ができる（→ 手渡し or 決済後に配る）。 */
+function makePasses(n, days, note) {
+  n = Number(n) || 5;
+  days = Number(days) || 30;
+  const out = [];
+  const until = new Date(Date.now() + days * 86400000).toISOString();
+  for (let i = 0; i < n; i++) {
+    const code = 'MTJ-' + Math.random().toString(36).slice(2, 6).toUpperCase()
+               + '-' + Math.random().toString(36).slice(2, 6).toUpperCase();
+    append_('passes', { code: code, ts: new Date().toISOString(), until: until,
+                        note: clean_(note, 60), devs: '' });
+    out.push(code);
+  }
+  return out.join('\n');
+}
+
+/** 券を入れる。合っていれば「いつまで有効か」だけ返す */
+function pass_(b) {
+  const code = clean_(b.code, 32).toUpperCase();
+  const dev  = clean_(b.dev, 64);
+  if (!code) return { ok: false, err: 'nocode' };
+  const p = rows_('passes').filter(function (x) {
+    return String(x.code).toUpperCase() === code;
+  })[0];
+  if (!p) return { ok: false, err: 'badcode' };
+  const until = new Date(p.until).getTime();
+  if (!until || until < Date.now()) return { ok: false, err: 'expired' };
+  // 使った端末を控える。止めるためではなく、配った数と実際に使われた数を見るため
+  const devs = String(p.devs || '').split(',').filter(Boolean);
+  if (dev && devs.indexOf(dev) < 0) {
+    devs.push(dev);
+    patch_('passes', p.code, { devs: devs.slice(-20).join(',') });
+  }
+  return { ok: true, until: new Date(until).toISOString() };
 }
 
 /* ============================================================ こまごま */
