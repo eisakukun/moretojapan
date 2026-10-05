@@ -292,6 +292,7 @@
     font:inherit;font-size:13.5px;cursor:pointer;color:var(--sub)}
   .pickLang button.on{border-color:var(--line2);background:#00f0ff14;color:var(--cy);font-weight:700}
   .pickLang button.on::before{content:"\2713 ";font-size:11px}
+  .fg{font-size:15px;line-height:1;margin-right:7px;vertical-align:-1px}
   .pickLang.want button.on{border-color:#ff2bd655;background:#ff2bd614;color:var(--mg)}
   .hp{position:absolute;left:-9999px;width:1px;height:1px;opacity:0}
   .sheetFoot{display:flex;gap:10px;align-items:center;margin-top:20px;flex-wrap:wrap}
@@ -631,7 +632,7 @@
   </div>
 </div>
 
-<script src="/i18n.js?v=5"></script>
+<script src="/i18n.js?v=6"></script>
 <script>
 /* =========================================================================
    More to Japan — ゲーマーのための言語交換（掲示板）
@@ -718,6 +719,12 @@ function langName(id) {
   return l ? l.name : id;
 }
 function shortOf(id) { return SHORT[id] || String(id).toUpperCase(); }
+/* 旗は i18n.js の表から。Windowsでは2文字で出るので、必ず札か名前と並べて使う */
+function flagOf(id) {
+  const l = LANGS.filter(function (x) { return x.id === id; })[0];
+  return l && l.flag ? l.flag : "";
+}
+
 
 const $  = function (id) { return document.getElementById(id); };
 const esc = function (s) {
@@ -847,9 +854,9 @@ function whenTxt(g) {
 /** ことばの旗。話せる → 習いたい。短い札にしてあるのは行を折り返さないため */
 function flags(g) {
   const sp = (g.langs || []).map(function (l) {
-    return '<i class="fl" title="' + esc(langName(l)) + '">' + shortOf(l) + "</i>"; }).join("");
+    return '<i class="fl" title="' + esc(langName(l)) + '">' + flagOf(l) + " " + shortOf(l) + "</i>"; }).join("");
   const wa = (g.learn || []).map(function (l) {
-    return '<i class="fl w" title="' + esc(langName(l)) + '">' + shortOf(l) + "</i>"; }).join("");
+    return '<i class="fl w" title="' + esc(langName(l)) + '">' + flagOf(l) + " " + shortOf(l) + "</i>"; }).join("");
   if (!sp && !wa) return "";
   return '<span class="lxs">🗣' + sp + "<em>→</em>📚" + (wa || '<i class="fl w">?</i>') + "</span>";
 }
@@ -1020,9 +1027,9 @@ async function renderThread() {
     +   '<div class="pbody">' + linkify(g.body) + "</div>"
     +   '<div class="facts">'
     +     "<div><b>" + T("Speaks", "話せることば") + "</b><span>"
-    +       esc((g.langs || []).map(langName).join(" / ") || "—") + "</span></div>"
+    +       ((g.langs || []).map(function (l) { return flagOf(l) + " " + esc(langName(l)); }).join(" / ") || "—") + "</span></div>"
     +     "<div><b>" + T("Wants to practise", "習いたいことば") + "</b><span>"
-    +       esc((g.learn || []).map(langName).join(" / ") || "—") + "</span></div>"
+    +       ((g.learn || []).map(function (l) { return flagOf(l) + " " + esc(langName(l)); }).join(" / ") || "—") + "</span></div>"
     +     "<div><b>" + T("When", "いつ") + "</b><span>🕐 " + esc(whenTxt(g)) + "</span></div>"
     +     (g.area ? "<div><b>" + (g.kind === "meet" ? T("Where", "場所") : T("On what", "どこで"))
             + "</b><span>" + (g.kind === "meet" ? "📍 " : "🎧 ") + esc(g.area) + "</span></div>" : "")
@@ -1464,7 +1471,8 @@ function drawLangPick() {
     const box = $(p[0]), sel = p[1];
     box.innerHTML = LANGS.map(function (l) {
       return '<button type="button" data-l="' + l.id + '"'
-        + (sel.indexOf(l.id) >= 0 ? ' class="on"' : "") + ">" + esc(l.name) + "</button>";
+        + (sel.indexOf(l.id) >= 0 ? ' class="on"' : "") + ">"
+        + (l.flag ? '<span class="fg">' + l.flag + "</span>" : "") + esc(l.name) + "</button>";
     }).join("");
     Array.prototype.forEach.call(box.querySelectorAll("[data-l]"), function (b) {
       b.addEventListener("click", function () {
@@ -1481,7 +1489,7 @@ function drawFilters() {
   const opts = function (ic) {
     return '<option value="">' + ic + " " + T("any", "問わない") + "</option>"
       + LANGS.map(function (l) {
-          return '<option value="' + l.id + '">' + ic + " " + esc(l.name) + "</option>";
+          return '<option value="' + l.id + '">' + ic + " " + (l.flag || "") + " " + esc(l.name) + "</option>";
         }).join("");
   };
   $("spkFilter").innerHTML  = opts("🗣");

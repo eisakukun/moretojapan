@@ -168,6 +168,8 @@
   .pick button.on{border-color:var(--line2);background:#00f0ff14;color:var(--cy);font-weight:700}
   .pick.want button.on{border-color:#ff2bd655;background:#ff2bd614;color:var(--mg)}
   .pick button.on::before{content:"\2713 ";font-size:11px}
+  /* 旗は絵文字。字と混ざると行がガタつくので、少し大きくして縦位置を揃える */
+  .fg{font-size:15px;line-height:1;margin-right:7px;vertical-align:-1px}
   input[type=text]{width:100%;font:inherit;font-size:15px;padding:9px 11px;border:1px solid var(--line);
     background:#05070a;color:var(--txt);outline:0;-webkit-appearance:none;appearance:none}
   .sheetFoot{display:flex;gap:9px;align-items:center;margin-top:18px;flex-wrap:wrap}
@@ -266,7 +268,7 @@
 </div>
 <input class="hp" id="fHp" type="text" tabindex="-1" autocomplete="off" aria-hidden="true">
 
-<script src="/i18n.js?v=5"></script>
+<script src="/i18n.js?v=6"></script>
 <script>
 /* =========================================================================
    つぶやき — Twitter の形をなぞる。裏は他の2つと同じGAS・同じスプレッドシート。
@@ -291,6 +293,12 @@ const langName = function (id) {
   const l = LANGS.filter(function (x) { return x.id === id; })[0];
   return l ? l.name : id;
 };
+/* 旗は i18n.js の表から。Windowsでは2文字で出るので、必ず札か名前と並べて使う */
+function flagOf(id) {
+  const l = LANGS.filter(function (x) { return x.id === id; })[0];
+  return l && l.flag ? l.flag : "";
+}
+
 
 const $ = function (id) { return document.getElementById(id); };
 const esc = function (s) {
@@ -388,9 +396,9 @@ function avatar(who, nick, small) {
 }
 function flagsHtml(t) {
   const sp = (t.langs || []).map(function (l) {
-    return '<i class="fl" title="' + esc(langName(l)) + '">' + shortOf(l) + "</i>"; }).join("");
+    return '<i class="fl" title="' + esc(langName(l)) + '">' + flagOf(l) + " " + shortOf(l) + "</i>"; }).join("");
   const wa = (t.learn || []).map(function (l) {
-    return '<i class="fl w" title="' + esc(langName(l)) + '">' + shortOf(l) + "</i>"; }).join("");
+    return '<i class="fl w" title="' + esc(langName(l)) + '">' + flagOf(l) + " " + shortOf(l) + "</i>"; }).join("");
   if (!sp && !wa) return "";
   return '<div class="twFl"><span class="flags">🗣' + sp
     + (wa ? "<em>→</em>📚" + wa : "") + "</span></div>";
@@ -434,8 +442,8 @@ function card(t, lead) {
 function composer(parent) {
   const m = me();
   const fl = m
-    ? '<span class="flags">🗣' + m.langs.map(function (l) { return '<i class="fl">' + shortOf(l) + "</i>"; }).join("")
-      + (m.learn.length ? "<em>→</em>📚" + m.learn.map(function (l) { return '<i class="fl w">' + shortOf(l) + "</i>"; }).join("") : "")
+    ? '<span class="flags">🗣' + m.langs.map(function (l) { return '<i class="fl">' + flagOf(l) + " " + shortOf(l) + "</i>"; }).join("")
+      + (m.learn.length ? "<em>→</em>📚" + m.learn.map(function (l) { return '<i class="fl w">' + flagOf(l) + " " + shortOf(l) + "</i>"; }).join("") : "")
       + '</span> <button class="setFl" id="chFl">' + T("変える", "change") + "</button>"
     : '<button class="setFl" id="chFl">' + T("ことばの旗を決める", "set your languages") + "</button>";
   return '<div class="compose' + (parent ? " inline" : "") + '">'
@@ -592,7 +600,8 @@ function drawPicks() {
     const box = $(p[0]), sel = p[1];
     box.innerHTML = LANGS.map(function (l) {
       return '<button type="button" data-l="' + l.id + '"'
-        + (sel.indexOf(l.id) >= 0 ? ' class="on"' : "") + ">" + esc(l.name) + "</button>";
+        + (sel.indexOf(l.id) >= 0 ? ' class="on"' : "") + ">"
+        + (l.flag ? '<span class="fg">' + l.flag + "</span>" : "") + esc(l.name) + "</button>";
     }).join("");
     Array.prototype.forEach.call(box.querySelectorAll("[data-l]"), function (b) {
       b.addEventListener("click", function () {

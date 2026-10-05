@@ -10,14 +10,18 @@
  *  （7言語ぶんを全員に送りつけない）。鍵が無ければ英語のまま出る。
  *  半端な機械訳を出すより、英語のまま出したほうが親切。
  */
+/* 旗はここ1か所。全部のページがこの表を読むので、足すのも直すのもここだけでいい。
+   ⚠️ 英語に「正しい旗」は無い（イギリスもアメリカも他もある）。便宜で🇬🇧にしてある。
+   ⚠️ Windowsは国旗の絵文字を描けず「GB」「JP」の2文字で出る。読めるので許容。
+      だから旗だけに頼らず、必ず名前か短い札（JA/EN）と並べて出すこと。 */
 window.MTJ_LANGS = [
-  { id:"en", name:"English" },
-  { id:"ja", name:"日本語" },
-  { id:"zh", name:"中文" },
-  { id:"vi", name:"Tiếng Việt" },
-  { id:"ko", name:"한국어" },
-  { id:"tl", name:"Tagalog" },
-  { id:"ne", name:"नेपाली" }
+  { id:"en", name:"English",     flag:"🇬🇧", sh:"EN" },
+  { id:"ja", name:"日本語",       flag:"🇯🇵", sh:"JA" },
+  { id:"zh", name:"中文",         flag:"🇨🇳", sh:"ZH" },
+  { id:"vi", name:"Tiếng Việt",  flag:"🇻🇳", sh:"VI" },
+  { id:"ko", name:"한국어",       flag:"🇰🇷", sh:"KO" },
+  { id:"tl", name:"Tagalog",     flag:"🇵🇭", sh:"TL" },
+  { id:"ne", name:"नेपाली",        flag:"🇳🇵", sh:"NP" }
 ];
 
 window.MTJ_TR = {};
@@ -34,7 +38,7 @@ window.MTJ_LOAD = function (lang) {
   if (window.MTJ_READY[lang]) return Promise.resolve();
   return new Promise(function (res) {
     const s = document.createElement("script");
-    s.src = "/i18n/" + lang + ".js?v=5";
+    s.src = "/i18n/" + lang + ".js?v=6";
     s.onload = res;
     s.onerror = function () { window.MTJ_READY[lang] = true; res(); };  // 無い言語でも止まらない
     document.head.appendChild(s);

@@ -385,7 +385,7 @@
   </div>
 </div>
 
-<script src="/i18n.js?v=5"></script>
+<script src="/i18n.js?v=6"></script>
 <script>
 /* =========================================================================
    More to Japan — ゆずります・さがしています
@@ -427,6 +427,10 @@ const EXAMPLES = [
 ];
 
 const LANGS = (window.MTJ_LANGS || [{id:"en",name:"English"},{id:"ja",name:"日本語"}]);
+function flagOf(id) {
+  const l = LANGS.filter(function (x) { return x.id === id; })[0];
+  return l && l.flag ? l.flag : "";
+}
 function langName(id) {
   const l = LANGS.filter(function (x) { return x.id === id; })[0];
   return l ? l.name : id;
@@ -616,7 +620,7 @@ function card(it) {
     +     (it.comments ? "<span>💬 " + it.comments + "</span>" : "") + "</div>"
     +   (it.langs && it.langs.length
           ? '<div class="itM spk">🗣' + it.langs.map(function (l) {
-              return "<i>" + esc(langName(l)) + "</i>"; }).join("") + "</div>"
+              return "<i>" + flagOf(l) + " " + esc(langName(l)) + "</i>"; }).join("") + "</div>"
           : "")
     + "</div></div>";
 }
@@ -671,7 +675,7 @@ async function renderDetail() {
     +     "<div><b>" + T("Handover", "受け渡し") + "</b><span>" + deliverTxt(it.deliver) + "</span></div>"
     +     (it.langs && it.langs.length
             ? "<div><b>" + T("Speaks", "話せることば") + '</b><span class="spk">'
-              + it.langs.map(function (l) { return "<i>" + esc(langName(l)) + "</i>"; }).join("")
+              + it.langs.map(function (l) { return "<i>" + flagOf(l) + " " + esc(langName(l)) + "</i>"; }).join("")
               + "</span></div>"
             : "")
     +     "<div><b>" + T("Kind", "種類") + "</b><span>" + c.ic + " " + esc(T(c.en, c.ja)) + "</span></div>"
@@ -840,7 +844,8 @@ function drawLangPick() {
   if (!langsTouched) myLangs = [lang];   // さわるまでは、いま読んでいる言語を入れておく
   $("fLangs").innerHTML = LANGS.map(function (l) {
     return '<button type="button" data-l="' + l.id + '"'
-      + (myLangs.indexOf(l.id) >= 0 ? ' class="on"' : "") + ">" + esc(l.name) + "</button>";
+      + (myLangs.indexOf(l.id) >= 0 ? ' class="on"' : "") + ">"
+      + (l.flag ? '<span class="fg">' + l.flag + "</span>" : "") + esc(l.name) + "</button>";
   }).join("");
   Array.prototype.forEach.call($("fLangs").querySelectorAll("[data-l]"), function (b) {
     b.addEventListener("click", function () {
@@ -856,7 +861,7 @@ function drawSpkFilter() {
   const sel = $("spkFilter");
   sel.innerHTML = '<option value="">🗣 ' + T("Any language", "ことばは問わない") + "</option>"
     + LANGS.map(function (l) {
-        return '<option value="' + l.id + '">🗣 ' + esc(l.name) + "</option>";
+        return '<option value="' + l.id + '">🗣 ' + (l.flag || "") + " " + esc(l.name) + "</option>";
       }).join("");
   sel.value = state.spk;
 }
