@@ -30,6 +30,8 @@ const COLS = {
   plans:   ['id','ts','updated','kind','title','body','cat','when','area','level','size',
             'langs','nick','dev','mail','status','going','comments','flags',
             'learn', 'live'],   // ← 足すときは必ず末尾に（途中だと既存行の読む位置がずれる）
+  // つぶやき。Twitterの形。返信は parent に親のidを入れて同じ表に積む
+  tweets:  ['id','ts','body','nick','dev','langs','learn','likes','replies','parent','status','flags'],
   // 通話の回数券。払った人に渡す文字列だけを持つ。誰が払ったかは持たない
   passes:  ['code','ts','until','note','devs']
 };
@@ -38,6 +40,7 @@ const OK_LANGS = ['en','ja','zh','vi','ko','tl','ne'];   // 話せることば�
 const PROP_PHOTOS = 'PHOTO_FOLDER_ID';   // 写真の置き場（setup が作る）
 const MAX_PHOTOS  = 3;
 const ITEM_DAYS   = 60;                  // これより古いものは一覧から落とす
+const TWEET_DAYS  = 120;                 // つぶやきは古くても残す。数が少ないうちは消すと死んで見える
 const PLAN_DAYS   = 45;                  // 誘いは古くなるのが早い。45日で一覧から落とす
 const LIVE_SEC    = 100;                 // これより新しい合図があれば「いま居る」とみなす
 const TR_MAX      = 1200;                // 一度に意味を引ける長さ
@@ -167,7 +170,9 @@ function doGet(e) {
     if (a === 'item')  return json_(oneItem_(q.id));
     if (a === 'plans') return json_(plans_(q));
     if (a === 'plan')  return json_(onePlan_(q.id));
-    if (a === 'tr')    return json_(tr_(q));
+    if (a === 'tr')     return json_(tr_(q));
+    if (a === 'tweets') return json_(tweets_(q));
+    if (a === 'tweet')  return json_(oneTweet_(q.id));
     return json_({ ok: false, err: 'unknown' });
   } catch (err) {
     return json_({ ok: false, err: String(err && err.message || err) });
@@ -190,6 +195,8 @@ function doPost(e) {
       if (a === 'close')   return json_(close_(b));
       if (a === 'live')    return json_(live_(b));
       if (a === 'pass')    return json_(pass_(b));
+      if (a === 'newtweet') return json_(newTweet_(b));
+      if (a === 'like')     return json_(like_(b));
       if (a === 'reply')   return json_(newReply_(b));
       if (a === 'vote')   return json_(vote_(b));
       if (a === 'solve')  return json_(solve_(b));
@@ -389,6 +396,7 @@ function sheetOf_(kind) {
   return kind === 'reply' ? 'replies'
        : kind === 'item'  ? 'items'
        : kind === 'plan'  ? 'plans'
+       : kind === 'tweet' ? 'tweets'
                           : 'posts';
 }
 
@@ -682,6 +690,109 @@ function close_(b) {
                           updated: new Date().toISOString() });
   CacheService.getScriptCache().remove('plans');
   return { ok: true, closed: g.status !== 'closed' };
+}
+
+/* ============================================================ つぶやき
+ *
+ *  Twitter の形。ただし一つだけ違うものを必ず付ける：ことばの旗（話せる → 習いたい）。
+ *  旗が無ければ、ここは「日本語と英語が混ざっただけの寂れたタイムライン」になる。
+ *  旗があると、読めない相手の投稿にも「この人は自分のことばを欲しがっている」と分かる。
+ *
+ *  返信も同じ表に積み、parent に親の id を入れる。Twitter と同じで、返信もつぶやき。
+ *  古いものを消さないのは、数が少ないうちに消すと死んで見えるから（掲示板とは逆の判断）。 */
+
+function tweets_(q) {
+  const cache = CacheService.getScriptCache();
+  const key = 'tweets|' + (q.parent || '');
+  const hit = cache.get(key);
+  if (hit) return JSON.parse(hit);
+
+  const limit = Date.now() - TWEET_DAYS * 86400000;
+  const all = rows_('tweets').filter(function (t) { return t.status !== 'hidden'; });
+  const list = all
+    .filter(function (t) {
+      if (new Date(t.ts).getTime() <= limit) return false;
+      return q.parent ? String(t.parent) === String(q.parent) : !t.parent;
+    })
+    .map(shapeTweet_)
+    .sort(function (a, b) { return q.parent ? (a.ts > b.ts ? 1 : -1) : (a.ts < b.ts ? 1 : -1); })
+    .slice(0, LIST_LIMIT);
+
+  const out = { ok: true, tweets: list, now: new Date().toISOString() };
+  cache.put(key, JSON.stringify(out), 15);
+  return out;
+}
+
+function shapeTweet_(t) {
+  return {
+    id: t.id, ts: String(t.ts), body: t.body, nick: t.nick,
+    langs: String(t.langs || '').split(',').filter(Boolean),
+    learn: String(t.learn || '').split(',').filter(Boolean),
+    likes: Number(t.likes) || 0, replies: Number(t.replies) || 0,
+    parent: t.parent || '', who: hash_(t.dev)
+  };
+}
+
+/** 1件とその返信。Twitter でいうスレッド表示 */
+function oneTweet_(id) {
+  const t = rows_('tweets').filter(function (x) { return String(x.id) === String(id); })[0];
+  if (!t || t.status === 'hidden') return { ok: false, err: 'notfound' };
+  const kids = rows_('tweets')
+    .filter(function (x) { return String(x.parent) === String(id) && x.status !== 'hidden'; })
+    .map(shapeTweet_)
+    .sort(function (a, b) { return a.ts > b.ts ? 1 : -1; });
+  return { ok: true, tweet: shapeTweet_(t), replies: kids };
+}
+
+function newTweet_(b) {
+  const dev = clean_(b.dev, 64);
+  const gate = limit_(dev, 'tweet', 20);
+  if (!gate.ok) return gate;
+
+  const body = clean_(b.body, 400);          // Twitter と同じく短く切る
+  if (body.length < 1) return { ok: false, err: 'empty' };
+  const bad = spam_(body);
+  if (bad) return { ok: false, err: 'spam', why: bad };
+
+  // 旗はここの背骨。話せることばだけは必ず要る（習いたいほうは無くても出せる）
+  const langs = (b.langs || []).filter(function (x) { return OK_LANGS.indexOf(x) >= 0; });
+  if (!langs.length) return { ok: false, err: 'no-langs' };
+  const learn = (b.learn || []).filter(function (x) { return OK_LANGS.indexOf(x) >= 0; });
+
+  let parent = '';
+  if (b.parent) {
+    const p = rows_('tweets').filter(function (x) { return String(x.id) === String(b.parent); })[0];
+    if (!p) return { ok: false, err: 'notfound' };
+    parent = p.id;
+    patch_('tweets', p.id, { replies: (Number(p.replies) || 0) + 1 });
+  }
+
+  const id  = 't' + Date.now().toString(36) + Math.floor(Math.random() * 1296).toString(36);
+  const now = new Date().toISOString();
+  append_('tweets', {
+    id: id, ts: now, body: body, nick: clean_(b.nick, 24), dev: dev,
+    langs: langs.join(','), learn: learn.join(','),
+    likes: 0, replies: 0, parent: parent, status: 'open', flags: 0
+  });
+  CacheService.getScriptCache().removeAll(['tweets|', 'tweets|' + parent]);
+  notify_(parent ? '💬 つぶやきに返信' : '🐦 つぶやき',
+          body.slice(0, 300) + '\nhttps://moretojapan.com/tweet/#t/' + (parent || id));
+  return { ok: true, id: id };
+}
+
+/** いいね。同じ端末からの二度押しは数えない（votes を使い回す） */
+function like_(b) {
+  const dev = clean_(b.dev, 64);
+  if (!dev) return { ok: false, err: 'nodev' };
+  const key = dev + '|like|' + b.id;
+  if (rows_('votes').some(function (v) { return v.key === key; })) return { ok: true, dup: true };
+  const t = rows_('tweets').filter(function (x) { return String(x.id) === String(b.id); })[0];
+  if (!t) return { ok: false, err: 'notfound' };
+  append_('votes', { ts: new Date().toISOString(), key: key });
+  const n = (Number(t.likes) || 0) + 1;
+  patch_('tweets', t.id, { likes: n });
+  CacheService.getScriptCache().removeAll(['tweets|', 'tweets|' + (t.parent || '')]);
+  return { ok: true, likes: n };
 }
 
 /* ============================================================ いま居る・意味・回数券 */

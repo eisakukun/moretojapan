@@ -1,0 +1,756 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>つぶやき — More to Japan</title>
+<meta name="description" content="日本に住んでいる人の短いひとこと。話せることばと習いたいことばが全部に付いていて、読めないところはなぞればその場で意味が出ます。登録なし。">
+<meta property="og:type" content="website">
+<meta property="og:title" content="つぶやき — More to Japan">
+<meta property="og:description" content="読めない行があっても、なぞれば意味が出る。日本に住んでいる人の短いひとこと。">
+<meta property="og:url" content="https://moretojapan.com/tweet/">
+<meta name="theme-color" content="#05070a">
+<link rel="canonical" href="https://moretojapan.com/tweet/">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%2305070a'/%3E%3Crect x='3' y='3' width='58' height='58' rx='10' fill='none' stroke='%2300f0ff' stroke-width='2'/%3E%3Ctext x='32' y='45' font-size='34' text-anchor='middle' fill='%2300f0ff' font-family='Hiragino Sans,sans-serif'%3E%E5%91%9F%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@600;800&display=swap" rel="stylesheet">
+<style>
+  /*  つぶやき — Twitter のダークモードの形をそのままなぞる。
+   *  白いTwitterにしなかったのは、隣の掲示板が黒いから。並べたとき別サイトに見える。
+   *  Twitter の Lights out は元から真っ黒なので、色を寄せても形は崩れない。
+   *
+   *  Twitter と違うのは2つだけ：
+   *  1. どのつぶやきにも「話せる → 習いたい」の旗が付く
+   *  2. リツイートの位置に「意味」を置いた。フォロワーのいない場所でRTは意味がないが、
+   *     読めない行の意味はいつでも要る */
+  :root{
+    --bg:#05070a; --panel:#0a0f16; --raise:#0c1219; --hover:#00f0ff0a;
+    --line:rgba(0,240,255,.14); --line2:rgba(0,240,255,.32);
+    --txt:#cfe9f0; --sub:#7f99a4; --dim:#4a646f;
+    --cy:#00f0ff; --mg:#ff2bd6; --lime:#9dff3c; --red:#ff4d6d;
+    --disp:"Orbitron","Share Tech Mono",ui-monospace,sans-serif;
+    --mono:"Share Tech Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+    --jp:"Hiragino Sans","Noto Sans JP",system-ui,-apple-system,"Segoe UI",sans-serif;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--txt);font-family:var(--jp);
+    -webkit-font-smoothing:antialiased;line-height:1.6}
+  body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:200;
+    background:repeating-linear-gradient(0deg,rgba(0,240,255,.035) 0 1px,transparent 1px 3px);
+    mix-blend-mode:screen;opacity:.5}
+  a{color:var(--cy);text-decoration:none}
+  ::-webkit-scrollbar{width:9px}
+  ::-webkit-scrollbar-thumb{background:#14212b}
+  ::-webkit-scrollbar-track{background:transparent}
+
+  /* ---------- 上のタブ（3つのラン） ---------- */
+  .top{position:sticky;top:0;z-index:70;background:#05070af2;backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line)}
+  .topIn{max-width:1100px;margin:0 auto;padding:0 16px;display:flex;align-items:center;gap:16px;height:54px}
+  .brand{display:flex;align-items:center;gap:9px;color:var(--txt);white-space:nowrap}
+  .brand i{display:grid;place-items:center;width:30px;height:30px;flex:none;font-style:normal;
+    font-size:15px;color:var(--cy);border:1px solid var(--line2);background:#00f0ff0f;
+    clip-path:polygon(0 0,100% 0,100% 72%,72% 100%,0 100%)}
+  .brand b{font-family:var(--disp);font-weight:800;font-size:12px;letter-spacing:.09em}
+  .tabs{display:flex;gap:2px;flex:1;min-width:0;overflow-x:auto;scrollbar-width:none}
+  .tabs::-webkit-scrollbar{display:none}
+  .tab{padding:8px 18px;font-size:14px;color:var(--sub);white-space:nowrap;
+    border-bottom:2px solid transparent;font-weight:700}
+  .tab:hover{color:var(--txt);background:var(--hover)}
+  .tab.on{color:var(--cy);border-bottom-color:var(--cy);text-shadow:0 0 12px #00f0ff55}
+  .tab s{text-decoration:none;font-family:var(--mono);font-size:9.5px;letter-spacing:.14em;
+    display:block;color:var(--dim);font-weight:400}
+  .lang{flex:none;border:1px solid var(--line);background:#05070a;padding:5px 24px 5px 9px;
+    font:inherit;font-family:var(--mono);font-size:11.5px;cursor:pointer;color:var(--sub);
+    -webkit-appearance:none;appearance:none;width:auto;max-width:100%;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%2300f0ff' stroke-width='1.4'/%3E%3C/svg%3E");
+    background-repeat:no-repeat;background-position:right 8px center;background-size:8px}
+
+  /* ---------- Twitter の中央カラム ---------- */
+  .col{max-width:600px;margin:0 auto;border-left:1px solid var(--line);border-right:1px solid var(--line);
+    min-height:100vh}
+  .colHead{position:sticky;top:54px;z-index:60;background:#05070ae6;backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line);padding:13px 16px;display:flex;align-items:center;gap:14px}
+  .colHead h1{margin:0;font-size:19px;font-weight:700}
+  .colHead .sp{flex:1}
+  .back{background:none;border:0;font:inherit;color:var(--txt);cursor:pointer;padding:0;
+    font-size:18px;line-height:1}
+  .back:hover{color:var(--cy)}
+
+  /* ---------- 書く箱 ---------- */
+  .compose{display:flex;gap:12px;padding:14px 16px;border-bottom:10px solid var(--panel)}
+  .compose.inline{border-bottom:1px solid var(--line)}
+  .av{width:44px;height:44px;flex:none;border-radius:50%;display:grid;place-items:center;
+    font-weight:700;font-size:17px;border:1px solid var(--line2);background:#00f0ff10;color:var(--cy)}
+  .av.sm{width:38px;height:38px;font-size:15px}
+  .cBody{flex:1;min-width:0}
+  .cBody textarea{width:100%;background:transparent;border:0;outline:0;resize:none;color:var(--txt);
+    font:inherit;font-size:19px;line-height:1.5;padding:9px 0;min-height:56px;overflow:hidden}
+  .cBody textarea::placeholder{color:var(--dim)}
+  .cFoot{display:flex;align-items:center;gap:10px;padding-top:10px;border-top:1px solid var(--line);
+    flex-wrap:wrap}
+  .cFoot .sp{flex:1}
+  .post{background:#00f0ff14;border:1px solid var(--line2);color:var(--cy);font-family:var(--disp);
+    font-weight:700;font-size:12.5px;letter-spacing:.08em;text-transform:uppercase;
+    padding:9px 20px;cursor:pointer;
+    clip-path:polygon(0 0,100% 0,100% 64%,calc(100% - 10px) 100%,0 100%)}
+  .post:hover:not([disabled]){background:#00f0ff2b;box-shadow:0 0 16px #00f0ff33}
+  .post[disabled]{opacity:.35;cursor:default}
+  .cnt{font-family:var(--mono);font-size:12px;color:var(--dim)}
+  .cnt.near{color:var(--amber,#fcee0a)}
+  .cnt.over{color:var(--red)}
+
+  /* ---------- ことばの旗 ---------- */
+  .flags{display:inline-flex;gap:3px;align-items:center;flex-wrap:wrap}
+  .fl{font-family:var(--mono);font-size:11px;padding:0 6px;white-space:nowrap;letter-spacing:.08em;
+    border:1px solid var(--line2);background:#00f0ff12;color:var(--cy)}
+  .fl.w{border-color:#ff2bd655;background:#ff2bd614;color:var(--mg)}
+  .flags em{font-style:normal;color:var(--dim);font-size:12px;margin:0 1px}
+  .setFl{background:none;border:1px dashed var(--line2);color:var(--sub);font:inherit;
+    font-family:var(--mono);font-size:11px;padding:2px 9px;cursor:pointer}
+  .setFl:hover{color:var(--cy);border-color:var(--cy)}
+
+  /* ---------- 1件 ---------- */
+  .tw{display:flex;gap:12px;padding:13px 16px;border-bottom:1px solid var(--line);cursor:pointer}
+  .tw:hover{background:var(--hover)}
+  .twB{flex:1;min-width:0}
+  .twHead{display:flex;gap:6px;align-items:baseline;flex-wrap:wrap;font-size:14.5px}
+  .twHead b{font-weight:700}
+  .twHead span.h{color:var(--dim);font-family:var(--mono);font-size:12.5px}
+  .twBody{font-size:15.5px;white-space:pre-wrap;overflow-wrap:anywhere;margin:3px 0 0;line-height:1.65}
+  .twFl{margin-top:7px}
+  .acts{display:flex;gap:4px;margin-top:9px;max-width:420px}
+  .act{flex:1;display:flex;align-items:center;gap:6px;background:none;border:0;cursor:pointer;
+    color:var(--dim);font:inherit;font-size:13px;font-family:var(--mono);padding:5px 8px;
+    border-radius:999px}
+  .act:hover{color:var(--cy);background:#00f0ff12}
+  .act.lk:hover,.act.lk.on{color:var(--mg)}
+  .act.lk.on{font-weight:700}
+  .act.mn:hover{color:var(--lime)}
+  .act i{font-style:normal;font-size:14px}
+
+  /* ---------- スレッド ---------- */
+  .lead{padding:16px 16px 12px;border-bottom:1px solid var(--line)}
+  .lead .twHead{font-size:15.5px}
+  .lead .twBody{font-size:21px;line-height:1.55;margin-top:10px}
+  .lead .meta{color:var(--dim);font-family:var(--mono);font-size:12.5px;margin-top:12px;
+    padding-top:12px;border-top:1px solid var(--line)}
+  .repHead{padding:11px 16px;color:var(--dim);font-family:var(--mono);font-size:11.5px;
+    letter-spacing:.14em;text-transform:uppercase;border-bottom:1px solid var(--line)}
+
+  .empty{padding:48px 24px;text-align:center;color:var(--sub)}
+  .empty h3{margin:0 0 8px;font-size:17px;color:var(--txt);font-family:var(--disp);
+    font-weight:600;letter-spacing:.04em}
+  .empty p{margin:0 0 16px;font-size:14.5px}
+  .egs{display:grid;gap:8px;text-align:left;max-width:460px;margin:0 auto}
+  .eg{background:#05070a;border:1px solid var(--line);padding:10px 13px;font-size:14px;color:var(--sub)}
+  .eg s{display:block;text-decoration:none;font-family:var(--mono);font-size:10.5px;color:var(--cy);
+    letter-spacing:.14em;margin-bottom:3px;opacity:.75}
+  .loading{text-align:center;color:var(--dim);padding:40px 0;font-family:var(--mono);
+    font-size:12px;letter-spacing:.3em;text-transform:uppercase}
+  .msg{font-size:12.5px;color:var(--red);font-family:var(--mono)}
+
+  /* ---------- 旗をえらぶ ---------- */
+  .sheet{position:fixed;inset:0;z-index:120;background:#02040799;backdrop-filter:blur(3px);
+    display:none;align-items:center;justify-content:center;padding:16px}
+  .sheet.on{display:flex}
+  .sheetIn{background:var(--panel);width:100%;max-width:460px;padding:22px;
+    border:1px solid var(--line2);max-height:90vh;overflow:auto}
+  .sheetIn h3{margin:0 0 4px;font-size:16px;font-family:var(--disp);letter-spacing:.09em;
+    text-transform:uppercase;color:var(--cy);font-weight:600}
+  .note{color:var(--dim);font-size:12.5px;margin:0 0 14px}
+  label{display:block;font-family:var(--mono);font-size:11px;color:var(--cy);margin:14px 0 6px;
+    letter-spacing:.12em;text-transform:uppercase}
+  .pick{display:flex;gap:6px;flex-wrap:wrap}
+  .pick button{border:1px solid var(--line);background:#05070a;padding:6px 12px;font:inherit;
+    font-size:13.5px;cursor:pointer;color:var(--sub)}
+  .pick button.on{border-color:var(--line2);background:#00f0ff14;color:var(--cy);font-weight:700}
+  .pick.want button.on{border-color:#ff2bd655;background:#ff2bd614;color:var(--mg)}
+  .pick button.on::before{content:"\2713 ";font-size:11px}
+  input[type=text]{width:100%;font:inherit;font-size:15px;padding:9px 11px;border:1px solid var(--line);
+    background:#05070a;color:var(--txt);outline:0;-webkit-appearance:none;appearance:none}
+  .sheetFoot{display:flex;gap:9px;align-items:center;margin-top:18px;flex-wrap:wrap}
+  .btn{background:#00f0ff14;border:1px solid var(--line2);color:var(--cy);font-family:var(--disp);
+    font-weight:700;font-size:12px;letter-spacing:.08em;text-transform:uppercase;padding:9px 18px;
+    cursor:pointer}
+  .btn.s{background:none;border-color:var(--line);color:var(--sub)}
+  .hp{position:absolute;left:-9999px;width:1px;height:1px;opacity:0}
+
+  /* ---------- なぞると意味 ---------- */
+  #lkBtn{position:absolute;z-index:130;display:none;background:#05070a;color:var(--mg);
+    border:1px solid #ff2bd677;padding:5px 12px;font:inherit;font-family:var(--mono);font-size:12px;
+    letter-spacing:.1em;cursor:pointer;box-shadow:0 0 20px #ff2bd655}
+  #lk{position:fixed;right:16px;bottom:16px;z-index:135;width:min(380px,calc(100vw - 32px));
+    background:var(--raise);border:1px solid #ff2bd655;padding:15px 16px;display:none;
+    box-shadow:0 16px 60px #00000099}
+  #lk.on{display:block}
+  #lk h4{margin:0 0 9px;font-family:var(--mono);font-size:11px;color:var(--mg);letter-spacing:.16em;
+    text-transform:uppercase;display:flex;gap:8px;align-items:center;font-weight:400}
+  #lk h4 span{flex:1}
+  #lk .src{background:#05070a;border:1px solid var(--line);padding:8px 10px;font-size:13.5px;
+    max-height:110px;overflow:auto;overflow-wrap:anywhere;white-space:pre-wrap;color:var(--sub)}
+  #lk .out{font-size:15.5px;margin:10px 0 0;overflow-wrap:anywhere;white-space:pre-wrap;line-height:1.65}
+  #lk .out.wait{color:var(--dim);font-size:13px;font-family:var(--mono);letter-spacing:.08em}
+  #lk .foot{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+  .act2{border:1px solid var(--line);background:transparent;padding:5px 12px;font:inherit;
+    font-family:var(--mono);font-size:12px;cursor:pointer;color:var(--sub)}
+  .act2:hover{border-color:var(--line2);color:var(--cy)}
+  .act2.ghost{border-color:transparent}
+
+  @media(max-width:700px){ .brand b{display:none} }
+  @media(max-width:620px){
+    .col{border-left:0;border-right:0}
+    .colHead{top:54px}
+    .acts{max-width:none}
+  }
+</style>
+</head>
+<body>
+
+<div class="top"><div class="topIn">
+  <a class="brand" href="/"><i>奥</i><b>MORE TO JAPAN</b></a>
+  <nav class="tabs">
+    <a class="tab on" href="/tweet/">つぶやき<s>TWEETS</s></a>
+    <a class="tab" href="/play/">掲示板<s>BOARD</s></a>
+    <a class="tab" href="/live/">配信<s>LIVE</s></a>
+  </nav>
+  <select class="lang" id="lang" aria-label="Language">
+    <option value="ja">日本語</option>
+    <option value="en">English</option>
+    <option value="zh">中文</option>
+    <option value="vi">Tiếng Việt</option>
+    <option value="ko">한국어</option>
+    <option value="tl">Tagalog</option>
+    <option value="ne">नेपाली</option>
+  </select>
+</div></div>
+
+<div class="col">
+  <div class="colHead" id="colHead">
+    <h1 id="colTitle" data-ja="つぶやき" data-en="Tweets">つぶやき</h1>
+    <span class="sp"></span>
+  </div>
+  <div id="view"><div class="loading">Loading…</div></div>
+</div>
+
+<button id="lkBtn">&gt; <span data-ja="意味" data-en="meaning">意味</span></button>
+<div id="lk">
+  <h4><span data-ja="意味" data-en="What it means">意味</span>
+    <button class="act2 ghost" id="lkClose">✕</button></h4>
+  <div class="src" id="lkSrc"></div>
+  <div class="out wait" id="lkOut"></div>
+  <div class="foot">
+    <button class="act2" id="lkAsk" data-ja="この人に聞く" data-en="Ask them">この人に聞く</button>
+    <button class="act2 ghost" id="lkCopy" data-ja="コピー" data-en="copy">コピー</button>
+  </div>
+</div>
+
+<div class="sheet" id="flSheet">
+  <div class="sheetIn">
+    <h3 data-ja="ことばの旗" data-en="Your languages">ことばの旗</h3>
+    <p class="note" data-ja="一度だけ決めれば、次からは全部のつぶやきに自動で付きます。これが無いと、ここはただの寂れたタイムラインになります。"
+       data-en="Set it once and it goes on everything you post. Without it this is just a quiet timeline in two languages.">一度だけ決めれば、次からは全部のつぶやきに自動で付きます。これが無いと、ここはただの寂れたタイムラインになります。</p>
+    <label data-ja="話せることば" data-en="You speak">話せることば</label>
+    <div class="pick" id="pkSpeak"></div>
+    <label data-ja="習いたいことば" data-en="You want to practise">習いたいことば</label>
+    <div class="pick want" id="pkLearn"></div>
+    <label data-ja="呼び名（任意）" data-en="Name (optional)">呼び名（任意）</label>
+    <input id="pkNick" type="text" maxlength="24" placeholder="名無し">
+    <div class="sheetFoot">
+      <button class="btn" id="flSave" data-ja="決める" data-en="Save">決める</button>
+      <button class="btn s" id="flCancel" data-ja="やめる" data-en="Cancel">やめる</button>
+      <span class="msg" id="flMsg"></span>
+    </div>
+  </div>
+</div>
+<input class="hp" id="fHp" type="text" tabindex="-1" autocomplete="off" aria-hidden="true">
+
+<script src="/i18n.js?v=5"></script>
+<script>
+/* =========================================================================
+   つぶやき — Twitter の形をなぞる。裏は他の2つと同じGAS・同じスプレッドシート。
+
+   Twitter と違うのは2つだけ。
+   1. どのつぶやきにも「話せる → 習いたい」の旗が付く。これが無いと、
+      ここは日本語と英語が混ざっただけの寂れたタイムラインになる。
+      旗があると、読めない相手の投稿にも「この人は自分のことばを欲しがっている」と分かる。
+   2. リツイートの位置に「意味」を置いた。フォロワーのいない場所でRTは意味がないが、
+      読めない行の意味はいつでも要る。
+
+   旗は一度決めたら端末に覚えさせる。毎回選ばせると、つぶやきの壁が掲示板より高くなる。
+   ========================================================================= */
+
+const API = "https://script.google.com/macros/s/AKfycbz09z8z5zorue3p6xFwtt01Q3KQgh-7bm-SGTSZj6ILNRxXS-KbASTooYulq3fo7TBL/exec";
+const MAX = 280;
+
+const LANGS = (window.MTJ_LANGS || [{id:"en",name:"English"},{id:"ja",name:"日本語"}]);
+const SHORT = { en:"EN", ja:"JA", zh:"ZH", vi:"VI", ko:"KO", tl:"TL", ne:"NE" };
+const shortOf = function (id) { return SHORT[id] || String(id).toUpperCase(); };
+const langName = function (id) {
+  const l = LANGS.filter(function (x) { return x.id === id; })[0];
+  return l ? l.name : id;
+};
+
+const $ = function (id) { return document.getElementById(id); };
+const esc = function (s) {
+  return String(s == null ? "" : s).replace(/[&<>"]/g, function (c) {
+    return ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;" })[c];
+  });
+};
+const TR = (window.MTJ_TR || {});
+let TRD = {};
+function buildTRD_() {
+  TRD = {}; const d = document.createElement("textarea");
+  Object.keys(TR).forEach(function (k) { d.innerHTML = k; TRD[d.value] = TR[k]; });
+}
+buildTRD_();
+function tr_(en) { return TR[en] || TRD[en]; }
+function T(ja, en) {
+  if (lang === "ja") return ja;
+  if (lang === "en") return en;
+  const t = tr_(en);
+  return (t && t[lang]) || en;
+}
+async function setLang(l) {
+  lang = l;
+  if (window.MTJ_LOAD) { await window.MTJ_LOAD(l); buildTRD_(); }
+  applyLang();
+}
+
+let lang = "ja";
+let tweets = [];
+let apiDown = false, loaded = false;
+let pkS = [], pkL = [];
+
+/* ---------------------------------------------------------------- 端末の印 */
+function dev() {
+  let d = "";
+  try { d = localStorage.getItem("mj-board-dev") || ""; } catch (e) {}
+  if (!d) {
+    d = "d" + Math.random().toString(36).slice(2) + Date.now().toString(36);
+    try { localStorage.setItem("mj-board-dev", d); } catch (e) {}
+  }
+  return d;
+}
+/** 旗と呼び名。一度決めたら覚える。毎回選ばせたら誰も書かない */
+function me() {
+  try { return JSON.parse(localStorage.getItem("mj-me") || "null") || null; } catch (e) { return null; }
+}
+function saveMe(o) { try { localStorage.setItem("mj-me", JSON.stringify(o)); } catch (e) {} }
+function liked() {
+  try { return JSON.parse(localStorage.getItem("mj-liked") || "[]"); } catch (e) { return []; }
+}
+function markLiked(id) {
+  const m = liked(); m.push(id);
+  try { localStorage.setItem("mj-liked", JSON.stringify(m.slice(-400))); } catch (e) {}
+}
+
+/* ---------------------------------------------------------------- 通信 */
+async function apiGet(params) {
+  try {
+    const u = new URL(API);
+    Object.keys(params).forEach(function (k) { u.searchParams.set(k, params[k]); });
+    const o = JSON.parse(await (await fetch(u.toString())).text());
+    apiDown = false; return o;
+  } catch (e) { apiDown = true; return { ok:false, err:"notready" }; }
+}
+async function apiPost(body) {
+  try {
+    body.dev = dev();
+    const r = await fetch(API, { method:"POST",
+      headers:{ "Content-Type":"text/plain;charset=utf-8" }, body: JSON.stringify(body) });
+    const o = JSON.parse(await r.text());
+    apiDown = false; return o;
+  } catch (e) { apiDown = true; return { ok:false, err:"notready" }; }
+}
+
+/* ---------------------------------------------------------------- 部品 */
+function ago(iso) {
+  const t = new Date(iso).getTime();
+  if (!t) return "";
+  const s = Math.max(1, Math.floor((Date.now() - t) / 1000));
+  if (s < 60)    return s + "s";
+  if (s < 3600)  return Math.floor(s/60) + "m";
+  if (s < 86400) return Math.floor(s/3600) + "h";
+  if (s < 2592000) return Math.floor(s/86400) + "d";
+  const d = new Date(iso);
+  return (d.getMonth()+1) + "/" + d.getDate();
+}
+/* 顔の代わり。アカウントが無いので、端末の指紋から色と頭文字を作る。
+   同じ人なら同じ色になるので、名前が無くても「さっきの人だ」と分かる */
+function avatar(who, nick, small) {
+  const hue = (parseInt(String(who || "0").slice(0, 4), 16) || 0) % 360;
+  const ch = (nick && nick.trim() ? nick.trim()[0] : "?").toUpperCase();
+  return '<div class="av' + (small ? " sm" : "") + '" style="border-color:hsl(' + hue
+    + ',70%,55%);background:hsla(' + hue + ',70%,55%,.12);color:hsl(' + hue + ',75%,68%)">'
+    + esc(ch) + "</div>";
+}
+function flagsHtml(t) {
+  const sp = (t.langs || []).map(function (l) {
+    return '<i class="fl" title="' + esc(langName(l)) + '">' + shortOf(l) + "</i>"; }).join("");
+  const wa = (t.learn || []).map(function (l) {
+    return '<i class="fl w" title="' + esc(langName(l)) + '">' + shortOf(l) + "</i>"; }).join("");
+  if (!sp && !wa) return "";
+  return '<div class="twFl"><span class="flags">🗣' + sp
+    + (wa ? "<em>→</em>📚" + wa : "") + "</span></div>";
+}
+function linkify(s) {
+  return esc(s).replace(/(https?:\/\/[^\s<]+)/g, function (u) {
+    return '<a href="' + u + '" target="_blank" rel="noopener nofollow">' + u + "</a>";
+  });
+}
+
+/* ---------------------------------------------------------------- 1件 */
+function card(t, lead) {
+  const isLiked = liked().indexOf(t.id) >= 0;
+  const head = '<div class="twHead"><b>' + esc(t.nick || T("名無し", "Anonymous")) + "</b>"
+    + '<span class="h">@' + esc(t.who) + "</span>"
+    + (lead ? "" : '<span class="h">· ' + ago(t.ts) + "</span>") + "</div>";
+  const acts = '<div class="acts">'
+    + '<button class="act rp" data-rp="' + esc(t.id) + '"><i>💬</i>' + (t.replies || "") + "</button>"
+    + '<button class="act mn" data-mn="' + esc(t.id) + '"><i>🔎</i>'
+    +   T("意味", "meaning") + "</button>"
+    + '<button class="act lk' + (isLiked ? " on" : "") + '" data-lk="' + esc(t.id) + '"><i>♥</i>'
+    +   (t.likes || "") + "</button>"
+    + "</div>";
+
+  if (lead) {
+    return '<div class="lead">'
+      + '<div class="tw" style="padding:0;border:0;cursor:default">' + avatar(t.who, t.nick)
+      + '<div class="twB">' + head + "</div></div>"
+      + '<div class="twBody">' + linkify(t.body) + "</div>"
+      + flagsHtml(t)
+      + '<div class="meta">' + new Date(t.ts).toLocaleString() + "</div>"
+      + acts + "</div>";
+  }
+  return '<div class="tw" data-id="' + esc(t.id) + '">' + avatar(t.who, t.nick)
+    + '<div class="twB">' + head
+    + '<div class="twBody">' + linkify(t.body) + "</div>"
+    + flagsHtml(t) + acts + "</div></div>";
+}
+
+/* ---------------------------------------------------------------- 書く箱 */
+function composer(parent) {
+  const m = me();
+  const fl = m
+    ? '<span class="flags">🗣' + m.langs.map(function (l) { return '<i class="fl">' + shortOf(l) + "</i>"; }).join("")
+      + (m.learn.length ? "<em>→</em>📚" + m.learn.map(function (l) { return '<i class="fl w">' + shortOf(l) + "</i>"; }).join("") : "")
+      + '</span> <button class="setFl" id="chFl">' + T("変える", "change") + "</button>"
+    : '<button class="setFl" id="chFl">' + T("ことばの旗を決める", "set your languages") + "</button>";
+  return '<div class="compose' + (parent ? " inline" : "") + '">'
+    + avatar(m ? "aa" : "00", m && m.nick)
+    + '<div class="cBody"><textarea id="cIn" maxlength="' + MAX + '" rows="1" placeholder="'
+    +   (parent ? T("返信をつぶやく", "Post your reply") : T("いまどうしてる？", "What is happening?")) + '"></textarea>'
+    + '<div class="cFoot">' + fl + '<span class="sp"></span>'
+    + '<span class="cnt" id="cCnt">' + MAX + "</span>"
+    + '<button class="post" id="cPost" disabled>' + (parent ? T("返信", "Reply") : T("つぶやく", "Post")) + "</button>"
+    + '<span class="msg" id="cMsg"></span></div></div></div>';
+}
+
+function bindComposer(parent) {
+  const ta = $("cIn");
+  if (!ta) return;
+  const grow = function () { ta.style.height = "auto"; ta.style.height = ta.scrollHeight + "px"; };
+  ta.addEventListener("input", function () {
+    grow();
+    const left = MAX - ta.value.length;
+    const c = $("cCnt");
+    c.textContent = left;
+    c.className = "cnt" + (left < 0 ? " over" : left <= 20 ? " near" : "");
+    $("cPost").disabled = !ta.value.trim() || left < 0;
+  });
+  ta.addEventListener("keydown", function (e) {
+    if ((e.metaKey || e.ctrlKey) && e.key === "Enter") $("cPost").click();
+  });
+  const ch = $("chFl");
+  if (ch) ch.addEventListener("click", openFlags);
+  $("cPost").addEventListener("click", async function () {
+    const m = me();
+    if (!m || !m.langs.length) { openFlags(); return; }
+    const body = ta.value.trim();
+    if (!body) return;
+    this.disabled = true;
+    $("cMsg").textContent = T("送っています…", "Sending…");
+    const r = await apiPost({ a:"newtweet", body:body, nick:m.nick, langs:m.langs, learn:m.learn,
+                              parent: parent || "", hp: $("fHp").value });
+    this.disabled = false;
+    if (!r.ok) { $("cMsg").textContent = errText(r); return; }
+    ta.value = ""; grow(); $("cCnt").textContent = MAX; $("cMsg").textContent = "";
+    await load(true);
+  });
+}
+function errText(r) {
+  const m = {
+    "empty":    T("何か書いてください。", "Write something first."),
+    "no-langs": T("先に、ことばの旗を決めてください。", "Set your languages first."),
+    "toofast":  T("少しだけ待ってください。", "Just a moment — one at a time."),
+    "spam":     T("宣伝のように見えました。", "That looked like spam."),
+    "notready": T("まだ開いていません。", "Not open yet.")
+  };
+  return m[r.err] || T("送れませんでした。", "Could not send.");
+}
+
+/* ---------------------------------------------------------------- 画面 */
+function render() {
+  if (location.hash.indexOf("#t/") === 0) { renderThread(location.hash.slice(3)); return; }
+  renderList();
+}
+
+function renderList() {
+  $("colTitle").textContent = T("つぶやき", "Tweets");
+  $("colHead").querySelector(".back") && $("colHead").querySelector(".back").remove();
+  const v = $("view");
+  if (apiDown) {
+    v.innerHTML = '<div class="empty"><h3>' + T("まだ開いていません", "Not open yet") + "</h3></div>";
+    return;
+  }
+  let h = composer("");
+  if (!loaded) h += '<div class="loading">Loading…</div>';
+  else if (!tweets.length) h += emptyBoard();
+  else h += tweets.map(function (t) { return card(t, false); }).join("");
+  v.innerHTML = h;
+  bindComposer("");
+  bindCards(v);
+}
+
+function emptyBoard() {
+  const egs = [
+    { f:"JA→EN", s:"今日N3の模試うけた。読解だけ全然だめ。" },
+    { f:"EN→JA", s:"Third time at the ward office. Still missing one paper." },
+    { f:"JA→KO", s:"高円寺のゲーセン、平日の夜はガラガラでいい。" }
+  ];
+  return '<div class="empty"><h3>' + T("まだ誰も書いていません", "Nothing here yet") + "</h3>"
+    + "<p>" + T("1件目がいちばん難しいところです。つぶやきは、一人でも成立します。",
+                "The first one is the hard one. Unlike a board, this works even with one person.") + "</p>"
+    + '<div class="egs">' + egs.map(function (e) {
+        return '<div class="eg"><s>' + e.f + " — " + T("たとえば", "for example") + "</s>" + esc(e.s) + "</div>";
+      }).join("") + "</div></div>";
+}
+
+async function renderThread(id) {
+  $("colTitle").textContent = T("つぶやき", "Tweet");
+  if (!$("colHead").querySelector(".back")) {
+    const b = document.createElement("button");
+    b.className = "back"; b.textContent = "←";
+    b.addEventListener("click", function () { location.hash = ""; });
+    $("colHead").insertBefore(b, $("colHead").firstChild);
+  }
+  $("view").innerHTML = '<div class="loading">Loading…</div>';
+  const r = await apiGet({ a:"tweet", id:id });
+  if (!r.ok) { location.hash = ""; return; }
+  let h = card(r.tweet, true) + composer(id);
+  if (r.replies.length) {
+    h += '<div class="repHead">' + r.replies.length + " " + T("件の返信", "replies") + "</div>";
+    h += r.replies.map(function (t) { return card(t, false); }).join("");
+  }
+  $("view").innerHTML = h;
+  bindComposer(id);
+  bindCards($("view"));
+  window.scrollTo(0, 0);
+}
+
+function bindCards(v) {
+  Array.prototype.forEach.call(v.querySelectorAll(".tw[data-id]"), function (el) {
+    el.addEventListener("click", function (e) {
+      if (e.target.closest("button,a")) return;
+      location.hash = "#t/" + el.dataset.id;
+    });
+  });
+  Array.prototype.forEach.call(v.querySelectorAll("[data-rp]"), function (b) {
+    b.addEventListener("click", function () { location.hash = "#t/" + b.dataset.rp; });
+  });
+  Array.prototype.forEach.call(v.querySelectorAll("[data-mn]"), function (b) {
+    b.addEventListener("click", function () {
+      const box = b.closest(".tw, .lead");
+      const body = box && box.querySelector(".twBody");
+      if (body) lookup(body.textContent);
+    });
+  });
+  Array.prototype.forEach.call(v.querySelectorAll("[data-lk]"), function (b) {
+    b.addEventListener("click", async function () {
+      const id = b.dataset.lk;
+      if (liked().indexOf(id) >= 0) return;
+      b.classList.add("on");
+      const r = await apiPost({ a:"like", id:id });
+      if (!r.ok) { b.classList.remove("on"); return; }
+      markLiked(id);
+      if (r.likes) b.innerHTML = "<i>♥</i>" + r.likes;
+      load(true);
+    });
+  });
+}
+
+/* ---------------------------------------------------------------- 旗をえらぶ */
+function drawPicks() {
+  const m = me();
+  if (!pkS.length && !pkL.length) {
+    pkS = m ? m.langs.slice() : [lang];
+    pkL = m ? m.learn.slice() : (lang === "ja" ? ["en"] : ["ja"]);
+  }
+  [["pkSpeak", pkS], ["pkLearn", pkL]].forEach(function (p) {
+    const box = $(p[0]), sel = p[1];
+    box.innerHTML = LANGS.map(function (l) {
+      return '<button type="button" data-l="' + l.id + '"'
+        + (sel.indexOf(l.id) >= 0 ? ' class="on"' : "") + ">" + esc(l.name) + "</button>";
+    }).join("");
+    Array.prototype.forEach.call(box.querySelectorAll("[data-l]"), function (b) {
+      b.addEventListener("click", function () {
+        const i = sel.indexOf(b.dataset.l);
+        if (i >= 0) sel.splice(i, 1); else sel.push(b.dataset.l);
+        drawPicks();
+      });
+    });
+  });
+  if (m && m.nick && !$("pkNick").value) $("pkNick").value = m.nick;
+}
+function openFlags() {
+  const m = me();
+  pkS = m ? m.langs.slice() : [lang];
+  pkL = m ? m.learn.slice() : (lang === "ja" ? ["en"] : ["ja"]);
+  $("flMsg").textContent = "";
+  drawPicks();
+  $("flSheet").classList.add("on");
+}
+$("flSave").addEventListener("click", function () {
+  if (!pkS.length) {
+    $("flMsg").textContent = T("話せることばを1つ以上。", "Pick at least one you speak.");
+    return;
+  }
+  saveMe({ langs: pkS.slice(), learn: pkL.slice(), nick: $("pkNick").value.trim() });
+  $("flSheet").classList.remove("on");
+  render();
+});
+$("flCancel").addEventListener("click", function () { $("flSheet").classList.remove("on"); });
+$("flSheet").addEventListener("click", function (e) {
+  if (e.target === $("flSheet")) $("flSheet").classList.remove("on");
+});
+
+/* ================================================================ なぞると意味
+ *  掲示板と同じ仕組み。原文は必ずその場に残り、押したときだけ別の箱に出る。 */
+let lkText = "";
+function lkCache() {
+  try { return JSON.parse(localStorage.getItem("mj-lk") || "{}"); } catch (e) { return {}; }
+}
+function lkSave(k, v) {
+  const c = lkCache(); c[k] = v;
+  const ks = Object.keys(c); if (ks.length > 400) delete c[ks[0]];
+  try { localStorage.setItem("mj-lk", JSON.stringify(c)); } catch (e) {}
+}
+async function lookup(text) {
+  lkText = String(text).slice(0, 1200);
+  $("lkSrc").textContent = lkText;
+  $("lkOut").className = "out wait";
+  $("lkOut").textContent = T("調べています…", "Looking it up…");
+  $("lk").classList.add("on");
+  $("lkBtn").style.display = "none";
+  const key = lang + "|" + lkText;
+  const hit = lkCache()[key];
+  if (hit) { $("lkOut").className = "out"; $("lkOut").textContent = hit; return; }
+  const r = await apiGet({ a:"tr", q:lkText, to:lang });
+  if (!r.ok) {
+    $("lkOut").className = "out wait";
+    $("lkOut").textContent = T("これは引けませんでした。書いた人に聞いてください。",
+                               "Could not look that one up. Ask the person who wrote it.");
+    return;
+  }
+  $("lkOut").className = "out"; $("lkOut").textContent = r.text;
+  lkSave(key, r.text);
+}
+function initLookup() {
+  const btn = $("lkBtn");
+  const hide = function () { btn.style.display = "none"; };
+  document.addEventListener("selectionchange", function () {
+    const s = window.getSelection();
+    if (!s || s.isCollapsed) hide();
+  });
+  ["mouseup", "touchend"].forEach(function (ev) {
+    document.addEventListener(ev, function () {
+      setTimeout(function () {
+        const s = window.getSelection();
+        if (!s || s.isCollapsed) { hide(); return; }
+        const txt = String(s.toString()).trim();
+        if (!txt || txt.length > 1200) { hide(); return; }
+        const a = document.activeElement;
+        if (a && (a.tagName === "TEXTAREA" || a.tagName === "INPUT")) { hide(); return; }
+        const node = s.anchorNode && (s.anchorNode.nodeType === 1 ? s.anchorNode : s.anchorNode.parentElement);
+        if (!node || !node.closest(".twBody, .src, .eg")) { hide(); return; }
+        const rect = s.getRangeAt(0).getBoundingClientRect();
+        btn.style.display = "block";
+        btn.style.left = Math.max(8, Math.min(window.innerWidth - 120, rect.left + window.scrollX)) + "px";
+        btn.style.top = (rect.bottom + window.scrollY + 7) + "px";
+      }, 10);
+    });
+  });
+  btn.addEventListener("click", function () {
+    const s = window.getSelection();
+    const t = s ? String(s.toString()).trim() : "";
+    if (t) lookup(t);
+  });
+  $("lkClose").addEventListener("click", function () { $("lk").classList.remove("on"); });
+  $("lkCopy").addEventListener("click", function () {
+    try { navigator.clipboard.writeText($("lkOut").textContent); } catch (e) {}
+  });
+  /* 辞書で終わらせない。分からなかったものを、そのまま相手への返信にできる */
+  $("lkAsk").addEventListener("click", function () {
+    const box = $("cIn");
+    if (!box) return;
+    box.value = (box.value ? box.value + "\n" : "")
+      + T("「", 'What does "') + lkText + T("」ってどういう意味ですか？", '" mean?');
+    box.dispatchEvent(new Event("input"));
+    $("lk").classList.remove("on");
+    box.focus();
+    box.scrollIntoView({ behavior:"smooth", block:"center" });
+  });
+}
+
+/* ---------------------------------------------------------------- 読み込み */
+async function load(quiet) {
+  if (!quiet) {
+    try {
+      const c = localStorage.getItem("mj-tw-cache");
+      if (c) { tweets = JSON.parse(c); render(); }
+    } catch (e) {}
+  }
+  const r = await apiGet({ a:"tweets" });
+  if (r.ok) {
+    tweets = r.tweets || [];
+    try { localStorage.setItem("mj-tw-cache", JSON.stringify(tweets)); } catch (e) {}
+  }
+  loaded = true;
+  render();
+}
+
+function applyLang() {
+  document.documentElement.lang = lang;
+  document.querySelectorAll("[data-ja]").forEach(function (el) {
+    const ja = el.getAttribute("data-ja"), en = el.getAttribute("data-en");
+    let v = lang === "ja" ? ja : lang === "en" ? en : null;
+    if (v == null) { const t = tr_(en); v = (t && t[lang]) || en; }
+    el.innerHTML = v;
+  });
+  $("lang").value = lang;
+  try { localStorage.setItem("mj-lang", lang); } catch (e) {}
+  render();
+}
+
+$("lang").addEventListener("change", function () { setLang($("lang").value); });
+window.addEventListener("hashchange", render);
+document.addEventListener("keydown", function (e) {
+  if (e.key === "Escape") { $("flSheet").classList.remove("on"); $("lk").classList.remove("on"); }
+});
+
+(function () {
+  let saved = null;
+  try { saved = localStorage.getItem("mj-lang"); } catch (e) {}
+  if (saved) { lang = saved; return; }
+  const n = (navigator.languages && navigator.languages[0] || navigator.language || "ja").toLowerCase();
+  const map = { ja:"ja", zh:"zh", vi:"vi", ko:"ko", ne:"ne", tl:"tl", fil:"tl" };
+  lang = map[n.split("-")[0]] || "en";
+})();
+initLookup();
+setLang(lang);
+load(false);
+</script>
+</body>
+</html>

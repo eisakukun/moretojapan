@@ -49,7 +49,26 @@
   ::-webkit-scrollbar-thumb:hover{background:#1d3240}
   ::-webkit-scrollbar-track{background:transparent}
 
-  .app{display:flex;height:100%;min-height:0}
+  /* 上のタブ（3つのラン）。つぶやき・掲示板・配信で同じものを使う */
+  body{display:flex;flex-direction:column}
+  .top{flex:none;background:#05070af2;border-bottom:1px solid var(--line);position:relative;z-index:90}
+  .topIn{max-width:1100px;margin:0 auto;padding:0 16px;display:flex;align-items:center;gap:16px;height:54px}
+  .tbrand{display:flex;align-items:center;gap:9px;color:var(--txt);white-space:nowrap;text-decoration:none}
+  .tbrand i{display:grid;place-items:center;width:30px;height:30px;flex:none;font-style:normal;
+    font-size:15px;color:var(--cy);border:1px solid var(--line2);background:#00f0ff0f;
+    clip-path:polygon(0 0,100% 0,100% 72%,72% 100%,0 100%)}
+  .tbrand b{font-family:var(--disp);font-weight:800;font-size:12px;letter-spacing:.09em}
+  .tabs{display:flex;gap:2px;flex:1;min-width:0;overflow-x:auto;scrollbar-width:none}
+  .tabs::-webkit-scrollbar{display:none}
+  .tab{padding:8px 18px;font-size:14px;color:var(--sub);white-space:nowrap;text-decoration:none;
+    border-bottom:2px solid transparent;font-weight:700}
+  .tab:hover{color:var(--txt);background:#00f0ff0a;text-decoration:none}
+  .tab.on{color:var(--cy);border-bottom-color:var(--cy);text-shadow:0 0 12px #00f0ff55}
+  .tab s{text-decoration:none;font-family:var(--mono);font-size:9.5px;letter-spacing:.14em;
+    display:block;color:var(--dim);font-weight:400}
+  @media(max-width:700px){ .tbrand b{display:none} }
+
+  .app{display:flex;flex:1;min-height:0}
 
   /* ---------------- 左：板の一覧（Discordでいうチャンネル） ---------------- */
   .side{width:var(--side-w);flex:none;background:var(--side);display:flex;flex-direction:column;
@@ -341,7 +360,7 @@
      少しスクロールしただけで板が消える */
   @media(max-width:900px){
     body{overflow:auto}
-    .app{flex-direction:column;height:auto;min-height:100%}
+    .app{flex-direction:column;height:auto;min-height:0;flex:none}
     .side,.sideScroll{display:contents}
     .brand{padding:10px 14px 9px;background:var(--side)}
     .sideHead{display:none}
@@ -380,6 +399,15 @@
 </style>
 </head>
 <body>
+
+<div class="top"><div class="topIn">
+  <a class="tbrand" href="/"><i>奥</i><b>MORE TO JAPAN</b></a>
+  <nav class="tabs">
+    <a class="tab" href="/tweet/">つぶやき<s>TWEETS</s></a>
+    <a class="tab on" href="/play/">掲示板<s>BOARD</s></a>
+    <a class="tab" href="/live/">配信<s>LIVE</s></a>
+  </nav>
+</div></div>
 
 <div class="app">
 

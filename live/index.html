@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>配信 — More to Japan</title>
+<meta name="description" content="4人までの小さな部屋で喋る。いま作っているところです。">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#05070a">
+<link rel="canonical" href="https://moretojapan.com/live/">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%2305070a'/%3E%3Crect x='3' y='3' width='58' height='58' rx='10' fill='none' stroke='%2300f0ff' stroke-width='2'/%3E%3Ctext x='32' y='45' font-size='34' text-anchor='middle' fill='%2300f0ff' font-family='Hiragino Sans,sans-serif'%3E%E5%A3%B0%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@600;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#05070a; --line:rgba(0,240,255,.14); --line2:rgba(0,240,255,.32);
+    --txt:#cfe9f0; --sub:#7f99a4; --dim:#4a646f; --cy:#00f0ff; --mg:#ff2bd6; --lime:#9dff3c;
+    --disp:"Orbitron","Share Tech Mono",ui-monospace,sans-serif;
+    --mono:"Share Tech Mono",ui-monospace,Menlo,monospace;
+    --jp:"Hiragino Sans","Noto Sans JP",system-ui,-apple-system,sans-serif;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--txt);font-family:var(--jp);line-height:1.75;
+    -webkit-font-smoothing:antialiased}
+  body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:200;
+    background:repeating-linear-gradient(0deg,rgba(0,240,255,.035) 0 1px,transparent 1px 3px);
+    mix-blend-mode:screen;opacity:.5}
+  a{color:var(--cy);text-decoration:none}
+  .top{background:#05070af2;border-bottom:1px solid var(--line)}
+  .topIn{max-width:1100px;margin:0 auto;padding:0 16px;display:flex;align-items:center;gap:16px;height:54px}
+  .tbrand{display:flex;align-items:center;gap:9px;color:var(--txt);white-space:nowrap}
+  .tbrand i{display:grid;place-items:center;width:30px;height:30px;flex:none;font-style:normal;
+    font-size:15px;color:var(--cy);border:1px solid var(--line2);background:#00f0ff0f;
+    clip-path:polygon(0 0,100% 0,100% 72%,72% 100%,0 100%)}
+  .tbrand b{font-family:var(--disp);font-weight:800;font-size:12px;letter-spacing:.09em}
+  .tabs{display:flex;gap:2px;flex:1;min-width:0;overflow-x:auto;scrollbar-width:none}
+  .tabs::-webkit-scrollbar{display:none}
+  .tab{padding:8px 18px;font-size:14px;color:var(--sub);white-space:nowrap;
+    border-bottom:2px solid transparent;font-weight:700}
+  .tab:hover{color:var(--txt);background:#00f0ff0a}
+  .tab.on{color:var(--cy);border-bottom-color:var(--cy);text-shadow:0 0 12px #00f0ff55}
+  .tab s{text-decoration:none;font-family:var(--mono);font-size:9.5px;letter-spacing:.14em;
+    display:block;color:var(--dim);font-weight:400}
+  @media(max-width:700px){ .tbrand b{display:none} }
+  .wrap{max-width:620px;margin:0 auto;padding:46px 20px 80px}
+  .kick{font-family:var(--mono);color:var(--mg);font-size:11px;letter-spacing:.24em;text-transform:uppercase}
+  h1{font-size:clamp(24px,5vw,34px);margin:12px 0 16px;line-height:1.3}
+  p{color:var(--sub);font-size:15.5px}
+  .box{border:1px solid var(--line);background:#0a0f16;padding:18px 20px;margin:26px 0}
+  .box h2{font-family:var(--disp);font-size:12px;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--cy);margin:0 0 12px;font-weight:600}
+  .box ul{margin:0;padding-left:1.1em}
+  .box li{color:var(--txt);font-size:15px;margin-bottom:9px}
+  .box li span{color:var(--sub)}
+  .cap{display:inline-block;font-family:var(--mono);font-size:11.5px;color:var(--lime);
+    border:1px solid #9dff3c55;background:#9dff3c14;padding:1px 9px;letter-spacing:.08em}
+</style>
+</head>
+<body>
+
+<div class="top"><div class="topIn">
+  <a class="tbrand" href="/"><i>奥</i><b>MORE TO JAPAN</b></a>
+  <nav class="tabs">
+    <a class="tab" href="/tweet/">つぶやき<s>TWEETS</s></a>
+    <a class="tab" href="/play/">掲示板<s>BOARD</s></a>
+    <a class="tab on" href="/live/">配信<s>LIVE</s></a>
+  </nav>
+</div></div>
+
+<div class="wrap">
+  <div class="kick">まだ作っている途中</div>
+  <h1>声で喋る部屋。<br>いちどに <span class="cap">4人まで</span></h1>
+  <p>誰でも部屋を開けて、入れる場所にします。4人で埋まったら、5人目には「いまは入れません」と出ます。</p>
+
+  <div class="box">
+    <h2>4人で止める理由</h2>
+    <ul>
+      <li>ブラウザ同士を直接つなぐやり方（いま掲示板の通話で使っているもの）は、<span>4人くらいまでなら中継のサーバが要りません。</span></li>
+      <li>つまり<span>お金も、アカウントも、月額も、一切かかりません。</span>人数を上げた瞬間だけ、そこが全部発生します。</li>
+      <li>5人以上の部屋は、<span>人が集まるようになってから考えます。</span></li>
+    </ul>
+  </div>
+
+  <div class="box">
+    <h2>入れる予定のもの</h2>
+    <ul>
+      <li>部屋の一覧 <span>── 誰が、何語で、いま何人いるか</span></li>
+      <li>声 <span>── マイクだけ。顔は出しません</span></li>
+      <li>文字のチャット <span>── 言えなかった単語を書くため</span></li>
+      <li>なぞると意味 <span>── 流れていく会話の、読めなかったところを拾う</span></li>
+    </ul>
+  </div>
+
+  <p>できるまでは、<a href="/play/">掲示板</a>の中で1対1の通話が使えます。
+  <a href="/tweet/">つぶやき</a>のほうは、もう動いています。</p>
+</div>
+
+</body>
+</html>
