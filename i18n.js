@@ -38,9 +38,41 @@ window.MTJ_LOAD = function (lang) {
   if (window.MTJ_READY[lang]) return Promise.resolve();
   return new Promise(function (res) {
     const s = document.createElement("script");
-    s.src = "/i18n/" + lang + ".js?v=6";
+    s.src = "/i18n/" + lang + ".js?v=7";
     s.onload = res;
     s.onerror = function () { window.MTJ_READY[lang] = true; res(); };  // 無い言語でも止まらない
     document.head.appendChild(s);
   });
+};
+
+
+/*  プロフィール。アカウントは作らない。
+ *  メールもパスワードも要らない。この端末の localStorage に1つだけ持つ。
+ *  3つのページ（つぶやき・掲示板・ゆずります）は同じ moretojapan.com なので同じ箱を読める。
+ *  つぶやきで一度作れば、掲示板で出すときは「話せる／習いたい／呼び名」が最初から入る。
+ *
+ *  ⚠️ 端末に紐づくので、ブラウザのデータを消す・別の端末で開く、と空に戻る。
+ *     それは仕様。身元を持たないことの裏返しで、メールを持たせない限り取り戻せない。 */
+window.MTJ_ME = {
+  get: function () {
+    try {
+      const o = JSON.parse(localStorage.getItem("mj-me") || "null");
+      if (!o || !o.langs || !o.langs.length) return null;
+      return {
+        nick: String(o.nick || ""),
+        langs: o.langs.slice(),
+        // 習いたいことばは、話せることばと重ならない
+        learn: (o.learn || []).filter(function (x) { return o.langs.indexOf(x) < 0; })
+      };
+    } catch (e) { return null; }
+  },
+  set: function (o) {
+    try {
+      localStorage.setItem("mj-me", JSON.stringify({
+        nick: String(o.nick || "").slice(0, 24),
+        langs: o.langs.slice(),
+        learn: (o.learn || []).filter(function (x) { return o.langs.indexOf(x) < 0; })
+      }));
+    } catch (e) {}
+  }
 };

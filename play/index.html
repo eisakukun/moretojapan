@@ -554,6 +554,7 @@
         <div class="pickLang want" id="fLearn"></div>
       </div>
     </div>
+    <p class="note" id="meHint" style="margin-top:8px;display:none"></p>
     <p class="note" style="margin-top:8px"
        data-en="&ldquo;A little&rdquo; counts on the left. The right side is why the other person writes back."
        data-ja="左は「少しだけ」でも入れてかまいません。右があるから、相手は返事を書きます。">&ldquo;A little&rdquo; counts on the left. The right side is why the other person writes back.</p>
@@ -633,7 +634,7 @@
   </div>
 </div>
 
-<script src="/i18n.js?v=6"></script>
+<script src="/i18n.js?v=7"></script>
 <script>
 /* =========================================================================
    More to Japan — ゲーマーのための言語交換（掲示板）
@@ -1091,6 +1092,7 @@ async function renderThread() {
     +   T("What does it mean?", "どういう意味？") + "</button></div></div>";
 
   $("view").innerHTML = h;
+  { const m = window.MTJ_ME && window.MTJ_ME.get(); if (m && m.nick && $("rNick")) $("rNick").value = m.nick; }
   bindThread(g);
   toTop();
 }
@@ -1455,10 +1457,34 @@ function openPass(note) {
 }
 
 /* ---------------------------------------------------------------- 出す */
+/* プロフィール（つぶやきで作ったもの）を、出す箱の最初の値にする。
+   * 開くたびに上書きすると、箱の中で直した選択がやり直しで消えるので、最初の1回だけ */
+let meApplied = false;
+function applyMe() {
+  const m = window.MTJ_ME && window.MTJ_ME.get();
+  if (!m) return false;
+  if (!meApplied) {
+    meApplied = true;
+    myLangs = m.langs.slice();
+    myLearn = m.learn.slice();
+    langsTouched = true; learnTouched = true;       // 既定値（表示言語）で上書きされないように
+    if (m.nick && !$("fNick").value) $("fNick").value = m.nick;
+  }
+  return true;
+}
+
 function openSheet(topic) {
   $("sheet").classList.add("on");
   $("fMsg").textContent = "";
   if (topic) $("fCat").value = topic;
+  const hasMe = applyMe();
+  $("meHint").style.display = "";
+  /* ⚠️ この頁の T() は (英語, 日本語) の順。つぶやきの T() は逆なので間違えやすい */
+  $("meHint").innerHTML = hasMe
+    ? T("Filled in from your profile. ", "プロフィールの設定を入れてあります。")
+        + '<a href="/tweet/#me">' + T("Edit", "変える") + "</a>"
+    : T("Tired of picking every time? ", "毎回えらぶのが面倒なら、")
+        + '<a href="/tweet/#me">' + T("Create a profile", "プロフィールを作る") + "</a>";
   drawKindPick();
   drawLangPick();
   setTimeout(function () { $("fTitle").focus(); }, 50);

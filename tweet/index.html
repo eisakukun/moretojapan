@@ -110,6 +110,8 @@
   .setFl{background:none;border:1px dashed var(--line2);color:var(--sub);font:inherit;
     font-family:var(--mono);font-size:11px;padding:2px 9px;cursor:pointer}
   .setFl:hover{color:var(--cy);border-color:var(--cy)}
+  .setFl.need{border-style:solid;border-color:var(--mg);color:var(--mg);font-weight:700}
+  .who{font-weight:700;font-size:13.5px}
 
   /* ---------- 1件 ---------- */
   .tw{display:flex;gap:12px;padding:13px 16px;border-bottom:1px solid var(--line);cursor:pointer}
@@ -251,17 +253,19 @@
 
 <div class="sheet" id="flSheet">
   <div class="sheetIn">
-    <h3 data-ja="ことばの旗" data-en="Your languages">ことばの旗</h3>
-    <p class="note" data-ja="一度だけ決めれば、次からは全部のつぶやきに自動で付きます。これが無いと、ここはただの寂れたタイムラインになります。"
-       data-en="Set it once and it goes on everything you post. Without it this is just a quiet timeline in two languages.">一度だけ決めれば、次からは全部のつぶやきに自動で付きます。これが無いと、ここはただの寂れたタイムラインになります。</p>
+    <h3 data-ja="プロフィール" data-en="Your profile">プロフィール</h3>
+    <p class="note" data-ja="登録もメールもパスワードも要りません。この端末に保存されて、掲示板やゆずりますで書くときにも自動で入ります。"
+       data-en="No sign-up, no email, no password. It is saved on this device and fills itself in on the board and Give &amp; Find.">登録もメールもパスワードも要りません。この端末に保存されて、掲示板やゆずりますで書くときにも自動で入ります。</p>
     <label data-ja="話せることば" data-en="You speak">話せることば</label>
     <div class="pick" id="pkSpeak"></div>
     <label data-ja="習いたいことば" data-en="You want to practise">習いたいことば</label>
     <div class="pick want" id="pkLearn"></div>
     <label data-ja="呼び名（任意）" data-en="Name (optional)">呼び名（任意）</label>
     <input id="pkNick" type="text" maxlength="24" placeholder="名無し">
+    <p class="note" style="margin:10px 0 0" data-ja="ブラウザのデータを消したり、別の端末で開いたりすると、ここは空に戻ります。"
+       data-en="Clearing your browser data or opening this on another device starts you from empty.">ブラウザのデータを消したり、別の端末で開いたりすると、ここは空に戻ります。</p>
     <div class="sheetFoot">
-      <button class="btn" id="flSave" data-ja="決める" data-en="Save">決める</button>
+      <button class="btn" id="flSave" data-ja="保存する" data-en="Save">保存する</button>
       <button class="btn s" id="flCancel" data-ja="やめる" data-en="Cancel">やめる</button>
       <span class="msg" id="flMsg"></span>
     </div>
@@ -269,7 +273,7 @@
 </div>
 <input class="hp" id="fHp" type="text" tabindex="-1" autocomplete="off" aria-hidden="true">
 
-<script src="/i18n.js?v=6"></script>
+<script src="/i18n.js?v=7"></script>
 <script>
 /* =========================================================================
    つぶやき — Twitter の形をなぞる。裏は他の2つと同じGAS・同じスプレッドシート。
@@ -331,6 +335,7 @@ let lang = "ja";
 let tweets = [];
 let apiDown = false, loaded = false;
 let pkS = [], pkL = [];
+let draft = "";   // 書いている途中の文章。プロフィールを作って戻っても残す
 
 /* ---------------------------------------------------------------- 端末の印 */
 function dev() {
@@ -343,10 +348,8 @@ function dev() {
   return d;
 }
 /** 旗と呼び名。一度決めたら覚える。毎回選ばせたら誰も書かない */
-function me() {
-  try { return JSON.parse(localStorage.getItem("mj-me") || "null") || null; } catch (e) { return null; }
-}
-function saveMe(o) { try { localStorage.setItem("mj-me", JSON.stringify(o)); } catch (e) {} }
+function me() { return window.MTJ_ME ? window.MTJ_ME.get() : null; }
+function saveMe(o) { if (window.MTJ_ME) window.MTJ_ME.set(o); }
 function liked() {
   try { return JSON.parse(localStorage.getItem("mj-liked") || "[]"); } catch (e) { return []; }
 }
@@ -443,14 +446,16 @@ function card(t, lead) {
 function composer(parent) {
   const m = me();
   const fl = m
-    ? '<span class="flags">🗣' + m.langs.map(function (l) { return '<i class="fl">' + flagOf(l) + " " + shortOf(l) + "</i>"; }).join("")
+    ? '<span class="who">' + esc(m.nick || T("名無し", "Anonymous")) + '</span> <span class="flags">🗣'
+      + m.langs.map(function (l) { return '<i class="fl">' + flagOf(l) + " " + shortOf(l) + "</i>"; }).join("")
       + (m.learn.length ? "<em>→</em>📚" + m.learn.map(function (l) { return '<i class="fl w">' + flagOf(l) + " " + shortOf(l) + "</i>"; }).join("") : "")
-      + '</span> <button class="setFl" id="chFl">' + T("変える", "change") + "</button>"
-    : '<button class="setFl" id="chFl">' + T("ことばの旗を決める", "set your languages") + "</button>";
+      + '</span> <button class="setFl" id="chFl">' + T("プロフィール", "profile") + "</button>"
+    : '<button class="setFl need" id="chFl">' + T("まずプロフィールを作る", "Create your profile first") + "</button>";
   return '<div class="compose' + (parent ? " inline" : "") + '">'
     + avatar(m ? "aa" : "00", m && m.nick)
     + '<div class="cBody"><textarea id="cIn" maxlength="' + MAX + '" rows="1" placeholder="'
-    +   (parent ? T("返信をつぶやく", "Post your reply") : T("いまどうしてる？", "What is happening?")) + '"></textarea>'
+    +   (parent ? T("返信をつぶやく", "Post your reply") : T("いまどうしてる？", "What is happening?")) + '">'
+    +   esc(parent ? "" : draft) + '</textarea>'
     + '<div class="cFoot">' + fl + '<span class="sp"></span>'
     + '<span class="cnt" id="cCnt">' + MAX + "</span>"
     + '<button class="post" id="cPost" disabled>' + (parent ? T("返信", "Reply") : T("つぶやく", "Post")) + "</button>"
@@ -462,6 +467,7 @@ function bindComposer(parent) {
   if (!ta) return;
   const grow = function () { ta.style.height = "auto"; ta.style.height = ta.scrollHeight + "px"; };
   ta.addEventListener("input", function () {
+    if (!parent) draft = ta.value;
     grow();
     const left = MAX - ta.value.length;
     const c = $("cCnt");
@@ -472,6 +478,7 @@ function bindComposer(parent) {
   ta.addEventListener("keydown", function (e) {
     if ((e.metaKey || e.ctrlKey) && e.key === "Enter") $("cPost").click();
   });
+  if (ta.value) ta.dispatchEvent(new Event("input"));
   const ch = $("chFl");
   if (ch) ch.addEventListener("click", openFlags);
   $("cPost").addEventListener("click", async function () {
@@ -485,7 +492,7 @@ function bindComposer(parent) {
                               parent: parent || "", hp: $("fHp").value });
     this.disabled = false;
     if (!r.ok) { $("cMsg").textContent = errText(r); return; }
-    ta.value = ""; grow(); $("cCnt").textContent = MAX; $("cMsg").textContent = "";
+    ta.value = ""; draft = ""; grow(); $("cCnt").textContent = MAX; $("cMsg").textContent = "";
     await load(true);
   });
 }
@@ -771,6 +778,10 @@ document.addEventListener("keydown", function (e) {
 initLookup();
 setLang(lang);
 load(false);
+if (location.hash === "#me") {
+  history.replaceState(null, "", location.pathname);
+  openFlags();
+}
 </script>
 </body>
 </html>

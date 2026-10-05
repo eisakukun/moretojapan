@@ -385,7 +385,7 @@
   </div>
 </div>
 
-<script src="/i18n.js?v=6"></script>
+<script src="/i18n.js?v=7"></script>
 <script>
 /* =========================================================================
    More to Japan — ゆずります・さがしています
@@ -716,6 +716,7 @@ async function renderDetail() {
     + '<span class="msg" id="rMsg"></span></div></div>';
 
   $("view").innerHTML = h;
+  { const m = window.MTJ_ME && window.MTJ_ME.get(); if (m && m.nick && $("rNick")) $("rNick").value = m.nick; }
   bindDetail(it);
   window.scrollTo(0, 0);
 }
@@ -829,9 +830,21 @@ function drawThumbs() {
 }
 
 /* ---------------------------------------------------------------- 出す */
+/* プロフィール（つぶやきで作ったもの）を最初の値にする。最初の1回だけ */
+let meApplied = false;
+function applyMe() {
+  const m = window.MTJ_ME && window.MTJ_ME.get();
+  if (!m || meApplied) return;
+  meApplied = true;
+  myLangs = m.langs.slice();
+  langsTouched = true;
+  if (m.nick && !$("fNick").value) $("fNick").value = m.nick;
+}
+
 function openSheet() {
   $("sheet").classList.add("on");
   $("fMsg").textContent = "";
+  applyMe();
   drawKindPick();
   drawLangPick();
   setTimeout(function () { $("fTitle").focus(); }, 50);
