@@ -293,6 +293,7 @@
   .pickLang button.on{border-color:var(--line2);background:#00f0ff14;color:var(--cy);font-weight:700}
   .pickLang button.on::before{content:"\2713 ";font-size:11px}
   .fg{font-size:15px;line-height:1;margin-right:7px;vertical-align:-1px}
+  .pickLang button.dim:not(.on){opacity:.4}
   .pickLang.want button.on{border-color:#ff2bd655;background:#ff2bd614;color:var(--mg)}
   .hp{position:absolute;left:-9999px;width:1px;height:1px;opacity:0}
   .sheetFoot{display:flex;gap:10px;align-items:center;margin-top:20px;flex-wrap:wrap}
@@ -1466,19 +1467,32 @@ function closeSheet() { $("sheet").classList.remove("on"); }
 
 function drawLangPick() {
   if (!langsTouched) myLangs = [lang];
-  if (!learnTouched && !myLearn.length) myLearn = lang === "ja" ? ["en"] : ["ja"];
-  [["fLangs", myLangs, true], ["fLearn", myLearn, false]].forEach(function (p) {
-    const box = $(p[0]), sel = p[1];
+  /* 習いたいほうの既定値も、さわるまでは表示言語について回る。
+     「空のときだけ入れる」にすると、日本語で開いて英語に切り替えたとき
+     古い既定値（English）が残って、話せることばと重なって始まる */
+  if (!learnTouched) myLearn = lang === "ja" ? ["en"] : ["ja"];
+  myLearn = myLearn.filter(function (x) { return myLangs.indexOf(x) < 0; });
+  /* 話せることばと習いたいことばは重ならない。警告は出さず、片方で選んだら
+     もう片方から黙って外す。向こう側で選ばれているものは薄く出す。
+     外した側は「さわった」扱いにする。しないと、次の描き直しで既定値
+     （いま読んでいる言語）が勝手に戻って、また重なる */
+  [["fLangs", myLangs, myLearn, true], ["fLearn", myLearn, myLangs, false]].forEach(function (p) {
+    const box = $(p[0]), sel = p[1], other = p[2], isSpeak = p[3];
     box.innerHTML = LANGS.map(function (l) {
-      return '<button type="button" data-l="' + l.id + '"'
-        + (sel.indexOf(l.id) >= 0 ? ' class="on"' : "") + ">"
+      const cls = (sel.indexOf(l.id) >= 0 ? "on" : "") + (other.indexOf(l.id) >= 0 ? " dim" : "");
+      return '<button type="button" data-l="' + l.id + '"' + (cls.trim() ? ' class="' + cls.trim() + '"' : "") + ">"
         + (l.flag ? '<span class="fg">' + l.flag + "</span>" : "") + esc(l.name) + "</button>";
     }).join("");
     Array.prototype.forEach.call(box.querySelectorAll("[data-l]"), function (b) {
       b.addEventListener("click", function () {
-        if (p[2]) langsTouched = true; else learnTouched = true;
-        const i = sel.indexOf(b.dataset.l);
-        if (i >= 0) sel.splice(i, 1); else sel.push(b.dataset.l);
+        const id = b.dataset.l, i = sel.indexOf(id);
+        langsTouched = true; learnTouched = true;
+        if (i >= 0) { sel.splice(i, 1); }
+        else {
+          sel.push(id);
+          const j = other.indexOf(id);
+          if (j >= 0) other.splice(j, 1);
+        }
         drawLangPick();
       });
     });
@@ -1534,7 +1548,7 @@ async function send() {
     size:  Number($("fSize").value) || 0,
     nick:  $("fNick").value.trim(),
     mail:  $("fMail").value.trim(),
-    langs: myLangs, learn: myLearn,
+    langs: myLangs, learn: myLearn.filter(function (x) { return myLangs.indexOf(x) < 0; }),
     hp:    $("fHp").value
   };
   if (b.title.length < 3) { $("fMsg").textContent = T("Say it in one line first.", "まずひとことだけ書いてください。"); return; }

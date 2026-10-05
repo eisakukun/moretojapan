@@ -170,6 +170,7 @@
   .pick button.on::before{content:"\2713 ";font-size:11px}
   /* 旗は絵文字。字と混ざると行がガタつくので、少し大きくして縦位置を揃える */
   .fg{font-size:15px;line-height:1;margin-right:7px;vertical-align:-1px}
+  .pick button.dim:not(.on){opacity:.4}
   input[type=text]{width:100%;font:inherit;font-size:15px;padding:9px 11px;border:1px solid var(--line);
     background:#05070a;color:var(--txt);outline:0;-webkit-appearance:none;appearance:none}
   .sheetFoot{display:flex;gap:9px;align-items:center;margin-top:18px;flex-wrap:wrap}
@@ -596,17 +597,25 @@ function drawPicks() {
     pkS = m ? m.langs.slice() : [lang];
     pkL = m ? m.learn.slice() : (lang === "ja" ? ["en"] : ["ja"]);
   }
-  [["pkSpeak", pkS], ["pkLearn", pkL]].forEach(function (p) {
-    const box = $(p[0]), sel = p[1];
+  /* 話せることばと習いたいことばは重ならない。警告は出さず、片方で選んだら
+     もう片方から黙って外す。向こう側で選ばれているものは薄く出して、
+     「そっちで使っている」と見えるようにだけしておく */
+  [["pkSpeak", pkS, pkL], ["pkLearn", pkL, pkS]].forEach(function (p) {
+    const box = $(p[0]), sel = p[1], other = p[2];
     box.innerHTML = LANGS.map(function (l) {
-      return '<button type="button" data-l="' + l.id + '"'
-        + (sel.indexOf(l.id) >= 0 ? ' class="on"' : "") + ">"
+      const cls = (sel.indexOf(l.id) >= 0 ? "on" : "") + (other.indexOf(l.id) >= 0 ? " dim" : "");
+      return '<button type="button" data-l="' + l.id + '"' + (cls.trim() ? ' class="' + cls.trim() + '"' : "") + ">"
         + (l.flag ? '<span class="fg">' + l.flag + "</span>" : "") + esc(l.name) + "</button>";
     }).join("");
     Array.prototype.forEach.call(box.querySelectorAll("[data-l]"), function (b) {
       b.addEventListener("click", function () {
-        const i = sel.indexOf(b.dataset.l);
-        if (i >= 0) sel.splice(i, 1); else sel.push(b.dataset.l);
+        const id = b.dataset.l, i = sel.indexOf(id);
+        if (i >= 0) { sel.splice(i, 1); }
+        else {
+          sel.push(id);
+          const j = other.indexOf(id);
+          if (j >= 0) other.splice(j, 1);
+        }
         drawPicks();
       });
     });
@@ -616,7 +625,8 @@ function drawPicks() {
 function openFlags() {
   const m = me();
   pkS = m ? m.langs.slice() : [lang];
-  pkL = m ? m.learn.slice() : (lang === "ja" ? ["en"] : ["ja"]);
+  pkL = (m ? m.learn.slice() : (lang === "ja" ? ["en"] : ["ja"]))
+          .filter(function (x) { return pkS.indexOf(x) < 0; });   // 古い保存値の重なりも外す
   $("flMsg").textContent = "";
   drawPicks();
   $("flSheet").classList.add("on");
@@ -626,7 +636,8 @@ $("flSave").addEventListener("click", function () {
     $("flMsg").textContent = T("話せることばを1つ以上。", "Pick at least one you speak.");
     return;
   }
-  saveMe({ langs: pkS.slice(), learn: pkL.slice(), nick: $("pkNick").value.trim() });
+  saveMe({ langs: pkS.slice(), learn: pkL.filter(function (x) { return pkS.indexOf(x) < 0; }),
+           nick: $("pkNick").value.trim() });
   $("flSheet").classList.remove("on");
   render();
 });
