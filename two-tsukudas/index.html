@@ -1,0 +1,343 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Tsukudani is named after a Tokyo island, and the island is named after an Osaka village. Two shops, a shrine whose festival poles live under water, and the quiet village nobody visits.">
+<link rel="canonical" href="https://moretojapan.com/two-tsukudas/">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Tsukudani Was Born Twice">
+<meta property="og:description" content="Tsukudani is named after a Tokyo island, and the island is named after an Osaka village. Two shops, a shrine whose festival poles live under water, and the quiet village nobody visits.">
+<meta property="og:url" content="https://moretojapan.com/two-tsukudas/">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2322406e'/%3E%3Ctext x='32' y='45' font-size='40' text-anchor='middle' fill='white' font-family='Hiragino Sans,sans-serif'%3E%E5%A5%A5%3C/text%3E%3C/svg%3E">
+<title>Tsukudani Was Born Twice — More to Japan</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Old+Mincho:wght@600;900&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&family=Zen+Kaku+Gothic+New:wght@500;700&display=swap">
+<style>
+  /* Layout: one reading column; diagrams break wider. Two places, one name: the page is split by "water" (river blue) and "soy" (tsukudani brown). */
+  :root{
+    --paper:#eef0ec;
+    --surface:#f7f8f5;
+    --ink:#231b15;
+    --ink-soft:#4d4239;
+    --ink-faint:#7a6f66;
+    --rule:#c9cbc2;
+    --soy:#8a4b17;
+    --soy-soft:#e6d3bf;
+    --river:#2f6683;
+    --river-soft:#cfdfe7;
+    --silver:#8d9aa3;
+    --f-display:"Zen Old Mincho","Hiragino Mincho ProN",serif;
+    --f-body:"Source Serif 4",Georgia,"Hiragino Mincho ProN",serif;
+    --f-ui:"Zen Kaku Gothic New",system-ui,sans-serif;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --paper:#15120f; --surface:#1d1915; --ink:#ece4da; --ink-soft:#c7bbae; --ink-faint:#968a7e;
+      --rule:#3a332c; --soy:#e09a5c; --soy-soft:#3a2818; --river:#7fb6d3; --river-soft:#1a3240; --silver:#93a2ab;
+      color-scheme:dark;
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#15120f; --surface:#1d1915; --ink:#ece4da; --ink-soft:#c7bbae; --ink-faint:#968a7e;
+    --rule:#3a332c; --soy:#e09a5c; --soy-soft:#3a2818; --river:#7fb6d3; --river-soft:#1a3240; --silver:#93a2ab;
+    color-scheme:dark;
+  }
+  *{box-sizing:border-box}
+  body{background:var(--paper);color:var(--ink);font-family:var(--f-body);font-size:19px;line-height:1.68;margin:0;padding-inline:16px;-webkit-font-smoothing:antialiased}
+  .col{max-width:660px;margin:0 auto}
+  .wide{max-width:940px;margin:40px auto}
+  header{max-width:940px;margin:0 auto;padding-block:64px 36px}
+  .eyebrow{font-family:var(--f-ui);font-weight:700;font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--river);margin:0 0 18px}
+  h1{font-family:var(--f-display);font-weight:900;font-size:clamp(40px,8vw,76px);line-height:1.04;margin:0 0 14px;text-wrap:balance}
+  h1 .k{color:var(--soy)}
+  .dek{font-size:clamp(19px,2.4vw,23px);color:var(--ink-soft);max-width:660px;margin:0;text-wrap:pretty}
+  .meta{display:flex;flex-wrap:wrap;gap:8px 22px;margin-top:28px;padding-top:16px;border-top:1px solid var(--rule);font-family:var(--f-ui);font-size:12.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-faint)}
+  h2{font-family:var(--f-display);font-weight:900;font-size:clamp(27px,3.6vw,36px);line-height:1.18;margin:64px 0 6px;text-wrap:balance}
+  h2 .jp{display:block;font-family:var(--f-ui);font-weight:500;font-size:14px;letter-spacing:.08em;color:var(--ink-faint);margin-top:6px}
+  .side{font-family:var(--f-ui);font-weight:700;font-size:11.5px;letter-spacing:.18em;text-transform:uppercase;margin:72px 0 0;padding-top:14px;border-top:3px solid currentColor}
+  .side.tokyo{color:var(--river)} .side.osaka{color:var(--soy)}
+  p{margin:0 0 1.05em}
+  a{color:var(--river);text-underline-offset:3px}
+  .facts{font-family:var(--f-ui);font-size:15px;line-height:1.6;background:var(--surface);border-left:3px solid var(--rule);padding:14px 18px;margin:22px 0 8px;display:grid;gap:6px}
+  .facts b{font-weight:700;color:var(--ink)}
+  blockquote.phrase{margin:22px 0;padding:0;font-size:18px;color:var(--ink-soft)}
+  blockquote.phrase strong{font-family:var(--f-display);font-weight:600;font-size:21px;color:var(--ink)}
+  .notice{font-family:var(--f-ui);font-size:15px;background:var(--soy-soft);color:var(--ink);padding:14px 18px;margin:22px 0}
+  figure{margin:0}
+  .fig{overflow-x:auto;background:var(--surface);padding:22px 18px 16px}
+  .fig svg{display:block;width:100%;height:auto;min-width:560px}
+  figcaption{font-family:var(--f-ui);font-size:14px;color:var(--ink-soft);margin-top:10px;padding-inline:4px}
+  .photo{font-family:var(--f-ui);font-size:14px;color:var(--ink-faint);border:1px dashed var(--rule);padding:12px 16px;margin:22px 0}
+  table{border-collapse:collapse;width:100%;font-family:var(--f-ui);font-size:15px;font-variant-numeric:tabular-nums}
+  th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--rule);vertical-align:top}
+  th{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-faint)}
+  .tbl{overflow-x:auto;margin:22px 0}
+  ol.plan{list-style:none;padding:0;margin:20px 0;display:grid;gap:10px;font-size:17.5px}
+  ol.plan li{display:grid;grid-template-columns:64px 1fr;gap:12px}
+  ol.plan time{font-family:var(--f-ui);font-weight:700;font-variant-numeric:tabular-nums;color:var(--river)}
+  footer{max-width:660px;margin:72px auto 0;padding-block:20px 80px;border-top:1px solid var(--rule);font-family:var(--f-ui);font-size:13.5px;color:var(--ink-faint)}
+  /* svg tokens */
+  .s-ink{fill:var(--ink)} .s-soft{fill:var(--ink-soft)} .s-faint{fill:var(--ink-faint)}
+  .s-river{fill:var(--river)} .s-riverbg{fill:var(--river-soft)} .s-soy{fill:var(--soy)} .s-soybg{fill:var(--soy-soft)} .s-paper{fill:var(--paper)}
+  .l-rule{stroke:var(--rule)} .l-ink{stroke:var(--ink-soft)} .l-river{stroke:var(--river)} .l-soy{stroke:var(--soy)}
+  svg text{font-family:var(--f-ui)}
+  .sitebar{border-bottom:1px solid var(--rule);background:var(--surface);margin-inline:-16px}
+  .sitebar .in{max-width:940px;margin:0 auto;padding:0 16px;height:58px;display:flex;align-items:center;gap:14px;font-family:var(--f-ui);font-size:14px}
+  .sitebar a{color:var(--ink);text-decoration:none}
+  .sitebar .brand{display:flex;align-items:center;gap:9px;font-weight:700}
+  .sitebar .brand i{display:grid;place-items:center;width:28px;height:28px;border-radius:8px;background:var(--river);color:var(--paper);font-style:normal;font-weight:700;font-size:15px}
+  .sitebar .sp{flex:1}
+  .sitebar .back{color:var(--ink-faint)}
+  .sitebar a:hover{text-decoration:underline}
+</style>
+</head>
+<body>
+
+<div class="sitebar"><div class="in">
+  <a class="brand" href="/"><i>奥</i>More to Japan</a>
+  <span class="sp"></span>
+  <a class="back" href="/#articles">All articles</a>
+</div></div>
+
+
+<header>
+  <p class="eyebrow">Tokyo · Osaka · 400 km apart</p>
+  <h1>Tsukudani Was Born <span class="k">Twice</span></h1>
+  <p class="dek">The sweet, dark preserve on every Japanese breakfast tray is named after an island in Tokyo. That island is named after a village in Osaka. Both are still there, and almost nobody visits the second one.</p>
+  <div class="meta"><span>Tsukuda, Chūō City, Tokyo</span><span>Tsukuda, Nishiyodogawa, Osaka</span><span>Facts checked October 2026</span></div>
+</header>
+
+<main class="col">
+  <p>You have done monja in Tsukishima and walked the Tsukiji outer market at 8 a.m. Maybe you bought a small pack of tsukudani (佃煮) there because the stall owner made you taste it. This piece starts five minutes' walk from those monja shops, on a block of wooden houses most people pass on their way to the station. Then it takes you to Osaka, to the place those houses were named after.</p>
+  <p>Why bother with this over another food street? Because it is one of the few places in Japan where a migration from four hundred years ago is still visible on both ends. The Tokyo side gives you a canal, two working tsukudani shops and a shrine festival with poles that live under water. The Osaka side gives you a quiet neighbourhood shrine, a stone marker and a priest who still writes about his Tokyo cousins. What you give up: the Osaka half is plain, residential and has no shop selling the food it gave its name to. You come for the story, not the scenery.</p>
+
+  <p class="side tokyo">Tokyo side</p>
+
+  <h2>The island that was built to order<span class="jp">佃島 · Tsukudajima</span></h2>
+  <p>Tsukuda (佃) is the old core of the Tsukishima district, a few streets around a narrow canal called the Tsukuda-bori (佃堀). It began as a tidal flat at the mouth of the Sumida River. Fishermen from Osaka reclaimed it, and Chūō City dates the finished island to 1644.</p>
+  <p>They were in Edo because of a favour. In the 1580s Tokugawa Ieyasu needed to cross the Kanzaki River (神崎川) in Settsu, near today's Osaka, and fishermen from a village called Tamino (田蓑) rowed him over. The reward was the right to fish anywhere, tax-free. Tamino Jinja in Osaka puts the crossing only in "the Tenshō era"; other sources say 1586, and a popular version ties it to Ieyasu's escape after the Honnōji Incident of 1582. Nobody agrees, and the article will not pretend to know.</p>
+  <p>What everyone agrees on is the name. Ieyasu told the fishermen to farm rice fields (田) as well as fish. So the village took a new character: 佃, a person (亻) next to a field (田). When Ieyasu set up his government in Edo, he brought the Tsukuda men east to supply fish to the castle. They moved in stages between about 1590 and 1612, and named their new island after home.</p>
+  <p>The streets are small and the houses are low. Chūō City notes the island narrowly escaped both the 1923 earthquake fires and the wartime bombing, which is why it still looks older than the tower blocks around it.</p>
+  <div class="photo">[PHOTO: Tsukuda Kobashi bridge looking along the canal, with the low wooden houses on the left and the Ōkawabata River City towers behind. Late afternoon, from the bridge's centre.]</div>
+  <div class="facts">
+    <div><b>Getting there:</b> Tsukishima Station (月島駅), Exit 6 · Tokyo Metro Yūrakuchō Line or Toei Ōedo Line · 5 min walk</div>
+    <div><b>When:</b> Weekday mornings are quietest. The streets are residential, so keep your voice down.</div>
+    <div><b>Reality check:</b> The old part is about three blocks. You will see it all in thirty minutes.</div>
+  </div>
+</main>
+
+<figure class="wide">
+  <div class="fig">
+    <svg viewBox="0 0 900 360" role="img" aria-label="Two islands named Tsukuda: one between the Kanzaki and Samondono rivers in Osaka, one at the mouth of the Sumida River in Tokyo">
+      <!-- Osaka panel -->
+      <text x="30" y="34" class="s-soy" font-size="13" font-weight="700" letter-spacing="2">OSAKA · THE ORIGINAL</text>
+      <rect x="30" y="50" width="390" height="270" class="s-riverbg"/>
+      <path d="M30 120 C140 112 260 128 420 116 L420 150 C260 160 140 146 30 154 Z" class="s-paper"/>
+      <path d="M30 210 C150 200 270 220 420 206 L420 236 C270 248 150 232 30 242 Z" class="s-paper"/>
+      <path d="M30 154 C140 146 260 160 420 150 L420 206 C270 220 150 200 30 210 Z" class="s-soybg"/>
+      <text x="225" y="104" text-anchor="middle" class="s-river" font-size="13">Samondono River · border with Hyōgo</text>
+      <text x="225" y="270" text-anchor="middle" class="s-river" font-size="13">Kanzaki River · Ieyasu's crossing</text>
+      <text x="225" y="184" text-anchor="middle" class="s-soy" font-size="20" font-weight="700">Tsukuda 佃</text>
+      <circle cx="150" cy="196" r="6" class="s-ink"/>
+      <text x="162" y="201" class="s-ink" font-size="12">Chibune Stn</text>
+      <circle cx="300" cy="170" r="6" class="s-soy"/>
+      <text x="312" y="166" class="s-soy" font-size="12">Tamino Jinja</text>
+      <text x="225" y="306" text-anchor="middle" class="s-faint" font-size="12">≈ 2.5 km long, 0.5–0.6 km wide · schematic</text>
+      <!-- arrow -->
+      <path d="M432 186 L470 186" class="l-ink" stroke-width="2" fill="none"/>
+      <path d="M470 180 L480 186 L470 192 Z" class="s-soft"/>
+      <text x="456" y="214" text-anchor="middle" class="s-faint" font-size="11">c.1590–1612</text>
+      <!-- Tokyo panel -->
+      <text x="490" y="34" class="s-river" font-size="13" font-weight="700" letter-spacing="2">TOKYO · THE COPY</text>
+      <rect x="490" y="50" width="380" height="270" class="s-riverbg"/>
+      <path d="M490 50 L580 50 C600 120 610 200 600 320 L490 320 Z" class="s-paper"/>
+      <text x="520" y="190" class="s-faint" font-size="12" transform="rotate(-90 520 190)">Tsukiji · Teppōzu</text>
+      <path d="M660 110 L780 110 L790 210 L650 210 Z" class="s-soybg"/>
+      <text x="720" y="150" text-anchor="middle" class="s-soy" font-size="20" font-weight="700">Tsukuda 佃</text>
+      <text x="720" y="172" text-anchor="middle" class="s-soft" font-size="12">reclaimed 1644</text>
+      <path d="M650 210 L790 210 L800 300 L640 300 Z" class="s-paper"/>
+      <text x="720" y="262" text-anchor="middle" class="s-faint" font-size="12">Tsukishima (later fill)</text>
+      <path d="M600 140 L660 140" class="l-river" stroke-width="2" stroke-dasharray="5 4"/>
+      <text x="630" y="132" text-anchor="middle" class="s-river" font-size="11">ferry 1645–1964</text>
+      <text x="830" y="90" text-anchor="end" class="s-river" font-size="13">Sumida River</text>
+    </svg>
+  </div>
+  <figcaption>Same name, same shape of life: both Tsukudas are flat islands boxed in by river water. Tokyo's was built from nothing to match the one at home.</figcaption>
+</figure>
+
+<main class="col">
+  <h2>A shrine whose spirit came by boat<span class="jp">住吉神社 · Sumiyoshi Jinja</span></h2>
+  <p>The fishermen brought their god with them. Sumiyoshi Jinja says its spirit was divided from the Sumiyoshi shrine of Osaka's Tsukuda, which is today's Tamino Jinja, and carried east by 33 fishermen and a priest named Hiraoka Gondayū. It was enshrined on 29 June 1646. The Hiraoka family has held the priesthood ever since.</p>
+  <p>That date became a holiday of sorts. The national cooperative of tsukudani makers fixed 29 June as Tsukudani Day in 2003; the 29 can be read as "tsuku".</p>
+  <p>The thing to know about is the main festival, the Hon-matsuri (本祭り), every three years around 6 August. For it, six banners 18 metres tall go up around the island. Their poles spend the three years in between buried in the mud of the Tsukuda-bori canal, because wood kept under water does not rot. The shrine says the shogunate allowed the banners in 1798, and they are dug up, raised, and buried again each cycle. The festival also has an octagonal portable shrine and a procession on boats.</p>
+  <p>The last Hon-matsuri was 6–10 August 2026, the shrine's 380th year. On the three-year cycle the next would fall in 2029, but the shrine had not posted it when this was written. In the other years there is a smaller festival on 6–7 August.</p>
+  <div class="facts">
+    <div><b>Getting there:</b> Tsukishima Station (月島駅), Exit 6 · 5 min walk · 佃1-1-14</div>
+    <div><b>When:</b> Grounds open 24 hours. Office 8:00–16:30. Main festival every three years in early August (last: 2026).</div>
+    <div><b>Reality check:</b> Outside August, the canal is just a canal. The poles are underground and there is nothing to see of them.</div>
+  </div>
+</main>
+
+<figure class="wide">
+  <div class="fig">
+    <svg viewBox="0 0 900 250" role="img" aria-label="Timeline from 869 to 2026">
+      <line x1="40" y1="120" x2="860" y2="120" class="l-ink" stroke-width="2"/>
+      <!-- break mark between 869 and 1500 -->
+      <path d="M118 108 L128 132 M128 108 L138 132" class="l-ink" stroke-width="2"/>
+      <!-- scale 1500→2030 maps to 160→860 : x = 160 + (y-1500)*1.3208 -->
+      <g font-size="12">
+        <circle cx="60" cy="120" r="6" class="s-soy"/><text x="60" y="96" text-anchor="middle" class="s-soy" font-weight="700">869</text><text x="60" y="150" text-anchor="middle" class="s-soft">Tamino Jinja</text><text x="60" y="166" text-anchor="middle" class="s-soft">founded</text>
+        <circle cx="275" cy="120" r="6" class="s-soy"/><text x="275" y="96" text-anchor="middle" class="s-soy" font-weight="700">1580s</text><text x="275" y="150" text-anchor="middle" class="s-soft">Ieyasu's</text><text x="275" y="166" text-anchor="middle" class="s-soft">river crossing</text>
+        <circle cx="317" cy="120" r="6" class="s-ink"/><text x="317" y="72" text-anchor="middle" class="s-ink" font-weight="700">1590–1612</text><text x="317" y="88" text-anchor="middle" class="s-soft">move to Edo</text>
+        <circle cx="352" cy="120" r="6" class="s-river"/><text x="365" y="150" text-anchor="start" class="s-river" font-weight="700">1644–46</text><text x="365" y="166" text-anchor="start" class="s-soft">island, ferry, shrine</text>
+        <circle cx="557" cy="120" r="6" class="s-river"/><text x="557" y="96" text-anchor="middle" class="s-river" font-weight="700">1798</text><text x="557" y="80" text-anchor="middle" class="s-soft">banners allowed</text>
+        <circle cx="605" cy="120" r="6" class="s-soy"/><text x="605" y="150" text-anchor="middle" class="s-soy" font-weight="700">1837</text><text x="605" y="166" text-anchor="middle" class="s-soft">Tenyasu</text>
+        <circle cx="634" cy="120" r="6" class="s-soy"/><text x="652" y="96" text-anchor="middle" class="s-soy" font-weight="700">1859</text><text x="652" y="80" text-anchor="middle" class="s-soft">Marukyū</text>
+        <circle cx="779" cy="120" r="6" class="s-river"/><text x="779" y="150" text-anchor="middle" class="s-river" font-weight="700">1964</text><text x="779" y="166" text-anchor="middle" class="s-soft">ferry ends</text>
+        <circle cx="851" cy="120" r="7" class="s-ink"/><text x="851" y="96" text-anchor="end" class="s-ink" font-weight="700">Aug 2026</text><text x="851" y="80" text-anchor="end" class="s-soft">Tanakaya closes</text>
+      </g>
+      <text x="40" y="222" class="s-faint" font-size="12">Brown: Osaka and the shops · Blue: the Tokyo island · Scale is broken before 1500</text>
+    </svg>
+  </div>
+  <figcaption>The Osaka shrine is more than seven centuries older than the island named after its village. The ferry outlived the shogunate by a century.</figcaption>
+</figure>
+
+<main class="col">
+  <h2>Two shops, where there were three<span class="jp">天安 · 丸久 · Tenyasu, Marukyū</span></h2>
+  <p>Why tsukudani at all? The Tsukuda men's job in Edo was to send whitebait (白魚, shirauo) to the shogun's kitchen, from November to March. The fish too small to send, and the catch from days too rough to sell, were simmered down with salt and later soy so they would keep. Served with sake at the shrine festival, the preserve travelled with visitors and took the island's name with it.</p>
+  <p>The Osaka shrine's founding story also features whitebait: a fisherman offering it to Empress Jingū. The same small silver fish sits at both ends of the story.</p>
+  <p>For most of living memory there were three old shops facing each other here. <strong>Tanakaya (田中屋) closed on 15 August 2026.</strong> The priest of the Osaka shrine wrote about it the week before; its tiny-shrimp tsukudani had been his childhood taste, carried to Osaka by visitors from Tokyo. Two remain.</p>
+  <p><b>Tenyasu (天安)</b> opened in 1837. The name joins the era name Tenpō (天保) to the founder's name, Yasukichi (安吉). Chūō City lists the shop as a wooden townhouse standing on the same spot for about 180 years. <b>Marukyū (丸久)</b> opened in 1859 and is run by the 15th generation; it rebuilt in 2009 to meet earthquake standards. Both sell by weight from trays, so you can buy 100 grams of one kind instead of a gift box.</p>
+  <blockquote class="phrase">Point at a tray and ask for the smallest amount: <strong>これを百グラムください</strong> (kore o hyaku guramu kudasai).</blockquote>
+  <blockquote class="phrase">If you can't choose, ask which is the oldest flavour: <strong>いちばん昔からの味はどれですか</strong> (ichiban mukashi kara no aji wa dore desu ka).</blockquote>
+  <div class="tbl">
+    <table>
+      <thead><tr><th>Shop</th><th>Founded</th><th>Hours</th><th>Closed</th><th>Per 100 g (examples)</th></tr></thead>
+      <tbody>
+        <tr><td>Tenyasu 天安本店<br>佃1-3-14</td><td>1837</td><td>9:00–18:00<br>(2–7 Jan: to 15:00)</td><td>31 Dec, 1 Jan</td><td>Edo-style ¥500 · shrimp ¥450 · ginger ¥550</td></tr>
+        <tr><td>Marukyū 丸久<br>佃1-2-10</td><td>1859</td><td>10:30–18:00</td><td>Wednesdays, New Year, summer break</td><td>shrimp ¥490 · kelp ¥600 · whitebait ¥780</td></tr>
+        <tr><td>Tanakaya 田中屋<br>佃1-3-13</td><td>late Edo</td><td colspan="3">Closed for good, 15 August 2026</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="facts">
+    <div><b>Getting there:</b> Both are on the canal, 2–3 min from Sumiyoshi Jinja</div>
+    <div><b>When:</b> Go before Marukyū's Wednesday closing catches you. Prices are from the shops' own lists; check on the day.</div>
+    <div><b>Reality check:</b> Whether either shop takes cards could not be confirmed. Bring cash. Tsukudani is sweet and very salty; 100 g lasts a long time.</div>
+  </div>
+
+  <h2>A lighthouse with a toilet underneath<span class="jp">佃公園 · Tsukuda Park</span></h2>
+  <p>Walk two minutes north to the river. Two stones from 1927, set when steam boats took over the ferry, mark the old Tsukuda crossing; one is in Tsukuda Park (佃公園), the other is in storage during bridge work. The ferry ran from 1645 until 1964, when the Tsukuda Ōhashi bridge opened over your head. It was the last ferry left on the Sumida.</p>
+  <p>Next to it is a white six-sided tower. It copies the Ishikawajima lighthouse of 1866, which was paid for with oil-pressing wages earned by inmates of the labour camp on the next island. The copy went up in 1989, and the ground floor is a public toilet.</p>
+  <div class="photo">[PHOTO: The lighthouse replica from the riverside path, with the Tsukuda Ōhashi bridge deck cutting across the top of the frame.]</div>
+  <div class="facts">
+    <div><b>Getting there:</b> 佃1-11-4 · 3 min from the shops along the river</div>
+    <div><b>When:</b> Open park, any time</div>
+    <div><b>Reality check:</b> It is a small riverside park. The value is in knowing what you are looking at.</div>
+  </div>
+</main>
+
+<figure class="wide">
+  <div class="fig">
+    <svg viewBox="0 0 900 230" role="img" aria-label="How whitebait for the shogun became tsukudani">
+      <g font-size="13">
+        <rect x="20" y="60" width="170" height="80" class="s-riverbg"/>
+        <text x="105" y="94" text-anchor="middle" class="s-river" font-weight="700">Whitebait catch</text>
+        <text x="105" y="114" text-anchor="middle" class="s-soft">Nov–Mar, Edo Bay</text>
+        <path d="M190 85 L260 40" class="l-ink" stroke-width="2"/><path d="M190 115 L260 160" class="l-ink" stroke-width="2"/>
+        <rect x="260" y="10" width="200" height="60" class="s-paper" stroke="var(--rule)"/>
+        <text x="360" y="36" text-anchor="middle" class="s-ink" font-weight="700">Best fish</text>
+        <text x="360" y="56" text-anchor="middle" class="s-soft">to the shogun's kitchen</text>
+        <rect x="260" y="130" width="200" height="60" class="s-soybg"/>
+        <text x="360" y="156" text-anchor="middle" class="s-soy" font-weight="700">Too small, bad days</text>
+        <text x="360" y="176" text-anchor="middle" class="s-soft">simmered in salt, later soy</text>
+        <path d="M460 160 L530 160" class="l-soy" stroke-width="2"/><path d="M530 154 L540 160 L530 166 Z" class="s-soy"/>
+        <rect x="540" y="130" width="160" height="60" class="s-soybg"/>
+        <text x="620" y="156" text-anchor="middle" class="s-soy" font-weight="700">Festival snack</text>
+        <text x="620" y="176" text-anchor="middle" class="s-soft">with sake, for visitors</text>
+        <path d="M700 160 L760 160" class="l-soy" stroke-width="2"/><path d="M760 154 L770 160 L760 166 Z" class="s-soy"/>
+        <text x="775" y="156" class="s-soy" font-weight="700">"Tsukuda-ni"</text>
+        <text x="775" y="176" class="s-soft">named for the island</text>
+      </g>
+    </svg>
+  </div>
+  <figcaption>Tsukudani is what the castle did not take. The island's name went into the national pantry with the leftovers.</figcaption>
+</figure>
+
+<main class="col">
+  <p class="side osaka">Osaka side</p>
+
+  <h2>The village they left<span class="jp">田蓑神社 · Tamino Jinja</span></h2>
+  <p>Twelve minutes from Umeda on a Hanshin local, Chibune Station (千船駅) sits on an island about 2.5 km long between two rivers. This is Tsukuda, Nishiyodogawa (西淀川区佃). It was factories from the 1930s; since the 1970s many sites have become apartment blocks. Nothing here sells itself as the home of tsukudani.</p>
+  <p>Tamino Jinja (田蓑神社) is the reason to come. The shrine dates itself to 869. It was renamed Sumiyoshi in 1741 and given back the old village name, Tamino, in 1868, so that the name that existed before 佃 would not disappear. A sub-shrine to Ieyasu has stood in the grounds since 1631, a thank-you for the river crossing.</p>
+  <p>Look for these, all in the grounds: a stone marked 「佃漁民ゆかりの地」 ("place connected with the Tsukuda fishermen"), designated by Osaka City and listed among Japan's 100 fishing-village heritage sites; a torii dated 1511; a pair of stone guardian dogs dated 1702, which the shrine says are the oldest of their kind in Osaka Prefecture; and a rebuilt pillar kept as a record of the 1995 Hanshin earthquake, which tilted the worship hall.</p>
+  <p>The shrine has one priest, and he writes a blog. In August 2026 he went to Tokyo for the Hon-matsuri, his second time, and wrote that the Tokyo shrine had grown to serve Tsukishima, Kachidoki, Harumi and Toyomi, while his own stayed a neighbourhood shrine. Tell him, or whoever is at the office, where you have been:</p>
+  <blockquote class="phrase"><strong>東京の佃島にも行ってきました</strong> (Tōkyō no Tsukudajima ni mo itte kimashita).</blockquote>
+  <div class="photo">[PHOTO: The 佃漁民ゆかりの地 stone with the worship hall behind, framed so the kanji are readable.]</div>
+  <div class="facts">
+    <div><b>Getting there:</b> Osaka-Umeda Station (大阪梅田駅, Hanshin) → Hanshin Main Line local (普通) to Chibune Station (千船駅), 5 stops, 12 min, ¥200 · then about 15 min on foot · 佃1-18-14</div>
+    <div><b>When:</b> Grounds open 24 hours. Summer festival 31 July–1 August with drum floats and night stalls; autumn festival 16–17 October with children's sumo.</div>
+    <div><b>Reality check:</b> Expresses do not stop at Chibune; take the local. There is no café or shop culture around the shrine, and no tsukudani maker could be found in the neighbourhood.</div>
+  </div>
+</main>
+
+<figure class="wide">
+  <div class="fig">
+    <svg viewBox="0 0 900 200" role="img" aria-label="Walking order on the Tokyo side">
+      <g font-size="13">
+        <line x1="70" y1="90" x2="830" y2="90" class="l-river" stroke-width="3"/>
+        <g>
+          <circle cx="70" cy="90" r="12" class="s-river"/><text x="70" y="95" text-anchor="middle" class="s-paper" font-weight="700">1</text>
+          <text x="70" y="128" text-anchor="middle" class="s-ink" font-weight="700">Tsukishima Stn</text><text x="70" y="146" text-anchor="middle" class="s-soft">Exit 6</text>
+        </g>
+        <text x="185" y="74" text-anchor="middle" class="s-faint">5 min</text>
+        <g>
+          <circle cx="300" cy="90" r="12" class="s-river"/><text x="300" y="95" text-anchor="middle" class="s-paper" font-weight="700">2</text>
+          <text x="300" y="128" text-anchor="middle" class="s-ink" font-weight="700">Sumiyoshi Jinja</text><text x="300" y="146" text-anchor="middle" class="s-soft">10 min</text>
+        </g>
+        <text x="415" y="74" text-anchor="middle" class="s-faint">2 min</text>
+        <g>
+          <circle cx="530" cy="90" r="12" class="s-soy"/><text x="530" y="95" text-anchor="middle" class="s-paper" font-weight="700">3</text>
+          <text x="530" y="128" text-anchor="middle" class="s-ink" font-weight="700">Kobashi + shops</text><text x="530" y="146" text-anchor="middle" class="s-soft">20 min</text>
+        </g>
+        <text x="645" y="74" text-anchor="middle" class="s-faint">3 min</text>
+        <g>
+          <circle cx="760" cy="90" r="12" class="s-river"/><text x="760" y="95" text-anchor="middle" class="s-paper" font-weight="700">4</text>
+          <text x="760" y="128" text-anchor="middle" class="s-ink" font-weight="700">Tsukuda Park</text><text x="760" y="146" text-anchor="middle" class="s-soft">10 min</text>
+        </g>
+        <text x="70" y="30" class="s-faint">Tokyo side, start to finish: about 1 hour on foot</text>
+      </g>
+    </svg>
+  </div>
+  <figcaption>The whole Tokyo side fits inside an hour. Do it before lunch so the shops are open and the canal is quiet.</figcaption>
+</figure>
+
+<main class="col">
+  <h2>The honest part</h2>
+  <p>This is a story trip. On the Tokyo side you will see one canal, a shrine, two shops and a park, all in under an hour. On the Osaka side you will see one shrine in an ordinary residential district, 15 minutes from a local station. If you need either place to be pretty on its own, skip it.</p>
+  <p>The dates do not line up. The river crossing is "Tenshō era", 1586 or 1582 depending on who tells it; the move to Edo is 1590 or 1612; the island is 1644 or 1645. The shrines themselves disagree with each other. This article gives ranges where the sources split.</p>
+  <p>Tanakaya is gone, and a shop that has lasted a century can still close without warning. Marukyū closes on Wednesdays. The festival you would most want to see happens once in three years, and the next one has not been announced.</p>
+  <p>You cannot do both sides in one day without a bullet train in between. Treat them as two short add-ons: one on a Tokyo morning, one on an Osaka afternoon.</p>
+
+  <h2>If you only have one day</h2>
+  <p>This is the Tokyo morning. Add Osaka on whatever day you are there.</p>
+  <ol class="plan">
+    <li><time>9:30</time><span>Tsukishima Station, Exit 6. Walk to Sumiyoshi Jinja.</span></li>
+    <li><time>9:45</time><span>Shrine. Then cross Tsukuda Kobashi and walk the canal both ways.</span></li>
+    <li><time>10:15</time><span>Tenyasu (open from 9:00), then Marukyū when it opens at 10:30. Buy 100 g at each.</span></li>
+    <li><time>10:45</time><span>Tsukuda Park: ferry stone and lighthouse.</span></li>
+    <li><time>11:15</time><span>Walk back through Tsukishima; the monja shops open around lunch.</span></li>
+  </ol>
+  <p>Osaka add-on, about 90 minutes: Hanshin local from Osaka-Umeda to Chibune (12 min), walk 15 min to Tamino Jinja, 30 min in the grounds, walk back. If you are running late, drop the Tokyo park and keep the shops; on the Osaka side, there is nothing to drop.</p>
+</main>
+
+<footer>
+  Sources: Sumiyoshi Jinja (sumiyoshijinja.or.jp), Tamino Jinja (tamino-jinja.com, including its blog of 9 August 2026), Chūō City cultural-property pages, Marukyū and Tenyasu shop sites, Hanshin fare table, Japan Fisheries 100 Heritage Sites (gyokou.or.jp). Prices and hours checked October 2026; check before you go.
+</footer>
+
+<!-- Cloudflare Web Analytics（Cookieを使わない。個人は追わない。何人・どのページ・どの国・どこから、だけ）-->
+<script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "a549632ca5ba440a9dbdfd24bcbe11e5"}'></script>
+</body>
+</html>

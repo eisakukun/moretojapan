@@ -1,0 +1,328 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Below the Tokyo City Hall observatory, a pond and a geisha quarter were filled in in 1968. Across the station, the chili that seasoned Edo's soba is growing again.">
+<link rel="canonical" href="https://moretojapan.com/under-nishi-shinjuku/">
+<meta property="og:type" content="article">
+<meta property="og:title" content="The Pond Under the Towers">
+<meta property="og:description" content="Below the Tokyo City Hall observatory, a pond and a geisha quarter were filled in in 1968. Across the station, the chili that seasoned Edo's soba is growing again.">
+<meta property="og:url" content="https://moretojapan.com/under-nishi-shinjuku/">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2322406e'/%3E%3Ctext x='32' y='45' font-size='40' text-anchor='middle' fill='white' font-family='Hiragino Sans,sans-serif'%3E%E5%A5%A5%3C/text%3E%3C/svg%3E">
+<title>The Pond Under the Towers — More to Japan</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Old+Mincho:wght@600;900&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&family=Zen+Kaku+Gothic+New:wght@500;700&display=swap">
+<style>
+  /* Layout: one reading column, diagrams break wider. Two threads: the buried pond (pond green) and the red chili (chili red). */
+  :root{
+    --paper:#edf0ee;
+    --surface:#f6f8f6;
+    --ink:#18201d;
+    --ink-soft:#3f4b46;
+    --ink-faint:#6c7873;
+    --rule:#c5ccc8;
+    --pond:#2d6a5e;
+    --pond-soft:#cfe1db;
+    --chili:#b2322a;
+    --chili-soft:#f0d6d1;
+    --stone:#9aa39e;
+    --f-display:"Zen Old Mincho","Hiragino Mincho ProN",serif;
+    --f-body:"Source Serif 4",Georgia,"Hiragino Mincho ProN",serif;
+    --f-ui:"Zen Kaku Gothic New",system-ui,sans-serif;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --paper:#111614; --surface:#18201d; --ink:#e3ebe7; --ink-soft:#b6c3bd; --ink-faint:#86948e;
+      --rule:#2f3a36; --pond:#7cc4b2; --pond-soft:#16302a; --chili:#f0796d; --chili-soft:#3d1c19; --stone:#7d8883;
+      color-scheme:dark;
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#111614; --surface:#18201d; --ink:#e3ebe7; --ink-soft:#b6c3bd; --ink-faint:#86948e;
+    --rule:#2f3a36; --pond:#7cc4b2; --pond-soft:#16302a; --chili:#f0796d; --chili-soft:#3d1c19; --stone:#7d8883;
+    color-scheme:dark;
+  }
+  *{box-sizing:border-box}
+  body{background:var(--paper);color:var(--ink);font-family:var(--f-body);font-size:19px;line-height:1.68;margin:0;padding-inline:16px;-webkit-font-smoothing:antialiased}
+  .col{max-width:660px;margin:0 auto}
+  .wide{max-width:940px;margin:40px auto}
+  header{max-width:940px;margin:0 auto;padding-block:64px 36px}
+  .eyebrow{font-family:var(--f-ui);font-weight:700;font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--pond);margin:0 0 18px}
+  h1{font-family:var(--f-display);font-weight:900;font-size:clamp(40px,8vw,76px);line-height:1.04;margin:0 0 14px;text-wrap:balance}
+  h1 .k{color:var(--pond)}
+  .dek{font-size:clamp(19px,2.4vw,23px);color:var(--ink-soft);max-width:660px;margin:0;text-wrap:pretty}
+  .meta{display:flex;flex-wrap:wrap;gap:8px 22px;margin-top:28px;padding-top:16px;border-top:1px solid var(--rule);font-family:var(--f-ui);font-size:12.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-faint)}
+  h2{font-family:var(--f-display);font-weight:900;font-size:clamp(27px,3.6vw,36px);line-height:1.18;margin:64px 0 6px;text-wrap:balance}
+  h2 .jp{display:block;font-family:var(--f-ui);font-weight:500;font-size:14px;letter-spacing:.08em;color:var(--ink-faint);margin-top:6px}
+  .side{font-family:var(--f-ui);font-weight:700;font-size:11.5px;letter-spacing:.18em;text-transform:uppercase;margin:72px 0 0;padding-top:14px;border-top:3px solid currentColor}
+  .side.pond{color:var(--pond)} .side.chili{color:var(--chili)}
+  p{margin:0 0 1.05em}
+  .facts{font-family:var(--f-ui);font-size:15px;line-height:1.6;background:var(--surface);border-left:3px solid var(--rule);padding:14px 18px;margin:22px 0 8px;display:grid;gap:6px}
+  .facts b{font-weight:700;color:var(--ink)}
+  blockquote.phrase{margin:22px 0;padding:0;font-size:18px;color:var(--ink-soft)}
+  blockquote.phrase strong{font-family:var(--f-display);font-weight:600;font-size:21px;color:var(--ink)}
+  figure{margin:0}
+  .fig{overflow-x:auto;background:var(--surface);padding:22px 18px 16px}
+  .fig svg{display:block;width:100%;height:auto;min-width:560px}
+  figcaption{font-family:var(--f-ui);font-size:14px;color:var(--ink-soft);margin-top:10px;padding-inline:4px}
+  .photo{font-family:var(--f-ui);font-size:14px;color:var(--ink-faint);border:1px dashed var(--rule);padding:12px 16px;margin:22px 0}
+  .slopes{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin:22px 0;font-family:var(--f-ui);font-size:15px}
+  .slopes div{background:var(--surface);padding:12px 14px;min-width:0}
+  .slopes b{display:block;font-family:var(--f-display);font-size:20px;color:var(--pond)}
+  ol.plan{list-style:none;padding:0;margin:20px 0;display:grid;gap:10px;font-size:17.5px}
+  ol.plan li{display:grid;grid-template-columns:64px 1fr;gap:12px}
+  ol.plan time{font-family:var(--f-ui);font-weight:700;font-variant-numeric:tabular-nums;color:var(--pond)}
+  footer{max-width:660px;margin:72px auto 0;padding-block:20px 80px;border-top:1px solid var(--rule);font-family:var(--f-ui);font-size:13.5px;color:var(--ink-faint)}
+  .s-ink{fill:var(--ink)} .s-soft{fill:var(--ink-soft)} .s-faint{fill:var(--ink-faint)}
+  .s-pond{fill:var(--pond)} .s-pondbg{fill:var(--pond-soft)} .s-chili{fill:var(--chili)} .s-chilibg{fill:var(--chili-soft)} .s-paper{fill:var(--paper)} .s-stone{fill:var(--stone)}
+  .l-rule{stroke:var(--rule)} .l-ink{stroke:var(--ink-soft)} .l-pond{stroke:var(--pond)} .l-chili{stroke:var(--chili)}
+  svg text{font-family:var(--f-ui)}
+  .sitebar{border-bottom:1px solid var(--rule);background:var(--surface);margin-inline:-16px}
+  .sitebar .in{max-width:940px;margin:0 auto;padding:0 16px;height:58px;display:flex;align-items:center;gap:14px;font-family:var(--f-ui);font-size:14px}
+  .sitebar a{color:var(--ink);text-decoration:none}
+  .sitebar .brand{display:flex;align-items:center;gap:9px;font-weight:700}
+  .sitebar .brand i{display:grid;place-items:center;width:28px;height:28px;border-radius:8px;background:var(--pond);color:var(--paper);font-style:normal;font-weight:700;font-size:15px}
+  .sitebar .sp{flex:1}
+  .sitebar .back{color:var(--ink-faint)}
+  .sitebar a:hover{text-decoration:underline}
+</style>
+</head>
+<body>
+
+<div class="sitebar"><div class="in">
+  <a class="brand" href="/"><i>奥</i>More to Japan</a>
+  <span class="sp"></span>
+  <a class="back" href="/#articles">All articles</a>
+</div></div>
+
+
+<header>
+  <p class="eyebrow">Nishi-Shinjuku · Shinjuku 2–3 chōme</p>
+  <h1>The Pond Under the <span class="k">Towers</span></h1>
+  <p class="dek">From the free observatory at Tokyo City Hall you look straight down at a strip of low buildings beside a park. Until 1968 that strip was a pond with teahouses, and for forty years it was a geisha quarter. Across the station, the garden you paid ¥500 to walk in once grew the chili that seasoned Edo's soba.</p>
+  <div class="meta"><span>Jūnisō 十二社</span><span>Naitō tōgarashi 内藤とうがらし</span><span>Facts checked October 2026</span></div>
+</header>
+
+<main class="col">
+  <p>You have been up the Tokyo Metropolitan Government Building (東京都庁) for the free view, probably at dusk. You have walked Shinjuku Gyoen in cherry season or under the autumn leaves. Both are on every list. This piece is about what was on that ground before: a reservoir that became a resort, a resort that became a pleasure quarter, and a samurai estate whose chili fields turned the area red.</p>
+  <p>Why this rather than another garden or another view? Because almost nothing of it is left, and that is the point. You walk the street names, a dip in the road, a shrine with a 200-year-old water basin, and a temple whose main statue is shown two days a year. In return you understand Shinjuku as a place that existed before the station. You give up spectacle. Most of the sights are under your feet.</p>
+
+  <p class="side pond">Thread one · the pond</p>
+
+  <h2>A shrine for twelve gods<span class="jp">十二社熊野神社 · Jūnisō Kumano Jinja</span></h2>
+  <p>Kumano Jinja (熊野神社) sits in the northwest corner of Shinjuku Central Park, a short walk west of City Hall. The shrine's founding legend says a merchant named Suzuki Kurō, from the Kumano region of Kii, brought the twelve deities of the three Kumano shrines here in 1403. Twelve shrines in one: jūnisha, written 十二社, which local people came to read "Jūnisō".</p>
+  <p>Hiroshige put it in his <i>One Hundred Famous Views of Edo</i> as No. 50, published in 1856: the shrine above a pond, with tea stalls and a two-storey restaurant. The shrine is still here. The pond and restaurants are not.</p>
+  <p>Look for what the shrine kept. A stone marked 十二社 from 1851 and a stone water basin from 1820 inscribed by the comic poet Ōta Nanpo are both protected by Shinjuku City. A pair of guardian dogs is from 1727. There are votive plaques given by kabuki actors in 1764, 1773 and 1847, which tells you who was coming out here for pleasure.</p>
+  <blockquote class="phrase">At the shrine office, if you collect stamps: <strong>御朱印をお願いします</strong> (goshuin o onegai shimasu).</blockquote>
+  <div class="facts">
+    <div><b>Getting there:</b> Tochōmae Station (都庁前駅), Toei Ōedo Line, Exit A5 · about 5 min walk · 西新宿2-11-2</div>
+    <div><b>When:</b> Grounds open 24 hours; office 9:00–16:30. Annual festival on the third weekend of September (19–20 September in 2026).</div>
+    <div><b>Reality check:</b> Seasonal limited stamps are pre-written slips only. Hiroshige's view no longer lines up: the land he drew dropping to water is now a road.</div>
+  </div>
+</main>
+
+<figure class="wide">
+  <div class="fig">
+    <svg viewBox="0 0 900 380" role="img" aria-label="Schematic map: City Hall, Shinjuku Central Park, Kumano Jinja, and the line of the old pond along Jūnisō-dōri">
+      <rect x="30" y="30" width="840" height="320" class="s-paper"/>
+      <!-- old water plant area -->
+      <rect x="430" y="40" width="430" height="300" class="s-pondbg" opacity=".45"/>
+      <text x="845" y="64" text-anchor="end" class="s-pond" font-size="12">Yodobashi water plant 1898–1965</text>
+      <text x="845" y="82" text-anchor="end" class="s-pond" font-size="12">→ today's skyscraper blocks</text>
+      <!-- TMG -->
+      <rect x="560" y="140" width="80" height="110" class="s-stone"/>
+      <text x="600" y="270" text-anchor="middle" class="s-ink" font-size="13" font-weight="700">City Hall</text>
+      <text x="600" y="287" text-anchor="middle" class="s-soft" font-size="12">observatories 202 m</text>
+      <!-- park -->
+      <rect x="250" y="70" width="170" height="250" class="s-pondbg"/>
+      <text x="335" y="200" text-anchor="middle" class="s-pond" font-size="14" font-weight="700">Shinjuku</text>
+      <text x="335" y="218" text-anchor="middle" class="s-pond" font-size="14" font-weight="700">Central Park</text>
+      <text x="335" y="236" text-anchor="middle" class="s-soft" font-size="12">opened 1968</text>
+      <circle cx="270" cy="92" r="9" class="s-chili"/>
+      <text x="285" y="97" class="s-chili" font-size="13" font-weight="700">Kumano Jinja</text>
+      <circle cx="395" cy="290" r="6" class="s-ink"/>
+      <text x="395" y="312" text-anchor="middle" class="s-soft" font-size="11">Niagara Falls (1982)</text>
+      <!-- road -->
+      <path d="M232 60 L232 340" class="l-ink" stroke-width="3"/>
+      <text x="242" y="338" class="s-ink" font-size="12" font-weight="700">Jūnisō-dōri</text>
+      <!-- old pond, dashed -->
+      <path d="M220 110 C170 130 150 190 160 250 C168 300 190 330 210 336 C200 290 196 230 214 160 Z" fill="none" class="l-pond" stroke-width="2.5" stroke-dasharray="7 5"/>
+      <text x="140" y="200" text-anchor="end" class="s-pond" font-size="13" font-weight="700">Jūnisō pond</text>
+      <text x="140" y="218" text-anchor="end" class="s-soft" font-size="12">dug 1606</text>
+      <text x="140" y="234" text-anchor="end" class="s-soft" font-size="12">filled July 1968</text>
+      <path d="M232 108 L262 98" class="l-ink" stroke-width="1"/>
+      <text x="40" y="60" class="s-faint" font-size="12">Schematic. Pond outline after the Shinjuku City district map; not to scale.</text>
+      <!-- arrow to 'look down' -->
+      <path d="M560 150 C450 130 300 160 214 200" class="l-chili" stroke-width="1.5" fill="none" stroke-dasharray="3 4"/>
+      <text x="440" y="124" class="s-chili" font-size="11">your view down</text>
+    </svg>
+  </div>
+  <figcaption>From the observatory, look west-southwest past the park. The road with low buildings on its far side runs along the old shoreline.</figcaption>
+</figure>
+
+<main class="col">
+  <h2>From reservoir to resort<span class="jp">十二社池 · Jūnisō pond</span></h2>
+  <p>The pond started as irrigation. In 1606 two reservoirs were dug west of the shrine; the large one ran about 126 ken north to south, roughly 230 metres, and was narrow. In 1667 a feeder channel for Edo's Kanda water supply was cut past the shrine, and where it dropped off the bluff it made a waterfall.</p>
+  <p>A pond, a waterfall and a shrine, a short walk west of the Kōshū road: by the late Edo period it was a summer outing for people from the city. Teahouses lined the shore. The rakugo master San'yūtei Enchō set his ghost story <i>Kaidan Chibusa Enoki</i> at the Jūnisō falls.</p>
+  <p>Then the city needed water. Building the Yodobashi water purification plant buried the falls in the 1890s, and the plant began supplying Tokyo on 1 December 1898. Clean water also brought a camera-film factory, Konishiroku, which ran here from 1902 to 1963. When the plant closed in 1965, its site became the skyscraper district. The pond was filled in July 1968 under the sub-centre plan, the same year Shinjuku Central Park opened next door.</p>
+  <p>You can still feel the edge. Walk south along Jūnisō-dōri (十二社通り) from the shrine and the road dips gently. A Shinjuku local-history archive marks that dip as part of the old pond site.</p>
+  <div class="photo">[PHOTO: Jūnisō-dōri looking south from near the shrine, low enough to show the road dipping away, with the towers above.]</div>
+  <div class="facts">
+    <div><b>Getting there:</b> Start at Kumano Jinja and walk south along Jūnisō-dōri, 10–15 minutes</div>
+    <div><b>When:</b> Daylight. It is a residential street.</div>
+    <div><b>Reality check:</b> No official sign on the street marks the pond. You are reading a slope.</div>
+  </div>
+</main>
+
+<figure class="wide">
+  <div class="fig">
+    <svg viewBox="0 0 900 330" role="img" aria-label="The same ground in five layers, from 1606 to today">
+      <g font-size="13">
+        <rect x="40" y="20" width="820" height="50" class="s-stone" opacity=".35"/>
+        <text x="60" y="51" class="s-ink" font-weight="700">Today</text><text x="250" y="51" class="s-soft">Towers, apartments, Jūnisō-dōri · the name left addresses in 1970</text>
+        <rect x="40" y="76" width="820" height="50" class="s-pondbg"/>
+        <text x="60" y="107" class="s-pond" font-weight="700">1968</text><text x="250" y="107" class="s-soft">Pond filled in July · Central Park opens</text>
+        <rect x="40" y="132" width="820" height="50" class="s-chilibg"/>
+        <text x="60" y="163" class="s-chili" font-weight="700">1905–1950s</text><text x="250" y="163" class="s-soft">Ryōtei, teahouses, geisha · ≈100 houses, ≈300 geisha at peak</text>
+        <rect x="40" y="188" width="820" height="50" class="s-pondbg" opacity=".6"/>
+        <text x="60" y="219" class="s-pond" font-weight="700">1667–1890s</text><text x="250" y="219" class="s-soft">Waterfall, teahouses, summer outings · Hiroshige No. 50 (1856)</text>
+        <rect x="40" y="244" width="820" height="50" class="s-pondbg" opacity=".35"/>
+        <text x="60" y="275" class="s-pond" font-weight="700">1606</text><text x="250" y="275" class="s-soft">Irrigation reservoirs dug beside the shrine (founded by legend 1403)</text>
+      </g>
+      <text x="40" y="318" class="s-faint" font-size="12">Read from the bottom up. Each layer was built on, not beside, the one under it.</text>
+    </svg>
+  </div>
+  <figcaption>One strip of ground, five uses. Only the shrine runs through every layer.</figcaption>
+</figure>
+
+<main class="col">
+  <h2>The geisha quarter you can only read<span class="jp">十二社花街 · Jūnisō kagai</span></h2>
+  <p>Victory in the Russo-Japanese War in 1905 turned the teahouses into large ryōtei restaurants, and by 1911 "Jūnisō" was known as a pleasure quarter. It got its official designation in the early 1920s; sources disagree on the year. The shrine puts its peak at about 100 restaurants and teahouses and about 300 geisha.</p>
+  <p>The area burned in the air raid of 25 May 1945 and came back on a smaller scale. In 1953 a hall for practising the arts was built on the shore, with a registry office for the geisha; that building is now an apartment block. A natural hot-spring bathhouse ran from 1957 to March 2009. No source gives a date for the last geisha.</p>
+  <p>What survives is the street names. A neighbourhood association map published with Shinjuku City lists twelve named slopes. Three of them tell the story:</p>
+  <div class="slopes">
+    <div><b>池の段坂</b>Ike-no-dan-zaka · "pond-step slope", running west off Jūnisō-dōri just south of the shrine</div>
+    <div><b>三味線坂</b>Shamisen-zaka · named for the shamisen</div>
+    <div><b>黒塀坂</b>Kurobei-zaka · "black-fence slope", the fences of the ryōtei</div>
+  </div>
+  <div class="facts">
+    <div><b>Getting there:</b> Nishi-Shinjuku 4-chōme, west of Jūnisō-dōri</div>
+    <div><b>When:</b> Any time. It is quiet streets and apartment blocks.</div>
+    <div><b>Reality check:</b> The slope names on the map are not all signposted. Bring the kanji above and compare them with the small markers you find.</div>
+  </div>
+
+  <h2>The waterfall that isn't the waterfall<span class="jp">新宿ナイアガラの滝 · Shinjuku Niagara Falls</span></h2>
+  <p>Inside Central Park, near the shrine, is a wide artificial cascade called Shinjuku Niagara Falls (新宿ナイアガラの滝), finished in 1982 and lit in summer. Some travel sites call it a memorial to the Jūnisō falls. Shinjuku City's own material does not say so. Enjoy it for what it is: a 1980s park feature close to where the real falls once were.</p>
+  <div class="facts">
+    <div><b>Getting there:</b> Shinjuku Central Park, 2 min from Kumano Jinja</div>
+    <div><b>When:</b> Best on a summer evening when it is lit</div>
+    <div><b>Reality check:</b> Not a reconstruction. Nearby is a stone marking the birthplace of the Japanese photographic industry, for the film factory.</div>
+  </div>
+
+  <p class="side chili">Thread two · the chili</p>
+
+  <h2>A samurai estate measured by a horse<span class="jp">内藤家下屋敷 · the Naitō estate</span></h2>
+  <p>In 1590 Tokugawa Ieyasu gave land west of Edo to his retainer Naitō Kiyonari. The Ministry of the Environment, which runs Shinjuku Gyoen, tells the story that Kiyonari was allowed whatever he could ride around on horseback, and came away with about 70 hectares. Much of that is today's garden.</p>
+  <p>A post town grew up beside the estate on the Kōshū road around 1698–99. It was called Naitō-Shinjuku, "the Naitō new post town", and that is where the name Shinjuku comes from. Shinjuku Station opened in 1885 as 内藤新宿駅.</p>
+  <p>On the estate and in the farms around it, people grew a chili called yatsufusa (八房), whose pods grow in clusters pointing up. Edo had a soba craze; the revival project cites 3,700 soba shops, and soba needs a spice. The fields around Naitō-Shinjuku, the project says, looked like a red carpet at harvest. Street sellers cried "Naitō-Shinjuku's yatsufusa, roasted chili".</p>
+</main>
+
+<figure class="wide">
+  <div class="fig">
+    <svg viewBox="0 0 900 230" role="img" aria-label="Timeline of Naitō tōgarashi from 1590 to 2018">
+      <line x1="40" y1="110" x2="860" y2="110" class="l-ink" stroke-width="2"/>
+      <!-- 1590..2030 => 40..860 : x = 40 + (y-1590)*1.8636 -->
+      <g font-size="12">
+        <circle cx="40" cy="110" r="6" class="s-chili"/><text x="44" y="86" class="s-chili" font-weight="700">1590</text><text x="44" y="142" class="s-soft">land to Naitō</text>
+        <circle cx="244" cy="110" r="6" class="s-ink"/><text x="244" y="86" text-anchor="middle" class="s-ink" font-weight="700">1699</text><text x="244" y="142" text-anchor="middle" class="s-soft">post town</text>
+        <rect x="244" y="100" width="280" height="20" class="s-chilibg"/>
+        <text x="384" y="74" text-anchor="middle" class="s-chili" font-weight="700">Edo soba boom · red fields</text>
+        <circle cx="557" cy="110" r="6" class="s-ink"/><text x="557" y="142" text-anchor="middle" class="s-soft">1872 farm station</text><text x="557" y="158" text-anchor="middle" class="s-soft">(chili already fading)</text>
+        <circle cx="768" cy="110" r="6" class="s-chili"/><text x="768" y="86" text-anchor="middle" class="s-chili" font-weight="700">2010</text><text x="768" y="142" text-anchor="middle" class="s-soft">revival</text>
+        <circle cx="783" cy="110" r="6" class="s-chili"/><text x="800" y="64" text-anchor="middle" class="s-chili" font-weight="700">2013</text><text x="800" y="50" text-anchor="middle" class="s-soft">Edo-Tokyo vegetable</text>
+        <circle cx="792" cy="110" r="6" class="s-chili"/><text x="830" y="142" text-anchor="middle" class="s-chili" font-weight="700">2018</text><text x="830" y="158" text-anchor="middle" class="s-soft">trademark</text>
+      </g>
+      <text x="40" y="210" class="s-faint" font-size="12">To scale. The chili was gone for roughly a century and a half before anyone looked for the seeds.</text>
+    </svg>
+  </div>
+  <figcaption>Two hundred years of red fields, then nothing. The whole revival fits into the last sliver of the line.</figcaption>
+</figure>
+
+<main class="col">
+  <h2>The chili came back<span class="jp">内藤とうがらし · Naitō tōgarashi</span></h2>
+  <p>The chili disappeared as the fields became town, and as the hotter takanotsume variety took over. In 2010 a local project led by Narita Shigeyuki went looking for yatsufusa seeds and started growing them again. Tokyo recognised it as an Edo-Tokyo traditional vegetable in 2013, and it became a registered regional trademark in 2018. It is milder than most Japanese chili, with more flavour than heat.</p>
+  <p>You will not find it in a supermarket at random. The project lists its stockists, among them PLAY THE EARTH LABORATORY near Shinjuku Gyoen and, oddly, the Shinjuku Musashinokan cinema. A chili oil made with it was certified as a Shinjuku specialty in March 2026. A Naitō tōgarashi fair is held in October; the 2026 dates had not been published when this was checked.</p>
+  <blockquote class="phrase">In a shop near the garden, ask: <strong>内藤とうがらしはありますか</strong> (Naitō tōgarashi wa arimasu ka).</blockquote>
+  <div class="facts">
+    <div><b>Getting there:</b> Check the stockist list on the project site (naito-togarashi.tokyo) before you set out; addresses and hours change</div>
+    <div><b>When:</b> The fair is in October. Stocked products are on the shelf the rest of the year.</div>
+    <div><b>Reality check:</b> Whether you can see the plant growing inside Shinjuku Gyoen could not be confirmed. Don't plan your visit around it.</div>
+  </div>
+
+  <h2>The Naitō family temple<span class="jp">太宗寺 · Taisōji</span></h2>
+  <p>On the north side of the garden, Taisōji (太宗寺) is the Naitō clan's family temple. The grave of Naitō Masakatsu is a Shinjuku City historic site. The temple also holds a large seated Enma, judge of the dead, and a Datsueba, the old woman who strips the clothes from souls at the river of the underworld. Both statues are city-designated.</p>
+  <p>The Enma is the reason locals know the temple. A woodblock print from 1847 in the Edo-Tokyo Museum collection reports an incident in which someone gouged out the statue's eyes. The hall is opened only on 15–16 January and 15–16 July.</p>
+  <div class="facts">
+    <div><b>Getting there:</b> 新宿2-9-2, north of Shinjuku Gyoen. Nearest is Shinjuku-gyoemmae Station (新宿御苑前駅) on the Marunouchi Line; check the walk on a map.</div>
+    <div><b>When:</b> Grounds by day. Enma hall open 15–16 January and 15–16 July only.</div>
+    <div><b>Reality check:</b> On the other 361 days you see the outside of the hall. The grave and grounds are still worth ten minutes if you are at the garden.</div>
+  </div>
+</main>
+
+<figure class="wide">
+  <div class="fig">
+    <svg viewBox="0 0 900 200" role="img" aria-label="Walking and train order for one day">
+      <g font-size="13">
+        <line x1="60" y1="80" x2="840" y2="80" class="l-pond" stroke-width="3"/>
+        <line x1="450" y1="80" x2="560" y2="80" class="l-ink" stroke-width="3" stroke-dasharray="6 5"/>
+        <circle cx="60" cy="80" r="12" class="s-pond"/><text x="60" y="85" text-anchor="middle" class="s-paper" font-weight="700">1</text>
+        <text x="60" y="118" text-anchor="middle" class="s-ink" font-weight="700">City Hall</text><text x="60" y="136" text-anchor="middle" class="s-soft">view</text>
+        <circle cx="190" cy="80" r="12" class="s-pond"/><text x="190" y="85" text-anchor="middle" class="s-paper" font-weight="700">2</text>
+        <text x="190" y="118" text-anchor="middle" class="s-ink" font-weight="700">Kumano Jinja</text><text x="190" y="136" text-anchor="middle" class="s-soft">5 min walk</text>
+        <circle cx="320" cy="80" r="12" class="s-pond"/><text x="320" y="85" text-anchor="middle" class="s-paper" font-weight="700">3</text>
+        <text x="320" y="118" text-anchor="middle" class="s-ink" font-weight="700">Jūnisō-dōri</text><text x="320" y="136" text-anchor="middle" class="s-soft">slopes, shore</text>
+        <circle cx="450" cy="80" r="12" class="s-pond"/><text x="450" y="85" text-anchor="middle" class="s-paper" font-weight="700">4</text>
+        <text x="450" y="118" text-anchor="middle" class="s-ink" font-weight="700">Central Park</text><text x="450" y="136" text-anchor="middle" class="s-soft">lunch</text>
+        <text x="505" y="66" text-anchor="middle" class="s-faint">Marunouchi Line</text>
+        <circle cx="580" cy="80" r="12" class="s-chili"/><text x="580" y="85" text-anchor="middle" class="s-paper" font-weight="700">5</text>
+        <text x="580" y="118" text-anchor="middle" class="s-ink" font-weight="700">Shinjuku Gyoen</text><text x="580" y="136" text-anchor="middle" class="s-soft">¥500</text>
+        <circle cx="710" cy="80" r="12" class="s-chili"/><text x="710" y="85" text-anchor="middle" class="s-paper" font-weight="700">6</text>
+        <text x="710" y="118" text-anchor="middle" class="s-ink" font-weight="700">Chili shop</text><text x="710" y="136" text-anchor="middle" class="s-soft">by the garden</text>
+        <circle cx="840" cy="80" r="12" class="s-chili"/><text x="840" y="85" text-anchor="middle" class="s-paper" font-weight="700">7</text>
+        <text x="840" y="118" text-anchor="middle" class="s-ink" font-weight="700">Taisōji</text><text x="840" y="136" text-anchor="middle" class="s-soft">Naitō graves</text>
+      </g>
+      <text x="60" y="180" class="s-faint" font-size="12">Green: the pond thread, west of the station. Red: the chili thread, east of it.</text>
+    </svg>
+  </div>
+  <figcaption>West side in the morning, east side in the afternoon. The station sits between the two threads.</figcaption>
+</figure>
+
+<main class="col">
+  <h2>The honest part</h2>
+  <p>There is very little to see. The pond is gone, the falls are gone, the geisha quarter is apartment blocks, and the chili fields have been town for 150 years. If you do not enjoy reading a place from street names and a change in level, this will feel like a walk past ordinary buildings.</p>
+  <p>Several things could not be pinned down. The geisha district's designation year varies between sources, and nobody records when it ended. The chili fair's 2026 dates were not out. Whether the garden shows growing chili is unconfirmed. The stockist list changes.</p>
+  <p>Shinjuku Gyoen is closed on Mondays except in spring and early November, and from October to mid-March it closes at 16:30. City Hall's south observatory closes on the first and third Tuesdays; the north one then stays open instead. Taisōji's Enma hall is shut 361 days a year. Plan the day so the garden is not the thing you arrive late for.</p>
+
+  <h2>If you only have one day</h2>
+  <ol class="plan">
+    <li><time>9:30</time><span>Tokyo Metropolitan Government Building, south observatory opens. Find the park and the low strip beyond it.</span></li>
+    <li><time>10:15</time><span>Kumano Jinja: the 1851 stone, the 1820 water basin, the 1727 dogs.</span></li>
+    <li><time>10:45</time><span>Walk south on Jūnisō-dōri. Find 池の段坂 on the right.</span></li>
+    <li><time>11:30</time><span>Back through Central Park past the Niagara Falls. Lunch in Nishi-Shinjuku.</span></li>
+    <li><time>13:00</time><span>Marunouchi Line to Shinjuku-gyoemmae. Shinjuku Gyoen (not Monday).</span></li>
+    <li><time>15:00</time><span>Look for Naitō tōgarashi at a stockist near the garden.</span></li>
+    <li><time>15:45</time><span>Taisōji. Finish at the Shinjuku 3-chōme crossing, the old Oiwake fork where the Kōshū and Ōme roads split.</span></li>
+  </ol>
+  <p>If you are running late, drop the Niagara Falls and the chili shop. Keep Taisōji: the Naitō graves close the loop the horse story opened.</p>
+</main>
+
+<footer>
+  Sources: Jūnisō Kumano Jinja (12so-kumanojinja.or.jp), Shinjuku City leaflet and cultural-property list, Kōhō Shinjuku (2018, 2026), Ministry of the Environment Shinjuku Gyoen pages, Tokyo Metropolitan Government observatory notice, Naitō Tōgarashi Project (naito-togarashi.tokyo), Brooklyn Museum and NDL for Hiroshige No. 50, Ministry of Finance and NDL for Naitō-Shinjuku. Hours and fees checked October 2026; check before you go.
+</footer>
+
+<!-- Cloudflare Web Analytics（Cookieを使わない。個人は追わない。何人・どのページ・どの国・どこから、だけ）-->
+<script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "a549632ca5ba440a9dbdfd24bcbe11e5"}'></script>
+</body>
+</html>
