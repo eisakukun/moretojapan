@@ -148,6 +148,7 @@
   .vb.ok.on{background:var(--ok);border-color:var(--ok);color:#fff}
   .vb.ng.on{background:var(--ng);border-color:var(--ng);color:#fff}
   .vb:disabled{cursor:default;opacity:.7}
+  .vhint{font-size:12.5px;color:var(--sub);margin-top:6px}
   .opv{font-size:13px;color:var(--sub);margin-left:auto}
   .opv b{font-size:18px}
   .verdict{margin-top:8px;font-weight:800;font-size:15px}
@@ -467,6 +468,8 @@ const T = {
     guessing: "Your partner is guessing", yourLang: "your language", theirLang: "partner's language",
     whoWrote: w => (w ? "You wrote — your partner guessed" : "Your partner wrote — you guessed"),
     turnOf: w => (w ? "you write" : "you guess"),
+    voteFree: "You can change ○ / × as many times as you like until you press “Done”.",
+    voteLocked: "Sent — waiting for your partner.",
     exact: who => (who === "you" ? "✓ Exact match → +1 for you (no need to judge)" : "✓ Exact match → +1 for your partner (no need to judge)"), judging: "Waiting for both of you to judge…",
   },
   ja: {
@@ -497,6 +500,8 @@ const T = {
     guessing: "あいてが当てています", yourLang: "自分の言葉", theirLang: "相手の言葉",
     whoWrote: w => (w ? "あなたが書いた ── あいてが当てた" : "あいてが書いた ── あなたが当てた"),
     turnOf: w => (w ? "あなたが書く" : "あなたが当てる"),
+    voteFree: "「決めた」を押すまでは、○と×を何度でも変えられます。",
+    voteLocked: "出しました。あいてを待っています。",
     exact: who => `✓ ぴったり正解 → ${who}に1点（ジャッジ不要）`, judging: "ふたりのジャッジ待ち…",
   }
 };
@@ -1008,6 +1013,11 @@ function guessList(t) {
   return t.guesses.map((g, i) => `<span class="gl${t.auto && i === t.guesses.length - 1 ? " auto" : ""}">${i + 1}. ${esc(g)}</span>`).join("")
     + (t.why === "time" ? `<span class="gl" style="color:var(--sub)">⏱ ${tt("timeUp")}</span>` : "");
 }
+/* ○×のボタンは描き直すたびに作り直すので、押したのは箱で受ける（取りこぼさない） */
+$("voteBox").addEventListener("click", e => {
+  const b = e.target.closest(".vb"); if (!b || S.readyMe) return;
+  castVote(b.dataset.v === "1");
+});
 function castVote(v) {
   if (S.readyMe) return;
   S.votes.me = v;
@@ -1029,8 +1039,8 @@ function renderVotes() {
     <button class="vb ok${vt.me === true ? " on" : ""}" data-v="1"${S.readyMe ? " disabled" : ""}>○</button>
     <button class="vb ng${vt.me === false ? " on" : ""}" data-v="0"${S.readyMe ? " disabled" : ""}>×</button>
     <span class="opv">${tt("partnerSays")} <b>${opMark}</b></span></div>
-    <div class="verdict ${cls}">${vd}</div>`;
-  box.querySelectorAll(".vb").forEach(b => b.onclick = () => castVote(b.dataset.v === "1"));
+    <div class="verdict ${cls}">${vd}</div>
+    <div class="vhint">${tt(S.readyMe ? "voteLocked" : "voteFree")}</div>`;
   $("bNext").disabled = S.readyMe || vt.me == null;
 }
 

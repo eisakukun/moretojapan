@@ -785,8 +785,10 @@ const T = {
              en: c => "Tell your opponent this code →<br><b>" + c + "</b>" },
   code4:    { ja: "4もじの CODE を入れてね", en: "Enter the 4-letter CODE" },
   connecting:{ ja: "せつぞく中…", en: "Connecting…" },
-  noRoom:   { ja: "その CODE の部屋が見つかりません。もう一度たしかめてね。",
-             en: "No room found for that CODE. Please check and retry." },
+  noRoom:   { ja: "その CODE の部屋が見つかりません。4文字をたしかめて、部屋を作った人にページを開いたままにしてもらってね。",
+             en: "No room found for that CODE. Check the 4 letters, and ask your friend to keep the room page open." },
+  notYet:   { ja: s => "まだ部屋が見つかりません。部屋を作った人がページから離れているかも。戻ってきてもらってね。入り直し中… " + s + "びょう",
+             en: s => "Can't find the room yet — your friend may have left the page. Ask them to come back to it. Trying again… " + s + "s" },
   connected:{ ja: "つながった！ はじめます…", en: "Connected! Starting…" },
   connectingN:{ ja: s => "せつぞく中… " + s + "びょう", en: s => "Connecting… " + s + "s" },
   joinSlow: { ja: "つながりませんでした。相手が「部屋をつくる」の画面を開いたままか、たしかめてね。",
@@ -1041,12 +1043,15 @@ let myStream = null;
 
 function send(o) { if (conn && conn.open) { try { conn.send(o); } catch (e) {} } }
 
+/* 入り直しで線が何本か同時につながることがある。最初の1本だけ使い、残りは黙って閉じる
+   （余った線が閉じたのを「あいてが切断した」と取りちがえないように） */
 function wireConn(c) {
   conn = c;
-  c.on("data", onData);
-  c.on("close", () => { if (playing) endGame(null, tt("disc")); });
+  c.on("data", d => { if (c === conn) onData(d); });
+  c.on("close", () => { if (c === conn && playing) endGame(null, tt("disc")); });
   c.on("error", () => {});
   c.on("open", () => {
+    if (c !== conn) { if (conn && conn.open) { c.close(); return; } conn = c; }
     if (isHost) {
       send({ t: "cfg", level: CFG.level, genre: CFG.genre });
       say(tt("connected"));
@@ -1067,13 +1072,31 @@ function initPeer(id) {
     peer = new Peer(id || undefined, { debug: 0 });
     peer.on("open", pid => res(pid));
     peer.on("error", e => rej(e));
-    peer.on("connection", c => { if (isHost) wireConn(c); });
+    peer.on("connection", c => {
+      if (!isHost) return;
+      if (conn && conn.open) { c.on("open", () => c.close()); return; }   // 3人目は入れない
+      wireConn(c);
+    });
+    /* スマホで別のアプリ（LINEなど）に切り替えると、ブラウザが受付（PeerJSのサーバ）との線を切る。
+       受付から消えると、相手には「その部屋は無い」と返されてしまう。切れたら同じ番号でつなぎ直す */
+    peer.on("disconnected", () => setTimeout(revivePeer, 300));
     peer.on("call", call => {
       call.answer(outboundStream());
       call.on("stream", s => { opVid.srcObject = s; opVid.muted = false; opVid.play().catch(() => {}); });
     });
   });
 }
+
+async function revivePeer() {
+  if (!peer) return;
+  if (peer.disconnected && !peer.destroyed) { try { peer.reconnect(); } catch (e) {} return; }
+  // 受付に番号ごと捨てられていたら、同じ番号でもう一度部屋を開く（まだ相手が来ていないときだけ）
+  if (peer.destroyed && isHost && roomCode && !(conn && conn.open)) {
+    try { await initPeer(PREFIX + roomCode); } catch (e) {}
+  }
+}
+document.addEventListener("visibilitychange", () => { if (!document.hidden) revivePeer(); });
+addEventListener("pageshow", () => revivePeer());
 
 function callPeer(otherId) {
   if (!peer) return;
@@ -1636,48 +1659,31 @@ $("bCam").addEventListener("click", async () => {
    PeerJS は、そのIDが本当に登録されていないときだけ peer-unavailable を投げる。
    これだけが「部屋が無い」の確かな合図なので、それを使う。
    時間切れは「部屋が無い」ではなく時間切れとして、別の文言を出す。 */
-const JOIN_TRIES = 3;        // 部屋を作った直後はブローカーに行き渡っておらず、空振りすることがある
-const JOIN_WAIT_MS = 20000;  // 全体でこれだけ待つ
-const NOROOM_GRACE_MS = 5000; // 「部屋が無い」と言われてから、念のため待つ時間
+const JOIN_WAIT_MS = 90000;  // 全体でこれだけ待つ
+const KNOCK_MS = 3000;       // 入り直す間隔
 
+/* 「部屋が無い」と言われても、部屋を作った人が別のアプリ（LINEなど）にいて、
+   一時的に受付から外れているだけのことが多い。3秒おきに入り直し、
+   90秒たっても見つからないときだけ「無い」と出す */
 function joinRoom(fullId) {
-  let done = false, tries = 0, unavailAt = 0;
+  let done = false, unavail = false, next = 0;
   const t0 = performance.now();
-  const timers = [];
-  const later = (fn, ms) => { timers.push(setTimeout(fn, ms)); };
-  const stop = () => { done = true; clearInterval(tick); timers.forEach(clearTimeout); };
-
-  /* peer-unavailable = そのIDは登録されていない、という PeerJS からの返事。
-     ただし一度これを受けたあとの peer.connect() は無反応になることがあり、
-     「エラーが何回来たか」では数えられない。受けた時刻を覚えておいて、
-     そこから NOROOM_GRACE_MS 開かなければ部屋は無い、と決める。 */
-  peer.on("error", e => {
-    if (done || !e || e.type !== "peer-unavailable") return;
-    if (!unavailAt) unavailAt = performance.now();
-    // 部屋を作った直後はブローカーに行き渡っていないことがあるので、数回だけ入れ直す
-    if (++tries < JOIN_TRIES) later(() => { if (!done) attempt(); }, 1200);
-  });
-
-  function attempt() {
-    wireConn(peer.connect(fullId, { reliable: true }));
-    // 顔出しに関わらず必ず接続（会話の音声もこの回線で流れる）
-    later(() => { if (!done) callPeer(fullId); }, 900);
-  }
+  const stop = () => { done = true; clearInterval(tick); };
+  peer.on("error", e => { if (!done && e && e.type === "peer-unavailable") unavail = true; });
+  const knock = () => { next = performance.now() + KNOCK_MS; wireConn(peer.connect(fullId, { reliable: true })); };
 
   // つながるまで何秒たったかを出す。黙って固まるのが一番こわい
   const tick = setInterval(() => {
     if (done) return;
-    if (playing || (conn && conn.open)) { stop(); return; }   // つながった。ここが最優先
-    const ms = performance.now() - t0;
-    if (unavailAt && performance.now() - unavailAt >= NOROOM_GRACE_MS) {
-      stop(); say(tt("noRoom"), true); return;                 // CODEが違う／部屋が閉じた
-    }
-    if (ms >= JOIN_WAIT_MS) { stop(); say(tt("joinSlow"), true); return; }  // ただの時間切れ
-    say(tt("connectingN", Math.round(ms / 1000)));
+    if (playing || (conn && conn.open)) { stop(); callPeer(fullId); return; }   // つながった。顔と声はここから1回だけかける
+    const ms = performance.now() - t0, sec = Math.round(ms / 1000);
+    if (ms >= JOIN_WAIT_MS) { stop(); say(unavail ? tt("noRoom") : tt("joinSlow"), true); return; }
+    if (performance.now() >= next) knock();
+    say(unavail ? tt("notYet", sec) : tt("connectingN", sec));
   }, 1000);
 
   say(tt("connecting"));
-  attempt();
+  knock();
 }
 
 /* キーボード操作 */
