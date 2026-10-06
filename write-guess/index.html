@@ -175,6 +175,14 @@
   .how div{background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px 14px;font-size:14.5px}
   .how b{color:var(--aka);display:block}
 
+  .roleBox{margin:16px 0 -6px;text-align:center;font-weight:800;font-size:15px}
+  .roleBox span{display:inline-block;border-radius:999px;padding:4px 16px}
+  .roleBox .w{background:#fff4ef;color:var(--aka);border:1px solid #f1c6b6}
+  .roleBox .g{background:#eef2fa;color:var(--ai);border:1px solid #d3dcec}
+  .al{display:block;font-size:13px;color:var(--sub);margin:10px 0 4px}
+  input.full{width:100%}
+  .pad.live{pointer-events:none}
+  .rc .ans2{display:block;font-size:15px}
   [hidden]{display:none!important}
   footer{border-top:1px solid var(--line);margin-top:40px;padding:22px 0;color:var(--sub);font-size:14px}
   footer .wrap{display:flex;gap:16px;flex-wrap:wrap}
@@ -219,14 +227,14 @@
   <div class="hero">
     <div class="kicker" data-en="Free · no sign-up · 2 players" data-ja="無料・登録なし・2人で">Free · no sign-up · 2 players</div>
     <h1 data-en="Write &amp; Guess" data-ja="書いて、当てて">Write &amp; Guess</h1>
-    <p class="lead" data-en="Write a word by hand in <b>your own language</b> — the one your partner is learning. Then write the answer yourself, in <b>the language you are learning</b>. Your partner sees only your handwriting and answers in their own language. You both learn in the same round."
-       data-ja="<b>自分の言葉</b>（＝相手が習っている言葉）でひとつ手で書く。その答えは、<b>自分が学びたい言葉</b>で自分で書く。相手には手書きの字だけが見えて、相手は<b>自分の言葉</b>で答える。1回で、ふたりとも学べる。">Write a word by hand in <b>your own language</b> — the one your partner is learning. Then write the answer yourself, in <b>the language you are learning</b>. Your partner sees only your handwriting and answers in their own language. You both learn in the same round.</p>
+    <p class="lead" data-en="Take turns. The <b>writer</b> picks a topic and writes one word by hand in <b>their own language</b> — the one the partner is learning — and types the answer in <b>both languages</b>. The <b>guesser</b> watches it being written, then answers. Then you swap."
+       data-ja="交代で遊びます。<b>先攻（書く人）</b>はお題を決めて、<b>自分の言葉</b>（＝相手が習っている言葉）でひとつ手で書き、答えを<b>自分の言葉と相手の言葉の両方</b>で打っておく。<b>後攻（当てる人）</b>は書くところを見ていて、書き終わったら当てる。終わったら交代。">Take turns. The <b>writer</b> picks a topic and writes one word by hand in <b>their own language</b> — the one the partner is learning — and types the answer in <b>both languages</b>. The <b>guesser</b> watches it being written, then answers. Then you swap.</p>
   </div>
 
   <div class="how">
-    <div><b data-en="1 · Topic" data-ja="1 ・ お題">1 · Topic</b><span data-en="Roll the dice, or pick it yourself." data-ja="サイコロで決めるか、自分で選ぶ。">Roll the dice, or pick it yourself.</span></div>
-    <div><b data-en="2 · Write" data-ja="2 ・ 書く">2 · Write</b><span data-en="Write a word in your language. Type its answer in the language you are learning." data-ja="自分の言葉で字を書く。答えは学びたい言葉で打つ。">Write a word in your language. Type its answer in the language you are learning.</span></div>
-    <div><b data-en="3 · Guess" data-ja="3 ・ 当てる">3 · Guess</b><span data-en="Answer theirs in your own language — 3 tries, against the clock. Exact match = a point. Misses are judged together. First to 5 (or 10) wins." data-ja="相手の字を自分の言葉で答える。3回まで・時間制限つき。ぴったり正解はそのまま1点、外れはふたりでジャッジ。先に5点（か10点）で勝ち。">Answer theirs in your own language — 3 tries, against the clock. Exact match = a point. Misses are judged together. First to 5 (or 10) wins.</span></div>
+    <div><b data-en="1 · Writer: topic" data-ja="1 ・ 先攻：お題">1 · Writer: topic</b><span data-en="The writer rolls the dice or picks the topic. The guesser just watches." data-ja="先攻がサイコロか自分でお題を決める。後攻は見ているだけ。">The writer rolls the dice or picks the topic. The guesser just watches.</span></div>
+    <div><b data-en="2 · Writer: write" data-ja="2 ・ 先攻：書く">2 · Writer: write</b><span data-en="Write a word in your language. Type the answer in your language and in your partner's." data-ja="自分の言葉で字を書く。答えは自分の言葉と相手の言葉、両方で打っておく。">Write a word in your language. Type the answer in your language and in your partner's.</span></div>
+    <div><b data-en="3 · Guess" data-ja="3 ・ 当てる">3 · Guess</b><span data-en="The guesser answers — 3 tries, against the clock. Exact match = a point. Misses are judged together. Then swap. First to 5 (or 10) wins." data-ja="後攻が当てる。3回まで・時間制限つき。ぴったり正解はそのまま1点、外れはふたりでジャッジ。終わったら先攻と後攻を交代。先に5点（か10点）で勝ち。">The guesser answers — 3 tries, against the clock. Exact match = a point. Misses are judged together. Then swap. First to 5 (or 10) wins.</span></div>
   </div>
 
   <div class="panel">
@@ -283,9 +291,11 @@
 <!-- ============ ゲーム ============ -->
 <section id="sGame" hidden>
 
-  <!-- お題を決める -->
+  <div class="roleBox" id="roleBox"></div>
+
+  <!-- 先攻：お題を決める -->
   <div class="panel" id="pTopic" hidden>
-    <h2 data-en="Choose a topic" data-ja="お題を決める">Choose a topic</h2>
+    <h2 data-en="You are the writer — choose a topic" data-ja="あなたは先攻 ── お題を決める">You are the writer — choose a topic</h2>
     <p class="hint" data-en="Roll the dice — or just tap the one you want." data-ja="サイコロをふる。または、書きたいものを自分でタップ。">Roll the dice — or just tap the one you want.</p>
     <div class="row" style="margin-top:12px">
       <span id="die">🎲</span>
@@ -300,14 +310,14 @@
     </div>
   </div>
 
-  <!-- 書く -->
+  <!-- 先攻：書く -->
   <div class="panel" id="pWrite" hidden>
     <div class="row" style="justify-content:space-between">
       <h2 data-en="Write it by hand" data-ja="手で書く">Write it by hand</h2>
       <span class="topicTag" id="tagW"></span>
     </div>
-    <p class="hint" data-en="Write one word in <b>your own language</b> (the one your partner is learning). Example: a Japanese speaker writes 猫. Don't write the answer on the paper!"
-       data-ja="<b>自分の言葉</b>（相手が習っている言葉）でひとつ書く。例：日本人なら「猫」と書く。紙に答えは書かないこと！">Write one word in <b>your own language</b> (the one your partner is learning). Example: a Japanese speaker writes 猫. Don't write the answer on the paper!</p>
+    <p class="hint" data-en="Write one word in <b>your own language</b> (the one your partner is learning). Example: a Japanese speaker writes 猫. Your partner is watching you write!"
+       data-ja="<b>自分の言葉</b>（相手が習っている言葉）でひとつ書く。例：日本人なら「猫」と書く。書いているところは相手に見えています！">Write one word in <b>your own language</b> (the one your partner is learning). Example: a Japanese speaker writes 猫. Your partner is watching you write!</p>
     <div class="pad" id="pad"><canvas id="cv"></canvas></div>
     <div class="tools">
       <div class="seg" id="segPen">
@@ -318,14 +328,27 @@
       <button class="btn ghost sm" id="bUndo" data-en="↶ Undo" data-ja="↶ ひとつ戻す">↶ Undo</button>
       <button class="btn ghost sm" id="bClear" data-en="Clear" data-ja="ぜんぶ消す">Clear</button>
     </div>
-    <span class="lbl"><span data-en="The answer — in the language YOU are learning" data-ja="答え ── 自分が学びたい言葉で">The answer — in the language YOU are learning</span> <small data-en="(= your partner's language). Only you can see it. Several are OK: cat / kitty" data-ja="（＝相手の言葉）。相手には見えません。いくつでも可：cat / kitty">(= your partner's language). Only you can see it. Several are OK: cat / kitty</small></span>
-    <div class="ansRow">
-      <input type="text" id="ans" maxlength="60" autocomplete="off" data-ph-en="what it means, in the language you are learning" data-ph-ja="意味を、学びたい言葉で">
-      <button class="btn" id="bSend" disabled data-en="Send" data-ja="送る">Send</button>
+    <span class="lbl"><span data-en="The answer — in both languages" data-ja="答え ── 両方の言葉で">The answer — in both languages</span> <small data-en="(only you can see it until the end. Several are OK: cat / kitty)" data-ja="（終わるまで相手には見えません。いくつでも可：cat / kitty）">(only you can see it until the end. Several are OK: cat / kitty)</small></span>
+    <label class="al" data-en="in your language" data-ja="自分の言葉で">in your language</label>
+    <input type="text" id="ansMine" class="full" maxlength="60" autocomplete="off" data-ph-en="e.g. dog" data-ph-ja="例：ねこ / 猫">
+    <label class="al" data-en="in your partner's language (the one you are learning)" data-ja="相手の言葉で（自分が学びたい言葉）">in your partner's language (the one you are learning)</label>
+    <input type="text" id="ansTheirs" class="full" maxlength="60" autocomplete="off" data-ph-en="e.g. いぬ / 犬" data-ph-ja="例：cat">
+    <div style="text-align:center;margin-top:14px">
+      <button class="btn" id="bSend" disabled data-en="Done — let them guess" data-ja="書けた ── 当ててもらう">Done — let them guess</button>
     </div>
   </div>
 
-  <!-- 当てる -->
+  <!-- 後攻：見ているだけ -->
+  <div class="panel" id="pWatch" hidden>
+    <div class="row" style="justify-content:space-between">
+      <h2 id="watchTxt"></h2>
+      <span class="topicTag" id="tagWatch" hidden></span>
+    </div>
+    <p class="hint" data-en="You are the guesser. Watch — when they finish, it's your turn to answer." data-ja="あなたは後攻。見ていてください。書き終わったら、あなたが当てる番です。">You are the guesser. Watch — when they finish, it's your turn to answer.</p>
+    <div class="pad live"><canvas id="liveCv"></canvas></div>
+  </div>
+
+  <!-- 後攻：当てる -->
   <div class="panel" id="pGuess" hidden>
     <div class="row" style="justify-content:space-between">
       <div><h2 data-en="What does it say?" data-ja="なんと書いてある？">What does it say?</h2>
@@ -346,6 +369,14 @@
     <div style="text-align:right;margin-top:8px"><button class="btn ghost sm" id="bPass" data-en="I give up" data-ja="わからない">I give up</button></div>
   </div>
 
+  <!-- 先攻：当ててもらっているのを見る -->
+  <div class="panel" id="pWaitG" hidden>
+    <h2 data-en="Your partner is guessing" data-ja="あいてが当てています">Your partner is guessing</h2>
+    <img class="shot" id="myShot" alt="">
+    <div class="wrong" id="liveGuesses"></div>
+    <p class="wait"><span data-en="Waiting" data-ja="待っています">Waiting</span><span class="dots"></span></p>
+  </div>
+
   <!-- 待っている -->
   <div class="panel" id="pWaitOp" hidden>
     <p class="wait"><span id="waitTxt"></span><span class="dots"></span></p>
@@ -354,27 +385,18 @@
 
   <!-- 答え合わせ（ふたりでジャッジ） -->
   <div class="panel" id="pReveal" hidden>
-    <h2 data-en="Check the answers together" data-ja="答え合わせ ── ふたりでジャッジ">Check the answers together</h2>
-    <p class="hint" data-en="An exact match is already a point. For the misses, judge together — you are both learners, so the written answer itself can be wrong. A point goes in only when <b>both of you</b> press ○. If you split (○ and ×), the round is a draw — 0 points for both, and it does not count as a turn."
-       data-ja="ぴったり正解はそのまま1点。外れた札だけ、ふたりでジャッジします。どちらも学んでいる途中なので、書いた答えそのものがまちがっていることもあります。<b>ふたりとも○</b>のときだけ得点。○と×で分かれたら引き分けで、この回はふたりとも0点・ターンにも数えません。">An exact match is already a point. For the misses, judge together — you are both learners, so the written answer itself can be wrong. A point goes in only when <b>both of you</b> press ○.</p>
-    <div class="rv">
-      <div class="rc" id="rcOp">
-        <h3 data-en="Partner wrote — you guessed" data-ja="あいてが書いた ── あなたが当てる">Partner wrote — you guessed</h3>
-        <img id="rvOpImg" alt="">
-        <div class="ln"><small data-en="partner's answer" data-ja="あいてが書いた答え">partner's answer</small><b id="rvOpAns"></b></div>
-        <div class="ln"><small data-en="your answers" data-ja="あなたの答え">your answers</small><span id="rvOpGuess"></span></div>
-        <div class="vote" data-card="op"></div>
-      </div>
-      <div class="rc" id="rcMy">
-        <h3 data-en="You wrote — partner guessed" data-ja="あなたが書いた ── あいてが当てる">You wrote — partner guessed</h3>
-        <img id="rvMyImg" alt="">
-        <div class="ln"><small data-en="your answer" data-ja="あなたが書いた答え">your answer</small><b id="rvMyAns"></b></div>
-        <div class="ln"><small data-en="partner's answers" data-ja="あいての答え">partner's answers</small><span id="rvMyGuess"></span></div>
-        <div class="vote" data-card="my"></div>
-      </div>
+    <h2 data-en="Check the answer together" data-ja="答え合わせ ── ふたりでジャッジ">Check the answer together</h2>
+    <p class="hint" data-en="An exact match is already a point. For a miss, judge together — you are both learners, so the written answer itself can be wrong. A point goes in only when <b>both of you</b> press ○. If you split (○ and ×), it's a draw — no points, and the same writer goes again."
+       data-ja="ぴったり正解はそのまま1点。外れたときはふたりでジャッジします。どちらも学んでいる途中なので、書いた答えそのものがまちがっていることもあります。<b>ふたりとも○</b>のときだけ得点。○と×で分かれたら引き分けで点なし、同じ先攻でもう一回。">An exact match is already a point. For a miss, judge together — you are both learners, so the written answer itself can be wrong. A point goes in only when <b>both of you</b> press ○.</p>
+    <div class="rc" style="margin-top:12px">
+      <h3 id="rvWho"></h3>
+      <img id="rvImg" alt="">
+      <div class="ln"><small data-en="the writer's answer" data-ja="先攻が用意した答え">the writer's answer</small><b id="rvAns"></b></div>
+      <div class="ln"><small data-en="the guesser's answers" data-ja="後攻の答え">the guesser's answers</small><span id="rvGuess"></span></div>
+      <div class="vote" id="voteBox"></div>
     </div>
     <div style="text-align:center;margin-top:16px">
-      <button class="btn" id="bNext" data-en="Done — next round" data-ja="決めた ── 次へ">Done — next round</button>
+      <button class="btn" id="bNext" data-en="Done — swap turns" data-ja="決めた ── 交代">Done — swap turns</button>
       <div class="msg" id="msgN"></div>
     </div>
   </div>
@@ -440,6 +462,11 @@ const T = {
     split: "○ and × split → a draw: this round gives 0 points to both and does not count as a turn",
     voided: "— but this round is a draw, so it does not count",
     drawRound: "Last round was a draw (○ and × split) — no points, and it did not count as a turn.",
+    meW: "✍ You are the writer", meG: "👀 You are the guesser",
+    watchTopic: "Your partner is choosing a topic", watching: "Your partner is writing…",
+    guessing: "Your partner is guessing", yourLang: "your language", theirLang: "partner's language",
+    whoWrote: w => (w ? "You wrote — your partner guessed" : "Your partner wrote — you guessed"),
+    turnOf: w => (w ? "you write" : "you guess"),
     exact: who => (who === "you" ? "✓ Exact match → +1 for you (no need to judge)" : "✓ Exact match → +1 for your partner (no need to judge)"), judging: "Waiting for both of you to judge…",
   },
   ja: {
@@ -465,6 +492,11 @@ const T = {
     split: "○と×で分かれた → 引き分け：この回はふたりとも0点、ターンにも数えない",
     voided: "── でもこの回は引き分けなので数えない",
     drawRound: "さっきの回は○と×で分かれたので引き分け。点もターンも数えていません。",
+    meW: "✍ あなたは先攻（書く人）", meG: "👀 あなたは後攻（当てる人）",
+    watchTopic: "先攻のあいてがお題を決めています", watching: "先攻のあいてが書いています…",
+    guessing: "あいてが当てています", yourLang: "自分の言葉", theirLang: "相手の言葉",
+    whoWrote: w => (w ? "あなたが書いた ── あいてが当てた" : "あいてが書いた ── あなたが当てた"),
+    turnOf: w => (w ? "あなたが書く" : "あなたが当てる"),
     exact: who => `✓ ぴったり正解 → ${who}に1点（ジャッジ不要）`, judging: "ふたりのジャッジ待ち…",
   }
 };
@@ -482,15 +514,16 @@ const FACES = ["⚀","⚁","⚂","⚃","⚄","⚅"];
 const topicsNow = () => [...SETS[setIdx], ["Anything", "なんでも"]];
 const tName = t => (lang === "ja" ? t[1] : t[0]);
 
-/* ---------- 状態 ---------- */
+/* ---------- 状態 ----------
+   ターン制。先攻（書く人）と後攻（当てる人）を1回ずつ交代する。
+   S.turn が奇数なら部屋を作った人(H)が先攻 */
 const S = {
   cam: false, mic: false, goal: 5, time: 60,
-  isHost: false, code: "", round: 1, me: 0, op: 0,
-  myQ: null,      // 自分が書いた {topic, img, answer}
-  opQ: null,      // 相手が書いた {topic, img, answer}
-  myTry: null,    // 自分が当てた記録 {guesses:[], auto, done, why}
-  opTry: null,    // 相手が自分のを当てた記録 {guesses:[], auto, why}
-  votes: null,    // { op:{me,op}, my:{me,op} }  op=相手が書いた札 / my=自分が書いた札
+  isHost: false, code: "", round: 1, turn: 1, me: 0, op: 0,
+  topic: "",
+  q: null,        // この回の札 {topic, img, mine, theirs}（mine=書いた人の言葉 / theirs=当てる人の言葉）
+  tr: null,       // 後攻の記録 {guesses:[], auto, done, why}
+  votes: null,    // {me, op} この回の札への○×
   deadline: 0,
   readyMe: false, readyOp: false, over: false, againMe: false, againOp: false,
 };
@@ -508,7 +541,7 @@ function applyLang() {
   drawTopics(); paintBar();
   if (!$("pReveal").hidden) showReveal();
   if (!$("pEnd").hidden) showEnd();
-  if (S.myQ) $("tagW").textContent = S.myQ.topic;
+  if (!$("pWatch").hidden) showWatch();
 }
 $("lang").onclick = () => { lang = lang === "en" ? "ja" : "en"; applyLang(); };
 
@@ -533,7 +566,7 @@ function screen(name) {
   scrollTo(0, 0);
 }
 function panel(name) {
-  ["pTopic", "pWrite", "pGuess", "pWaitOp", "pReveal", "pEnd", "pGone"].forEach(p => { $(p).hidden = p !== name; });
+  ["pTopic", "pWrite", "pWatch", "pGuess", "pWaitG", "pWaitOp", "pReveal", "pEnd", "pGone"].forEach(p => { $(p).hidden = p !== name; });
 }
 function toast(t) { const e = $("toast"); e.textContent = t; e.classList.add("on"); clearTimeout(e._t); e._t = setTimeout(() => e.classList.remove("on"), 5000); }
 function waiting(txt, sub) { $("waitTxt").textContent = txt; $("waitSub").textContent = sub || ""; panel("pWaitOp"); }
@@ -669,17 +702,16 @@ function onData(m) {
   if (m.t === "cfg") { S.goal = m.goal; S.time = m.time || 60; paintBar(); return; }
   if (m.t === "again") { S.againOp = true; maybeRestart(); return; }
   if (m.round !== S.round) return;                        // 古いラウンドの話は捨てる
-  if (m.t === "q") { S.opQ = { topic: m.topic, img: m.img, answer: m.answer }; flow(); }
+  if (m.t === "topic") { S.topic = m.topic; if (!amW()) showWatch(); }
+  else if (m.t === "ink") { if (!amW()) drawLive(m.s || []); }
+  else if (m.t === "q") { S.q = { topic: m.topic, img: m.img, mine: m.mine, theirs: m.theirs }; if (!amW()) showGuess(); }
+  else if (m.t === "g") { if (amW()) addLiveGuess(m.text); }
   else if (m.t === "done") {
-    S.opTry = { guesses: m.guesses || [], auto: !!m.auto, why: m.why };
-    if (S.opTry.auto) S.votes.my = { me: true, op: true };   // ぴったり正解はジャッジしない
-    flow();
+    S.tr = { guesses: m.guesses || [], auto: !!m.auto, why: m.why, done: true };
+    if (S.tr.auto) S.votes = { me: true, op: true };       // ぴったり正解はジャッジしない
+    showReveal();
   }
-  else if (m.t === "vote") {
-    // 相手の票。m.card は「誰が書いた札か」（H=部屋を作った人 / G=入った人）
-    const key = m.card === myRole() ? "my" : "op";
-    S.votes[key].op = m.v; renderVotes();
-  }
+  else if (m.t === "vote") { S.votes.op = m.v; renderVotes(); }
   else if (m.t === "next") { S.readyOp = true; maybeNext(); }
 }
 const myRole = () => (S.isHost ? "H" : "G");
@@ -719,32 +751,31 @@ $("tCam").onclick = () => { S.cam = !S.cam; refreshMedia(); };
 $("tMic").onclick = () => { S.mic = !S.mic; refreshMedia(); };
 
 /* ============================================================
-   ゲームの流れ
-   ふたり同時に「お題→書く」→ 相手のを当てる → 答え合わせ → 次へ
+   ゲームの流れ（ターン制）
+   先攻：お題 → 書く（後攻にはリアルタイムで見える）→ 答えを両方の言葉で置く
+   後攻：見ている → 当てる → ふたりで答え合わせ → 交代
    ============================================================ */
+const writerRole = () => (S.turn % 2 === 1 ? "H" : "G");
+const amW = () => writerRole() === myRole();
+
 function newMatch() {
   Object.assign(S, { round: 1, turn: 1, me: 0, op: 0, over: false, againMe: false, againOp: false, fanfare: false });
   newRound();
 }
 function newRound() {
   stopTimer();
-  Object.assign(S, { myQ: null, opQ: null, myTry: null, opTry: null,
-    votes: { op: { me: null, op: null }, my: { me: null, op: null } },
-    readyMe: false, readyOp: false });
-  clearPad(); $("ans").value = ""; $("guess").value = ""; $("ownTopic").value = "";
+  Object.assign(S, { topic: "", q: null, tr: null, votes: { me: null, op: null }, readyMe: false, readyOp: false });
+  clearPad(); $("ansMine").value = ""; $("ansTheirs").value = ""; $("guess").value = ""; $("ownTopic").value = "";
+  $("liveGuesses").innerHTML = "";
   $("die").textContent = "🎲";
   drawTopics(); paintBar();
-  panel("pTopic");
+  if (amW()) panel("pTopic");
+  else { drawLive([]); showWatch(); }
 }
-
-/* 自分がいまどこにいるかを、持っているものから決める */
-function flow() {
-  if (S.over) return;
-  if (!S.myQ) return;                                         // まだ書いている
-  if (!S.opQ) { waiting(tt("waitWrite"), ""); return; }       // 相手がまだ書いている
-  if (!S.myTry || !S.myTry.done) { if ($("pGuess").hidden) showGuess(); return; }
-  if (!S.opTry) { waiting(tt("waitGuess"), tt("whyMine", S.myTry.why)); return; }
-  if ($("pReveal").hidden) showReveal(); else renderVotes();
+function showWatch() {
+  $("watchTxt").textContent = S.topic ? tt("watching") : tt("watchTopic");
+  $("tagWatch").hidden = !S.topic; $("tagWatch").textContent = S.topic;
+  if ($("pWatch").hidden) { panel("pWatch"); sizeLive(); }
 }
 
 /* ---------- お題 ---------- */
@@ -782,6 +813,7 @@ $("ownTopic").addEventListener("keydown", e => { if (e.key === "Enter") $("bOwn"
 
 function pickTopic(name) {
   S.topic = name;
+  send({ t: "topic", round: S.round, topic: name });
   $("tagW").textContent = name;
   panel("pWrite");
   sizePad();
@@ -819,7 +851,7 @@ function drawStrokes(ctx, W, list) {
 function redraw() {
   cx.clearRect(0, 0, cv.width, cv.height);
   drawStrokes(cx, cv.width, cur ? [...strokes, cur] : strokes);
-  canSend();
+  canSend(); pushInk();
 }
 function pt(e) {
   const r = cv.getBoundingClientRect();
@@ -841,9 +873,33 @@ cv.addEventListener("pointercancel", endStroke);
 $("bUndo").onclick = () => { strokes.pop(); redraw(); };
 $("bClear").onclick = () => { strokes = []; redraw(); };
 function clearPad() { strokes = []; cur = null; cx.clearRect(0, 0, cv.width, cv.height); canSend(); }
-function canSend() { $("bSend").disabled = !(strokes.length && $("ans").value.trim()); }
-$("ans").addEventListener("input", canSend);
-$("ans").addEventListener("keydown", e => { if (e.key === "Enter" && !$("bSend").disabled) $("bSend").click(); });
+function canSend() { $("bSend").disabled = !(strokes.length && $("ansMine").value.trim() && $("ansTheirs").value.trim()); }
+["ansMine", "ansTheirs"].forEach(id => $(id).addEventListener("input", canSend));
+
+/* 書いている線を後攻に流す（0.12秒に1回まで）。後攻は見ているだけ */
+let inkT = 0, inkPending = false;
+function pushInk() {
+  if (!amW() || $("pWrite").hidden) return;
+  const now = Date.now();
+  if (now - inkT < 120) { if (!inkPending) { inkPending = true; setTimeout(() => { inkPending = false; pushInk(); }, 130); } return; }
+  inkT = now;
+  const r = v => Math.round(v * 1000) / 1000;
+  const list = (cur ? [...strokes, cur] : strokes).map(s => ({ w: s.w, pts: s.pts.map(p => [r(p[0]), r(p[1])]) }));
+  send({ t: "ink", round: S.round, s: list });
+}
+const lcv = $("liveCv"), lcx = lcv.getContext("2d");
+let liveList = [];
+function sizeLive() {
+  const r = lcv.getBoundingClientRect(), d = Math.min(devicePixelRatio || 1, 2);
+  lcv.width = Math.round(r.width * d); lcv.height = Math.round(r.height * d);
+  drawLive(liveList);
+}
+function drawLive(list) {
+  liveList = list;
+  lcx.clearRect(0, 0, lcv.width, lcv.height);
+  drawStrokes(lcx, lcv.width, list);
+}
+addEventListener("resize", () => { if (!$("pWatch").hidden) sizeLive(); });
 
 function exportImg() {
   const c = document.createElement("canvas"); c.width = c.height = 480;
@@ -852,13 +908,18 @@ function exportImg() {
   return c.toDataURL("image/png");
 }
 $("bSend").onclick = () => {
-  const answer = $("ans").value.trim();
-  if (!strokes.length || !answer) return;
-  S.myQ = { topic: S.topic, img: exportImg(), answer };
-  send({ t: "q", round: S.round, topic: S.topic, img: S.myQ.img, answer });
+  const mine = $("ansMine").value.trim(), theirs = $("ansTheirs").value.trim();
+  if (!strokes.length || !mine || !theirs) return;
+  S.q = { topic: S.topic, img: exportImg(), mine, theirs };
+  send({ t: "q", round: S.round, topic: S.topic, img: S.q.img, mine, theirs });
   blip(520, .08);
-  flow();
+  $("myShot").src = S.q.img; $("liveGuesses").innerHTML = "";
+  panel("pWaitG");
 };
+function addLiveGuess(text) {
+  const sp = document.createElement("span"); sp.textContent = text;
+  $("liveGuesses").appendChild(sp); blip(300, .05);
+}
 
 /* ---------- 当てる ----------
    3回まで。ぴったり合えばその場で○。時間切れか3回まちがいで、強制的にターン終了。
@@ -867,9 +928,9 @@ $("bSend").onclick = () => {
 const TRIES = 3;
 let timerIv = 0;
 function showGuess() {
-  if (!S.myTry) S.myTry = { guesses: [], auto: false, done: false, why: "" };
-  $("tagG").textContent = S.opQ.topic;
-  $("opShot").src = S.opQ.img;
+  if (!S.tr) S.tr = { guesses: [], auto: false, done: false, why: "" };
+  $("tagG").textContent = S.q.topic;
+  $("opShot").src = S.q.img;
   $("guess").value = ""; $("guess").disabled = false; $("bGuess").disabled = false;
   paintTries();
   panel("pGuess");
@@ -888,29 +949,30 @@ function tickTimer() {
 }
 function stopTimer() { clearInterval(timerIv); timerIv = 0; }
 function paintTries() {
-  const used = S.myTry ? S.myTry.guesses.length : 0;
+  const used = S.tr ? S.tr.guesses.length : 0;
   $("tries").textContent = "●".repeat(TRIES - used) + "○".repeat(used);
-  $("wrongs").innerHTML = (S.myTry ? S.myTry.guesses : []).map(g => `<span>${esc(g)}</span>`).join("");
+  $("wrongs").innerHTML = (S.tr ? S.tr.guesses : []).map(g => `<span>${esc(g)}</span>`).join("");
 }
 const esc = t => String(t).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 function tryGuess(text) {
-  if (!S.myTry || S.myTry.done) return;
-  S.myTry.guesses.push(text);
+  if (!S.tr || S.tr.done) return;
+  S.tr.guesses.push(text);
   $("guess").value = "";
-  if (autoMatch(text, S.opQ.answer)) { S.myTry.auto = true; blip(880, .15); finishTry("ok"); return; }
+  send({ t: "g", round: S.round, text });
+  if (autoMatch(text, S.q.mine + "/" + S.q.theirs)) { S.tr.auto = true; blip(880, .15); finishTry("ok"); return; }
   blip(200, .12);
   const p = $("pGuess"); p.classList.remove("shake"); void p.offsetWidth; p.classList.add("shake");
   paintTries();
-  if (S.myTry.guesses.length >= TRIES) finishTry("miss");
+  if (S.tr.guesses.length >= TRIES) finishTry("miss");
   else $("guess").focus();
 }
 function finishTry(why) {
-  if (!S.myTry || S.myTry.done) return;
+  if (!S.tr || S.tr.done) return;
   stopTimer();
-  S.myTry.done = true; S.myTry.why = why;
-  if (S.myTry.auto) S.votes.op = { me: true, op: true };   // ぴったり正解はジャッジしない。そのまま1点
-  send({ t: "done", round: S.round, guesses: S.myTry.guesses, auto: S.myTry.auto, why });
-  flow();
+  S.tr.done = true; S.tr.why = why;
+  if (S.tr.auto) S.votes = { me: true, op: true };   // ぴったり正解はジャッジしない。そのまま1点
+  send({ t: "done", round: S.round, guesses: S.tr.guesses, auto: S.tr.auto, why });
+  showReveal();
 }
 $("bGuess").onclick = () => { const v = $("guess").value.trim(); if (v) tryGuess(v); };
 $("guess").addEventListener("keydown", e => { if (e.key === "Enter") $("bGuess").click(); });
@@ -927,17 +989,15 @@ function autoMatch(guess, answer) {
 }
 
 /* ---------- 答え合わせ（ふたりでジャッジ） ----------
-   札は2枚。どちらの札も、ふたりが○×を押す。ふたりとも○のときだけ、当てた人に1点 */
+   札は1枚。ふたりが○×を押し、ふたりとも○のときだけ後攻に1点 */
 function showReveal() {
   stopTimer();
-  // 相手の札（自分が当てた）
-  $("rvOpImg").src = S.opQ.img;
-  $("rvOpAns").textContent = S.opQ.answer;
-  $("rvOpGuess").innerHTML = guessList(S.myTry);
-  // 自分の札（相手が当てた）
-  $("rvMyImg").src = S.myQ.img;
-  $("rvMyAns").textContent = S.myQ.answer;
-  $("rvMyGuess").innerHTML = guessList(S.opTry);
+  const w = amW();
+  $("rvWho").textContent = tt("whoWrote", w);
+  $("rvImg").src = S.q.img;
+  $("rvAns").innerHTML = `<span class="ans2">${esc(S.q.mine)} <small style="display:inline;color:var(--sub)">（${tt(w ? "yourLang" : "theirLang")}）</small></span>` +
+    `<span class="ans2">${esc(S.q.theirs)} <small style="display:inline;color:var(--sub)">（${tt(w ? "theirLang" : "yourLang")}）</small></span>`;
+  $("rvGuess").innerHTML = guessList(S.tr);
   $("bNext").disabled = S.readyMe;
   say("msgN", S.readyMe ? tt("waitNext") : "");
   panel("pReveal");
@@ -948,61 +1008,55 @@ function guessList(t) {
   return t.guesses.map((g, i) => `<span class="gl${t.auto && i === t.guesses.length - 1 ? " auto" : ""}">${i + 1}. ${esc(g)}</span>`).join("")
     + (t.why === "time" ? `<span class="gl" style="color:var(--sub)">⏱ ${tt("timeUp")}</span>` : "");
 }
-function castVote(key, v) {
+function castVote(v) {
   if (S.readyMe) return;
-  S.votes[key].me = v;
-  send({ t: "vote", round: S.round, card: key === "my" ? myRole() : opRole(), v });
+  S.votes.me = v;
+  send({ t: "vote", round: S.round, v });
   renderVotes();
 }
 function renderVotes() {
-  if ($("pReveal").hidden && !S.opTry) return;
-  document.querySelectorAll(".vote").forEach(box => {
-    const key = box.dataset.card, vt = S.votes[key];
-    const who = key === "op" ? tt("you") : tt("partner");
-    const tr = key === "op" ? S.myTry : S.opTry;
-    if (tr && tr.auto) { box.innerHTML = `<div class="verdict ok">${tt("exact", who)}</div>`; return; }
-    const opMark = vt.op == null ? "…" : vt.op ? "○" : "×";
-    let vd, cls;
-    if (vt.me && vt.op) { vd = tt("point", who); cls = "ok"; }
-    else if (vt.me != null && vt.op != null && vt.me !== vt.op) { vd = tt("split"); cls = "ng"; }
-    else if (vt.me != null && vt.op != null) { vd = tt("noPoint"); cls = "ng"; }
-    else { vd = tt("judging"); cls = "wait"; }
-    box.innerHTML = `<div class="vrow"><span class="q">${tt("isRight", who)}</span>
-      <button class="vb ok${vt.me === true ? " on" : ""}" data-v="1"${S.readyMe ? " disabled" : ""}>○</button>
-      <button class="vb ng${vt.me === false ? " on" : ""}" data-v="0"${S.readyMe ? " disabled" : ""}>×</button>
-      <span class="opv">${tt("partnerSays")} <b>${opMark}</b></span></div>
-      <div class="verdict ${cls}">${vd}</div>`;
-    box.querySelectorAll(".vb").forEach(b => b.onclick = () => castVote(key, b.dataset.v === "1"));
-  });
-  $("bNext").disabled = S.readyMe || S.votes.op.me == null || S.votes.my.me == null;
-  // ○×が分かれた札があれば、この回は引き分け。ほかの札の「1点」も数えないと書き添える
-  const sp = ["op", "my"].some(k => S.votes[k].me != null && S.votes[k].op != null && S.votes[k].me !== S.votes[k].op);
-  if (sp) document.querySelectorAll(".verdict.ok").forEach(e => { e.className = "verdict ng"; e.textContent += " " + tt("voided"); });
+  if ($("pReveal").hidden) return;
+  const box = $("voteBox"), vt = S.votes;
+  const who = amW() ? tt("partner") : tt("you");
+  if (S.tr && S.tr.auto) { box.innerHTML = `<div class="verdict ok">${tt("exact", who)}</div>`; $("bNext").disabled = S.readyMe; return; }
+  const opMark = vt.op == null ? "…" : vt.op ? "○" : "×";
+  let vd, cls;
+  if (vt.me && vt.op) { vd = tt("point", who); cls = "ok"; }
+  else if (vt.me != null && vt.op != null && vt.me !== vt.op) { vd = tt("split"); cls = "ng"; }
+  else if (vt.me != null && vt.op != null) { vd = tt("noPoint"); cls = "ng"; }
+  else { vd = tt("judging"); cls = "wait"; }
+  box.innerHTML = `<div class="vrow"><span class="q">${tt("isRight", who)}</span>
+    <button class="vb ok${vt.me === true ? " on" : ""}" data-v="1"${S.readyMe ? " disabled" : ""}>○</button>
+    <button class="vb ng${vt.me === false ? " on" : ""}" data-v="0"${S.readyMe ? " disabled" : ""}>×</button>
+    <span class="opv">${tt("partnerSays")} <b>${opMark}</b></span></div>
+    <div class="verdict ${cls}">${vd}</div>`;
+  box.querySelectorAll(".vb").forEach(b => b.onclick = () => castVote(b.dataset.v === "1"));
+  $("bNext").disabled = S.readyMe || vt.me == null;
 }
 
-/* 目標に先に届いたら勝ち。同じラウンドでふたり同時に届いて同点なら、もう1回戦 */
+/* 先に目標に届いたら勝ち。ただし先攻・後攻を同じ回数ずつやり終えた時点でだけ決める
+   （先に当てる番が来た人だけ得をしないように）。同点なら続ける */
 function isOver() {
-  const g = S.goal;
-  if (S.me < g && S.op < g) return null;
+  const done = S.turn - 1;
+  if (done % 2 !== 0) return null;
+  if (S.me < S.goal && S.op < S.goal) return null;
   if (S.me === S.op) return "tie";
   return S.me > S.op ? "win" : "lose";
 }
 $("bNext").onclick = () => {
-  S.readyMe = true; renderVotes();
+  S.readyMe = true; renderVotes(); $("bNext").disabled = true;
   send({ t: "next", round: S.round });
   say("msgN", tt("waitNext"));
   maybeNext();
 };
-/* ふたりとも「決めた」を押したら、その時点の票で点を足す（両方の画面で同じ計算になる） */
+/* ふたりとも「交代」を押したら、その時点の票で点を足す（両方の画面で同じ計算になる） */
 function maybeNext() {
   if (!S.readyMe || !S.readyOp) return;
   const v = S.votes;
-  /* ○と×で分かれた札が1枚でもあれば、この回は引き分け。
-     ふたりとも0点、ターンの数にも入れない（もう一度同じ回をやる） */
-  const split = v.op.me !== v.op.op || v.my.me !== v.my.op;
+  /* ○と×で分かれたら引き分け。点なし・交代もしない（同じ先攻でもう一回） */
+  const split = v.me !== v.op;
   if (!split) {
-    if (v.op.me && v.op.op) S.me++;
-    if (v.my.me && v.my.op) S.op++;
+    if (v.me && v.op) { if (amW()) S.op++; else S.me++; }
     S.turn++;
   }
   paintBar();
@@ -1040,7 +1094,8 @@ function leave() { location.href = location.pathname; }
 function paintBar() {
   $("ptMe").textContent = S.me; $("ptOp").textContent = S.op;
   $("goalN").textContent = S.goal;
-  $("roundN").textContent = tt("round", S.turn);
+  $("roundN").textContent = tt("round", S.turn) + " · " + tt("turnOf", amW());
+  $("roleBox").innerHTML = S.over ? "" : `<span class="${amW() ? "w" : "g"}">${tt(amW() ? "meW" : "meG")}</span>`;
   $("tCam").classList.toggle("on", S.cam); $("tMic").classList.toggle("on", S.mic);
   $("tCam").textContent = S.cam ? "📷 ON" : "📷 OFF";
   $("tMic").textContent = S.mic ? "🎤 ON" : "🎤 OFF";
