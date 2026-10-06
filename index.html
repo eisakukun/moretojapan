@@ -119,17 +119,27 @@
   .card p{margin:0;color:var(--sub);font-size:15px}
   .card .ic{font-size:26px;margin-bottom:10px;display:block}
 
-  /* ---- game banner ---- */
-  .gameCard{background:linear-gradient(150deg,#0e1626,#1d2c48);color:#eaf2ff;border-radius:24px;
-    padding:40px;display:grid;grid-template-columns:1.2fr .8fr;gap:34px;align-items:center;
-    border:1px solid #24344f}
-  @media(max-width:860px){ .gameCard{grid-template-columns:1fr;padding:28px} }
-  .gameCard h2{margin:0 0 12px}
-  .gameCard p{color:#a9bcd8;margin:0 0 22px;font-size:16px}
-  .kana{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
-  .kana span{width:62px;height:62px;display:grid;place-items:center;border-radius:14px;
-    background:#ffffff10;border:1px solid #ffffff26;font-size:30px;font-weight:700}
-  .kana span.hit{background:#8ef0c026;border-color:#8ef0c0;color:#8ef0c0}
+  /* ---- games shelf（タイル1枚＝ゲーム1本） ---- */
+  .shelf{background:linear-gradient(150deg,#0e1626,#1d2c48);color:#eaf2ff;border-radius:24px;padding:32px;border:1px solid #24344f}
+  @media(max-width:600px){ .shelf{padding:22px 16px} }
+  .shelfHead h2{margin:0 0 6px}
+  .shelfHead p{color:#a9bcd8;margin:0;font-size:15.5px}
+  .gf{display:flex;gap:8px;flex-wrap:wrap;margin:20px 0 14px}
+  .gf button{font:inherit;font-size:14px;color:#a9bcd8;background:none;border:1px solid #ffffff2e;border-radius:999px;padding:5px 14px;cursor:pointer;white-space:nowrap}
+  .gf button.on{background:#8ef0c026;border-color:#8ef0c0;color:#8ef0c0;font-weight:700}
+  .tiles{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+  @media(max-width:640px){ .tiles{grid-template-columns:1fr} }
+  .tile{display:flex;align-items:center;gap:14px;padding:14px 16px;border-radius:16px;background:#ffffff0d;border:1px solid #ffffff1f;
+    color:#eaf2ff;text-decoration:none;transition:background .15s,border-color .15s,transform .15s}
+  .tile:hover{background:#ffffff17;border-color:#8ef0c0;transform:translateY(-2px)}
+  .tile.hide{display:none}
+  .tile .gl{flex:none;width:52px;height:52px;display:grid;place-items:center;border-radius:12px;background:#ffffff10;border:1px solid #ffffff26;font-size:26px;font-weight:700}
+  .tile:hover .gl{color:#8ef0c0;border-color:#8ef0c0}
+  .tile .tx{flex:1;min-width:0;line-height:1.4}
+  .tile b{display:block;font-size:16.5px}
+  .tile .d{display:block;color:#a9bcd8;font-size:13.5px}
+  .tile small{display:block;color:#8ef0c0;font-size:12px;margin-top:2px}
+  .tile .go{flex:none;color:#d94f2b;font-size:14px}
 
   /* ---- list ---- */
   ul.ticks{list-style:none;padding:0;margin:0;display:grid;gap:12px}
@@ -242,85 +252,41 @@
   </div>
 </div>
 
-<!-- ===================== GAME ===================== -->
+<!-- ===================== GAMES（棚1つ。足すときはタイルを1枚増やすだけ） ===================== -->
 <section id="game" style="border-top:0">
   <div class="wrap">
-    <div class="gameCard">
-      <div>
-        <h2 data-en="Katakana Catch" data-ja="カタカナ・キャッチ">Katakana Catch</h2>
-        <p data-en="Katakana is the first wall. シ and ツ, ソ and ン — they refuse to stay apart on paper. So stand up: the letters fall, and you catch the right one with your hands, your head, your feet. Your camera never sends anything anywhere."
-           data-ja="最初の壁はカタカナです。シとツ、ソとン。紙の上ではいつまでも混ざる。だから立ってください。字が落ちてきます。手でも頭でも足でも、正しい字を取る。カメラの映像はどこにも送られません。">
-          Katakana is the first wall. シ and ツ, ソ and ン — they refuse to stay apart on paper. So stand up: the letters fall, and you catch the right one with your hands, your head, your feet. Your camera never sends anything anywhere.
-        </p>
-        <a class="btn p" href="/katakana-catch/" data-en="▶ Play now — free"
-           data-ja="▶ いま遊ぶ ─ 無料">▶ Play now — free</a>
+    <div class="shelf">
+      <div class="shelfHead">
+        <h2 data-en="Learn by playing" data-ja="遊んで覚える">Learn by playing</h2>
+        <p data-en="Free, no sign-up. Most games are for two — send one link and play anyone, anywhere." data-ja="無料・登録なし。ふたりで遊ぶものは、リンクを1つ送るだけで世界のどこの相手とも遊べます。">Free, no sign-up. Most games are for two — send one link and play anyone, anywhere.</p>
       </div>
-      <div class="kana">
-        <span class="hit">コ</span><span class="hit">ー</span><span>ヒ</span><span>ー</span>
-        <span>シ</span><span>ツ</span><span>ソ</span><span>ン</span>
+      <div class="gf" id="gameFilter">
+        <button class="on" data-f="all" data-en="All" data-ja="ぜんぶ">All</button>
+        <button data-f="solo" data-en="1 player" data-ja="ひとりで">1 player</button>
+        <button data-f="duo" data-en="2 players" data-ja="ふたりで">2 players</button>
+        <button data-f="nocam" data-en="No camera needed" data-ja="カメラなしでOK">No camera needed</button>
       </div>
-    </div>
-  </div>
-</section>
-
-<!-- ===================== GAME 2 : KANJI KARUTA ===================== -->
-<section id="karuta" style="border-top:0;padding-top:0">
-  <div class="wrap">
-    <div class="gameCard">
-      <div>
-        <h2 data-en="Kanji Karuta — play against a friend" data-ja="漢字カルタ ─ 友だちと対戦">Kanji Karuta — play against a friend</h2>
-        <p data-en="Karuta is how Japanese children learn to read fast: the reading is called out, and you race to grab the right card first. Here you hear a reading and swipe the correct kanji away with your hand. Send one link and you are playing someone on the other side of the world — no app, no sign-up. In English the readings show in romaji, so you can play before you can read."
-           data-ja="日本の子どもが読む速さを身につける遊びがカルタです。読みが出て、正しい札を先に取る。ここでは読みに合う漢字を手ではたいて飛ばします。URLを送るだけで、地球の裏側の相手ともすぐ対戦。アプリも登録も要りません。英語モードでは読みがローマ字で出るので、読めなくても遊べます。">
-          Karuta is how Japanese children learn to read fast: the reading is called out, and you race to grab the right card first. Here you hear a reading and swipe the correct kanji away with your hand. Send one link and you are playing someone on the other side of the world — no app, no sign-up. In English the readings show in romaji, so you can play before you can read.
-        </p>
-        <a class="btn p" href="/kanji-karuta/" data-en="▶ Play now — free"
-           data-ja="▶ いま遊ぶ ─ 無料">▶ Play now — free</a>
-      </div>
-      <div class="kana">
-        <span>山</span><span class="hit">川</span><span>火</span>
-        <span>水</span><span>木</span><span>空</span>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ===================== GAME 3 : WRITE & GUESS ===================== -->
-<section id="write-guess" style="border-top:0;padding-top:0">
-  <div class="wrap">
-    <div class="gameCard">
-      <div>
-        <h2 data-en="Write &amp; Guess — teach each other" data-ja="書いて、当てて ─ 教え合う対戦">Write &amp; Guess — teach each other</h2>
-        <p data-en="Write a word by hand in your own language, and type its answer in the language you are learning. Your partner reads your handwriting and answers in theirs. Topic by dice or by choice, camera on or off, first to 5 or 10 wins."
-           data-ja="自分の言葉で字を書いて、答えは学びたい言葉で打つ。相手はその手書きを読んで、自分の言葉で答える。お題はサイコロか自分で、カメラはあり・なし、先に5問か10問で勝ち。">
-          Write a word by hand in your own language, and type its answer in the language you are learning. Your partner reads your handwriting and answers in theirs. Topic by dice or by choice, camera on or off, first to 5 or 10 wins.
-        </p>
-        <a class="btn p" href="/write-guess/" data-en="▶ Play now — free"
-           data-ja="▶ いま遊ぶ ─ 無料">▶ Play now — free</a>
-      </div>
-      <div class="kana">
-        <span>猫</span><span class="hit">?</span><span>cat</span>
-        <span>🎲</span><span>✍</span><span>○</span>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ===================== GAME 4 : WHO AM I? ===================== -->
-<section id="who-am-i" style="border-top:0;padding-top:0">
-  <div class="wrap">
-    <div class="gameCard">
-      <div>
-        <h2 data-en="Who Am I? — ask your way to the answer" data-ja="わたしは、だれ？ ─ 質問して当てる対戦">Who Am I? — ask your way to the answer</h2>
-        <p data-en="Choose a character, a thing or a creature for your partner — they choose one for you. You can see theirs, not your own. Ask yes/no questions and try to answer in the language you are learning. Topic by dice, by choice or everything; 5 or 10 minutes; 1 to 3 rounds."
-           data-ja="あいての「キャラクター・もの・生き物」をあなたが選び、あいてもあなたのぶんを選ぶ。相手のカードは見えるのに、自分のは見えない。はい／いいえの質問をして、答えは学びたい言葉で言ってみよう。お題はサイコロ・自分で・ぜんぶ、時間は5分か10分、1〜3ターン。">
-          Choose a character, a thing or a creature for your partner — they choose one for you. You can see theirs, not your own. Ask yes/no questions and try to answer in the language you are learning. Topic by dice, by choice or everything; 5 or 10 minutes; 1 to 3 rounds.
-        </p>
-        <a class="btn p" href="/who-am-i/" data-en="▶ Play now — free"
-           data-ja="▶ いま遊ぶ ─ 無料">▶ Play now — free</a>
-      </div>
-      <div class="kana">
-        <span>🐱</span><span class="hit">?</span><span>猫</span>
-        <span>⭕</span><span>❌</span><span>🎲</span>
+      <div class="tiles">
+        <a class="tile" id="katakana-catch" href="/katakana-catch/" data-tags="solo cam">
+          <span class="gl">コ</span>
+          <span class="tx"><b data-en="Katakana Catch" data-ja="カタカナ・キャッチ">Katakana Catch</b><span class="d" data-en="Catch falling katakana with your whole body." data-ja="落ちてくるカタカナを、からだで取る。">Catch falling katakana with your whole body.</span><small data-en="1 player · camera" data-ja="ひとり・カメラ">1 player · camera</small></span>
+          <span class="go">▶</span>
+        </a>
+        <a class="tile" id="karuta" href="/kanji-karuta/" data-tags="duo cam">
+          <span class="gl">山</span>
+          <span class="tx"><b data-en="Kanji Karuta" data-ja="漢字カルタ">Kanji Karuta</b><span class="d" data-en="Hear the reading, swipe the right kanji first." data-ja="読みを聞いて、正しい漢字を先にはたく。">Hear the reading, swipe the right kanji first.</span><small data-en="2 players · camera" data-ja="ふたり・カメラ">2 players · camera</small></span>
+          <span class="go">▶</span>
+        </a>
+        <a class="tile" id="write-guess" href="/write-guess/" data-tags="duo nocam">
+          <span class="gl">猫</span>
+          <span class="tx"><b data-en="Write &amp; Guess" data-ja="書いて、当てて">Write &amp; Guess</b><span class="d" data-en="Write a word by hand; your partner guesses it." data-ja="手で書いた字を、あいてが当てる。">Write a word by hand; your partner guesses it.</span><small data-en="2 players · camera optional" data-ja="ふたり・カメラなしでもOK">2 players · camera optional</small></span>
+          <span class="go">▶</span>
+        </a>
+        <a class="tile" id="who-am-i" href="/who-am-i/" data-tags="duo nocam">
+          <span class="gl">?</span>
+          <span class="tx"><b data-en="Who Am I?" data-ja="わたしは、だれ？">Who Am I?</b><span class="d" data-en="Your partner picks who you are. Ask until you know." data-ja="あいてが決めた「自分」を、質問して当てる。">Your partner picks who you are. Ask until you know.</span><small data-en="2 players · camera optional" data-ja="ふたり・カメラなしでもOK">2 players · camera optional</small></span>
+          <span class="go">▶</span>
+        </a>
       </div>
     </div>
   </div>
@@ -634,6 +600,14 @@ const API = "https://script.google.com/macros/s/AKfycbz09z8z5zorue3p6xFwtt01Q3KQ
     box.appendChild(b);
   }
 })();
+
+/* ---------- ゲームの棚：ひとりで／ふたりで／カメラなしでOK で絞る ---------- */
+document.getElementById("gameFilter").addEventListener("click", e => {
+  const b = e.target.closest("button"); if (!b) return;
+  document.querySelectorAll("#gameFilter button").forEach(x => x.classList.toggle("on", x === b));
+  const f = b.dataset.f;
+  document.querySelectorAll(".tiles .tile").forEach(t => t.classList.toggle("hide", f !== "all" && !t.dataset.tags.split(" ").includes(f)));
+});
 
 /* ---------- 英語 / 日本語の切り替え ---------- */
 let lang = "en";

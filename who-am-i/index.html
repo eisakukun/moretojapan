@@ -283,7 +283,7 @@
 <section id="sWait" hidden>
   <div class="panel" style="text-align:center;margin-top:30px">
     <h2 data-en="Your room is open" data-ja="部屋ができました">Your room is open</h2>
-    <p class="hint" data-en="Send the link to your partner. They join the moment they open it." data-ja="リンクを相手に送ってください。開いた瞬間に入ってきます。">Send the link to your partner. They join the moment they open it.</p>
+    <p class="hint" data-en="Send the link to your partner. They join the moment they open it. <b>After sending it, come back to this page and keep it open.</b>" data-ja="リンクを相手に送ってください。開いた瞬間に入ってきます。<b>送ったら、このページに戻ってきて開いたままにしてください。</b>">Send the link to your partner. They join the moment they open it. <b>After sending it, come back to this page and keep it open.</b></p>
     <div class="bigcode" id="bigCode">----</div>
     <div id="qr"></div>
     <div class="row" style="justify-content:center;margin-top:14px">
@@ -458,7 +458,8 @@ try { const s = localStorage.getItem("mj-lang"); if (s) lang = s; } catch (e) {}
 const T = {
   en: {
     making: "Opening a room…", connecting: "Connecting…", connectingN: n => `Connecting… ${n}s`,
-    noRoom: "There is no room with that code. Check the 4 letters.", joinSlow: "It is taking too long. Try again.",
+    noRoom: "There is no room with that code. Check the 4 letters, and ask the person who made it to keep the page open.",
+    notYet: n => `Can't find the room yet — the person who made it may have left the page. Ask them to come back to it. Trying again… ${n}s`, joinSlow: "It is taking too long. Try again.",
     needCode: "Type the 4-letter code.", netErr: "Could not connect. Check your internet and try again.",
     waitPartner: "Waiting for your partner", copied: "Copied. Paste it into LINE, WhatsApp, anything.",
     invite: (u, c) => `Let's play Who Am I? Open this link: ${u}  (code: ${c})`,
@@ -479,7 +480,8 @@ const T = {
   },
   ja: {
     making: "部屋をつくっています…", connecting: "つないでいます…", connectingN: n => `つないでいます… ${n}秒`,
-    noRoom: "そのコードの部屋はありません。4文字を確かめてください。", joinSlow: "時間がかかりすぎています。もう一度ためしてください。",
+    noRoom: "そのコードの部屋が見つかりません。4文字を確かめて、部屋を作った人にページを開いたままにしてもらってください。",
+    notYet: n => `まだ部屋が見つかりません。部屋を作った人がページから離れているかも。戻ってきてもらってください。入り直しています… ${n}秒`, joinSlow: "時間がかかりすぎています。もう一度ためしてください。",
     needCode: "4文字のコードを入れてください。", netErr: "つながりませんでした。ネットを確かめて、もう一度。",
     waitPartner: "あいてを待っています", copied: "コピーしました。LINEなどに貼ってください。",
     invite: (u, c) => `「わたしは、だれ？」で遊ぼう！ このリンクを開いてね：${u}（コード：${c}）`,
@@ -745,6 +747,9 @@ function newPeer(id) {
   });
 }
 function wirePeer() {
+  /* スマホで別のアプリ（LINEなど）に切り替えると、ブラウザが受付（PeerJSのサーバ）との線を切る。
+     受付から消えると、相手には「その部屋は無い」と返されてしまう。切れたら同じ番号でつなぎ直す */
+  peer.on("disconnected", () => setTimeout(revive, 300));
   peer.on("connection", c => {
     if (conn && conn.open) { c.on("open", () => c.close()); return; }   // 3人目は入れない
     wireConn(c);
@@ -757,13 +762,28 @@ function wirePeer() {
     call.on("close", () => { if (inCall === call) { inCall = null; setOpStream(null); } });
   });
 }
+/* 入り直しで線が何本か同時につながることがある。最初の1本だけ使い、残りは黙って閉じる
+   （余った線が閉じたのを「あいてが抜けた」と取りちがえないように） */
 function wireConn(c) {
   conn = c;
-  c.on("open", onOpen);
-  c.on("data", onData);
-  c.on("close", onGone);
+  c.on("open", () => {
+    if (c !== conn) { if (conn && conn.open) { c.close(); return; } conn = c; }
+    onOpen();
+  });
+  c.on("data", m => { if (c === conn) onData(m); });
+  c.on("close", () => { if (c === conn) onGone(); });
   c.on("error", () => {});
 }
+async function revive() {
+  if (!peer) return;
+  if (peer.disconnected && !peer.destroyed) { try { peer.reconnect(); } catch (e) {} return; }
+  // 受付に番号ごと捨てられていたら、同じ番号でもう一度部屋を開く（まだ相手が来ていないときだけ）
+  if (peer.destroyed && S.isHost && !(conn && conn.open)) {
+    try { peer = await newPeer(PFX + S.code); wirePeer(); } catch (e) {}
+  }
+}
+document.addEventListener("visibilitychange", () => { if (!document.hidden) revive(); });
+addEventListener("pageshow", () => revive());
 function send(m) { if (conn && conn.open) conn.send(m); }
 
 async function host() {
@@ -803,20 +823,19 @@ async function join(code) {
   try { if (!peer) { peer = await newPeer(); wirePeer(); } }
   catch (e) { say("msgL", tt("netErr"), true); $("bJoin").disabled = false; $("bHost").disabled = false; return; }
   S.isHost = false; S.code = code;
-  let done = false, unavailAt = 0, tries = 0;
+  /* 「無い」と言われても、部屋を作った人が別のアプリにいて一時的に受付から外れているだけのことが多い。
+     3秒おきに入り直し、90秒たっても見つからないときだけ「無い」と出す */
+  let done = false, unavail = false, next = 0;
   const t0 = performance.now();
-  peer.on("error", e => {
-    if (done || !e || e.type !== "peer-unavailable") return;
-    if (!unavailAt) unavailAt = performance.now();
-    if (++tries < 3) setTimeout(() => { if (!done) wireConn(peer.connect(PFX + code, { reliable: true })); }, 1200);
-  });
-  wireConn(peer.connect(PFX + code, { reliable: true }));
+  peer.on("error", e => { if (!done && e && e.type === "peer-unavailable") unavail = true; });
+  const knock = () => { next = performance.now() + 3000; wireConn(peer.connect(PFX + code, { reliable: true })); };
+  knock();
   const tick = setInterval(() => {
     if (conn && conn.open) { done = true; clearInterval(tick); return; }
-    const now = performance.now();
-    if (unavailAt && now - unavailAt >= 5000) { done = true; clearInterval(tick); fail(tt("noRoom")); return; }
-    if (now - t0 >= 20000) { done = true; clearInterval(tick); fail(tt("joinSlow")); return; }
-    say("msgL", tt("connectingN", Math.round((now - t0) / 1000)));
+    const now = performance.now(), sec = Math.round((now - t0) / 1000);
+    if (now - t0 >= 90000) { done = true; clearInterval(tick); fail(unavail ? tt("noRoom") : tt("joinSlow")); return; }
+    if (now >= next) knock();
+    say("msgL", unavail ? tt("notYet", sec) : tt("connectingN", sec));
   }, 1000);
   function fail(t) { say("msgL", t, true); $("bJoin").disabled = false; $("bHost").disabled = false; }
 }
