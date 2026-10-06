@@ -1,0 +1,941 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Write &amp; Guess — a word game for two languages</title>
+<meta name="description" content="Write a word by hand in your language, type the answer in the language you are learning, and your partner guesses it in theirs. Pick the topic by dice or choose it yourself. Camera on or off. First to 5 or 10 wins. Free, no sign-up.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Write &amp; Guess — a word game for two languages">
+<meta property="og:description" content="Write a word by hand. Your partner guesses what it means. Send one link and play — no app, no sign-up.">
+<meta property="og:url" content="https://moretojapan.com/write-guess/">
+<link rel="canonical" href="https://moretojapan.com/write-guess/">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2322406e'/%3E%3Ctext x='32' y='45' font-size='40' text-anchor='middle' fill='white' font-family='Hiragino Sans,sans-serif'%3E%E5%BD%93%3C/text%3E%3C/svg%3E">
+<style>
+  :root{--paper:#faf7f2;--ink:#1b1f26;--sub:#5d6673;--line:#e4ddd2;--ai:#22406e;--aka:#d94f2b;--card:#fff;
+    --ok:#2f8a4e;--ng:#c8412a}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--paper);color:var(--ink);line-height:1.7;
+    font-family:"Hiragino Sans","Noto Sans JP",system-ui,-apple-system,sans-serif;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:820px;margin:0 auto;padding:0 16px}
+  a{color:var(--ai)}
+  header{position:sticky;top:0;z-index:50;background:#faf7f2e6;backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+  nav{display:flex;align-items:center;gap:18px;height:60px;max-width:1040px;margin:0 auto;padding:0 16px}
+  .logo{font-weight:800;font-size:19px;text-decoration:none;color:var(--ink);display:flex;align-items:center;gap:9px;white-space:nowrap}
+  .logo i{display:grid;place-items:center;width:30px;height:30px;border-radius:9px;background:var(--ai);
+    color:#fff;font-style:normal;font-size:16px;font-weight:700}
+  nav .sp{flex:1}
+  nav a.nl{color:var(--sub);text-decoration:none;font-size:15px;white-space:nowrap}
+  @media(max-width:760px){nav a.nl{display:none}}
+  .lang{border:1px solid var(--line);background:#fff;border-radius:999px;padding:6px 14px;font:inherit;font-size:13px;cursor:pointer;color:var(--sub);width:auto}
+
+  .hero{padding:34px 0 6px}
+  .kicker{color:var(--aka);font-weight:700;font-size:13px;letter-spacing:.16em;text-transform:uppercase}
+  h1{font-size:clamp(26px,4.4vw,38px);line-height:1.25;margin:10px 0 12px}
+  .lead{font-size:16.5px;color:var(--sub);margin:0}
+
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:20px;margin:20px 0}
+  .panel h2{font-size:18px;margin:0 0 4px}
+  .hint{color:var(--sub);font-size:14px;margin:4px 0 0}
+  .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+  .lbl{font-weight:700;font-size:14px;margin:16px 0 8px;display:block}
+  .lbl small{font-weight:400;color:var(--sub)}
+
+  .seg{display:inline-flex;border:1px solid var(--line);border-radius:999px;overflow:hidden;background:#fff}
+  .seg button{border:0;background:none;padding:9px 18px;font:inherit;font-size:15px;cursor:pointer;color:var(--sub)}
+  .seg button.on{background:var(--ai);color:#fff;font-weight:700}
+  .seg button:disabled{cursor:default}
+
+  .btn{border:0;border-radius:12px;padding:12px 20px;font:inherit;font-size:16px;font-weight:700;cursor:pointer;
+    background:var(--aka);color:#fff;display:inline-flex;align-items:center;gap:8px;justify-content:center}
+  .btn:disabled{opacity:.4;cursor:default}
+  .btn.ai{background:var(--ai)}
+  .btn.ghost{background:#fff;color:var(--ink);border:1px solid var(--line)}
+  .btn.sm{padding:8px 14px;font-size:14px;border-radius:10px}
+  input[type=text]{font:inherit;font-size:17px;padding:11px 14px;border:1px solid var(--line);border-radius:12px;background:#fff;color:var(--ink);min-width:0}
+  input[type=text]:focus{outline:2px solid #22406e55;border-color:var(--ai)}
+  #code{width:7.5em;text-transform:uppercase;letter-spacing:.3em;text-align:center;font-weight:700}
+
+  .msg{min-height:1.6em;color:var(--sub);font-size:14.5px;margin-top:10px}
+  .msg.err{color:var(--ng);font-weight:700}
+
+  /* 待ち部屋 */
+  .bigcode{font-size:46px;font-weight:800;letter-spacing:.25em;color:var(--ai);margin:6px 0}
+  #qr{background:#fff;padding:8px;border:1px solid var(--line);border-radius:12px;display:inline-block}
+  #qr:empty{display:none}
+
+  /* 対戦中の上の帯：点数と顔 */
+  .bar{position:sticky;top:60px;z-index:40;background:#faf7f2f2;backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--line);padding:10px 0}
+  .barIn{display:flex;align-items:center;gap:12px;justify-content:space-between}
+  .who{display:flex;align-items:center;gap:10px;min-width:0}
+  .who.op{flex-direction:row-reverse;text-align:right}
+  .face{width:96px;height:72px;border-radius:12px;background:#e9e3d8;overflow:hidden;position:relative;flex:none}
+  .face video{width:100%;height:100%;object-fit:cover;display:block}
+  .face.me video{transform:scaleX(-1)}
+  .face .off{position:absolute;inset:0;display:grid;place-items:center;font-size:12px;color:var(--sub);text-align:center;line-height:1.3}
+  .face.has .off{display:none}
+  .nm{font-size:12px;color:var(--sub);white-space:nowrap}
+  .pt{font-size:30px;font-weight:800;line-height:1}
+  .goal{text-align:center;font-size:12px;color:var(--sub);white-space:nowrap}
+  .goal b{display:block;font-size:15px;color:var(--ink)}
+  .tog{display:flex;gap:6px;margin-top:4px}
+  .tog button{border:1px solid var(--line);background:#fff;border-radius:999px;font-size:12px;padding:2px 9px;cursor:pointer;color:var(--sub)}
+  .tog button.on{border-color:var(--ai);color:var(--ai);font-weight:700}
+  @media(max-width:560px){ .face{width:64px;height:48px} .pt{font-size:24px} }
+
+  /* お題 */
+  .dice6{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px}
+  .tp{border:1.5px solid var(--line);border-radius:14px;background:#fff;padding:12px 8px;text-align:center;cursor:pointer;
+    font:inherit;color:var(--ink);transition:transform .08s}
+  .tp:hover{border-color:var(--ai)}
+  .tp b{display:block;font-size:22px;line-height:1.1;color:var(--sub)}
+  .tp span{font-size:15px;font-weight:700}
+  .tp.hl{border-color:var(--aka);background:#fff4ef;transform:scale(1.04)}
+  #die{font-size:64px;line-height:1;display:inline-block;width:1.1em;text-align:center}
+  #die.roll{animation:wob .12s linear infinite}
+  @keyframes wob{0%{transform:rotate(-14deg)}50%{transform:rotate(14deg)}100%{transform:rotate(-14deg)}}
+
+  .topicTag{display:inline-block;background:#fff4ef;color:var(--aka);border:1px solid #f1c6b6;border-radius:999px;
+    padding:3px 12px;font-weight:700;font-size:14px}
+
+  /* 書く */
+  .pad{position:relative;width:100%;max-width:440px;aspect-ratio:1/1;margin:12px auto 0;border-radius:16px;
+    border:1.5px solid var(--line);background:#fff;overflow:hidden;touch-action:none}
+  /* 習字の補助線（書き出す絵には入らない） */
+  .pad::before{content:"";position:absolute;inset:0;pointer-events:none;
+    background:linear-gradient(#0000 calc(50% - .5px),#d9cfc0 calc(50% - .5px),#d9cfc0 calc(50% + .5px),#0000 calc(50% + .5px)),
+      linear-gradient(90deg,#0000 calc(50% - .5px),#d9cfc0 calc(50% - .5px),#d9cfc0 calc(50% + .5px),#0000 calc(50% + .5px));opacity:.7}
+  .pad canvas{position:absolute;inset:0;width:100%;height:100%;cursor:crosshair}
+  .tools{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:10px}
+  .ansRow{display:flex;gap:10px;margin-top:6px}
+  .ansRow input{flex:1}
+
+  .shot{width:100%;max-width:440px;aspect-ratio:1/1;display:block;margin:12px auto 0;border-radius:16px;border:1.5px solid var(--line);background:#fff}
+
+  /* 答え合わせ */
+  .rv{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:12px}
+  @media(max-width:600px){ .rv{grid-template-columns:1fr} }
+  .rc{border:1px solid var(--line);border-radius:16px;padding:12px;background:#fff}
+  .rc h3{font-size:14px;margin:0 0 6px;color:var(--sub);font-weight:700}
+  .rc img{width:100%;aspect-ratio:1/1;border-radius:12px;border:1px solid var(--line);display:block}
+  .rc .ln{font-size:15px;margin-top:8px}
+  .rc .ln small{color:var(--sub);display:block;font-size:12px}
+  .mark{font-size:44px;font-weight:800;line-height:1;float:right;margin-top:6px}
+  .mark.ok{color:var(--ok)} .mark.ng{color:var(--ng)}
+
+  /* 判定のポップ */
+  .modal{position:fixed;inset:0;background:#1b1f2666;display:none;place-items:center;z-index:80;padding:16px}
+  .modal.on{display:grid}
+  .modal .box{background:#fff;border-radius:20px;padding:22px;max-width:420px;width:100%;text-align:center}
+  .modal .gs{font-size:28px;font-weight:800;margin:8px 0;word-break:break-word}
+
+  .end{text-align:center;padding:10px 0}
+  .end .big{font-size:96px;font-weight:900;line-height:1;color:var(--aka)}
+  .end .big.lose{color:var(--sub)}
+
+  .wait{color:var(--sub);text-align:center;margin:16px 0 4px}
+  .dots::after{content:"";animation:dots 1.4s steps(4) infinite}
+  @keyframes dots{0%{content:""}25%{content:"."}50%{content:".."}75%{content:"..."}}
+
+  .how{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:14px}
+  @media(max-width:600px){ .how{grid-template-columns:1fr} }
+  .how div{background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px 14px;font-size:14.5px}
+  .how b{color:var(--aka);display:block}
+
+  [hidden]{display:none!important}
+  footer{border-top:1px solid var(--line);margin-top:40px;padding:22px 0;color:var(--sub);font-size:14px}
+  footer .wrap{display:flex;gap:16px;flex-wrap:wrap}
+</style>
+</head>
+<body>
+<header><nav>
+  <a class="logo" href="/"><i>奥</i>More to Japan</a><span class="sp"></span>
+  <a class="nl" href="/why/" data-en="Why" data-ja="なぜ">Why</a>
+  <a class="nl" href="/kanji-karuta/" data-en="Kanji Karuta" data-ja="漢字カルタ">Kanji Karuta</a>
+  <a class="nl" href="/play/" data-en="Language exchange" data-ja="言語交換">Language exchange</a>
+  <button class="lang" id="lang">日本語</button>
+</nav></header>
+
+<!-- ============ 対戦中の上の帯 ============ -->
+<div class="bar" id="bar" hidden><div class="wrap barIn">
+  <div class="who me">
+    <div class="face me" id="faceMe"><video id="vMe" muted playsinline autoplay></video><div class="off" data-en="camera<br>off" data-ja="カメラ<br>なし">camera<br>off</div></div>
+    <div>
+      <div class="nm" data-en="You" data-ja="あなた">You</div>
+      <div class="pt" id="ptMe">0</div>
+      <div class="tog">
+        <button id="tCam">📷</button>
+        <button id="tMic">🎤</button>
+      </div>
+    </div>
+  </div>
+  <div class="goal"><span data-en="first to" data-ja="先に">first to</span><b id="goalN">5</b><span id="roundN"></span></div>
+  <div class="who op">
+    <div class="face" id="faceOp"><video id="vOp" playsinline autoplay></video><div class="off" data-en="camera<br>off" data-ja="カメラ<br>なし">camera<br>off</div></div>
+    <div>
+      <div class="nm" data-en="Partner" data-ja="あいて">Partner</div>
+      <div class="pt" id="ptOp">0</div>
+    </div>
+  </div>
+</div></div>
+
+<div class="wrap">
+
+<!-- ============ はじめの画面 ============ -->
+<section id="sLobby">
+  <div class="hero">
+    <div class="kicker" data-en="Free · no sign-up · 2 players" data-ja="無料・登録なし・2人で">Free · no sign-up · 2 players</div>
+    <h1 data-en="Write &amp; Guess" data-ja="書いて、当てて">Write &amp; Guess</h1>
+    <p class="lead" data-en="Write a word by hand in <b>your own language</b> — the one your partner is learning. Then write the answer yourself, in <b>the language you are learning</b>. Your partner sees only your handwriting and answers in their own language. You both learn in the same round."
+       data-ja="<b>自分の言葉</b>（＝相手が習っている言葉）でひとつ手で書く。その答えは、<b>自分が学びたい言葉</b>で自分で書く。相手には手書きの字だけが見えて、相手は<b>自分の言葉</b>で答える。1回で、ふたりとも学べる。">Write a word by hand in <b>your own language</b> — the one your partner is learning. Then write the answer yourself, in <b>the language you are learning</b>. Your partner sees only your handwriting and answers in their own language. You both learn in the same round.</p>
+  </div>
+
+  <div class="how">
+    <div><b data-en="1 · Topic" data-ja="1 ・ お題">1 · Topic</b><span data-en="Roll the dice, or pick it yourself." data-ja="サイコロで決めるか、自分で選ぶ。">Roll the dice, or pick it yourself.</span></div>
+    <div><b data-en="2 · Write" data-ja="2 ・ 書く">2 · Write</b><span data-en="Write a word in your language. Type its answer in the language you are learning." data-ja="自分の言葉で字を書く。答えは学びたい言葉で打つ。">Write a word in your language. Type its answer in the language you are learning.</span></div>
+    <div><b data-en="3 · Guess" data-ja="3 ・ 当てる">3 · Guess</b><span data-en="Read theirs, answer in your own language. First to 5 (or 10) correct wins." data-ja="相手の字を読んで、自分の言葉で答える。先に5問（か10問）当てたら勝ち。">Read theirs, answer in your own language. First to 5 (or 10) correct wins.</span></div>
+  </div>
+
+  <div class="panel">
+    <span class="lbl" data-en="Your camera" data-ja="あなたのカメラ">Your camera</span>
+    <div class="seg" id="segCam">
+      <button data-v="on" data-en="📷 Use it" data-ja="📷 使う">📷 Use it</button>
+      <button data-v="off" class="on" data-en="No camera" data-ja="使わない">No camera</button>
+    </div>
+    <span class="lbl" data-en="Your voice" data-ja="あなたの声">Your voice</span>
+    <div class="seg" id="segMic">
+      <button data-v="on" data-en="🎤 Talk" data-ja="🎤 話す">🎤 Talk</button>
+      <button data-v="off" class="on" data-en="Silent" data-ja="話さない">Silent</button>
+    </div>
+    <p class="hint" data-en="Each player chooses for themselves. You can switch it during the game too."
+       data-ja="ひとりずつ自分で決めます。ゲームの途中でも切りかえられます。">Each player chooses for themselves. You can switch it during the game too.</p>
+
+    <span class="lbl"><span data-en="Win at" data-ja="勝ち">Win at</span> <small data-en="(the person who makes the room decides)" data-ja="（部屋を作る人が決める）">(the person who makes the room decides)</small></span>
+    <div class="seg" id="segGoal">
+      <button data-v="5" class="on" data-en="5 correct" data-ja="5問正解">5 correct</button>
+      <button data-v="10" data-en="10 correct" data-ja="10問正解">10 correct</button>
+    </div>
+
+    <div class="row" style="margin-top:22px">
+      <button class="btn" id="bHost" data-en="Make a room" data-ja="部屋をつくる">Make a room</button>
+      <span style="color:var(--sub)" data-en="or" data-ja="または">or</span>
+      <input type="text" id="code" maxlength="4" placeholder="CODE" autocomplete="off">
+      <button class="btn ai" id="bJoin" data-en="Join" data-ja="入る">Join</button>
+    </div>
+    <div class="msg" id="msgL"></div>
+  </div>
+</section>
+
+<!-- ============ 相手を待つ ============ -->
+<section id="sWait" hidden>
+  <div class="panel" style="text-align:center;margin-top:30px">
+    <h2 data-en="Your room is open" data-ja="部屋ができました">Your room is open</h2>
+    <p class="hint" data-en="Send the link to your partner. They join the moment they open it." data-ja="リンクを相手に送ってください。開いた瞬間に入ってきます。">Send the link to your partner. They join the moment they open it.</p>
+    <div class="bigcode" id="bigCode">----</div>
+    <div id="qr"></div>
+    <div class="row" style="justify-content:center;margin-top:14px">
+      <button class="btn" id="bCopy" data-en="Copy the invite link" data-ja="招待リンクをコピー">Copy the invite link</button>
+      <button class="btn ghost" id="bCancel" data-en="Close the room" data-ja="部屋を閉じる">Close the room</button>
+    </div>
+    <div class="msg" id="msgW"></div>
+  </div>
+</section>
+
+<!-- ============ ゲーム ============ -->
+<section id="sGame" hidden>
+
+  <!-- お題を決める -->
+  <div class="panel" id="pTopic" hidden>
+    <h2 data-en="Choose a topic" data-ja="お題を決める">Choose a topic</h2>
+    <p class="hint" data-en="Roll the dice — or just tap the one you want." data-ja="サイコロをふる。または、書きたいものを自分でタップ。">Roll the dice — or just tap the one you want.</p>
+    <div class="row" style="margin-top:12px">
+      <span id="die">🎲</span>
+      <button class="btn" id="bRoll" data-en="🎲 Roll the dice" data-ja="🎲 サイコロをふる">🎲 Roll the dice</button>
+      <button class="btn ghost sm" id="bSet" data-en="Another 6 topics" data-ja="ほかの6つ">Another 6 topics</button>
+    </div>
+    <div class="dice6" id="dice6"></div>
+    <span class="lbl" data-en="Or write your own topic" data-ja="自分でお題を書いてもいい">Or write your own topic</span>
+    <div class="ansRow">
+      <input type="text" id="ownTopic" maxlength="30" data-ph-en="e.g. things in a kitchen" data-ph-ja="例：台所にあるもの">
+      <button class="btn ai" id="bOwn" data-en="Use this" data-ja="これにする">Use this</button>
+    </div>
+  </div>
+
+  <!-- 書く -->
+  <div class="panel" id="pWrite" hidden>
+    <div class="row" style="justify-content:space-between">
+      <h2 data-en="Write it by hand" data-ja="手で書く">Write it by hand</h2>
+      <span class="topicTag" id="tagW"></span>
+    </div>
+    <p class="hint" data-en="Write one word in <b>your own language</b> (the one your partner is learning). Example: a Japanese speaker writes 猫. Don't write the answer on the paper!"
+       data-ja="<b>自分の言葉</b>（相手が習っている言葉）でひとつ書く。例：日本人なら「猫」と書く。紙に答えは書かないこと！">Write one word in <b>your own language</b> (the one your partner is learning). Example: a Japanese speaker writes 猫. Don't write the answer on the paper!</p>
+    <div class="pad" id="pad"><canvas id="cv"></canvas></div>
+    <div class="tools">
+      <div class="seg" id="segPen">
+        <button data-v="6" data-en="Thin" data-ja="細い">Thin</button>
+        <button data-v="12" class="on" data-en="Normal" data-ja="ふつう">Normal</button>
+        <button data-v="22" data-en="Thick" data-ja="太い">Thick</button>
+      </div>
+      <button class="btn ghost sm" id="bUndo" data-en="↶ Undo" data-ja="↶ ひとつ戻す">↶ Undo</button>
+      <button class="btn ghost sm" id="bClear" data-en="Clear" data-ja="ぜんぶ消す">Clear</button>
+    </div>
+    <span class="lbl"><span data-en="The answer — in the language YOU are learning" data-ja="答え ── 自分が学びたい言葉で">The answer — in the language YOU are learning</span> <small data-en="(= your partner's language). Only you can see it. Several are OK: cat / kitty" data-ja="（＝相手の言葉）。相手には見えません。いくつでも可：cat / kitty">(= your partner's language). Only you can see it. Several are OK: cat / kitty</small></span>
+    <div class="ansRow">
+      <input type="text" id="ans" maxlength="60" autocomplete="off" data-ph-en="what it means, in the language you are learning" data-ph-ja="意味を、学びたい言葉で">
+      <button class="btn" id="bSend" disabled data-en="Send" data-ja="送る">Send</button>
+    </div>
+  </div>
+
+  <!-- 当てる -->
+  <div class="panel" id="pGuess" hidden>
+    <div class="row" style="justify-content:space-between">
+      <div><h2 data-en="What does it say?" data-ja="なんと書いてある？">What does it say?</h2>
+      <p class="hint" style="margin:0" data-en="Answer in <b>your own language</b>." data-ja="<b>自分の言葉</b>で答える。">Answer in <b>your own language</b>.</p></div>
+      <span class="topicTag" id="tagG"></span>
+    </div>
+    <img class="shot" id="opShot" alt="">
+    <div class="ansRow" style="margin-top:14px">
+      <input type="text" id="guess" maxlength="60" autocomplete="off" data-ph-en="your guess — in your own language" data-ph-ja="あなたの答え（自分の言葉で）">
+      <button class="btn" id="bGuess" data-en="Answer" data-ja="答える">Answer</button>
+    </div>
+    <div style="text-align:right;margin-top:8px"><button class="btn ghost sm" id="bPass" data-en="I give up" data-ja="わからない">I give up</button></div>
+  </div>
+
+  <!-- 待っている -->
+  <div class="panel" id="pWaitOp" hidden>
+    <p class="wait"><span id="waitTxt"></span><span class="dots"></span></p>
+  </div>
+
+  <!-- 答え合わせ -->
+  <div class="panel" id="pReveal" hidden>
+    <h2 id="rvTitle"></h2>
+    <div class="rv">
+      <div class="rc">
+        <h3 data-en="Partner wrote — you guessed" data-ja="あいてが書いた ── あなたが当てる">Partner wrote — you guessed</h3>
+        <img id="rvOpImg" alt="">
+        <span class="mark" id="rvOpMark"></span>
+        <div class="ln"><small data-en="answer" data-ja="答え">answer</small><b id="rvOpAns"></b></div>
+        <div class="ln"><small data-en="you said" data-ja="あなたの答え">you said</small><span id="rvOpGuess"></span></div>
+      </div>
+      <div class="rc">
+        <h3 data-en="You wrote — partner guessed" data-ja="あなたが書いた ── あいてが当てる">You wrote — partner guessed</h3>
+        <img id="rvMyImg" alt="">
+        <span class="mark" id="rvMyMark"></span>
+        <div class="ln"><small data-en="answer" data-ja="答え">answer</small><b id="rvMyAns"></b></div>
+        <div class="ln"><small data-en="partner said" data-ja="あいての答え">partner said</small><span id="rvMyGuess"></span></div>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:16px">
+      <button class="btn" id="bNext" data-en="Next round" data-ja="次へ">Next round</button>
+      <div class="msg" id="msgN"></div>
+    </div>
+  </div>
+
+  <!-- おわり -->
+  <div class="panel end" id="pEnd" hidden>
+    <div class="big" id="endBig">勝</div>
+    <h2 id="endTxt"></h2>
+    <p class="hint" id="endScore"></p>
+    <div class="row" style="justify-content:center;margin-top:16px">
+      <button class="btn" id="bAgain" data-en="Play again" data-ja="もう一回">Play again</button>
+      <button class="btn ghost" id="bLeave" data-en="Leave" data-ja="やめる">Leave</button>
+    </div>
+    <div class="msg" id="msgE"></div>
+  </div>
+
+  <div class="panel" id="pGone" hidden style="text-align:center">
+    <h2 data-en="Your partner left" data-ja="あいてが抜けました">Your partner left</h2>
+    <button class="btn" id="bBack" style="margin-top:12px" data-en="Back to the start" data-ja="はじめに戻る">Back to the start</button>
+  </div>
+</section>
+</div>
+
+<!-- 相手の答えを判定する -->
+<div class="modal" id="judge"><div class="box">
+  <div class="hint" data-en="Your partner answered" data-ja="あいての答え">Your partner answered</div>
+  <div class="gs" id="jGuess"></div>
+  <div class="hint"><span data-en="Your answer was" data-ja="あなたの答えは">Your answer was</span> <b id="jAns"></b></div>
+  <p class="hint" data-en="It doesn't match exactly. Is it right? (Their language — you are the learner here, judge kindly.)" data-ja="ぴったり同じではありません。正解にしますか？（相手の言葉なので、あなたが学ぶ側です）">It doesn't match exactly. Is it right?</p>
+  <div class="row" style="justify-content:center;margin-top:10px">
+    <button class="btn" id="jOk" style="background:var(--ok)" data-en="○ Correct" data-ja="○ 正解">○ Correct</button>
+    <button class="btn ghost" id="jNg" data-en="× Wrong" data-ja="× ちがう">× Wrong</button>
+  </div>
+</div></div>
+
+<footer><div class="wrap">
+  <span>© <span id="yr"></span> More to Japan</span><span style="flex:1"></span>
+  <a href="/kanji-karuta/" data-en="Kanji Karuta" data-ja="漢字カルタ">Kanji Karuta</a>
+  <a href="/katakana-catch/" data-en="Katakana Catch" data-ja="カタカナ・キャッチ">Katakana Catch</a>
+  <a href="/play/" data-en="Language exchange" data-ja="言語交換">Language exchange</a>
+  <a href="/" data-en="Home" data-ja="トップ">Home</a>
+</div></footer>
+
+<script src="/vendor-lib/peerjs.min.js"></script>
+<script src="/vendor-lib/qrcode.min.js"></script>
+<script>
+const $ = id => document.getElementById(id);
+let lang = "en";
+try { const s = localStorage.getItem("mj-lang"); if (s) lang = s; } catch (e) {}
+
+/* ---------- 画面の言葉（JSで出すぶん） ---------- */
+const T = {
+  en: {
+    making: "Opening a room…", connecting: "Connecting…", connectingN: n => `Connecting… ${n}s`,
+    noRoom: "There is no room with that code. Check the 4 letters.", joinSlow: "It is taking too long. Try again.",
+    needCode: "Type the 4-letter code.", netErr: "Could not connect. Check your internet and try again.",
+    waitPartner: "Waiting for your partner", copied: "Copied. Paste it into LINE, WhatsApp, anything.",
+    invite: (u, c) => `Let's play Write & Guess! Open this link: ${u}  (code: ${c})`,
+    waitWrite: "Your partner is still writing", waitJudge: "Your partner is checking your answer",
+    waitNext: "Waiting for your partner to press Next", round: n => `round ${n}`,
+    bothOk: "Both correct!", bothNg: "Nobody got it", youOk: "You got it!", opOk: "Your partner got it",
+    win: "You win!", lose: "Your partner wins", camDenied: "The camera / microphone was not allowed. You can still play.",
+    passed: "(gave up)", sudden: "Tied at the finish line — one more round!",
+    again: "Waiting for your partner to press Play again", free: "Free topic",
+  },
+  ja: {
+    making: "部屋をつくっています…", connecting: "つないでいます…", connectingN: n => `つないでいます… ${n}秒`,
+    noRoom: "そのコードの部屋はありません。4文字を確かめてください。", joinSlow: "時間がかかりすぎています。もう一度ためしてください。",
+    needCode: "4文字のコードを入れてください。", netErr: "つながりませんでした。ネットを確かめて、もう一度。",
+    waitPartner: "あいてを待っています", copied: "コピーしました。LINEなどに貼ってください。",
+    invite: (u, c) => `「書いて、当てて」で遊ぼう！ このリンクを開いてね：${u}（コード：${c}）`,
+    waitWrite: "あいてはまだ書いています", waitJudge: "あいてが答えを確かめています",
+    waitNext: "あいてが「次へ」を押すのを待っています", round: n => `${n}回戦`,
+    bothOk: "ふたりとも正解！", bothNg: "ふたりとも外れ", youOk: "あなたは正解！", opOk: "あいては正解",
+    win: "あなたの勝ち！", lose: "あいての勝ち", camDenied: "カメラ／マイクが許可されませんでした。このまま遊べます。",
+    passed: "（わからない）", sudden: "同点でゴール──もう1回戦！",
+    again: "あいてが「もう一回」を押すのを待っています", free: "なんでも",
+  }
+};
+const tt = (k, ...a) => { const v = T[lang][k]; return typeof v === "function" ? v(...a) : v; };
+
+/* ---------- お題。サイコロの6面＝6つ。6の目はいつも「なんでも」 ---------- */
+const SETS = [
+  [["Animals","動物"],["Food","食べもの"],["Colours","色"],["Body","体"],["Weather","天気"]],
+  [["In the house","家の中"],["Actions (verbs)","動き（動詞）"],["Feelings","気もち"],["In town","町の中"],["Family","家族"]],
+  [["Nature","自然"],["Clothes","服"],["Getting around","乗りもの"],["School","学校"],["Numbers & time","数と時間"]],
+  [["Drinks","飲みもの"],["Jobs","仕事"],["Sports","スポーツ"],["Seasons","季節"],["Adjectives","ようすの言葉"]],
+];
+let setIdx = 0;
+const FACES = ["⚀","⚁","⚂","⚃","⚄","⚅"];
+const topicsNow = () => [...SETS[setIdx], ["Anything", "なんでも"]];
+const tName = t => (lang === "ja" ? t[1] : t[0]);
+
+/* ---------- 状態 ---------- */
+const S = {
+  cam: false, mic: false, goal: 5,
+  isHost: false, code: "", round: 1, me: 0, op: 0,
+  myQ: null,      // {topic, img, answer}
+  opQ: null,      // {topic, img}
+  myGuess: null,  // 自分が出した答え
+  myRes: null,    // 自分の答えの判定 {ok, answer}
+  opRes: null,    // 相手の答えの判定 {ok, guess}
+  pendingJudge: null,
+  readyMe: false, readyOp: false, over: false, againMe: false, againOp: false,
+};
+let peer = null, conn = null, myStream = null, outCall = null, inCall = null;
+
+/* ---------- 言語 ---------- */
+function applyLang() {
+  document.documentElement.lang = lang;
+  document.querySelectorAll("[data-en]").forEach(el => {
+    const v = el.getAttribute("data-" + lang); if (v != null) el.innerHTML = v;
+  });
+  document.querySelectorAll("[data-ph-en]").forEach(el => { el.placeholder = el.getAttribute("data-ph-" + lang); });
+  $("lang").textContent = lang === "en" ? "日本語" : "English";
+  try { localStorage.setItem("mj-lang", lang); } catch (e) {}
+  drawTopics(); paintBar();
+  if (!$("pReveal").hidden) showReveal();
+  if (!$("pEnd").hidden) showEnd();
+  if (S.myQ) $("tagW").textContent = S.myQ.topic;
+}
+$("lang").onclick = () => { lang = lang === "en" ? "ja" : "en"; applyLang(); };
+
+/* ---------- 切りかえボタン（seg） ---------- */
+function seg(id, cb) {
+  const el = $(id);
+  el.addEventListener("click", e => {
+    const b = e.target.closest("button"); if (!b || b.disabled) return;
+    el.querySelectorAll("button").forEach(x => x.classList.toggle("on", x === b));
+    cb(b.dataset.v);
+  });
+}
+seg("segCam", v => { S.cam = v === "on"; });
+seg("segMic", v => { S.mic = v === "on"; });
+seg("segGoal", v => { S.goal = +v; });
+
+/* ---------- 画面の出し分け ---------- */
+function screen(name) {
+  ["sLobby", "sWait", "sGame"].forEach(s => { $(s).hidden = s !== name; });
+  $("bar").hidden = name !== "sGame";
+  scrollTo(0, 0);
+}
+function panel(name) {
+  ["pTopic", "pWrite", "pGuess", "pWaitOp", "pReveal", "pEnd", "pGone"].forEach(p => { $(p).hidden = p !== name; });
+}
+function waiting(txt) { $("waitTxt").textContent = txt; panel("pWaitOp"); }
+function say(id, txt, err) { $(id).textContent = txt || ""; $(id).classList.toggle("err", !!err); }
+
+/* ============================================================
+   通信（PeerJS・ブラウザ同士の直結。裏のサーバは無い）
+   部屋のID = mtj-wg-<4文字>
+   ============================================================ */
+const PFX = "mtj-wg-";
+const ABC = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+const mkCode = () => Array.from({ length: 4 }, () => ABC[Math.random() * ABC.length | 0]).join("");
+
+function newPeer(id) {
+  return new Promise((res, rej) => {
+    const p = new Peer(id, { debug: 0 });
+    p.on("open", () => res(p));
+    p.on("error", e => rej(e));
+  });
+}
+function wirePeer() {
+  peer.on("connection", c => {
+    if (conn && conn.open) { c.on("open", () => c.close()); return; }   // 3人目は入れない
+    wireConn(c);
+  });
+  // 相手の映像・声。こちらからは何も返さない（返すのは自分の outCall の役目）
+  peer.on("call", call => {
+    if (inCall) inCall.close();
+    inCall = call;
+    call.answer();
+    call.on("stream", st => setOpStream(st));
+    call.on("close", () => { if (inCall === call) { inCall = null; setOpStream(null); } });
+  });
+}
+function wireConn(c) {
+  conn = c;
+  c.on("open", onOpen);
+  c.on("data", onData);
+  c.on("close", onGone);
+  c.on("error", () => {});
+}
+function send(m) { if (conn && conn.open) conn.send(m); }
+
+async function host() {
+  say("msgL", tt("making"));
+  $("bHost").disabled = true;
+  for (let i = 0; i < 4; i++) {
+    const code = mkCode();
+    try {
+      peer = await newPeer(PFX + code);
+      S.isHost = true; S.code = code;
+      wirePeer();
+      showWait(code);
+      return;
+    } catch (e) {
+      if (e && e.type === "unavailable-id") continue;     // たまたま同じコードがあった
+      say("msgL", tt("netErr"), true); break;
+    }
+  }
+  $("bHost").disabled = false;
+}
+
+function showWait(code) {
+  screen("sWait");
+  $("bigCode").textContent = code;
+  const url = inviteURL(code);
+  $("qr").innerHTML = "";
+  try { new QRCode($("qr"), { text: url, width: 150, height: 150 }); } catch (e) {}
+  say("msgW", tt("waitPartner") + "…");
+}
+const inviteURL = code => location.origin + location.pathname + "?r=" + code;
+
+/* 入る。「数秒たったら部屋が無い」と決めつけない（漢字カルタで踏んだ）。
+   peer-unavailable を受けてから5秒開かなければ無い、と決める */
+async function join(code) {
+  code = (code || "").trim().toUpperCase();
+  if (code.length !== 4) { say("msgL", tt("needCode"), true); return; }
+  $("bJoin").disabled = true; $("bHost").disabled = true;
+  say("msgL", tt("connecting"));
+  try { if (!peer) { peer = await newPeer(); wirePeer(); } }
+  catch (e) { say("msgL", tt("netErr"), true); $("bJoin").disabled = false; $("bHost").disabled = false; return; }
+  S.isHost = false; S.code = code;
+  let done = false, unavailAt = 0, tries = 0;
+  const t0 = performance.now();
+  peer.on("error", e => {
+    if (done || !e || e.type !== "peer-unavailable") return;
+    if (!unavailAt) unavailAt = performance.now();
+    if (++tries < 3) setTimeout(() => { if (!done) wireConn(peer.connect(PFX + code, { reliable: true })); }, 1200);
+  });
+  wireConn(peer.connect(PFX + code, { reliable: true }));
+  const tick = setInterval(() => {
+    if (conn && conn.open) { done = true; clearInterval(tick); return; }
+    const now = performance.now();
+    if (unavailAt && now - unavailAt >= 5000) { done = true; clearInterval(tick); fail(tt("noRoom")); return; }
+    if (now - t0 >= 20000) { done = true; clearInterval(tick); fail(tt("joinSlow")); return; }
+    say("msgL", tt("connectingN", Math.round((now - t0) / 1000)));
+  }, 1000);
+  function fail(t) { say("msgL", t, true); $("bJoin").disabled = false; $("bHost").disabled = false; }
+}
+
+/* ---------- つながった ---------- */
+function onOpen() {
+  if (S.isHost) send({ t: "cfg", goal: S.goal });
+  newMatch();
+  screen("sGame");
+  refreshMedia();
+}
+function onGone() {
+  if ($("sGame").hidden) return;
+  closeModal(); panel("pGone");
+  setOpStream(null);
+}
+
+function onData(m) {
+  if (!m || !m.t) return;
+  if (m.t === "cfg") { S.goal = m.goal; paintBar(); return; }
+  if (m.t === "again") { S.againOp = true; maybeRestart(); return; }
+  if (m.round !== S.round && m.t !== "media") return;     // 古いラウンドの話は捨てる
+  if (m.t === "q") { S.opQ = { topic: m.topic, img: m.img }; flow(); }
+  else if (m.t === "guess") { onOpGuess(m.text, m.pass); }
+  else if (m.t === "verdict") { S.myRes = { ok: m.ok, answer: m.answer }; addScore(); flow(); }
+  else if (m.t === "next") { S.readyOp = true; maybeNext(); }
+}
+
+/* ============================================================
+   カメラと声。持っている人だけが相手に「かける」。
+   受ける側は何も返さない＝片方だけカメラでも成り立つ
+   ============================================================ */
+async function refreshMedia() {
+  if (outCall) { try { outCall.close(); } catch (e) {} outCall = null; }
+  if (myStream) { myStream.getTracks().forEach(t => t.stop()); myStream = null; }
+  if (S.cam || S.mic) {
+    try {
+      myStream = await navigator.mediaDevices.getUserMedia({
+        video: S.cam ? { width: { ideal: 640 }, height: { ideal: 480 }, facingMode: "user" } : false,
+        audio: S.mic ? { echoCancellation: true, noiseSuppression: true } : false,
+      });
+    } catch (e) {
+      S.cam = false; S.mic = false; myStream = null;
+      alert(tt("camDenied"));
+    }
+  }
+  $("vMe").srcObject = myStream && S.cam ? myStream : null;
+  $("faceMe").classList.toggle("has", !!(myStream && S.cam));
+  paintBar();
+  if (myStream && conn && conn.open) outCall = peer.call(conn.peer, myStream);
+}
+function setOpStream(st) {
+  const v = $("vOp");
+  v.srcObject = st || null;
+  const hasV = !!(st && st.getVideoTracks().length);
+  $("faceOp").classList.toggle("has", hasV);
+  if (st) v.play().catch(() => {});
+}
+$("tCam").onclick = () => { S.cam = !S.cam; refreshMedia(); };
+$("tMic").onclick = () => { S.mic = !S.mic; refreshMedia(); };
+
+/* ============================================================
+   ゲームの流れ
+   ふたり同時に「お題→書く」→ 相手のを当てる → 答え合わせ → 次へ
+   ============================================================ */
+function newMatch() {
+  Object.assign(S, { round: 1, me: 0, op: 0, over: false, againMe: false, againOp: false });
+  newRound();
+}
+function newRound() {
+  Object.assign(S, { myQ: null, opQ: null, myGuess: null, myRes: null, opRes: null,
+    pendingJudge: null, readyMe: false, readyOp: false, scored: false });
+  clearPad(); $("ans").value = ""; $("guess").value = ""; $("ownTopic").value = "";
+  $("die").textContent = "🎲";
+  drawTopics(); paintBar();
+  panel("pTopic");
+}
+
+/* 自分がいまどこにいるかを、持っているものから決める */
+function flow() {
+  if (S.over) return;
+  if (!S.myQ) return;                                    // まだ書いている
+  if (!S.opQ) { waiting(tt("waitWrite")); return; }      // 相手がまだ書いている
+  if (S.myGuess == null) { showGuess(); return; }
+  if (!S.myRes) { waiting(tt("waitJudge")); return; }
+  if (!S.opRes) { waiting(tt("waitJudge")); return; }    // 自分がまだ相手のを判定していない（モーダルが出ている）
+  showReveal();
+}
+
+/* ---------- お題 ---------- */
+function drawTopics(hl) {
+  const box = $("dice6");
+  box.innerHTML = "";
+  topicsNow().forEach((t, i) => {
+    const b = document.createElement("button");
+    b.className = "tp" + (hl === i ? " hl" : "");
+    b.innerHTML = `<b>${FACES[i]}</b><span>${tName(t)}</span>`;
+    b.onclick = () => { if (!rolling) pickTopic(tName(t)); };
+    box.appendChild(b);
+  });
+}
+let rolling = false;
+$("bRoll").onclick = () => {
+  if (rolling) return;
+  rolling = true; $("bRoll").disabled = true;
+  const final = Math.random() * 6 | 0;
+  const die = $("die"); die.classList.add("roll");
+  let n = 0;
+  const iv = setInterval(() => {
+    const f = n < 11 ? (Math.random() * 6 | 0) : final;
+    die.textContent = FACES[f]; drawTopics(f); blip(300 + f * 40, .03);
+    if (++n > 11) {
+      clearInterval(iv); die.classList.remove("roll");
+      blip(660, .12);
+      setTimeout(() => { rolling = false; $("bRoll").disabled = false; pickTopic(tName(topicsNow()[final])); }, 750);
+    }
+  }, 90);
+};
+$("bSet").onclick = () => { setIdx = (setIdx + 1) % SETS.length; drawTopics(); };
+$("bOwn").onclick = () => { const v = $("ownTopic").value.trim(); if (v) pickTopic(v); };
+$("ownTopic").addEventListener("keydown", e => { if (e.key === "Enter") $("bOwn").click(); });
+
+function pickTopic(name) {
+  S.topic = name;
+  $("tagW").textContent = name;
+  panel("pWrite");
+  sizePad();
+}
+
+/* ---------- 書く（手書きの板） ---------- */
+const cv = $("cv"), cx = cv.getContext("2d");
+let strokes = [], cur = null, penW = 12;
+seg("segPen", v => { penW = +v; });
+
+function sizePad() {
+  const r = cv.getBoundingClientRect();
+  const d = Math.min(devicePixelRatio || 1, 2);
+  cv.width = Math.round(r.width * d); cv.height = Math.round(r.height * d);
+  redraw();
+}
+addEventListener("resize", () => { if (!$("pWrite").hidden) sizePad(); });
+
+/* 線は 0〜1 の座標で持つ。大きさが変わっても、書き出すときも同じ形になる */
+function drawStrokes(ctx, W, list) {
+  ctx.lineCap = "round"; ctx.lineJoin = "round"; ctx.strokeStyle = "#1b1f26"; ctx.fillStyle = "#1b1f26";
+  for (const s of list) {
+    const p = s.pts, w = s.w * W / 440;
+    ctx.lineWidth = w;
+    if (p.length === 1) { ctx.beginPath(); ctx.arc(p[0][0] * W, p[0][1] * W, w / 2, 0, 7); ctx.fill(); continue; }
+    ctx.beginPath(); ctx.moveTo(p[0][0] * W, p[0][1] * W);
+    for (let i = 1; i < p.length - 1; i++) {
+      const mx = (p[i][0] + p[i + 1][0]) / 2, my = (p[i][1] + p[i + 1][1]) / 2;
+      ctx.quadraticCurveTo(p[i][0] * W, p[i][1] * W, mx * W, my * W);
+    }
+    const l = p[p.length - 1]; ctx.lineTo(l[0] * W, l[1] * W);
+    ctx.stroke();
+  }
+}
+function redraw() {
+  cx.clearRect(0, 0, cv.width, cv.height);
+  drawStrokes(cx, cv.width, cur ? [...strokes, cur] : strokes);
+  canSend();
+}
+function pt(e) {
+  const r = cv.getBoundingClientRect();
+  return [Math.min(1, Math.max(0, (e.clientX - r.left) / r.width)), Math.min(1, Math.max(0, (e.clientY - r.top) / r.height))];
+}
+cv.addEventListener("pointerdown", e => {
+  e.preventDefault(); cv.setPointerCapture(e.pointerId);
+  cur = { w: penW, pts: [pt(e)] }; redraw();
+});
+cv.addEventListener("pointermove", e => {
+  if (!cur) return;
+  const evs = e.getCoalescedEvents ? e.getCoalescedEvents() : [e];
+  for (const ev of evs) cur.pts.push(pt(ev));
+  redraw();
+});
+const endStroke = () => { if (cur) { strokes.push(cur); cur = null; redraw(); } };
+cv.addEventListener("pointerup", endStroke);
+cv.addEventListener("pointercancel", endStroke);
+$("bUndo").onclick = () => { strokes.pop(); redraw(); };
+$("bClear").onclick = () => { strokes = []; redraw(); };
+function clearPad() { strokes = []; cur = null; cx.clearRect(0, 0, cv.width, cv.height); canSend(); }
+function canSend() { $("bSend").disabled = !(strokes.length && $("ans").value.trim()); }
+$("ans").addEventListener("input", canSend);
+$("ans").addEventListener("keydown", e => { if (e.key === "Enter" && !$("bSend").disabled) $("bSend").click(); });
+
+function exportImg() {
+  const c = document.createElement("canvas"); c.width = c.height = 480;
+  const x = c.getContext("2d"); x.fillStyle = "#fff"; x.fillRect(0, 0, 480, 480);
+  drawStrokes(x, 480, strokes);
+  return c.toDataURL("image/png");
+}
+$("bSend").onclick = () => {
+  const answer = $("ans").value.trim();
+  if (!strokes.length || !answer) return;
+  S.myQ = { topic: S.topic, img: exportImg(), answer };
+  send({ t: "q", round: S.round, topic: S.topic, img: S.myQ.img });
+  blip(520, .08);
+  if (S.pendingJudge) { const g = S.pendingJudge; S.pendingJudge = null; onOpGuess(g.text, g.pass); }
+  flow();
+};
+
+/* ---------- 当てる ---------- */
+function showGuess() {
+  $("tagG").textContent = S.opQ.topic;
+  $("opShot").src = S.opQ.img;
+  panel("pGuess");
+  setTimeout(() => $("guess").focus(), 50);
+}
+function sendGuess(text, pass) {
+  S.myGuess = pass ? "" : text;
+  send({ t: "guess", round: S.round, text: S.myGuess, pass: !!pass });
+  flow();
+}
+$("bGuess").onclick = () => { const v = $("guess").value.trim(); if (v) sendGuess(v, false); };
+$("guess").addEventListener("keydown", e => { if (e.key === "Enter") $("bGuess").click(); });
+$("bPass").onclick = () => sendGuess("", true);
+
+/* ---------- 相手の答えを判定する ----------
+   ぴったり合えば自動で○。合わないときだけ、書いた本人が○×を決める
+   （「ネコ」「neko」「a cat」のような近い答えを機械で切らないため） */
+const norm = s => (s || "").normalize("NFKC").toLowerCase()
+  .replace(/[ァ-ヶ]/g, c => String.fromCharCode(c.charCodeAt(0) - 0x60))
+  .replace(/^(a|an|the|to)\s+/, "")
+  .replace(/[\s.,!?'"「」『』（）()・。、！？〜~]/g, "");
+function autoMatch(guess, answer) {
+  const g = norm(guess); if (!g) return false;
+  return answer.split(/[\/／,，、;；]|\bor\b/).some(a => norm(a) === g);
+}
+function onOpGuess(text, pass) {
+  if (!S.myQ) { S.pendingJudge = { text, pass }; return; }   // まだ送ってないのに来た（起きないはずだが念のため）
+  if (pass) return judge(false, "");
+  if (autoMatch(text, S.myQ.answer)) return judge(true, text);
+  $("jGuess").textContent = text;
+  $("jAns").textContent = S.myQ.answer;
+  $("judge").classList.add("on");
+  $("jOk").onclick = () => { closeModal(); judge(true, text); };
+  $("jNg").onclick = () => { closeModal(); judge(false, text); };
+}
+function closeModal() { $("judge").classList.remove("on"); }
+function judge(ok, guess) {
+  S.opRes = { ok, guess };
+  send({ t: "verdict", round: S.round, ok, answer: S.myQ.answer });
+  addScore();
+  flow();
+}
+
+/* 点は両方の判定がそろってから一度だけ足す（両方の画面で同じ数になるように） */
+function addScore() {
+  if (S.scored || !S.myRes || !S.opRes) return;
+  S.scored = true;
+  if (S.myRes.ok) S.me++;
+  if (S.opRes.ok) S.op++;
+  paintBar();
+  if (S.myRes.ok) blip(880, .15); else blip(220, .15);
+}
+
+/* ---------- 答え合わせ ---------- */
+function showReveal() {
+  const a = S.myRes.ok, b = S.opRes.ok;
+  $("rvTitle").textContent = a && b ? tt("bothOk") : a ? tt("youOk") : b ? tt("opOk") : tt("bothNg");
+  $("rvOpImg").src = S.opQ.img;
+  $("rvOpAns").textContent = S.myRes.answer;
+  $("rvOpGuess").textContent = S.myGuess || tt("passed");
+  mark("rvOpMark", a);
+  $("rvMyImg").src = S.myQ.img;
+  $("rvMyAns").textContent = S.myQ.answer;
+  $("rvMyGuess").textContent = S.opRes.guess || tt("passed");
+  mark("rvMyMark", b);
+  const fin = isOver();
+  $("bNext").hidden = false;
+  $("bNext").disabled = S.readyMe;
+  if (fin === "tie") say("msgN", tt("sudden"));
+  else say("msgN", S.readyMe ? tt("waitNext") : "");
+  panel("pReveal");
+}
+function mark(id, ok) { const e = $(id); e.textContent = ok ? "○" : "×"; e.className = "mark " + (ok ? "ok" : "ng"); }
+
+/* 目標に先に届いたら勝ち。同じラウンドでふたり同時に届いて同点なら、もう1回戦 */
+function isOver() {
+  const g = S.goal;
+  if (S.me < g && S.op < g) return null;
+  if (S.me === S.op) return "tie";
+  return S.me > S.op ? "win" : "lose";
+}
+$("bNext").onclick = () => {
+  const fin = isOver();
+  if (fin === "win" || fin === "lose") { S.over = true; showEnd(); return; }
+  S.readyMe = true; $("bNext").disabled = true;
+  send({ t: "next", round: S.round });
+  say("msgN", tt("waitNext"));
+  maybeNext();
+};
+function maybeNext() {
+  if (!S.readyMe || !S.readyOp) return;
+  S.round++; newRound();
+}
+
+/* ---------- おわり ---------- */
+function showEnd() {
+  const w = isOver() === "win";
+  $("endBig").textContent = lang === "ja" ? (w ? "勝" : "負") : (w ? "WIN" : "LOSE");
+  $("endBig").className = "big" + (w ? "" : " lose");
+  $("endTxt").textContent = w ? tt("win") : tt("lose");
+  $("endScore").textContent = `${S.me} — ${S.op}`;
+  $("bAgain").disabled = S.againMe;
+  say("msgE", S.againMe ? tt("again") : "");
+  panel("pEnd");
+  if (w && !S.fanfare) { S.fanfare = true; [523, 659, 784, 1047].forEach((f, i) => setTimeout(() => blip(f, .15), i * 120)); }
+}
+$("bAgain").onclick = () => {
+  S.againMe = true; $("bAgain").disabled = true; say("msgE", tt("again"));
+  send({ t: "again" }); maybeRestart();
+};
+function maybeRestart() {
+  if (!S.againMe || !S.againOp) return;
+  S.fanfare = false; newMatch();
+}
+$("bLeave").onclick = leave;
+$("bBack").onclick = leave;
+function leave() { location.href = location.pathname; }
+
+function paintBar() {
+  $("ptMe").textContent = S.me; $("ptOp").textContent = S.op;
+  $("goalN").textContent = S.goal;
+  $("roundN").textContent = tt("round", S.round);
+  $("tCam").classList.toggle("on", S.cam); $("tMic").classList.toggle("on", S.mic);
+  $("tCam").textContent = S.cam ? "📷 ON" : "📷 OFF";
+  $("tMic").textContent = S.mic ? "🎤 ON" : "🎤 OFF";
+}
+
+/* ---------- 音（合成。素材は使わない） ---------- */
+let ac = null;
+function blip(f, d) {
+  try {
+    ac = ac || new (window.AudioContext || window.webkitAudioContext)();
+    const o = ac.createOscillator(), g = ac.createGain();
+    o.type = "triangle"; o.frequency.value = f;
+    g.gain.setValueAtTime(.12, ac.currentTime); g.gain.exponentialRampToValueAtTime(.001, ac.currentTime + d + .05);
+    o.connect(g).connect(ac.destination); o.start(); o.stop(ac.currentTime + d + .06);
+  } catch (e) {}
+}
+
+/* ---------- ボタン ---------- */
+$("bHost").onclick = host;
+$("bJoin").onclick = () => join($("code").value);
+$("code").addEventListener("keydown", e => { if (e.key === "Enter") join($("code").value); });
+$("bCopy").onclick = async () => {
+  const txt = tt("invite", inviteURL(S.code), S.code);
+  try { await navigator.clipboard.writeText(txt); say("msgW", tt("copied")); }
+  catch (e) { prompt("", txt); }
+};
+$("bCancel").onclick = leave;
+
+/* 招待リンク（?r=CODE）で開いたら、押させずにそのまま入る。
+   部屋を作る人の設定（5か10か）は、つながった瞬間に向こうから届く */
+(function invite() {
+  const r = (new URLSearchParams(location.search).get("r") || "").trim().toUpperCase();
+  if (r.length !== 4) return;
+  $("code").value = r;
+  $("segGoal").querySelectorAll("button").forEach(b => b.disabled = true);
+  join(r);
+})();
+
+applyLang();
+$("yr").textContent = new Date().getFullYear();
+</script>
+<!-- Cloudflare Web Analytics（Cookieを使わない。個人は追わない。何人・どのページ・どの国・どこから、だけ）-->
+<script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "a549632ca5ba440a9dbdfd24bcbe11e5"}'></script>
+</body>
+</html>
