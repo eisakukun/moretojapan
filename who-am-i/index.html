@@ -1,0 +1,1266 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Who Am I? — a question game for two languages</title>
+<meta name="description" content="You get a secret card that only your partner can see. Ask yes/no questions in the language you are learning and guess who — or what — you are. Topic by dice, by choice, or everything. 5 or 10 minutes, 1 to 3 rounds. Free, no sign-up.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Who Am I? — a question game for two languages">
+<meta property="og:description" content="Your partner can see your card. You can't. Ask questions in the language you are learning and find out what you are.">
+<meta property="og:url" content="https://moretojapan.com/who-am-i/">
+<link rel="canonical" href="https://moretojapan.com/who-am-i/">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23d94f2b'/%3E%3Ctext x='32' y='46' font-size='42' text-anchor='middle' fill='white' font-family='Hiragino Sans,sans-serif' font-weight='800'%3E%3F%3C/text%3E%3C/svg%3E">
+<style>
+  :root{--paper:#faf7f2;--ink:#1b1f26;--sub:#5d6673;--line:#e4ddd2;--ai:#22406e;--aka:#d94f2b;--card:#fff;
+    --ok:#2f8a4e;--ng:#c8412a}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--paper);color:var(--ink);line-height:1.7;
+    font-family:"Hiragino Sans","Noto Sans JP",system-ui,-apple-system,sans-serif;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:860px;margin:0 auto;padding:0 16px}
+  a{color:var(--ai)}
+  header{position:sticky;top:0;z-index:50;background:#faf7f2e6;backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+  nav{display:flex;align-items:center;gap:18px;height:60px;max-width:1040px;margin:0 auto;padding:0 16px}
+  .logo{font-weight:800;font-size:19px;text-decoration:none;color:var(--ink);display:flex;align-items:center;gap:9px;white-space:nowrap}
+  .logo i{display:grid;place-items:center;width:30px;height:30px;border-radius:9px;background:var(--ai);
+    color:#fff;font-style:normal;font-size:16px;font-weight:700}
+  nav .sp{flex:1}
+  nav a.nl{color:var(--sub);text-decoration:none;font-size:15px;white-space:nowrap}
+  @media(max-width:760px){nav a.nl{display:none}}
+  .lang{border:1px solid var(--line);background:#fff;border-radius:999px;padding:6px 14px;font:inherit;font-size:13px;cursor:pointer;color:var(--sub);width:auto}
+
+  .hero{padding:34px 0 6px}
+  .kicker{color:var(--aka);font-weight:700;font-size:13px;letter-spacing:.16em;text-transform:uppercase}
+  h1{font-size:clamp(26px,4.4vw,38px);line-height:1.25;margin:10px 0 12px}
+  .lead{font-size:16.5px;color:var(--sub);margin:0}
+
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:20px;margin:20px 0}
+  .panel h2{font-size:18px;margin:0 0 4px}
+  .hint{color:var(--sub);font-size:14px;margin:4px 0 0}
+  .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+  .lbl{font-weight:700;font-size:14px;margin:16px 0 8px;display:block}
+  .lbl small{font-weight:400;color:var(--sub)}
+
+  .seg{display:inline-flex;border:1px solid var(--line);border-radius:999px;overflow:hidden;background:#fff}
+  .seg button{border:0;background:none;padding:9px 18px;font:inherit;font-size:15px;cursor:pointer;color:var(--sub)}
+  .seg button.on{background:var(--ai);color:#fff;font-weight:700}
+  .seg button:disabled{cursor:default}
+
+  .btn{border:0;border-radius:12px;padding:12px 20px;font:inherit;font-size:16px;font-weight:700;cursor:pointer;
+    background:var(--aka);color:#fff;display:inline-flex;align-items:center;gap:8px;justify-content:center}
+  .btn:disabled{opacity:.4;cursor:default}
+  .btn.ai{background:var(--ai)}
+  .btn.ghost{background:#fff;color:var(--ink);border:1px solid var(--line)}
+  .btn.sm{padding:8px 14px;font-size:14px;border-radius:10px}
+  input[type=text]{font:inherit;font-size:17px;padding:11px 14px;border:1px solid var(--line);border-radius:12px;background:#fff;color:var(--ink);min-width:0}
+  input[type=text]:focus{outline:2px solid #22406e55;border-color:var(--ai)}
+  #code{width:7.5em;text-transform:uppercase;letter-spacing:.3em;text-align:center;font-weight:700}
+
+  .msg{min-height:1.6em;color:var(--sub);font-size:14.5px;margin-top:10px}
+  .msg.err{color:var(--ng);font-weight:700}
+
+  .bigcode{font-size:46px;font-weight:800;letter-spacing:.25em;color:var(--ai);margin:6px 0}
+  #qr{background:#fff;padding:8px;border:1px solid var(--line);border-radius:12px;display:inline-block}
+  #qr:empty{display:none}
+
+  /* 上の帯：点数 */
+  .bar{position:sticky;top:60px;z-index:40;background:#faf7f2f2;backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--line);padding:8px 0}
+  .barIn{display:flex;align-items:center;gap:12px;justify-content:space-between}
+  .sc{display:flex;align-items:center;gap:10px}
+  .sc.op{flex-direction:row-reverse}
+  .nm{font-size:12px;color:var(--sub);white-space:nowrap}
+  .pt{font-size:28px;font-weight:800;line-height:1}
+  .mid{text-align:center;font-size:12px;color:var(--sub);white-space:nowrap}
+  .mid b{display:block;font-size:15px;color:var(--ink)}
+  .tog{display:flex;gap:6px}
+  .tog button{border:1px solid var(--line);background:#fff;border-radius:999px;font-size:12px;padding:2px 9px;cursor:pointer;color:var(--sub)}
+  .tog button.on{border-color:var(--ai);color:var(--ai);font-weight:700}
+
+  /* お題 */
+  .dice6{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px}
+  .tp{border:1.5px solid var(--line);border-radius:14px;background:#fff;padding:12px 8px;text-align:center;cursor:pointer;
+    font:inherit;color:var(--ink);transition:transform .08s}
+  .tp:hover{border-color:var(--ai)}
+  .tp b{display:block;font-size:22px;line-height:1.1;color:var(--sub)}
+  .tp span{font-size:15px;font-weight:700}
+  .tp em{display:block;font-style:normal;font-size:20px;line-height:1.2}
+  .tp.hl{border-color:var(--aka);background:#fff4ef;transform:scale(1.04)}
+  .tp.all{border-style:dashed}
+  #die{font-size:64px;line-height:1;display:inline-block;width:1.1em;text-align:center}
+  #die.roll{animation:wob .12s linear infinite}
+  @keyframes wob{0%{transform:rotate(-14deg)}50%{transform:rotate(14deg)}100%{transform:rotate(-14deg)}}
+  .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:8px;margin-top:12px}
+  .cards button{border:1.5px solid var(--line);background:#fff;border-radius:14px;font:inherit;padding:8px 4px;cursor:pointer;line-height:1.25;color:var(--ink)}
+  .cards button em{display:block;font-style:normal;font-size:30px}
+  .cards button b{display:block;font-size:15px}
+  .cards button small{display:block;font-size:12px;color:var(--ai)}
+  .cards button.on{border-color:var(--aka);background:#fff4ef}
+  .pickPrev{margin:0 auto 12px;display:inline-block}
+  .pickPrev:empty{display:none}
+  .pickPrev .band{margin:0 auto}
+  .learn{background:#fff8e6;border:1px solid #f0dca6;border-radius:12px;padding:8px 12px;font-size:14px;margin-top:12px}
+  .topicTag{display:inline-block;background:#fff4ef;color:var(--aka);border:1px solid #f1c6b6;border-radius:999px;
+    padding:3px 12px;font-weight:700;font-size:14px}
+
+  /* 舞台：ふたりの顔と、おでこのカード */
+  .stage{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
+  .tile{position:relative;border-radius:16px;overflow:hidden;background:#e9e3d8;aspect-ratio:4/3.4;display:flex;flex-direction:column}
+  .tile video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+  .tile.me video{transform:scaleX(-1)}
+  .tile .off{position:absolute;inset:0;display:grid;place-items:center;color:var(--sub);font-size:13px;text-align:center;padding-top:40%}
+  .tile.has .off{display:none}
+  .tile .who{position:absolute;left:8px;bottom:8px;background:#1b1f26b3;color:#fff;border-radius:999px;font-size:12px;padding:2px 10px;z-index:2}
+  /* おでこのカード（いちばん上に貼る） */
+  .band{position:relative;z-index:2;margin:10px auto 0;background:#fff;border:3px solid var(--aka);border-radius:14px;
+    padding:6px 14px 8px;text-align:center;min-width:62%;max-width:92%;box-shadow:0 6px 18px #0002}
+  .band .em{font-size:40px;line-height:1.1}
+  .band .ja{font-size:22px;font-weight:800;line-height:1.25}
+  .band .kn{font-size:12.5px;color:var(--sub);line-height:1.2}
+  .band .en{font-size:15px;font-weight:700;color:var(--ai);line-height:1.3}
+  .band.q{border-color:var(--ai);border-style:dashed}
+  .band.q .em{font-size:54px;color:var(--ai);font-weight:900}
+  .band.got{border-color:var(--ok)}
+  .cap{font-size:12px;color:var(--sub);text-align:center;margin-top:4px}
+  @media(max-width:600px){
+    .stage{gap:8px} .tile{aspect-ratio:3/4}
+    .band{padding:4px 8px 6px;min-width:80%} .band .em{font-size:30px} .band .ja{font-size:17px} .band .en{font-size:13px}
+    .band.q .em{font-size:40px}
+  }
+
+  /* 時間と残り回数 */
+  .timer{height:8px;border-radius:99px;background:#eee6da;overflow:hidden;margin-top:12px}
+  .timer i{display:block;height:100%;width:100%;background:var(--ai);transition:width .25s linear}
+  .timer i.low{background:var(--aka)}
+  .tries{font-size:20px;letter-spacing:.15em;color:var(--aka)}
+  .secs{font-weight:800;font-size:20px;font-variant-numeric:tabular-nums}
+  .ansRow{display:flex;gap:10px;margin-top:8px}
+  .ansRow input{flex:1}
+  .wrong{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+  .wrong span{background:#fdecea;color:var(--ng);border-radius:999px;padding:3px 12px;font-size:14px;text-decoration:line-through}
+  .shake{animation:shake .35s}
+  @keyframes shake{20%,60%{transform:translateX(-8px)}40%,80%{transform:translateX(8px)}}
+  .gotit{background:#eaf6ee;border:1px solid #bfe2c9;color:var(--ok);border-radius:12px;padding:10px 14px;font-weight:700;margin-top:10px}
+
+  /* 相手の答え（こちらで○にできる） */
+  .opg{margin-top:12px;border-top:1px dashed var(--line);padding-top:10px}
+  .opg .h{font-size:13px;color:var(--sub)}
+  .og{display:flex;align-items:center;gap:8px;margin-top:6px;flex-wrap:wrap}
+  .og .t{font-weight:700}
+  .og .t.ng{color:var(--ng);text-decoration:line-through}
+  .og .t.ok{color:var(--ok)}
+  .acc{border:1.5px solid var(--ok);color:var(--ok);background:#fff;border-radius:999px;font:inherit;font-size:13px;font-weight:700;padding:2px 12px;cursor:pointer}
+
+  /* しゃべる（チャット＋質問のことば） */
+  .chat{margin-top:14px}
+  #log{height:220px;overflow-y:auto;border:1px solid var(--line);border-radius:14px;background:#fcfbf8;padding:10px;display:flex;flex-direction:column;gap:6px}
+  .ln{max-width:85%;padding:6px 12px;border-radius:14px;background:#fff;border:1px solid var(--line);font-size:14.5px;line-height:1.4;align-self:flex-start}
+  .ln.me{align-self:flex-end;background:#eef2fa;border-color:#d3dcec}
+  .ln small{display:block;color:var(--sub);font-size:11.5px}
+  .ln .j{font-weight:700;font-size:15.5px}
+  .ln.a{font-size:20px;font-weight:800}
+  .ln.sys{align-self:center;background:none;border:0;color:var(--sub);font-size:12.5px}
+  .stamps{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+  .stamps button{border:1.5px solid var(--line);background:#fff;border-radius:12px;font:inherit;font-size:14px;font-weight:700;padding:6px 10px;cursor:pointer;line-height:1.2}
+  .stamps button small{display:block;font-weight:400;font-size:11px;color:var(--sub)}
+  .stamps button:active{transform:scale(.95)}
+  details.qs{margin-top:10px}
+  details.qs summary{cursor:pointer;font-weight:700;font-size:14px}
+  .chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+  .chips button{border:1px solid var(--line);background:#fff;border-radius:12px;font:inherit;font-size:14px;padding:5px 10px;cursor:pointer;text-align:left;line-height:1.3}
+  .chips button small{display:block;font-size:11.5px;color:var(--sub)}
+  .chips button:hover{border-color:var(--ai)}
+
+  /* 答え合わせ */
+  .rv{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:12px}
+  @media(max-width:600px){ .rv{grid-template-columns:1fr} }
+  .rc{border:1px solid var(--line);border-radius:16px;padding:14px;background:#fff;text-align:center}
+  .rc h3{font-size:14px;margin:0 0 6px;color:var(--sub);font-weight:700}
+  .rc .em{font-size:56px;line-height:1.1}
+  .rc .ja{font-size:24px;font-weight:800}
+  .rc .kn{font-size:13px;color:var(--sub)}
+  .rc .en{font-size:16px;font-weight:700;color:var(--ai)}
+  .rc .res{font-size:17px;font-weight:800;margin-top:8px}
+  .rc .res.ok{color:var(--ok)} .rc .res.ng{color:var(--ng)}
+
+  #toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,40px);opacity:0;transition:.3s;z-index:90;
+    background:var(--ink);color:#fff;padding:12px 18px;border-radius:14px;font-size:14.5px;max-width:calc(100% - 32px);pointer-events:none}
+  #toast.on{opacity:1;transform:translate(-50%,0)}
+
+  .end{text-align:center;padding:10px 0}
+  .end .big{font-size:96px;font-weight:900;line-height:1;color:var(--aka)}
+  .end .big.lose{color:var(--sub)}
+
+  .wait{color:var(--sub);text-align:center;margin:16px 0 4px}
+  .dots::after{content:"";animation:dots 1.4s steps(4) infinite}
+  @keyframes dots{0%{content:""}25%{content:"."}50%{content:".."}75%{content:"..."}}
+
+  .how{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:14px}
+  @media(max-width:600px){ .how{grid-template-columns:1fr} }
+  .how div{background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px 14px;font-size:14.5px}
+  .how b{color:var(--aka);display:block}
+
+  [hidden]{display:none!important}
+  footer{border-top:1px solid var(--line);margin-top:40px;padding:22px 0;color:var(--sub);font-size:14px}
+  footer .wrap{display:flex;gap:16px;flex-wrap:wrap}
+</style>
+</head>
+<body>
+<header><nav>
+  <a class="logo" href="/"><i>奥</i>More to Japan</a><span class="sp"></span>
+  <a class="nl" href="/why/" data-en="Why" data-ja="なぜ">Why</a>
+  <a class="nl" href="/write-guess/" data-en="Write &amp; Guess" data-ja="書いて、当てて">Write &amp; Guess</a>
+  <a class="nl" href="/play/" data-en="Language exchange" data-ja="言語交換">Language exchange</a>
+  <button class="lang" id="lang">日本語</button>
+</nav></header>
+
+<!-- ============ 対戦中の上の帯 ============ -->
+<div class="bar" id="bar" hidden><div class="wrap barIn">
+  <div class="sc">
+    <div><div class="nm" data-en="You" data-ja="あなた">You</div><div class="pt" id="ptMe">0</div></div>
+    <div class="tog"><button id="tCam">📷</button><button id="tMic">🎤</button></div>
+  </div>
+  <div class="mid"><span id="roundTxt"></span><b id="roundN">1 / 3</b></div>
+  <div class="sc op">
+    <div style="text-align:right"><div class="nm" data-en="Partner" data-ja="あいて">Partner</div><div class="pt" id="ptOp">0</div></div>
+  </div>
+</div></div>
+
+<div class="wrap">
+
+<!-- ============ はじめの画面 ============ -->
+<section id="sLobby">
+  <div class="hero">
+    <div class="kicker" data-en="Free · no sign-up · 2 players" data-ja="無料・登録なし・2人で">Free · no sign-up · 2 players</div>
+    <h1 data-en="Who Am I?" data-ja="わたしは、だれ？">Who Am I?</h1>
+    <p class="lead" data-en="You choose a character, a thing or a creature <b>for your partner</b> — and they choose one for you. <b>Your partner can see yours — you can't.</b> Ask yes/no questions, answer theirs, and find out who you are before the time runs out."
+       data-ja="あいての「キャラクター・もの・生き物」を<b>あなたが選んで</b>渡す。あいても、あなたのぶんを選ぶ。<b>自分のカードは相手にだけ見えて、自分には見えない。</b>「はい／いいえ」で答えられる質問をして、相手の質問にも答えて、時間内に自分がだれかを当てる。">You choose a character, a thing or a creature <b>for your partner</b> — and they choose one for you. <b>Your partner can see yours — you can't.</b> Ask yes/no questions, answer theirs, and find out who you are before the time runs out.</p>
+  </div>
+
+  <div class="how">
+    <div><b data-en="1 · Topic &amp; card" data-ja="1 ・ お題とカード">1 · Topic &amp; card</b><span data-en="Pick the topic by dice, by choice, or “everything”. Then choose who your partner will be — from the list, or type any character you like." data-ja="お題はサイコロ・自分たちで選ぶ・ぜんぶ、から。それから、あいてを「だれ」にするかを選ぶ。リストからでも、好きなキャラクターを打ってもいい。">Pick the topic by dice, by choice, or “everything”. Then choose who your partner will be — from the list, or type any character you like.</span></div>
+    <div><b data-en="2 · Ask" data-ja="2 ・ 質問する">2 · Ask</b><span data-en="“Am I an animal?” “Can you eat me?” — tap a ready-made question in both languages, or say it out loud." data-ja="「わたしは動物ですか？」「食べられますか？」── 両方の言葉で用意した質問をタップしてもいいし、声で聞いてもいい。">“Am I an animal?” “Can you eat me?” — tap a ready-made question in both languages, or say it out loud.</span></div>
+    <div><b data-en="3 · Guess" data-ja="3 ・ 当てる">3 · Guess</b><span data-en="Try to answer in <b>the language you are learning</b>. 3 tries per round, 5 or 10 minutes, 1 to 3 rounds — most correct wins." data-ja="答えは<b>自分が学びたい言葉</b>で言ってみよう。1ターンに3回まで・5分か10分・1〜3ターン。当てた数が多いほうが勝ち。">Try to answer in <b>the language you are learning</b>. 3 tries per round, 5 or 10 minutes, 1 to 3 rounds — most correct wins.</span></div>
+  </div>
+
+  <div class="panel">
+    <span class="lbl" data-en="Your camera" data-ja="あなたのカメラ">Your camera</span>
+    <div class="seg" id="segCam">
+      <button data-v="on" class="on" data-en="📷 Use it" data-ja="📷 使う">📷 Use it</button>
+      <button data-v="off" data-en="No camera" data-ja="使わない">No camera</button>
+    </div>
+    <span class="lbl" data-en="Your voice" data-ja="あなたの声">Your voice</span>
+    <div class="seg" id="segMic">
+      <button data-v="on" class="on" data-en="🎤 Talk" data-ja="🎤 話す">🎤 Talk</button>
+      <button data-v="off" data-en="Text only" data-ja="文字だけ">Text only</button>
+    </div>
+    <p class="hint" data-en="With a camera, your card floats over your head on your partner's screen — just like the party game. Without one, you can still play by text. You can switch during the game."
+       data-ja="カメラを使うと、相手の画面ではあなたの頭の上にカードが浮かびます（パーティーゲームのあれ）。カメラなし・文字だけでも遊べます。途中でも切りかえられます。">With a camera, your card floats over your head on your partner's screen — just like the party game. Without one, you can still play by text. You can switch during the game.</p>
+
+    <span class="lbl"><span data-en="Time per round" data-ja="1ターンの時間">Time per round</span> <small data-en="(the person who makes the room decides)" data-ja="（部屋を作る人が決める）">(the person who makes the room decides)</small></span>
+    <div class="seg" id="segTime">
+      <button data-v="5" class="on" data-en="5 min" data-ja="5分">5 min</button>
+      <button data-v="10" data-en="10 min" data-ja="10分">10 min</button>
+    </div>
+    <span class="lbl"><span data-en="Rounds" data-ja="ターン数">Rounds</span> <small data-en="(you choose new cards each round · 3 guesses per round)" data-ja="（ターンごとにカードを選びなおす・当てるのは1ターン3回まで）">(you choose new cards each round · 3 guesses per round)</small></span>
+    <div class="seg" id="segTurns">
+      <button data-v="1" data-en="1 round" data-ja="1ターン">1 round</button>
+      <button data-v="2" data-en="2 rounds" data-ja="2ターン">2 rounds</button>
+      <button data-v="3" class="on" data-en="3 rounds" data-ja="3ターン">3 rounds</button>
+    </div>
+
+    <div class="row" style="margin-top:22px">
+      <button class="btn" id="bHost" data-en="Make a room" data-ja="部屋をつくる">Make a room</button>
+      <span style="color:var(--sub)" data-en="or" data-ja="または">or</span>
+      <input type="text" id="code" maxlength="4" placeholder="CODE" autocomplete="off">
+      <button class="btn ai" id="bJoin" data-en="Join" data-ja="入る">Join</button>
+    </div>
+    <div class="msg" id="msgL"></div>
+  </div>
+</section>
+
+<!-- ============ 相手を待つ ============ -->
+<section id="sWait" hidden>
+  <div class="panel" style="text-align:center;margin-top:30px">
+    <h2 data-en="Your room is open" data-ja="部屋ができました">Your room is open</h2>
+    <p class="hint" data-en="Send the link to your partner. They join the moment they open it." data-ja="リンクを相手に送ってください。開いた瞬間に入ってきます。">Send the link to your partner. They join the moment they open it.</p>
+    <div class="bigcode" id="bigCode">----</div>
+    <div id="qr"></div>
+    <div class="row" style="justify-content:center;margin-top:14px">
+      <button class="btn" id="bCopy" data-en="Copy the invite link" data-ja="招待リンクをコピー">Copy the invite link</button>
+      <button class="btn ghost" id="bCancel" data-en="Close the room" data-ja="部屋を閉じる">Close the room</button>
+    </div>
+    <div class="msg" id="msgW"></div>
+  </div>
+</section>
+
+<!-- ============ ゲーム ============ -->
+<section id="sGame" hidden>
+
+  <!-- お題を決める -->
+  <div class="panel" id="pTopic" hidden>
+    <h2 data-en="Choose a topic" data-ja="お題を決める">Choose a topic</h2>
+    <p class="hint" data-en="Roll the dice, or tap one yourselves. Either of you can choose — the first one counts. The 6th face is “Everything”."
+       data-ja="サイコロをふるか、自分たちでタップ。どちらが決めてもよく、先に決めたほうが有効。6の目は「ぜんぶ」。">Roll the dice, or tap one yourselves. Either of you can choose — the first one counts. The 6th face is “Everything”.</p>
+    <div class="row" style="margin-top:12px">
+      <span id="die">🎲</span>
+      <button class="btn" id="bRoll" data-en="🎲 Roll the dice" data-ja="🎲 サイコロをふる">🎲 Roll the dice</button>
+      <button class="btn ghost sm" id="bSet" data-en="Other topics" data-ja="ほかのお題">Other topics</button>
+    </div>
+    <div class="dice6" id="dice6"></div>
+  </div>
+
+  <!-- あいてのカードを選ぶ -->
+  <div class="panel" id="pChoose" hidden>
+    <div class="row" style="justify-content:space-between">
+      <h2 data-en="Who will your partner be?" data-ja="あいてを、だれにする？">Who will your partner be?</h2>
+      <span class="topicTag" id="tagC"></span>
+    </div>
+    <p class="hint" data-en="Choose a card for your partner. They will not see it — you will. Your partner is choosing yours right now."
+       data-ja="あいてのカードを選んでください。あいてには見えず、あなたにだけ見えます。あいても今、あなたのカードを選んでいます。">Choose a card for your partner. They will not see it — you will. Your partner is choosing yours right now.</p>
+    <div class="row" style="margin-top:10px">
+      <button class="btn ghost sm" id="bRand" data-en="🎲 Leave it to chance" data-ja="🎲 おまかせ">🎲 Leave it to chance</button>
+      <button class="btn ghost sm" id="bShuf" data-en="Show others" data-ja="ほかを見る">Show others</button>
+    </div>
+    <div class="cards" id="cardGrid"></div>
+    <span class="lbl"><span data-en="Or type any character, thing or creature" data-ja="または、好きなキャラクター・もの・生き物を打つ">Or type any character, thing or creature</span> <small data-en="(e.g. Pikachu, Godzilla, my cat Tama)" data-ja="（例：ピカチュウ、ゴジラ、うちの猫のタマ）">(e.g. Pikachu, Godzilla, my cat Tama)</small></span>
+    <div class="ansRow">
+      <input type="text" id="ownName" maxlength="30" autocomplete="off" data-ph-en="name" data-ph-ja="名前">
+      <input type="text" id="ownOther" maxlength="30" autocomplete="off" data-ph-en="in the other language (optional)" data-ph-ja="もう一方の言葉で（なくてもいい）">
+    </div>
+    <div style="text-align:center;margin-top:16px">
+      <div id="pickPrev" class="pickPrev"></div>
+      <button class="btn" id="bGive" disabled data-en="Give this card to my partner" data-ja="このカードをあいてに渡す">Give this card to my partner</button>
+    </div>
+  </div>
+
+  <!-- 遊ぶ -->
+  <div class="panel" id="pPlay" hidden>
+    <div class="row" style="justify-content:space-between">
+      <h2 data-en="Who am I?" data-ja="わたしは、だれ？">Who am I?</h2>
+      <span class="topicTag" id="tagP"></span>
+    </div>
+    <div class="timer"><i id="tBar"></i></div>
+    <div class="row" style="justify-content:space-between;margin-top:4px">
+      <span class="tries" id="tries"></span>
+      <span class="secs" id="tSec"></span>
+    </div>
+
+    <div class="stage">
+      <div>
+        <div class="tile op" id="tileOp">
+          <video id="vOp" playsinline autoplay></video>
+          <div class="off" data-en="partner's camera off" data-ja="あいてのカメラなし">partner's camera off</div>
+          <div class="band" id="bandOp"></div>
+          <span class="who" data-en="Partner" data-ja="あいて">Partner</span>
+        </div>
+        <div class="cap" data-en="Their card — only you can see it" data-ja="あいてのカード ── あなたにだけ見える">Their card — only you can see it</div>
+      </div>
+      <div>
+        <div class="tile me" id="tileMe">
+          <video id="vMe" muted playsinline autoplay></video>
+          <div class="off" data-en="your camera off" data-ja="あなたのカメラなし">your camera off</div>
+          <div class="band q" id="bandMe"></div>
+          <span class="who" data-en="You" data-ja="あなた">You</span>
+        </div>
+        <div class="cap" data-en="Your card — hidden from you" data-ja="あなたのカード ── 自分には見えない">Your card — hidden from you</div>
+      </div>
+    </div>
+
+    <!-- 自分の答え -->
+    <div id="guessBox">
+      <div class="learn" data-en="💡 Who are you? Try answering in <b>the language you are learning</b>." data-ja="💡 あなたはだれ？ <b>自分の学びたい言葉</b>で答えてみよう。">💡 Who are you? Try answering in <b>the language you are learning</b>.</div>
+      <div class="ansRow" style="margin-top:14px">
+        <input type="text" id="guess" maxlength="40" autocomplete="off" data-ph-en="I am… (in the language you are learning)" data-ph-ja="わたしは…（学びたい言葉で）">
+        <button class="btn" id="bGuess" data-en="Guess" data-ja="当てる">Guess</button>
+      </div>
+      <div class="row" style="justify-content:space-between;margin-top:6px">
+        <div class="wrong" id="wrongs"></div>
+        <button class="btn ghost sm" id="bPass" data-en="I give up" data-ja="あきらめる">I give up</button>
+      </div>
+    </div>
+    <div class="gotit" id="doneBox" hidden></div>
+
+    <!-- 相手の答え -->
+    <div class="opg" id="opgPlay"></div>
+
+    <!-- しゃべる -->
+    <div class="chat">
+      <div id="log"></div>
+      <div class="stamps" id="stamps"></div>
+      <details class="qs" open>
+        <summary data-en="Questions to ask (tap to send)" data-ja="質問のことば（タップで送る）">Questions to ask (tap to send)</summary>
+        <div class="chips" id="chips"></div>
+      </details>
+      <div class="ansRow">
+        <input type="text" id="say" maxlength="120" autocomplete="off" data-ph-en="type your own question or answer" data-ph-ja="自分の言葉で質問・答えを打つ">
+        <button class="btn ai" id="bSay" data-en="Send" data-ja="送る">Send</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 待っている -->
+  <div class="panel" id="pWaitOp" hidden>
+    <p class="wait"><span id="waitTxt"></span><span class="dots"></span></p>
+  </div>
+
+  <!-- 答え合わせ -->
+  <div class="panel" id="pReveal" hidden>
+    <h2 id="rvTitle"></h2>
+    <div class="rv">
+      <div class="rc" id="rcMe"></div>
+      <div class="rc" id="rcOp"></div>
+    </div>
+    <div class="opg" id="opgReveal"></div>
+    <div style="text-align:center;margin-top:16px">
+      <button class="btn" id="bNext" data-en="Next" data-ja="次へ">Next</button>
+      <div class="msg" id="msgN"></div>
+    </div>
+  </div>
+
+  <!-- おわり -->
+  <div class="panel end" id="pEnd" hidden>
+    <div class="big" id="endBig">勝</div>
+    <h2 id="endTxt"></h2>
+    <p class="hint" id="endScore"></p>
+    <div class="row" style="justify-content:center;margin-top:16px">
+      <button class="btn" id="bAgain" data-en="Play again" data-ja="もう一回">Play again</button>
+      <button class="btn ghost" id="bLeave" data-en="Leave" data-ja="やめる">Leave</button>
+    </div>
+    <div class="msg" id="msgE"></div>
+  </div>
+
+  <div class="panel" id="pGone" hidden style="text-align:center">
+    <h2 data-en="Your partner left" data-ja="あいてが抜けました">Your partner left</h2>
+    <button class="btn" id="bBack" style="margin-top:12px" data-en="Back to the start" data-ja="はじめに戻る">Back to the start</button>
+  </div>
+</section>
+</div>
+
+<div id="toast"></div>
+<footer><div class="wrap">
+  <span>© <span id="yr"></span> More to Japan</span><span style="flex:1"></span>
+  <a href="/write-guess/" data-en="Write &amp; Guess" data-ja="書いて、当てて">Write &amp; Guess</a>
+  <a href="/kanji-karuta/" data-en="Kanji Karuta" data-ja="漢字カルタ">Kanji Karuta</a>
+  <a href="/katakana-catch/" data-en="Katakana Catch" data-ja="カタカナ・キャッチ">Katakana Catch</a>
+  <a href="/play/" data-en="Language exchange" data-ja="言語交換">Language exchange</a>
+  <a href="/" data-en="Home" data-ja="トップ">Home</a>
+</div></footer>
+
+<script src="/vendor-lib/peerjs.min.js"></script>
+<script src="/vendor-lib/qrcode.min.js"></script>
+<script>
+const $ = id => document.getElementById(id);
+let lang = "en";
+try { const s = localStorage.getItem("mj-lang"); if (s) lang = s; } catch (e) {}
+
+/* ---------- 画面の言葉（JSで出すぶん） ---------- */
+const T = {
+  en: {
+    making: "Opening a room…", connecting: "Connecting…", connectingN: n => `Connecting… ${n}s`,
+    noRoom: "There is no room with that code. Check the 4 letters.", joinSlow: "It is taking too long. Try again.",
+    needCode: "Type the 4-letter code.", netErr: "Could not connect. Check your internet and try again.",
+    waitPartner: "Waiting for your partner", copied: "Copied. Paste it into LINE, WhatsApp, anything.",
+    invite: (u, c) => `Let's play Who Am I? Open this link: ${u}  (code: ${c})`,
+    camDenied: "The camera / microphone was not allowed. You can still play by text.",
+    round: "round", all: "Everything", waitCard: "Your partner is still choosing your card", gave: "Card given", waitTopic: "Your partner is choosing the topic",
+    waitNext: "Waiting for your partner to press Next", again: "Waiting for your partner to press Play again",
+    got: (m) => `✓ You got it in ${m}! Keep answering your partner's questions.`,
+    gotAcc: (m) => `✓ Your partner counted it as right (${m}). Keep answering their questions.`,
+    over: { miss: "3 misses — no more guesses this round. Keep helping your partner.", pass: "You gave up. Keep helping your partner.", time: "Time up." },
+    opGuesses: "Your partner's guesses — if one is right but spelled differently, count it:",
+    accept: "○ that's right", accepted: "✓ counted", opNone: "Your partner has not guessed yet.",
+    res: { ok: m => `○ got it — ${m}`, miss: "× 3 misses", pass: "× gave up", time: "× time up" },
+    youWere: "You were…", theyWere: "Your partner was…",
+    rvTitle: n => `Round ${n} — the answers`,
+    win: "You win!", lose: "Your partner wins", draw: "A draw!",
+    sysGuess: t => `Partner guessed: “${t}”`, sysGot: "Partner got it!", sysYou: t => `You guessed: “${t}”`,
+    timeUp: "Time up!", meLabel: "You", opLabel: "Partner",
+  },
+  ja: {
+    making: "部屋をつくっています…", connecting: "つないでいます…", connectingN: n => `つないでいます… ${n}秒`,
+    noRoom: "そのコードの部屋はありません。4文字を確かめてください。", joinSlow: "時間がかかりすぎています。もう一度ためしてください。",
+    needCode: "4文字のコードを入れてください。", netErr: "つながりませんでした。ネットを確かめて、もう一度。",
+    waitPartner: "あいてを待っています", copied: "コピーしました。LINEなどに貼ってください。",
+    invite: (u, c) => `「わたしは、だれ？」で遊ぼう！ このリンクを開いてね：${u}（コード：${c}）`,
+    camDenied: "カメラ／マイクが許可されませんでした。文字だけで遊べます。",
+    round: "ターン", all: "ぜんぶ", waitCard: "あいてがあなたのカードを選んでいます", gave: "渡しました", waitTopic: "あいてがお題を決めています",
+    waitNext: "あいてが「次へ」を押すのを待っています", again: "あいてが「もう一回」を押すのを待っています",
+    got: (m) => `✓ ${m}で当たり！ このまま、あいての質問に答えてあげてください。`,
+    gotAcc: (m) => `✓ あいてが正解にしてくれました（${m}）。このまま、あいての質問に答えてあげてください。`,
+    over: { miss: "3回まちがい ── このターンはもう当てられません。あいてを手伝ってあげて。", pass: "あきらめました。あいてを手伝ってあげて。", time: "時間切れ。" },
+    opGuesses: "あいての答え ── 書き方がちがうだけで合っていたら、正解にしてあげて：",
+    accept: "○ 正解にする", accepted: "✓ 正解にした", opNone: "あいてはまだ答えていません。",
+    res: { ok: m => `○ 当てた ── ${m}`, miss: "× 3回まちがい", pass: "× あきらめた", time: "× 時間切れ" },
+    youWere: "あなたは…", theyWere: "あいては…",
+    rvTitle: n => `${n}ターン目 ── 答え`,
+    win: "あなたの勝ち！", lose: "あいての勝ち", draw: "引き分け！",
+    sysGuess: t => `あいての答え：「${t}」`, sysGot: "あいてが当てた！", sysYou: t => `あなたの答え：「${t}」`,
+    timeUp: "時間切れ！", meLabel: "あなた", opLabel: "あいて",
+  }
+};
+const tt = (k, ...a) => { const v = T[lang][k]; return typeof v === "function" ? v(...a) : v; };
+
+/* ============================================================
+   カード。 絵|英語|日本語|よみ|ほかの言い方（, 区切り）
+   当てるときは どれに合っても○（ひらがな・カタカナ・大文字小文字は同じとみなす）
+   ============================================================ */
+const CATS = [
+  ["Animals", "動物", "🐾", `🐱|cat|猫|ねこ|kitty
+🐶|dog|犬|いぬ|puppy
+🐘|elephant|象|ぞう
+🦒|giraffe|キリン|きりん
+🐼|panda|パンダ|ぱんだ
+🐧|penguin|ペンギン|ぺんぎん
+🐍|snake|蛇|へび
+🐸|frog|カエル|かえる|蛙
+🐒|monkey|猿|さる
+🦉|owl|フクロウ|ふくろう
+🐙|octopus|タコ|たこ|蛸
+🐢|turtle|亀|かめ|tortoise
+🦁|lion|ライオン|らいおん
+🐰|rabbit|うさぎ|うさぎ|bunny,兎`],
+  ["Food", "食べもの", "🍙", `🍣|sushi|寿司|すし|鮨
+🍜|ramen|ラーメン|らーめん|noodles
+🍙|rice ball|おにぎり|おにぎり|onigiri,おむすび
+🍕|pizza|ピザ|ぴざ
+🍌|banana|バナナ|ばなな
+🍓|strawberry|いちご|いちご|苺
+🥚|egg|卵|たまご|玉子
+🍞|bread|パン|ぱん
+🍫|chocolate|チョコレート|ちょこれーと|チョコ
+🍛|curry|カレー|かれー|curry rice,カレーライス
+🍦|ice cream|アイスクリーム|あいすくりーむ|アイス
+🍉|watermelon|スイカ|すいか|西瓜
+🥟|dumpling|餃子|ぎょうざ|gyoza,gyōza`],
+  ["Jobs", "仕事", "🧑‍🍳", `🩺|doctor|医者|いしゃ|お医者さん
+👮|police officer|警察官|けいさつかん|police,警察,cop,おまわりさん
+🧑‍🍳|cook|料理人|りょうりにん|chef,シェフ,コック
+🧑‍🏫|teacher|先生|せんせい|教師
+🧑‍🚒|firefighter|消防士|しょうぼうし|fireman
+🧑‍✈️|pilot|パイロット|ぱいろっと
+🧑‍🌾|farmer|農家|のうか
+💇|hairdresser|美容師|びようし|barber,床屋
+🎤|singer|歌手|かしゅ
+🧑‍🚀|astronaut|宇宙飛行士|うちゅうひこうし
+💉|nurse|看護師|かんごし
+🥷|ninja|忍者|にんじゃ`],
+  ["Things at home", "家の中のもの", "🏠", `🛏️|bed|ベッド|べっど
+📺|TV|テレビ|てれび|television
+🧊|fridge|冷蔵庫|れいぞうこ|refrigerator
+🪑|chair|椅子|いす
+🚽|toilet|トイレ|といれ
+🪞|mirror|鏡|かがみ
+🕰️|clock|時計|とけい
+🛁|bath|お風呂|おふろ|bathtub,風呂
+🔑|key|鍵|かぎ
+💡|light bulb|電球|でんきゅう|light,電気
+🧸|teddy bear|ぬいぐるみ|ぬいぐるみ|stuffed toy
+☂️|umbrella|傘|かさ
+🪥|toothbrush|歯ブラシ|はぶらし`],
+  ["Places", "場所", "📍", `🏫|school|学校|がっこう
+🏥|hospital|病院|びょういん
+🏖️|beach|海|うみ|sea,ビーチ,浜
+🏪|convenience store|コンビニ|こんびに|konbini,combini
+🚉|station|駅|えき|train station
+⛩️|shrine|神社|じんじゃ
+🏯|castle|城|しろ|お城
+🎢|amusement park|遊園地|ゆうえんち
+📚|library|図書館|としょかん
+🏦|bank|銀行|ぎんこう
+🛫|airport|空港|くうこう
+♨️|hot spring|温泉|おんせん|onsen`],
+  ["Getting around", "乗りもの", "🚃", `🚗|car|車|くるま|自動車
+🚲|bicycle|自転車|じてんしゃ|bike
+🚄|bullet train|新幹線|しんかんせん|shinkansen
+🚌|bus|バス|ばす
+✈️|airplane|飛行機|ひこうき|plane,aeroplane
+🚢|ship|船|ふね|boat
+🚁|helicopter|ヘリコプター|へりこぷたー|ヘリ
+🚀|rocket|ロケット|ろけっと
+🚕|taxi|タクシー|たくしー|cab
+🛵|motorbike|バイク|ばいく|motorcycle,scooter
+🚒|fire engine|消防車|しょうぼうしゃ|fire truck
+🚑|ambulance|救急車|きゅうきゅうしゃ`],
+  ["Sports", "スポーツ", "⚽", `⚽|soccer|サッカー|さっかー|football
+⚾|baseball|野球|やきゅう
+🏀|basketball|バスケットボール|ばすけっとぼーる|バスケ
+🎾|tennis|テニス|てにす
+🏊|swimming|水泳|すいえい|swim
+🥋|judo|柔道|じゅうどう
+🤼|sumo|相撲|すもう
+⛷️|skiing|スキー|すきー|ski
+🏓|table tennis|卓球|たっきゅう|ping pong
+🏐|volleyball|バレーボール|ばれーぼーる|バレー
+🛹|skateboarding|スケートボード|すけーとぼーど|skateboard,スケボー
+🕺|breakdance|ブレイキン|ぶれいきん|breaking,breakdancing,ブレイクダンス`],
+  ["Japan", "日本のもの", "🗾", `🗻|Mt. Fuji|富士山|ふじさん|mount fuji,mt fuji,fuji
+👘|kimono|着物|きもの
+🍵|green tea|お茶|おちゃ|tea,緑茶,茶
+🥢|chopsticks|箸|はし|お箸
+🏮|lantern|提灯|ちょうちん
+🌸|cherry blossom|桜|さくら|sakura
+🍡|dango|団子|だんご|お団子
+🎏|carp streamer|こいのぼり|こいのぼり|鯉のぼり,koinobori
+🎤|karaoke|カラオケ|からおけ
+📖|manga|漫画|まんが|comic,マンガ
+🍱|bento|お弁当|おべんとう|弁当,lunch box
+🎴|karuta|カルタ|かるた`],
+  ["Nature", "自然", "🌿", `☀️|sun|太陽|たいよう
+🌙|moon|月|つき
+⭐|star|星|ほし
+🌧️|rain|雨|あめ
+❄️|snow|雪|ゆき
+🌈|rainbow|虹|にじ
+🌋|volcano|火山|かざん
+🌊|wave|波|なみ
+🌳|tree|木|き
+🌻|sunflower|ひまわり|ひまわり|向日葵
+⚡|lightning|雷|かみなり|thunder
+🍄|mushroom|きのこ|きのこ`],
+  ["Things you carry", "持ちもの", "🎒", `📱|smartphone|スマホ|すまほ|phone,携帯,スマートフォン,mobile
+👛|wallet|財布|さいふ|purse
+🎒|backpack|リュック|りゅっく|bag,rucksack
+✏️|pencil|鉛筆|えんぴつ
+📓|notebook|ノート|のーと
+🕶️|sunglasses|サングラス|さんぐらす
+🎧|headphones|ヘッドホン|へっどほん|earphones,イヤホン
+👟|sneakers|スニーカー|すにーかー|shoes,靴,trainers
+🧢|cap|帽子|ぼうし|hat
+📷|camera|カメラ|かめら
+🔦|flashlight|懐中電灯|かいちゅうでんとう|torch
+🧣|scarf|マフラー|まふらー`],
+];
+const DECK = CATS.map(c => c[3].trim().split("\n").map(l => {
+  const [e, en, ja, kana, alt] = l.split("|");
+  return { e, en, ja, kana, alt: alt ? alt.split(",") : [] };
+}));
+/* サイコロの6面＝お題5つ＋「ぜんぶ」。「ほかのお題」で残りの5つと入れ替える */
+const SETS = [[0, 1, 2, 3, 4], [5, 6, 7, 8, 9]];
+let setIdx = 0;
+const FACES = ["⚀","⚁","⚂","⚃","⚄","⚅"];
+const facesNow = () => [...SETS[setIdx], -1];
+const catName = i => (i < 0 ? tt("all") : (lang === "ja" ? CATS[i][1] : CATS[i][0]));
+
+/* ---------- 質問のことば・答えのスタンプ（どちらも両方の言葉で出す） ---------- */
+const QS = [
+  ["Am I alive?", "わたしは 生き物ですか？", "いきもの"],
+  ["Am I an animal?", "わたしは 動物ですか？", "どうぶつ"],
+  ["Am I a person?", "わたしは 人ですか？", "ひと"],
+  ["Can you eat me?", "わたしは 食べられますか？", "たべられますか"],
+  ["Am I big?", "わたしは 大きいですか？", "おおきい"],
+  ["Am I small?", "わたしは 小さいですか？", "ちいさい"],
+  ["Am I bigger than a cat?", "わたしは 猫より 大きいですか？", "ねこより おおきい"],
+  ["Can I fly?", "わたしは 飛べますか？", "とべますか"],
+  ["Do I live in water?", "わたしは 水の中に いますか？", "みずのなか"],
+  ["Am I in a house?", "わたしは 家の中に ありますか？", "いえのなか"],
+  ["Am I outside?", "わたしは 外に ありますか？", "そと"],
+  ["Am I a place?", "わたしは 場所ですか？", "ばしょ"],
+  ["Am I a job?", "わたしは 仕事ですか？", "しごと"],
+  ["Do people use me every day?", "わたしは 毎日 使いますか？", "まいにち つかいますか"],
+  ["Am I from Japan?", "わたしは 日本のものですか？", "にほんのもの"],
+  ["Do I move?", "わたしは 動きますか？", "うごきますか"],
+  ["Do I have legs?", "わたしは 足が ありますか？", "あし"],
+  ["Am I hot?", "わたしは 熱いですか？", "あつい"],
+  ["Am I soft?", "わたしは やわらかいですか？", ""],
+  ["Am I expensive?", "わたしは 高いですか？", "たかい"],
+  ["Can you hold me in one hand?", "わたしは 片手で 持てますか？", "かたてで もてますか"],
+  ["Is it a sport?", "それは スポーツですか？", ""],
+];
+const AS = [
+  ["⭕", "Yes", "はい"], ["❌", "No", "いいえ"], ["🤔", "Maybe", "たぶん"],
+  ["🤷", "I don't know", "わからない"], ["🔥", "Close!", "おしい！"], ["⏳", "Sometimes", "ときどき"],
+];
+
+/* ---------- 状態 ---------- */
+const S = {
+  cam: true, mic: true, time: 5, turns: 3,
+  isHost: false, code: "", round: 1, me: 0, op: 0, phase: "",
+  ti: null, myCard: null, opCard: null, given: null, sel: null, view: [],
+  myTry: null,   // {guesses:[{text,ms}], ok, done, why, ms}
+  opTry: null,   // 相手から届いた done の中身 {ok, why, ms}
+  opGuesses: [], // 相手が自分のカードに出した答え [{text, ms, ok}]
+  meAcc: false, opAcc: false,   // 相手が○にしてくれた／自分が相手のを○にした
+  t0: 0, deadline: 0,
+  readyMe: false, readyOp: false, againMe: false, againOp: false, history: [],
+};
+let peer = null, conn = null, myStream = null, outCall = null, inCall = null, opStream = null;
+
+/* ---------- 言語 ---------- */
+function applyLang() {
+  document.documentElement.lang = lang;
+  document.querySelectorAll("[data-en]").forEach(el => {
+    const v = el.getAttribute("data-" + lang); if (v != null) el.innerHTML = v;
+  });
+  document.querySelectorAll("[data-ph-en]").forEach(el => { el.placeholder = el.getAttribute("data-ph-" + lang); });
+  $("lang").textContent = lang === "en" ? "日本語" : "English";
+  try { localStorage.setItem("mj-lang", lang); } catch (e) {}
+  drawTopics(); paintBar(); drawChips();
+  if (S.phase === "play") { $("tagP").textContent = catName(S.ti); paintPlay(); }
+  if (S.phase === "reveal") showReveal();
+  if (S.phase === "end") showEnd();
+}
+$("lang").onclick = () => { lang = lang === "en" ? "ja" : "en"; applyLang(); };
+
+function seg(id, cb) {
+  const el = $(id);
+  el.addEventListener("click", e => {
+    const b = e.target.closest("button"); if (!b || b.disabled) return;
+    el.querySelectorAll("button").forEach(x => x.classList.toggle("on", x === b));
+    cb(b.dataset.v);
+  });
+}
+seg("segCam", v => { S.cam = v === "on"; });
+seg("segMic", v => { S.mic = v === "on"; });
+seg("segTime", v => { S.time = +v; });
+seg("segTurns", v => { S.turns = +v; });
+
+function screen(name) {
+  ["sLobby", "sWait", "sGame"].forEach(s => { $(s).hidden = s !== name; });
+  $("bar").hidden = name !== "sGame";
+  scrollTo(0, 0);
+}
+function panel(name) {
+  ["pTopic", "pChoose", "pPlay", "pWaitOp", "pReveal", "pEnd", "pGone"].forEach(p => { $(p).hidden = p !== name; });
+}
+function toast(t) { const e = $("toast"); e.textContent = t; e.classList.add("on"); clearTimeout(e._t); e._t = setTimeout(() => e.classList.remove("on"), 4000); }
+function waiting(txt) { $("waitTxt").textContent = txt; panel("pWaitOp"); }
+function say(id, txt, err) { $(id).textContent = txt || ""; $(id).classList.toggle("err", !!err); }
+const esc = t => String(t).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const mmss = ms => { const s = Math.max(0, Math.round(ms / 1000)); return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`; };
+
+/* ============================================================
+   通信（PeerJS・ブラウザ同士の直結。裏のサーバは無い）
+   部屋のID = mtj-wai-<4文字>。カードを配るのは部屋を作った人だけ
+   ============================================================ */
+const PFX = "mtj-wai-";
+const ABC = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+const mkCode = () => Array.from({ length: 4 }, () => ABC[Math.random() * ABC.length | 0]).join("");
+
+function newPeer(id) {
+  return new Promise((res, rej) => {
+    const p = new Peer(id, { debug: 0 });
+    p.on("open", () => res(p));
+    p.on("error", e => rej(e));
+  });
+}
+function wirePeer() {
+  peer.on("connection", c => {
+    if (conn && conn.open) { c.on("open", () => c.close()); return; }   // 3人目は入れない
+    wireConn(c);
+  });
+  peer.on("call", call => {
+    if (inCall) inCall.close();
+    inCall = call;
+    call.answer();
+    call.on("stream", st => setOpStream(st));
+    call.on("close", () => { if (inCall === call) { inCall = null; setOpStream(null); } });
+  });
+}
+function wireConn(c) {
+  conn = c;
+  c.on("open", onOpen);
+  c.on("data", onData);
+  c.on("close", onGone);
+  c.on("error", () => {});
+}
+function send(m) { if (conn && conn.open) conn.send(m); }
+
+async function host() {
+  say("msgL", tt("making"));
+  $("bHost").disabled = true;
+  for (let i = 0; i < 4; i++) {
+    const code = mkCode();
+    try {
+      peer = await newPeer(PFX + code);
+      S.isHost = true; S.code = code;
+      wirePeer();
+      showWait(code);
+      return;
+    } catch (e) {
+      if (e && e.type === "unavailable-id") continue;
+      say("msgL", tt("netErr"), true); break;
+    }
+  }
+  $("bHost").disabled = false;
+}
+function showWait(code) {
+  screen("sWait");
+  $("bigCode").textContent = code;
+  const url = inviteURL(code);
+  $("qr").innerHTML = "";
+  try { new QRCode($("qr"), { text: url, width: 150, height: 150 }); } catch (e) {}
+  say("msgW", tt("waitPartner") + "…");
+}
+const inviteURL = code => location.origin + location.pathname + "?r=" + code;
+
+/* 入る。peer-unavailable を受けてから5秒開かなければ「部屋が無い」と決める（カルタで踏んだ） */
+async function join(code) {
+  code = (code || "").trim().toUpperCase();
+  if (code.length !== 4) { say("msgL", tt("needCode"), true); return; }
+  $("bJoin").disabled = true; $("bHost").disabled = true;
+  say("msgL", tt("connecting"));
+  try { if (!peer) { peer = await newPeer(); wirePeer(); } }
+  catch (e) { say("msgL", tt("netErr"), true); $("bJoin").disabled = false; $("bHost").disabled = false; return; }
+  S.isHost = false; S.code = code;
+  let done = false, unavailAt = 0, tries = 0;
+  const t0 = performance.now();
+  peer.on("error", e => {
+    if (done || !e || e.type !== "peer-unavailable") return;
+    if (!unavailAt) unavailAt = performance.now();
+    if (++tries < 3) setTimeout(() => { if (!done) wireConn(peer.connect(PFX + code, { reliable: true })); }, 1200);
+  });
+  wireConn(peer.connect(PFX + code, { reliable: true }));
+  const tick = setInterval(() => {
+    if (conn && conn.open) { done = true; clearInterval(tick); return; }
+    const now = performance.now();
+    if (unavailAt && now - unavailAt >= 5000) { done = true; clearInterval(tick); fail(tt("noRoom")); return; }
+    if (now - t0 >= 20000) { done = true; clearInterval(tick); fail(tt("joinSlow")); return; }
+    say("msgL", tt("connectingN", Math.round((now - t0) / 1000)));
+  }, 1000);
+  function fail(t) { say("msgL", t, true); $("bJoin").disabled = false; $("bHost").disabled = false; }
+}
+
+function onOpen() {
+  if (S.isHost) send({ t: "cfg", time: S.time, turns: S.turns });
+  newMatch();
+  screen("sGame");
+  refreshMedia();
+}
+function onGone() {
+  if ($("sGame").hidden) return;
+  stopTimer(); S.phase = "gone"; panel("pGone");
+  setOpStream(null);
+}
+
+const myRole = () => (S.isHost ? "H" : "G");
+const opRole = () => (S.isHost ? "G" : "H");
+
+function onData(m) {
+  if (!m || !m.t) return;
+  if (m.t === "cfg") { S.time = m.time || 5; S.turns = m.turns || 3; paintBar(); return; }
+  if (m.t === "again") { S.againOp = true; maybeRestart(); return; }
+  if (m.t === "chat") { addLine(m, false); return; }
+  if (m.round !== S.round) return;                         // 古いターンの話は捨てる
+  if (m.t === "topic") {
+    // ふたり同時に決めたら、部屋を作った人のお題を使う
+    if (S.given) return;
+    if (S.phase === "topic" || (!S.isHost && S.phase === "choose" && m.ti !== S.ti)) openChoose(m.ti);
+  }
+  else if (m.t === "card") { S.myCard = m.card; maybePlay(); }
+  else if (m.t === "guess") {
+    S.opGuesses.push({ text: m.text, ms: m.ms, ok: !!m.ok });
+    addSys(m.ok ? tt("sysGot") : tt("sysGuess", m.text));
+    if (m.ok) blip(880, .12);
+    paintOpGuesses();
+  }
+  else if (m.t === "accept") {
+    // 相手が自分の答えを○にしてくれた
+    if (S.readyMe || !S.myTry) return;
+    const g = S.myTry.guesses[m.n]; if (!g) return;
+    S.meAcc = true; S.myTry.ok = true; S.myTry.ms = g.ms; blip(880, .15);
+    if (!S.myTry.done) finishTry("ok");
+    else { S.myTry.why = "ok"; if (S.phase === "play") paintPlay(); if (S.phase === "reveal") showReveal(); }
+  }
+  else if (m.t === "done") { S.opTry = { ok: m.ok, why: m.why, ms: m.ms }; if (S.opAcc) S.opTry.ok = true; flowPlay(); }
+  else if (m.t === "next") { S.readyOp = true; maybeNext(); }
+}
+
+/* ============================================================
+   カメラと声。持っている人だけが相手に「かける」（片方だけカメラでも成り立つ）
+   ============================================================ */
+async function refreshMedia() {
+  if (outCall) { try { outCall.close(); } catch (e) {} outCall = null; }
+  if (myStream) { myStream.getTracks().forEach(t => t.stop()); myStream = null; }
+  if (S.cam || S.mic) {
+    try {
+      myStream = await navigator.mediaDevices.getUserMedia({
+        video: S.cam ? { width: { ideal: 640 }, height: { ideal: 480 }, facingMode: "user" } : false,
+        audio: S.mic ? { echoCancellation: true, noiseSuppression: true } : false,
+      });
+    } catch (e) {
+      S.cam = false; S.mic = false; myStream = null;
+      toast(tt("camDenied"));
+    }
+  }
+  $("vMe").srcObject = myStream && S.cam ? myStream : null;
+  $("tileMe").classList.toggle("has", !!(myStream && S.cam));
+  paintBar();
+  if (myStream && conn && conn.open) outCall = peer.call(conn.peer, myStream);
+}
+function setOpStream(st) {
+  opStream = st || null;
+  const v = $("vOp");
+  v.srcObject = opStream;
+  $("tileOp").classList.toggle("has", !!(st && st.getVideoTracks().length));
+  if (st) v.play().catch(() => {});
+}
+$("tCam").onclick = () => { S.cam = !S.cam; refreshMedia(); };
+$("tMic").onclick = () => { S.mic = !S.mic; refreshMedia(); };
+
+/* ============================================================
+   流れ：お題 → 配る → 質問して当てる（同時に） → 答え → 次のターン
+   ============================================================ */
+function newMatch() {
+  Object.assign(S, { round: 1, me: 0, op: 0, againMe: false, againOp: false, fanfare: false, history: [] });
+  newRound();
+}
+function newRound() {
+  stopTimer();
+  Object.assign(S, { phase: "topic", ti: null, myCard: null, opCard: null, given: null, sel: null,
+    myTry: null, opTry: null, opGuesses: [], meAcc: false, opAcc: false, readyMe: false, readyOp: false });
+  $("die").textContent = "🎲"; $("log").innerHTML = ""; $("ownName").value = ""; $("ownOther").value = "";
+  drawTopics(); paintBar();
+  panel("pTopic");
+}
+
+/* ---------- お題 ---------- */
+function drawTopics(hl) {
+  const box = $("dice6");
+  box.innerHTML = "";
+  facesNow().forEach((ti, i) => {
+    const b = document.createElement("button");
+    b.className = "tp" + (hl === i ? " hl" : "") + (ti < 0 ? " all" : "");
+    b.innerHTML = `<b>${FACES[i]}</b><em>${ti < 0 ? "🌀" : CATS[ti][2]}</em><span>${esc(catName(ti))}</span>`;
+    b.onclick = () => { if (!rolling) pickTopic(ti); };
+    box.appendChild(b);
+  });
+}
+let rolling = false;
+$("bRoll").onclick = () => {
+  if (rolling) return;
+  rolling = true; $("bRoll").disabled = true;
+  const final = Math.random() * 6 | 0;
+  const die = $("die"); die.classList.add("roll");
+  let n = 0;
+  const iv = setInterval(() => {
+    const f = n < 11 ? (Math.random() * 6 | 0) : final;
+    die.textContent = FACES[f]; drawTopics(f); blip(300 + f * 40, .03);
+    if (++n > 11) {
+      clearInterval(iv); die.classList.remove("roll");
+      blip(660, .12);
+      setTimeout(() => { rolling = false; $("bRoll").disabled = false; pickTopic(facesNow()[final]); }, 750);
+    }
+  }, 90);
+};
+$("bSet").onclick = () => { setIdx = (setIdx + 1) % SETS.length; drawTopics(); };
+
+function pickTopic(ti) {
+  if (S.phase !== "topic") return;
+  send({ t: "topic", round: S.round, ti });
+  openChoose(ti);
+}
+
+/* ---------- あいてのカードを選ぶ（あいても同時に、こちらのぶんを選んでいる） ---------- */
+function poolOf(ti) { return ti < 0 ? DECK.flat() : DECK[ti]; }
+function openChoose(ti) {
+  S.phase = "choose"; S.ti = ti; S.sel = null;
+  $("tagC").textContent = catName(ti);
+  shuffleView();
+  panel("pChoose");
+}
+function shuffleView() {
+  const p = poolOf(S.ti).slice();
+  for (let i = p.length - 1; i > 0; i--) { const j = Math.random() * (i + 1) | 0; [p[i], p[j]] = [p[j], p[i]]; }
+  S.view = S.ti < 0 ? p.slice(0, 12) : poolOf(S.ti);
+  $("bShuf").hidden = S.ti >= 0;
+  drawCards();
+}
+function drawCards() {
+  $("cardGrid").innerHTML = S.view.map((c, i) =>
+    `<button data-i="${i}" class="${S.sel === c ? "on" : ""}"><em>${c.e}</em><b>${esc(c.ja)}</b><small>${esc(c.en)}</small></button>`).join("");
+  $("cardGrid").querySelectorAll("button").forEach(b => b.onclick = () => selCard(S.view[+b.dataset.i]));
+  $("pickPrev").innerHTML = S.sel ? `<div class="band">${cardHTML(S.sel)}</div>` : "";
+  $("bGive").disabled = !S.sel;
+}
+function selCard(c) { S.sel = c; $("ownName").value = ""; $("ownOther").value = ""; drawCards(); }
+$("bShuf").onclick = shuffleView;
+$("bRand").onclick = () => { const p = poolOf(S.ti); selCard(p[Math.random() * p.length | 0]); };
+/* 自由に打ったキャラクター。名前ともう一方の言葉の両方で当たりになる。それ以外は渡した人が○にできる */
+function ownCard() {
+  const n = $("ownName").value.trim(), o = $("ownOther").value.trim();
+  S.sel = n ? { e: "✨", ja: n, kana: "", en: o, alt: [], own: true } : null;
+  drawCards();
+}
+$("ownName").addEventListener("input", ownCard);
+$("ownOther").addEventListener("input", ownCard);
+$("bGive").onclick = () => {
+  if (!S.sel || S.given || S.phase !== "choose") return;
+  S.given = S.sel; S.opCard = S.sel;
+  send({ t: "card", round: S.round, card: S.sel });
+  blip(620, .08);
+  maybePlay();
+};
+function maybePlay() {
+  if (S.phase !== "choose" && S.phase !== "topic") return;
+  if (!S.given) return;                       // 自分がまだ選んでいる
+  if (!S.myCard) { waiting(tt("waitCard")); return; }
+  startPlay();
+}
+
+function startPlay() {
+  S.phase = "play";
+  S.myTry = { guesses: [], ok: false, done: false, why: "", ms: 0 };
+  S.t0 = Date.now(); S.deadline = S.t0 + S.time * 60000;
+  $("tagP").textContent = catName(S.ti);
+  $("guess").value = "";
+  panel("pPlay");
+  paintPlay();
+  blip(523, .08); setTimeout(() => blip(784, .1), 110);
+  stopTimer(); timerIv = setInterval(tickTimer, 250); tickTimer();
+}
+
+/* ---------- 遊んでいる画面 ---------- */
+const TRIES = 3;
+let timerIv = 0;
+function cardHTML(c) {
+  return `<div class="em">${c.e}</div><div class="ja">${esc(c.ja)}</div>` +
+    (c.kana && c.kana !== c.ja ? `<div class="kn">${esc(c.kana)}</div>` : "") +
+    (c.en ? `<div class="en">${esc(c.en)}</div>` : "");
+}
+function paintPlay() {
+  if (!S.myTry) return;
+  $("bandOp").innerHTML = cardHTML(S.opCard);
+  $("bandOp").classList.toggle("got", !!(S.opTry && S.opTry.ok) || S.opGuesses.some(g => g.ok) || S.opAcc);
+  const me = $("bandMe");
+  if (S.myTry.done) { me.className = "band" + (S.myTry.ok ? " got" : ""); me.innerHTML = cardHTML(S.myCard); }
+  else { me.className = "band q"; me.innerHTML = `<div class="em">?</div>`; }
+  const used = S.myTry.guesses.length;
+  $("tries").textContent = S.myTry.done ? "" : "●".repeat(TRIES - used) + "○".repeat(used);
+  $("wrongs").innerHTML = S.myTry.guesses.filter(g => !g.ok).map(g => `<span>${esc(g.text)}</span>`).join("");
+  $("guessBox").hidden = S.myTry.done;
+  const d = $("doneBox");
+  d.hidden = !S.myTry.done;
+  if (S.myTry.done) {
+    d.textContent = S.myTry.ok ? tt(S.meAcc ? "gotAcc" : "got", mmss(S.myTry.ms)) : T[lang].over[S.myTry.why] || "";
+    d.style.color = S.myTry.ok ? "" : "var(--sub)";
+    d.style.background = S.myTry.ok ? "" : "#f6f2ec"; d.style.borderColor = S.myTry.ok ? "" : "var(--line)";
+  }
+  paintOpGuesses();
+}
+function tickTimer() {
+  const left = Math.max(0, S.deadline - Date.now());
+  $("tSec").textContent = mmss(left);
+  const bar = $("tBar");
+  bar.style.width = (100 * left / (S.time * 60000)) + "%";
+  bar.classList.toggle("low", left < 60000);
+  if (left <= 0) {
+    stopTimer();
+    if (S.myTry && !S.myTry.done) finishTry("time");
+    addSys(tt("timeUp"));
+  }
+}
+function stopTimer() { clearInterval(timerIv); timerIv = 0; }
+
+/* 文字で比べる（大文字小文字・カタカナひらがな・空白・a/the・「わたしは」などは同じとみなす） */
+const norm = s => (s || "").normalize("NFKC").toLowerCase()
+  .replace(/[ァ-ヶ]/g, c => String.fromCharCode(c.charCodeAt(0) - 0x60))
+  .replace(/^(i am|i'm|im|am i|you are)\s+/, "").replace(/^(わたしは|私は|あなたは)/, "")
+  .replace(/^(a|an|the)\s+/, "")
+  .replace(/(です|ですか|だ)$/, "").replace(/(です|ですか|だ)[。.!?！？]*$/, "")
+  .replace(/[\s.,!?'"「」『』（）()・。、！？〜~\-]/g, "");
+function match(text, c) {
+  const g = norm(text); if (!g) return false;
+  return [c.en, c.ja, c.kana, ...c.alt].filter(Boolean).some(a => norm(a) === g);
+}
+
+function tryGuess(text) {
+  if (!S.myTry || S.myTry.done || S.phase !== "play") return;
+  const ms = Date.now() - S.t0;
+  const ok = match(text, S.myCard);
+  S.myTry.guesses.push({ text, ms, ok });
+  send({ t: "guess", round: S.round, text, ms, ok });
+  $("guess").value = "";
+  if (ok) { S.myTry.ok = true; S.myTry.ms = ms; blip(880, .15); finishTry("ok"); return; }
+  addSys(tt("sysYou", text));
+  blip(200, .12);
+  const p = $("guessBox"); p.classList.remove("shake"); void p.offsetWidth; p.classList.add("shake");
+  if (S.myTry.guesses.length >= TRIES) finishTry("miss");
+  else { paintPlay(); $("guess").focus(); }
+}
+function finishTry(why) {
+  if (!S.myTry || S.myTry.done) return;
+  S.myTry.done = true; S.myTry.why = S.myTry.ok ? "ok" : why;
+  send({ t: "done", round: S.round, ok: S.myTry.ok, why: S.myTry.why, ms: S.myTry.ms });
+  paintPlay();
+  flowPlay();
+}
+$("bGuess").onclick = () => { const v = $("guess").value.trim(); if (v) tryGuess(v); };
+$("guess").addEventListener("keydown", e => { if (e.key === "Enter" && !e.isComposing) $("bGuess").click(); });
+$("bPass").onclick = () => finishTry("pass");
+
+/* ふたりとも終わったら（当てた・3回まちがい・あきらめた・時間切れ）答えへ */
+function flowPlay() {
+  if (S.phase === "play") paintPlay();
+  if (S.phase !== "play") return;
+  if (S.myTry && S.myTry.done && S.opTry) { stopTimer(); showReveal(); }
+}
+
+/* 相手の答え。機械は文字で比べただけなので、書き方がちがうだけなら自分で○にできる */
+function paintOpGuesses() {
+  const html = !S.opGuesses.length ? `<div class="h">${tt("opNone")}</div>` :
+    `<div class="h">${tt("opGuesses")}</div>` + S.opGuesses.map((g, i) => {
+      const okNow = g.ok || (S.opAcc && S.opAccN === i);
+      const btn = g.ok ? "" : okNow ? `<span style="color:var(--ok);font-weight:700">${tt("accepted")}</span>`
+        : (!S.opAcc && !S.readyMe && !S.opGuesses.some(x => x.ok)) ? `<button class="acc" data-n="${i}">${tt("accept")}</button>` : "";
+      return `<div class="og"><span class="t ${okNow ? "ok" : "ng"}">${esc(g.text)}</span><small style="color:var(--sub)">${mmss(g.ms)}</small>${btn}</div>`;
+    }).join("");
+  ["opgPlay", "opgReveal"].forEach(id => {
+    const box = $(id);
+    box.innerHTML = html;
+    box.querySelectorAll(".acc").forEach(b => b.onclick = () => acceptOp(+b.dataset.n));
+  });
+}
+function acceptOp(n) {
+  if (S.opAcc || S.readyMe) return;
+  const g = S.opGuesses[n]; if (!g) return;
+  S.opAcc = true; S.opAccN = n;
+  if (S.opTry) { S.opTry.ok = true; S.opTry.why = "ok"; S.opTry.ms = g.ms; }
+  send({ t: "accept", round: S.round, n });
+  blip(880, .12);
+  if (S.phase === "play") paintPlay(); else if (S.phase === "reveal") showReveal();
+}
+
+/* ---------- しゃべる ---------- */
+function drawChips() {
+  $("stamps").innerHTML = AS.map((a, i) => `<button data-i="${i}">${a[0]} ${lang === "ja" ? a[2] : a[1]}<small>${lang === "ja" ? a[1] : a[2]}</small></button>`).join("");
+  $("stamps").querySelectorAll("button").forEach(b => b.onclick = () => sendChat({ k: "a", i: +b.dataset.i }));
+  $("chips").innerHTML = QS.map((q, i) => `<button data-i="${i}">${lang === "ja" ? esc(q[1]) : esc(q[0])}<small>${lang === "ja" ? esc(q[0]) : esc(q[1])}</small></button>`).join("");
+  $("chips").querySelectorAll("button").forEach(b => b.onclick = () => sendChat({ k: "q", i: +b.dataset.i }));
+}
+function sendChat(m) {
+  m.t = "chat";
+  send(m); addLine(m, true);
+  blip(m.k === "a" ? 600 : 440, .05);
+}
+$("bSay").onclick = () => { const v = $("say").value.trim(); if (!v) return; $("say").value = ""; sendChat({ k: "x", text: v.slice(0, 120) }); };
+$("say").addEventListener("keydown", e => { if (e.key === "Enter" && !e.isComposing) $("bSay").click(); });
+function addLine(m, mine) {
+  const d = document.createElement("div");
+  d.className = "ln" + (mine ? " me" : "");
+  if (m.k === "q" && QS[m.i]) {
+    const q = QS[m.i];
+    d.innerHTML = `<span class="j">${esc(q[1])}</span>${q[2] ? `<small>${esc(q[2])}</small>` : ""}<span>${esc(q[0])}</span>`;
+  } else if (m.k === "a" && AS[m.i]) {
+    const a = AS[m.i];
+    d.className += " a";
+    d.innerHTML = `${a[0]} ${esc(a[2])}<small>${esc(a[1])}</small>`;
+  } else if (m.k === "x") {
+    d.textContent = String(m.text || "").slice(0, 120);
+  } else return;
+  if (!mine) blip(m.k === "a" ? 700 : 500, .04);
+  pushLog(d);
+}
+function addSys(t) { const d = document.createElement("div"); d.className = "ln sys"; d.textContent = t; pushLog(d); }
+function pushLog(d) { const L = $("log"); L.appendChild(d); L.scrollTop = L.scrollHeight; }
+
+/* ---------- 答え ---------- */
+const myOk = () => !!(S.myTry && (S.myTry.ok || S.meAcc));
+const opOk = () => !!(S.opTry && (S.opTry.ok || S.opAcc));
+function resTxt(tr, ok) {
+  if (ok) return { c: "ok", t: tt("res").ok(mmss(tr.ms)) };
+  return { c: "ng", t: T[lang].res[tr && tr.why] || T[lang].res.time };
+}
+function showReveal() {
+  S.phase = "reveal";
+  stopTimer();
+  $("rvTitle").textContent = tt("rvTitle", S.round);
+  const r1 = resTxt(S.myTry, myOk()), r2 = resTxt(S.opTry, opOk());
+  $("rcMe").innerHTML = `<h3>${tt("youWere")}</h3>${cardHTML(S.myCard)}<div class="res ${r1.c}">${r1.t}</div>`;
+  $("rcOp").innerHTML = `<h3>${tt("theyWere")}</h3>${cardHTML(S.opCard)}<div class="res ${r2.c}">${r2.t}</div>`;
+  paintOpGuesses();
+  $("bNext").disabled = S.readyMe;
+  say("msgN", S.readyMe ? tt("waitNext") : "");
+  panel("pReveal");
+}
+$("bNext").onclick = () => {
+  S.readyMe = true; $("bNext").disabled = true;
+  send({ t: "next", round: S.round });
+  say("msgN", tt("waitNext"));
+  paintOpGuesses();
+  maybeNext();
+};
+/* ふたりとも「次へ」を押した時点の結果で点を足す（両方の画面で同じ計算になる） */
+function maybeNext() {
+  if (!S.readyMe || !S.readyOp) return;
+  if (myOk()) S.me++;
+  if (opOk()) S.op++;
+  paintBar();
+  if (S.round >= S.turns) { S.phase = "end"; showEnd(); return; }
+  S.round++; newRound();
+}
+
+/* ---------- おわり ---------- */
+function showEnd() {
+  S.phase = "end";
+  const r = S.me > S.op ? "win" : S.me < S.op ? "lose" : "draw";
+  $("endBig").textContent = lang === "ja" ? { win: "勝", lose: "負", draw: "分" }[r] : r.toUpperCase();
+  $("endBig").className = "big" + (r === "lose" ? " lose" : "");
+  $("endTxt").textContent = tt(r);
+  $("endScore").textContent = `${tt("meLabel")} ${S.me} — ${S.op} ${tt("opLabel")}`;
+  $("bAgain").disabled = S.againMe;
+  say("msgE", S.againMe ? tt("again") : "");
+  panel("pEnd");
+  if (r === "win" && !S.fanfare) { S.fanfare = true; [523, 659, 784, 1047].forEach((f, i) => setTimeout(() => blip(f, .15), i * 120)); }
+}
+$("bAgain").onclick = () => {
+  S.againMe = true; $("bAgain").disabled = true; say("msgE", tt("again"));
+  send({ t: "again" }); maybeRestart();
+};
+function maybeRestart() {
+  if (!S.againMe || !S.againOp) return;
+  S.fanfare = false; newMatch();
+}
+$("bLeave").onclick = leave;
+$("bBack").onclick = leave;
+function leave() { location.href = location.pathname; }
+
+function paintBar() {
+  $("ptMe").textContent = S.me; $("ptOp").textContent = S.op;
+  $("roundTxt").textContent = tt("round");
+  $("roundN").textContent = `${S.round} / ${S.turns}`;
+  $("tCam").classList.toggle("on", S.cam); $("tMic").classList.toggle("on", S.mic);
+  $("tCam").textContent = S.cam ? "📷 ON" : "📷 OFF";
+  $("tMic").textContent = S.mic ? "🎤 ON" : "🎤 OFF";
+}
+
+/* ---------- 音（合成。素材は使わない） ---------- */
+let ac = null;
+function blip(f, d) {
+  try {
+    ac = ac || new (window.AudioContext || window.webkitAudioContext)();
+    const o = ac.createOscillator(), g = ac.createGain();
+    o.type = "triangle"; o.frequency.value = f;
+    g.gain.setValueAtTime(.1, ac.currentTime); g.gain.exponentialRampToValueAtTime(.001, ac.currentTime + d + .05);
+    o.connect(g).connect(ac.destination); o.start(); o.stop(ac.currentTime + d + .06);
+  } catch (e) {}
+}
+
+/* ---------- ボタン ---------- */
+$("bHost").onclick = host;
+$("bJoin").onclick = () => join($("code").value);
+$("code").addEventListener("keydown", e => { if (e.key === "Enter") join($("code").value); });
+$("bCopy").onclick = async () => {
+  const txt = tt("invite", inviteURL(S.code), S.code);
+  try { await navigator.clipboard.writeText(txt); say("msgW", tt("copied")); }
+  catch (e) { prompt("", txt); }
+};
+$("bCancel").onclick = leave;
+
+/* 招待リンク（?r=CODE）で開いたら、押させずにそのまま入る。
+   時間とターン数は、つながった瞬間に部屋を作った人から届く */
+(function invite() {
+  const r = (new URLSearchParams(location.search).get("r") || "").trim().toUpperCase();
+  if (r.length !== 4) return;
+  $("code").value = r;
+  ["segTime", "segTurns"].forEach(id => $(id).querySelectorAll("button").forEach(b => b.disabled = true));
+  join(r);
+})();
+
+applyLang();
+$("yr").textContent = new Date().getFullYear();
+</script>
+<!-- Cloudflare Web Analytics（Cookieを使わない。個人は追わない。何人・どのページ・どの国・どこから、だけ）-->
+<script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "a549632ca5ba440a9dbdfd24bcbe11e5"}'></script>
+</body>
+</html>
