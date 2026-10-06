@@ -160,6 +160,7 @@
   input:focus,select:focus,textarea:focus{outline:2px solid #22406e40;border-color:var(--ai)}
   textarea{min-height:120px;resize:vertical}
   .hintline{font-size:13px;color:var(--sub);font-weight:400}
+  .hp{position:absolute;left:-9999px;width:1px;height:1px;opacity:0}
 
   footer{border-top:1px solid var(--line);padding:40px 0 60px;color:var(--sub);font-size:14px}
   footer .wrap{display:flex;gap:18px;flex-wrap:wrap;align-items:center}
@@ -498,14 +499,22 @@
 <section id="contact">
   <div class="wrap">
     <h2 data-en="Book a free trial lesson" data-ja="無料体験レッスンの申し込み">Book a free trial lesson</h2>
-    <p class="lead" data-en="Fill this in and it opens your mail app with the message ready. I usually reply within a day."
-       data-ja="入力すると、メールアプリが本文つきで開きます。だいたい1日以内に返事します。">
-      Fill this in and it opens your mail app with the message ready.</p>
+    <p class="lead" data-en="Fill this in and press send. It comes straight to me, and I usually reply within a day."
+       data-ja="書いて送るだけです。そのまま私に届きます。だいたい1日以内に返事します。">
+      Fill this in and press send. It comes straight to me.</p>
     <form id="form">
       <label>
         <span data-en="Your name" data-ja="お名前">Your name</span>
         <input name="name" required placeholder="Maria / マリア">
       </label>
+      <label>
+        <span data-en="How can I reach you?" data-ja="連絡先">How can I reach you?</span>
+        <span class="hintline" data-en="Email is easiest. WhatsApp, Instagram or LINE is fine too — just write which one."
+              data-ja="メールがいちばん確実です。WhatsApp・Instagram・LINEでも大丈夫。どれかを書いてください。">
+          Email is easiest. WhatsApp, Instagram or LINE is fine too.</span>
+        <input name="contact" required placeholder="maria@example.com / IG: @maria">
+      </label>
+      <input name="hp" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
       <label>
         <span data-en="Your Japanese level" data-ja="いまの日本語のレベル">Your Japanese level</span>
         <select name="level">
@@ -558,9 +567,9 @@
 </footer>
 
 <script>
-/* ★教室用のメールアドレスができたら、ここに入れるだけで申し込みが動き出す。
-   空のあいだは「準備中」と出るので、間違ったアドレスに問い合わせが消えることはない。 */
-const CONTACT_EMAIL = "";
+/* 申し込みの送り先。掲示板と同じ Apps Script（gas/Code.js の newBooking_）。
+   そこから本人のメールと Discord の両方に飛ぶ。アドレスはサイトに出さない。 */
+const API = "https://script.google.com/macros/s/AKfycbz09z8z5zorue3p6xFwtt01Q3KQgh-7bm-SGTSZj6ILNRxXS-KbASTooYulq3fo7TBL/exec";
 
 /* ---------- 落ちてくるカタカナ（トップの絵） ---------- */
 (function () {
@@ -602,33 +611,52 @@ applyLang();
 document.getElementById("yr").textContent = new Date().getFullYear();
 
 /* ---------- 申し込みフォーム ----------
-   サーバーを持たない作りなので、書いた内容をそのままメールの本文にして
-   本人のメールアプリを開く。無料で、どこにもデータを預けない。 */
-document.getElementById("form").addEventListener("submit", e => {
-  e.preventDefault();
-  if (!CONTACT_EMAIL) {
-    document.getElementById("mailNote").textContent = lang === "en"
-      ? "The booking address is being set up right now — please check back in a day or two."
-      : "受付用のメールアドレスをいま準備しています。1〜2日で使えるようになります。";
-    return;
+   メールアプリは開かない。裏の仕組みに送って、本人のメールとDiscordに同時に届ける。 */
+function dev() {
+  let d = "";
+  try { d = localStorage.getItem("mj-board-dev") || ""; } catch (e) {}
+  if (!d) {
+    d = "d" + Math.random().toString(36).slice(2) + Date.now().toString(36);
+    try { localStorage.setItem("mj-board-dev", d); } catch (e) {}
   }
-  const f = new FormData(e.currentTarget);
-  const body = [
-    "Name: " + (f.get("name") || ""),
-    "Level: " + (f.get("level") || ""),
-    "Online / in person: " + (f.get("where") || ""),
-    "",
-    "What I want to be able to do:",
-    (f.get("goal") || ""),
-  ].join("\n");
-  const url = "mailto:" + CONTACT_EMAIL
-    + "?subject=" + encodeURIComponent("Trial lesson request — " + (f.get("name") || ""))
-    + "&body=" + encodeURIComponent(body);
-  location.href = url;
-  document.getElementById("mailNote").textContent =
-    lang === "en"
-      ? "Your mail app should open. If nothing happened, write to " + CONTACT_EMAIL + " directly."
-      : "メールアプリが開きます。開かないときは " + CONTACT_EMAIL + " に直接ください。";
+  return d;
+}
+document.getElementById("form").addEventListener("submit", async e => {
+  e.preventDefault();
+  const form = e.currentTarget;
+  const note = document.getElementById("mailNote");
+  const btn  = form.querySelector("button[type=submit]");
+  const t = (en, ja) => lang === "en" ? en : ja;
+  const f = new FormData(form);
+  btn.disabled = true;
+  note.textContent = t("Sending…", "送っています…");
+  let o = { ok: false };
+  try {
+    const r = await fetch(API, {
+      method: "POST",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify({
+        a: "book", dev: dev(), lang: lang, hp: f.get("hp") || "",
+        name: f.get("name") || "", contact: f.get("contact") || "",
+        level: f.get("level") || "", where: f.get("where") || "", goal: f.get("goal") || ""
+      })
+    });
+    o = JSON.parse(await r.text());
+  } catch (err) {}
+  btn.disabled = false;
+  if (o.ok) {
+    form.reset();
+    note.textContent = t("Thank you! Your request has reached me. I will get back to you within a day or so.",
+                         "ありがとうございます！申し込みが届きました。だいたい1日以内に連絡します。");
+  } else if (o.err === "toofast") {
+    note.textContent = t("Already sent — please wait a minute before sending again.",
+                         "送信済みです。もう一度送るときは1分ほど待ってください。");
+  } else if (o.err === "nocontact") {
+    note.textContent = t("Please write how I can reach you.", "連絡先を書いてください。");
+  } else {
+    note.textContent = t("Sorry, it did not go through. Please try again in a moment.",
+                         "うまく送れませんでした。少しして、もう一度お試しください。");
+  }
 });
 </script>
 <!-- Cloudflare Web Analytics（Cookieを使わない。個人は追わない。何人・どのページ・どの国・どこから、だけ）-->

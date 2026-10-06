@@ -14,6 +14,7 @@
 const PROP_SHEET = 'BOARD_SHEET_ID';   // スプレッドシートのID（setup が入れる）
 const PROP_HOOK  = 'DISCORD_WEBHOOK';  // 新着と通報の行き先（任意）
 const PROP_NG    = 'NG_WORDS';         // 追加のNGワード。カンマ区切り（任意）
+const PROP_LESSON_MAIL = 'LESSON_MAIL';  // 申し込みの届け先。空ならスプレッドシートの持ち主（=本人）に届く
 
 const AUTO_HIDE_FLAGS = 3;             // 通報がこれだけ付いたら自動で隠す
 const LIST_LIMIT      = 400;           // 一覧で返す最大件数
@@ -33,7 +34,9 @@ const COLS = {
   // つぶやき。Twitterの形。返信は parent に親のidを入れて同じ表に積む
   tweets:  ['id','ts','body','nick','dev','langs','learn','likes','replies','parent','status','flags'],
   // 通話の回数券。払った人に渡す文字列だけを持つ。誰が払ったかは持たない
-  passes:  ['code','ts','until','note','devs']
+  passes:  ['code','ts','until','note','devs'],
+  // 体験レッスンの申し込み。表には一切出さない（本人のメールとDiscordに届くだけ）
+  bookings: ['id','ts','name','contact','level','where','goal','lang','dev','status']
 };
 
 const OK_LANGS = ['en','ja','zh','vi','ko','tl','ne'];   // 話せることばに書ける言語
@@ -195,6 +198,7 @@ function doPost(e) {
       if (a === 'close')   return json_(close_(b));
       if (a === 'live')    return json_(live_(b));
       if (a === 'pass')    return json_(pass_(b));
+      if (a === 'book')     return json_(newBooking_(b));
       if (a === 'newtweet') return json_(newTweet_(b));
       if (a === 'like')     return json_(like_(b));
       if (a === 'reply')   return json_(newReply_(b));
@@ -288,6 +292,63 @@ function newPost_(b) {
   CacheService.getScriptCache().remove('list');
   notify_('🆕 新しいこまりごと', title + '\n' + body.slice(0, 300) + '\nhttps://moretojapan.com/help/#p/' + id);
   return { ok: true, id: id };
+}
+
+/* ============================================================ 体験レッスンの申し込み
+ * 本人はメールの山に埋もれて気づけないので、メールとDiscordの両方に飛ばす。
+ * メールは返信先を生徒にしておくので、届いたメールで「返信」を押せばそのまま生徒に届く。 */
+
+function newBooking_(b) {
+  const dev = clean_(b.dev, 64);
+  const gate = limit_(dev, 'book', 60);
+  if (!gate.ok) return gate;
+
+  const name    = clean_(b.name, 60);
+  const contact = clean_(b.contact, 120);
+  const level   = clean_(b.level, 80);
+  const where   = clean_(b.where, 40);
+  const goal    = clean_(b.goal, 2000);
+  if (!name)    return { ok: false, err: 'noname' };
+  if (contact.length < 3) return { ok: false, err: 'nocontact' };
+  if (spam_(name + '\n' + contact + '\n' + goal)) return { ok: true, id: 'x' };   // 黙って捨てる
+
+  const id  = 'b' + Date.now().toString(36) + Math.floor(Math.random() * 1296).toString(36);
+  const now = new Date().toISOString();
+  append_('bookings', { id: id, ts: now, name: name, contact: contact, level: level,
+                        where: where, goal: goal, lang: clean_(b.lang, 4), dev: dev, status: 'new' });
+
+  const text = 'お名前：' + name + '\n連絡先：' + contact + '\nレベル：' + level +
+               '\nオンライン／対面：' + where + '\n\nできるようになりたいこと：\n' + (goal || '（空欄）');
+  notify_('📩 体験レッスンの申し込み', text);
+
+  const to = lessonMail_();
+  if (to) {
+    const isMail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(contact);
+    try {
+      const mail = {
+        to: to,
+        subject: '📩【More to Japan】体験レッスンの申し込み：' + name,
+        body: text + '\n\n' + (isMail
+          ? 'このメールに「返信」すると、そのまま ' + name + ' さんに届きます。'
+          : '連絡先がメールではありません。上の連絡先から返事してください。') +
+          '\n\n一覧：' + ssUrl_(PropertiesService.getScriptProperties().getProperty(PROP_SHEET)),
+        name: 'More to Japan'
+      };
+      if (isMail) mail.replyTo = contact;
+      MailApp.sendEmail(mail);
+    } catch (err) {}
+  }
+  return { ok: true, id: id };
+}
+
+/** 届け先。LESSON_MAIL が無ければスプレッドシートの持ち主。
+ *  アドレスをコードに書かないのは、このフォルダがGitHubに公開されているから */
+function lessonMail_() {
+  const p = PropertiesService.getScriptProperties();
+  const set = p.getProperty(PROP_LESSON_MAIL);
+  if (set) return set;
+  try { return DriveApp.getFileById(p.getProperty(PROP_SHEET)).getOwner().getEmail(); }
+  catch (err) { return ''; }
 }
 
 function newReply_(b) {
