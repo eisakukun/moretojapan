@@ -1,0 +1,299 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Akihabara is named after a fire shrine on a firebreak. It moved away two years before the station opened, and every 6 November it lets the public walk across fire.">
+<link rel="canonical" href="https://moretojapan.com/akihabara-namesake/">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Akihabara&#39;s Missing Shrine">
+<meta property="og:description" content="Akihabara is named after a fire shrine on a firebreak. It moved away two years before the station opened, and every 6 November it lets the public walk across fire.">
+<meta property="og:url" content="https://moretojapan.com/akihabara-namesake/">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2322406e'/%3E%3Ctext x='32' y='45' font-size='40' text-anchor='middle' fill='white' font-family='Hiragino Sans,sans-serif'%3E%E5%A5%A5%3C/text%3E%3C/svg%3E">
+<title>Akihabara&#39;s Missing Shrine — More to Japan</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Old+Mincho:wght@600;900&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&family=Zen+Kaku+Gothic+New:wght@500;700&display=swap">
+<style>
+  /* Layout: one reading column, diagrams break wider. Two colours carry the story: ember (the fire and the shrine) and rail slate (the station that took the name). */
+  :root{
+    --paper:#efefec;
+    --surface:#f8f8f6;
+    --ink:#1c1b1a;
+    --ink-soft:#46423e;
+    --ink-faint:#75706a;
+    --rule:#cfcbc5;
+    --fire:#b8461b;
+    --fire-soft:#f1dace;
+    --rail:#3b5571;
+    --rail-soft:#d6dee8;
+    --f-display:"Zen Old Mincho","Hiragino Mincho ProN",serif;
+    --f-body:"Source Serif 4",Georgia,"Hiragino Mincho ProN",serif;
+    --f-ui:"Zen Kaku Gothic New",system-ui,sans-serif;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --paper:#141312; --surface:#1c1b19; --ink:#ebe7e2; --ink-soft:#c3bdb5; --ink-faint:#938c84;
+      --rule:#36322e; --fire:#f08a5d; --fire-soft:#3a2016; --rail:#8fb0d4; --rail-soft:#1c2a38;
+      color-scheme:dark;
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#141312; --surface:#1c1b19; --ink:#ebe7e2; --ink-soft:#c3bdb5; --ink-faint:#938c84;
+    --rule:#36322e; --fire:#f08a5d; --fire-soft:#3a2016; --rail:#8fb0d4; --rail-soft:#1c2a38;
+    color-scheme:dark;
+  }
+  *{box-sizing:border-box}
+  body{background:var(--paper);color:var(--ink);font-family:var(--f-body);font-size:19px;line-height:1.68;margin:0;padding-inline:16px;-webkit-font-smoothing:antialiased}
+  .col{max-width:660px;margin:0 auto}
+  .wide{max-width:940px;margin:40px auto}
+  header{max-width:940px;margin:0 auto;padding-block:64px 36px}
+  .eyebrow{font-family:var(--f-ui);font-weight:700;font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--fire);margin:0 0 18px}
+  h1{font-family:var(--f-display);font-weight:900;font-size:clamp(40px,8vw,76px);line-height:1.04;margin:0 0 14px;text-wrap:balance}
+  h1 .k{color:var(--fire)}
+  .dek{font-size:clamp(19px,2.4vw,23px);color:var(--ink-soft);max-width:660px;margin:0;text-wrap:pretty}
+  .meta{display:flex;flex-wrap:wrap;gap:8px 22px;margin-top:28px;padding-top:16px;border-top:1px solid var(--rule);font-family:var(--f-ui);font-size:12.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-faint)}
+  h2{font-family:var(--f-display);font-weight:900;font-size:clamp(27px,3.6vw,36px);line-height:1.18;margin:64px 0 6px;text-wrap:balance}
+  h2 .jp{display:block;font-family:var(--f-ui);font-weight:500;font-size:14px;letter-spacing:.08em;color:var(--ink-faint);margin-top:6px}
+  p{margin:0 0 1.05em}
+  .facts{font-family:var(--f-ui);font-size:15px;line-height:1.6;background:var(--surface);border-left:3px solid var(--rule);padding:14px 18px;margin:22px 0 8px;display:grid;gap:6px}
+  .facts b{font-weight:700;color:var(--ink)}
+  blockquote.phrase{margin:22px 0;padding:0;font-size:18px;color:var(--ink-soft)}
+  blockquote.phrase strong{font-family:var(--f-display);font-weight:600;font-size:21px;color:var(--ink)}
+  figure{margin:0}
+  .fig{overflow-x:auto;background:var(--surface);padding:22px 18px 16px}
+  .fig svg{display:block;width:100%;height:auto;min-width:560px}
+  figcaption{font-family:var(--f-ui);font-size:14px;color:var(--ink-soft);margin-top:10px;padding-inline:4px}
+  .photo{font-family:var(--f-ui);font-size:14px;color:var(--ink-faint);border:1px dashed var(--rule);padding:12px 16px;margin:22px 0}
+  .date{font-family:var(--f-ui);background:var(--fire-soft);padding:16px 18px;margin:22px 0;display:grid;grid-template-columns:auto 1fr;gap:4px 18px;align-items:baseline}
+  .date b{font-family:var(--f-display);font-size:30px;color:var(--fire);grid-row:span 2}
+  .date span{font-size:15px;color:var(--ink)}
+  ol.plan{list-style:none;padding:0;margin:20px 0;display:grid;gap:10px;font-size:17.5px}
+  ol.plan li{display:grid;grid-template-columns:64px 1fr;gap:12px}
+  ol.plan time{font-family:var(--f-ui);font-weight:700;font-variant-numeric:tabular-nums;color:var(--fire)}
+  footer{max-width:660px;margin:72px auto 0;padding-block:20px 80px;border-top:1px solid var(--rule);font-family:var(--f-ui);font-size:13.5px;color:var(--ink-faint)}
+  .s-ink{fill:var(--ink)} .s-soft{fill:var(--ink-soft)} .s-faint{fill:var(--ink-faint)}
+  .s-fire{fill:var(--fire)} .s-firebg{fill:var(--fire-soft)} .s-rail{fill:var(--rail)} .s-railbg{fill:var(--rail-soft)} .s-paper{fill:var(--paper)}
+  .l-ink{stroke:var(--ink-soft)} .l-fire{stroke:var(--fire)} .l-rail{stroke:var(--rail)} .l-rule{stroke:var(--rule)}
+  svg text{font-family:var(--f-ui)}
+  .sitebar{border-bottom:1px solid var(--rule);background:var(--surface);margin-inline:-16px}
+  .sitebar .in{max-width:940px;margin:0 auto;padding:0 16px;height:58px;display:flex;align-items:center;gap:14px;font-family:var(--f-ui);font-size:14px}
+  .sitebar a{color:var(--ink);text-decoration:none}
+  .sitebar .brand{display:flex;align-items:center;gap:9px;font-weight:700}
+  .sitebar .brand i{display:grid;place-items:center;width:28px;height:28px;border-radius:8px;background:var(--fire);color:var(--paper);font-style:normal;font-weight:700;font-size:15px}
+  .sitebar .sp{flex:1}
+  .sitebar .back{color:var(--ink-faint)}
+  .sitebar a:hover{text-decoration:underline}
+</style>
+</head>
+<body>
+
+<div class="sitebar"><div class="in">
+  <a class="brand" href="/"><i>奥</i>More to Japan</a>
+  <span class="sp"></span>
+  <a class="back" href="/#articles">All articles</a>
+</div></div>
+
+
+<header>
+  <p class="eyebrow">Akihabara · Matsugaya · Kappabashi</p>
+  <h1>Akihabara's <span class="k">Missing</span> Shrine</h1>
+  <p class="dek">Akihabara means "Akiba's field". The Akiba was a shrine built on a firebreak in 1870, and it left in 1888, two years before the station opened. It is still standing, a few blocks from the kitchen-knife shops of Kappabashi, and once a year it lets you walk across fire.</p>
+  <div class="meta"><span>Chiyoda · Taitō</span><span>Fire walk: 6 November</span><span>Facts checked October 2026</span></div>
+</header>
+
+<main class="col">
+  <p>You have done Akihabara: the arcades, the retro game shops, the radio-parts alleys under the tracks. You have probably also heard the shortened name, Akiba. This piece is about what that word refers to. It starts with a fire, moves to a field that nobody was allowed to build on, and ends at a small shrine in a residential block of Taitō, where the name's owner went when the railway arrived.</p>
+  <p>Why go? Because it turns the most-visited neighbourhood in Tokyo into a story you can walk in an afternoon, and it puts you next to Kappabashi, which you may already want to see. What you give up: the shrine is small and ordinary to look at, and almost nothing at the Akihabara end marks where it stood. The payoff is knowing, not seeing. Unless you go on 6 November.</p>
+
+  <h2>A field nobody could build on<span class="jp">火除地 · the firebreak</span></h2>
+  <p>In the twelfth month of Meiji 2, at the turn of 1869 into 1870, a fire started in Kanda Aioi-chō (神田相生町) and burned about 1,100 houses. The new Tokyo government did what Edo had always done after a big fire: it cleared a firebreak, a hiyokechi (火除地), and banned building on it. This one was about 9,000 tsubo, roughly 30,000 square metres, where the station is now.</p>
+  <p>In 1870 a shrine was placed on the empty ground by imperial order. Its official name was Chinkasha (鎮火社), "the shrine that calms fire". Tokyo did not call it that. People called it Akiba-sama (秋葉様), after the fire god of Akiha, the most famous fire-protection cult of the day. Sources disagree on whether the shrine actually had an Akiha connection or simply got the nickname; either way the name stuck. The bare land around it became Akiba-no-hara, Akibappara, "Akiba's field".</p>
+  <p>This is where Ueno-Hirokōji comes from too. That wide street was widened as a firebreak after the Meireki fire of 1657. The Meiji government was reusing an Edo tool.</p>
+</main>
+
+<figure class="wide">
+  <div class="fig">
+    <svg viewBox="0 0 900 220" role="img" aria-label="How the name changed from Chinkasha to Akiba">
+      <g font-size="13">
+        <rect x="20" y="60" width="150" height="80" class="s-firebg"/>
+        <text x="95" y="92" text-anchor="middle" class="s-fire" font-weight="700" font-size="18">鎮火社</text>
+        <text x="95" y="116" text-anchor="middle" class="s-soft">official name, 1870</text>
+        <path d="M170 100 L200 100" class="l-ink" stroke-width="2"/><path d="M200 94 L210 100 L200 106 Z" class="s-soft"/>
+        <rect x="210" y="60" width="150" height="80" class="s-firebg"/>
+        <text x="285" y="92" text-anchor="middle" class="s-fire" font-weight="700" font-size="18">秋葉様</text>
+        <text x="285" y="116" text-anchor="middle" class="s-soft">what Tokyo called it</text>
+        <path d="M360 100 L390 100" class="l-ink" stroke-width="2"/><path d="M390 94 L400 100 L390 106 Z" class="s-soft"/>
+        <rect x="400" y="60" width="160" height="80" class="s-paper" stroke="var(--rule)"/>
+        <text x="480" y="92" text-anchor="middle" class="s-ink" font-weight="700" font-size="17">あきばっぱら</text>
+        <text x="480" y="116" text-anchor="middle" class="s-soft">the empty field</text>
+        <path d="M560 100 L590 100" class="l-ink" stroke-width="2"/><path d="M590 94 L600 100 L590 106 Z" class="s-soft"/>
+        <rect x="600" y="60" width="150" height="80" class="s-railbg"/>
+        <text x="675" y="92" text-anchor="middle" class="s-rail" font-weight="700" font-size="17">あきはばら</text>
+        <text x="675" y="116" text-anchor="middle" class="s-soft">the station's reading</text>
+        <path d="M750 100 L780 100" class="l-ink" stroke-width="2"/><path d="M780 94 L790 100 L780 106 Z" class="s-soft"/>
+        <text x="800" y="96" class="s-ink" font-weight="700" font-size="17">Akiba</text>
+        <text x="800" y="116" class="s-soft">today's slang</text>
+      </g>
+      <text x="20" y="190" class="s-faint" font-size="12">The slang went back to the old pronunciation. The station's "ha" is the odd one out.</text>
+    </svg>
+  </div>
+  <figcaption>"Akiba" is not a modern abbreviation of Akihabara. It is the older name, and the station's reading is the newer one.</figcaption>
+</figure>
+
+<main class="col">
+  <h2>The shrine leaves before the station arrives<span class="jp">1888 · 1890 · 1925</span></h2>
+  <p>In 1888 the railway came for the field. Nippon Railway was extending its line south from Ueno, and the shrine was moved north to Iriya-chō in Shitaya, today's Matsugaya (松が谷) in Taitō. Two years later, on 1 November 1890, Akihabara Station opened. It was a freight station. Passengers did not get on trains there until 1 November 1925, when the elevated line between Tokyo and Ueno was finished.</p>
+  <p>The station took the shrine's name and gave it a new pronunciation. Written 秋葉原, it was read in more than one way at first; by one account the official reading settled as Akihabara in 1911. The slang "Akiba" goes back to the older sound.</p>
+  <p>One more twist. Akihabara Station stands in Kanda Sakuma-chō, Chiyoda Ward. The district whose official address is 秋葉原 is next door, in Taitō Ward.</p>
+</main>
+
+<figure class="wide">
+  <div class="fig">
+    <svg viewBox="0 0 900 240" role="img" aria-label="Timeline 1870 to 1925">
+      <!-- 1865..1930 => 40..860 : x = 40 + (y-1865)*12.615 -->
+      <line x1="40" y1="120" x2="860" y2="120" class="l-ink" stroke-width="2"/>
+      <g font-size="12">
+        <circle cx="103" cy="120" r="7" class="s-fire"/><text x="103" y="96" text-anchor="middle" class="s-fire" font-weight="700">1869–70</text><text x="103" y="80" text-anchor="middle" class="s-soft">fire, firebreak, shrine</text>
+        <circle cx="330" cy="120" r="7" class="s-fire"/><text x="330" y="150" text-anchor="middle" class="s-fire" font-weight="700">1888</text><text x="330" y="166" text-anchor="middle" class="s-soft">shrine moves to Matsugaya</text>
+        <circle cx="355" cy="120" r="7" class="s-rail"/><text x="370" y="96" text-anchor="start" class="s-rail" font-weight="700">1890</text><text x="370" y="80" text-anchor="start" class="s-soft">freight station opens</text>
+        <circle cx="595" cy="120" r="6" class="s-rail"/><text x="595" y="150" text-anchor="middle" class="s-rail" font-weight="700">1911</text><text x="595" y="166" text-anchor="middle" class="s-soft">"Akihabara" reading</text>
+        <circle cx="746" cy="120" r="6" class="s-fire"/><text x="746" y="96" text-anchor="middle" class="s-fire" font-weight="700">1923</text><text x="746" y="80" text-anchor="middle" class="s-soft">Sakuma-chō saves itself</text>
+        <circle cx="770" cy="120" r="7" class="s-rail"/><text x="790" y="150" text-anchor="middle" class="s-rail" font-weight="700">1925</text><text x="790" y="166" text-anchor="middle" class="s-soft">first passengers</text>
+      </g>
+      <text x="40" y="215" class="s-faint" font-size="12">To scale. Orange: the fire and the shrine. Blue: the railway.</text>
+    </svg>
+  </div>
+  <figcaption>The shrine was gone for 37 years before anyone could buy a passenger ticket to the place named after it.</figcaption>
+</figure>
+
+<main class="col">
+  <h2>The street that was called Devil Town<span class="jp">防火守護地 · Izumi Park</span></h2>
+  <p>Nothing at the station marks the shrine. The fire story does have one monument in Akihabara, about 300 metres east of the station in Izumi Park (和泉公園). It is the Bōka Shugo-chi (防火守護地) stone, "land defended from fire".</p>
+  <p>The streets just east of the tracks, Sakuma-chō (佐久間町), had a bad reputation. Big fires in 1829 and 1834 started there, and people punned the name into Akuma-chō, "Devil Town". The neighbourhood drilled hard against fire after that. In the 1923 earthquake, when most of eastern Tokyo burned, residents of Sakuma-chō, Izumi-chō and Neribei-chō fought the flames themselves and saved about 1,630 houses. The stone records it.</p>
+  <div class="facts">
+    <div><b>Getting there:</b> Akihabara Station (秋葉原駅), then about 300 m east to Izumi Park (和泉公園)</div>
+    <div><b>When:</b> Open park, any time</div>
+    <div><b>Reality check:</b> One stone in a small park. Read the reason before you go or it means nothing.</div>
+  </div>
+
+  <h2>Where Akiba went<span class="jp">秋葉神社 · Akiba Jinja, Matsugaya</span></h2>
+  <p>The shrine is at Matsugaya 3-10-7 (台東区松が谷3-10-7), in a block of houses and small workshops, seven minutes on foot from Iriya Station (入谷駅) on the Hibiya Line. It was formally renamed Akiba Jinja (秋葉神社) in the twentieth century; the nickname won.</p>
+  <p>On a normal day it is a quiet neighbourhood shrine. You may find the office closed; no official website or published office hours could be found, so don't count on getting a stamp.</p>
+  <div class="date"><b>6 Nov</b><span>Chinka-sai (鎮火祭), the fire-calming festival, every year</span><span>Fire walk from 16:00 to about 17:30 · priests, then parishioners, then the public, barefoot</span></div>
+  <p>The one day it is not quiet is 6 November. After a fire is lit and burned down, the priests cross the embers barefoot, then local parishioners, then anyone in the crowd who wants to. One local report put the number of public walkers at around 200. This is the shrine's own rite, held on the spot where the Akiba name ended up.</p>
+  <blockquote class="phrase">If you want to cross, ask a shrine volunteer: <strong>わたってもいいですか</strong> (watatte mo ii desu ka).</blockquote>
+  <blockquote class="phrase">Lost in the back streets, ask: <strong>秋葉神社はどちらですか</strong> (Akiba Jinja wa dochira desu ka).</blockquote>
+  <div class="facts">
+    <div><b>Getting there:</b> Iriya Station (入谷駅), Hibiya Line, 7 min walk · 台東区松が谷3-10-7 · tel 03-3844-5748</div>
+    <div><b>When:</b> Any day for the grounds. Fire walk on 6 November from 16:00.</div>
+    <div><b>Reality check:</b> 6 November falls on a Friday in 2026. Expect locals with kids; follow what they do, and wear shoes you can take off quickly.</div>
+  </div>
+</main>
+
+<figure class="wide">
+  <div class="fig">
+    <svg viewBox="0 0 900 400" role="img" aria-label="Schematic: Akihabara station, Izumi Park, Ueno, Iriya station, Akiba Jinja and Kappabashi">
+      <rect x="30" y="20" width="840" height="350" class="s-paper"/>
+      <!-- rail spine -->
+      <path d="M300 360 L300 40" class="l-rail" stroke-width="4"/>
+      <text x="290" y="54" text-anchor="end" class="s-rail" font-size="12">JR / Hibiya Line, north</text>
+      <!-- akihabara -->
+      <rect x="230" y="300" width="140" height="44" class="s-firebg"/>
+      <text x="300" y="320" text-anchor="middle" class="s-ink" font-size="13" font-weight="700">Akihabara Stn</text>
+      <text x="300" y="336" text-anchor="middle" class="s-fire" font-size="11">on the 1869 firebreak</text>
+      <circle cx="430" cy="322" r="8" class="s-fire"/>
+      <text x="444" y="318" class="s-fire" font-size="13" font-weight="700">Izumi Park</text>
+      <text x="444" y="334" class="s-soft" font-size="11">防火守護地 stone · ≈300 m</text>
+      <!-- ueno -->
+      <circle cx="300" cy="190" r="7" class="s-rail"/>
+      <text x="286" y="195" text-anchor="end" class="s-ink" font-size="13">Ueno</text>
+      <!-- iriya -->
+      <circle cx="380" cy="110" r="7" class="s-rail"/>
+      <text x="394" y="106" class="s-ink" font-size="13" font-weight="700">Iriya Stn</text>
+      <text x="394" y="122" class="s-soft" font-size="11">Hibiya Line</text>
+      <path d="M300 300 C300 230 300 200 380 110" class="l-rail" stroke-width="2" stroke-dasharray="6 5" fill="none"/>
+      <!-- shrine -->
+      <circle cx="560" cy="130" r="10" class="s-fire"/>
+      <text x="576" y="126" class="s-fire" font-size="14" font-weight="700">Akiba Jinja</text>
+      <text x="576" y="143" class="s-soft" font-size="11">Matsugaya 3-10-7</text>
+      <path d="M387 112 L548 128" class="l-fire" stroke-width="2" stroke-dasharray="3 4"/>
+      <text x="480" y="140" text-anchor="middle" class="s-fire" font-size="11">7 min on foot</text>
+      <!-- kappabashi -->
+      <rect x="610" y="170" width="24" height="150" class="s-railbg"/>
+      <text x="650" y="230" class="s-ink" font-size="13" font-weight="700">Kappabashi</text>
+      <text x="650" y="246" class="s-soft" font-size="11">kitchen street, same chōme</text>
+      <circle cx="622" cy="340" r="6" class="s-ink"/>
+      <text x="636" y="345" class="s-soft" font-size="12">Tawaramachi Stn (Ginza Line)</text>
+      <!-- the move -->
+      <path d="M330 296 C430 240 500 200 552 140" class="l-fire" stroke-width="1.5" fill="none"/>
+      <path d="M545 136 L556 132 L552 145 Z" class="s-fire"/>
+      <text x="470" y="236" class="s-fire" font-size="12" font-weight="700">1888: the shrine moves</text>
+      <text x="44" y="360" class="s-faint" font-size="12">Schematic, not to scale. North is up.</text>
+    </svg>
+  </div>
+  <figcaption>The name stayed at the station. The shrine went north, and ended up next to Kappabashi.</figcaption>
+</figure>
+
+<main class="col">
+  <h2>Kappabashi, one block over<span class="jp">合羽橋道具街 · Kappabashi Dōgu-gai</span></h2>
+  <p>Akiba Jinja is in the same chōme as the Kappabashi kitchenware street, so if you already planned a knife or a set of plastic food, this costs you nothing. About 160 shops supply Tokyo's restaurants with everything from noren curtains to lantern signs. The street's own promotion association lists its office at Matsugaya 3-18-2; the shrine is 3-10-7.</p>
+  <p>The Kappabashi Tool Festival, the street's yearly sale, runs 6–12 October in 2026. If you are reading this that week, go.</p>
+  <div class="facts">
+    <div><b>Getting there:</b> Tawaramachi Station (田原町駅), Ginza Line, about 5 min · or walk on from the shrine</div>
+    <div><b>When:</b> Most shops about 10:00–17:00; hours vary by shop</div>
+    <div><b>Reality check:</b> These are trade shops. Many close earlier than you expect, and some may be shut on Sundays; check the shop you want.</div>
+  </div>
+</main>
+
+<figure class="wide">
+  <div class="fig">
+    <svg viewBox="0 0 900 190" role="img" aria-label="Afternoon route">
+      <g font-size="13">
+        <line x1="70" y1="80" x2="830" y2="80" class="l-fire" stroke-width="3"/>
+        <line x1="245" y1="80" x2="425" y2="80" class="l-rail" stroke-width="3" stroke-dasharray="6 5"/>
+        <circle cx="70" cy="80" r="12" class="s-fire"/><text x="70" y="85" text-anchor="middle" class="s-paper" font-weight="700">1</text>
+        <text x="70" y="118" text-anchor="middle" class="s-ink" font-weight="700">Akihabara</text><text x="70" y="136" text-anchor="middle" class="s-soft">the old field</text>
+        <circle cx="245" cy="80" r="12" class="s-fire"/><text x="245" y="85" text-anchor="middle" class="s-paper" font-weight="700">2</text>
+        <text x="245" y="118" text-anchor="middle" class="s-ink" font-weight="700">Izumi Park</text><text x="245" y="136" text-anchor="middle" class="s-soft">Devil Town stone</text>
+        <text x="335" y="66" text-anchor="middle" class="s-rail">Hibiya Line, 3 stops</text>
+        <circle cx="425" cy="80" r="12" class="s-fire"/><text x="425" y="85" text-anchor="middle" class="s-paper" font-weight="700">3</text>
+        <text x="425" y="118" text-anchor="middle" class="s-ink" font-weight="700">Iriya Stn</text><text x="425" y="136" text-anchor="middle" class="s-soft">7 min walk</text>
+        <circle cx="610" cy="80" r="12" class="s-fire"/><text x="610" y="85" text-anchor="middle" class="s-paper" font-weight="700">4</text>
+        <text x="610" y="118" text-anchor="middle" class="s-ink" font-weight="700">Akiba Jinja</text><text x="610" y="136" text-anchor="middle" class="s-soft">the namesake</text>
+        <circle cx="830" cy="80" r="12" class="s-fire"/><text x="830" y="85" text-anchor="middle" class="s-paper" font-weight="700">5</text>
+        <text x="830" y="118" text-anchor="middle" class="s-ink" font-weight="700">Kappabashi</text><text x="830" y="136" text-anchor="middle" class="s-soft">before 17:00</text>
+      </g>
+    </svg>
+  </div>
+  <figcaption>Start where the name is and finish where the shrine is. Kappabashi closes early, so it goes last only if you keep moving.</figcaption>
+</figure>
+
+<main class="col">
+  <h2>The honest part</h2>
+  <p>On 364 days a year you are walking to a small shrine that looks like many others. Its office may be shut and nothing in the grounds was found that mentions Akihabara. If you need a sight at the end of a walk, go on 6 November or don't go.</p>
+  <p>The naming story is told differently depending on the source. Some say the shrine had nothing to do with the Akiha fire god and only got the nickname; others say the Akiha deity was brought in deliberately. The year the station's reading settled is also disputed. This piece gives the version most sources share and flags the rest.</p>
+  <p>At the Akihabara end there is no marker for the shrine or the firebreak. You stand on the station concourse and imagine an empty field. The Izumi Park stone is about a different fire.</p>
+  <p>The fire walk is a religious rite, not a show. Crossing is offered to the public, but follow the order, and don't film people's faces up close.</p>
+
+  <h2>If you only have one day</h2>
+  <p>An afternoon is enough. This version works on any day; on 6 November, shift it so you are at the shrine by 15:30.</p>
+  <ol class="plan">
+    <li><time>13:00</time><span>Akihabara Station. Stand on the east side and picture 30,000 square metres of nothing.</span></li>
+    <li><time>13:15</time><span>Walk about 300 m east to Izumi Park and find the 防火守護地 stone.</span></li>
+    <li><time>13:45</time><span>Hibiya Line from Akihabara to Iriya, three stops.</span></li>
+    <li><time>14:10</time><span>Walk 7 minutes to Akiba Jinja.</span></li>
+    <li><time>14:40</time><span>Into Kappabashi. Shop until the shutters start coming down.</span></li>
+    <li><time>17:00</time><span>Tawaramachi Station on the Ginza Line, or walk on to Asakusa for dinner.</span></li>
+  </ol>
+  <p>Running late? Drop Izumi Park. Keep the shrine: it is the reason for the walk.</p>
+</main>
+
+<footer>
+  Sources: Kotobank (Nihon Daihyakka Zensho, Nihon Rekishi Chimei Taikei, Sekai Daihyakka Jiten), nippon.com Akihabara and Ueno features, Akihabara Electric Town Organization history page, san-tatsu.jp reports on Akiba Jinja (2024), Go Tokyo, Kappabashi Dōgu-gai official site. Times and dates checked October 2026; check before you go.
+</footer>
+
+<!-- Cloudflare Web Analytics（Cookieを使わない。個人は追わない。何人・どのページ・どの国・どこから、だけ）-->
+<script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "a549632ca5ba440a9dbdfd24bcbe11e5"}'></script>
+</body>
+</html>
