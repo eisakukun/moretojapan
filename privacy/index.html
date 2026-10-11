@@ -74,7 +74,7 @@
     <h1 data-en="What this site knows about you" data-ja="このサイトが、あなたについて知っていること">What this site knows about you</h1>
     <p class="lead" data-en="As little as possible. Here is exactly what that means, in plain words."
        data-ja="できるだけ少なく。それが具体的に何なのかを、ふつうの言葉で書きます。">As little as possible. Here is exactly what that means, in plain words.</p>
-    <p class="upd" data-en="Last updated: 6 October 2026" data-ja="最終更新：2026年10月6日">Last updated: 6 October 2026</p>
+    <p class="upd" data-en="Last updated: 11 October 2026" data-ja="最終更新：2026年10月11日">Last updated: 11 October 2026</p>
   </div>
 
   <div class="short">
@@ -134,6 +134,12 @@
     <h2 data-en="Booking a trial lesson" data-ja="体験レッスンの申し込み">Booking a trial lesson</h2>
     <p data-en="When you book a trial lesson, what you write in the form (your name, how to reach you, your level and what you want to learn) is saved in the same Google spreadsheet and sent to the teacher by email and as a private notification. It is never shown on the site and is used only to reply to you about lessons."
        data-ja="体験レッスンを申し込むと、フォームに書いた内容（お名前・連絡先・レベル・学びたいこと）が同じGoogleのスプレッドシートに保存され、先生にメールと非公開の通知で届きます。サイトに表示されることはなく、レッスンについて返事をするためだけに使います。">What you write in the booking form is saved and sent to the teacher only. It is never shown on the site.</p>
+  </section>
+
+  <section>
+    <h2 data-en="The contact form" data-ja="連絡フォーム">The contact form</h2>
+    <p data-en="A message sent from the <a href=&quot;/contact/&quot;>contact page</a> is handled the same way as a lesson booking: your name, how to reach you and your message are saved in the same Google spreadsheet and sent to the person who runs this site by email and as a private notification. It is never shown on the site and is used only to reply to you."
+       data-ja="<a href=&quot;/contact/&quot;>連絡先のページ</a>から送った内容は、体験レッスンの申し込みと同じ扱いです。お名前・連絡先・内容が同じGoogleのスプレッドシートに保存され、サイトの運営者にメールと非公開の通知で届きます。サイトに表示されることはなく、返事をするためだけに使います。">A message from the contact page is saved and sent to the site owner only. It is never shown on the site.</p>
   </section>
 
   <section>
@@ -197,6 +203,8 @@
     <span style="flex:1"></span>
     <a href="/" data-en="Home" data-ja="トップ">Home</a>
     <a href="/why/" data-en="Why" data-ja="なぜ">Why</a>
+    <a href="/about/" data-en="About" data-ja="このサイトについて">About</a>
+    <a href="/contact/" data-en="Contact" data-ja="連絡先">Contact</a>
   </div>
 </footer>
 
@@ -216,9 +224,9 @@ function applyLang() {
   if (CONTACT_EMAIL) {
     c.innerHTML = '<a href="mailto:' + CONTACT_EMAIL + '">' + CONTACT_EMAIL + '</a>';
   } else {
-    c.textContent = lang === "en"
-      ? "Our email address is being set up. Until then, use the report button on any post."
-      : "メールアドレスは準備中です。それまでは、各投稿の通報ボタンを使ってください。";
+    c.innerHTML = lang === "en"
+      ? 'Use the <a href="/contact/">contact page</a>.'
+      : '<a href="/contact/">連絡先のページ</a>から送ってください。';
   }
   try { localStorage.setItem("mj-lang", lang); } catch (e) {}
 }
