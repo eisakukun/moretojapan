@@ -73,7 +73,11 @@
     border-right:.35cqw solid var(--dk);border-bottom:.35cqw solid var(--dk);transform:translateX(-50%) rotate(45deg)}
   .chip.F{color:var(--F)}.chip.J{color:var(--J)}
   .chip .fl{font-size:2.9cqw;font-family:"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif}
+  .fl i{font-style:normal;font-size:.7em;color:var(--sub);margin:0 .1em}
+  #ov.nobub .chip{display:none}
   .chip.me{background:#fff3b0}
+  .bub{border:1px solid var(--line);background:#fff;border-radius:999px;padding:5px 12px;font:inherit;font-size:13px;cursor:pointer;color:var(--ink)}
+  select#own{font:inherit;font-size:16px;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:#fff;color:var(--ink);max-width:320px;width:100%}
   .chip.talk::after{content:"♪";color:#e8a23a}
   .peek{background:#fff7dc;border:1px solid #f0e0a8;border-radius:12px;padding:9px 12px;font-size:14.5px;margin-bottom:14px}
   .roster{list-style:none;margin:10px 2px 0;padding:0;display:flex;flex-wrap:wrap;gap:6px 14px;font-size:14px}
@@ -125,6 +129,11 @@
       <button class="side F" data-side="F"><b data-en="◀ Left seats" data-ja="◀ 左の席">◀ Left seats</b><span data-en="I want to speak Japanese (I'm not a native speaker)." data-ja="日本語を話したい（外国の人）。">I want to speak Japanese (I'm not a native speaker).</span></button>
       <button class="side J" data-side="J"><b data-en="Right seats ▶" data-ja="右の席 ▶">Right seats ▶</b><span data-en="I'm a Japanese speaker and want to speak English." data-ja="日本人で、英語を話したい。">I'm a Japanese speaker and want to speak English.</span></button>
     </div>
+    <div id="ownBox" hidden>
+      <label class="lbl" for="own" data-en="Your own language (shown above your head)" data-ja="自分の言葉（頭の上に出ます）">Your own language (shown above your head)</label>
+      <select id="own"></select>
+    </div>
+    <p class="hint" data-en="Above your head everyone sees: your language ▸ the language you want to speak. You can hide the bubbles on your own screen, but you can't hide yours from other people." data-ja="頭の上に「自分の言葉 ▸ 話したい言葉」が出ます。吹き出しは自分の画面では消せますが、自分のぶんを相手から見えなくすることはできません。">Above your head everyone sees: your language ▸ the language you want to speak. You can hide the bubbles on your own screen, but you can't hide yours from other people.</p>
     <p class="hint" data-en="Your browser will ask for the microphone. Without it you can still come in and listen." data-ja="このあとマイクの許可を聞かれます。許可しなくても、入って聞くことはできます。">Your browser will ask for the microphone. Without it you can still come in and listen.</p>
     <p style="margin:14px 0 0"><button class="btn" id="enter" disabled data-en="Enter the bar" data-ja="バーに入る">Enter the bar</button></p>
     <div class="msg" id="jmsg"></div>
@@ -138,7 +147,8 @@
     <div class="legend">
       <span><i style="background:var(--F)"></i><span data-en="Left: learning Japanese (F1–F8)" data-ja="左：日本語を話したい人（F1〜F8）">Left: learning Japanese (F1–F8)</span></span>
       <span><i style="background:var(--J)"></i><span data-en="Right: Japanese speakers who want English (J1–J8)" data-ja="右：英語を話したい日本人（J1〜J8）">Right: Japanese speakers who want English (J1–J8)</span></span>
-      <span data-en="Flag in the bubble = the language that person wants to speak" data-ja="吹き出しの旗＝その人が話したい言葉">Flag in the bubble = the language that person wants to speak</span>
+      <span data-en="Bubble = own language ▸ language they want to speak" data-ja="吹き出し＝自分の言葉 ▸ 話したい言葉">Bubble = own language ▸ language they want to speak</span>
+      <button class="bub" id="bub"></button>
     </div>
     <ul class="roster" id="roster"></ul>
     <div class="panel" id="ctl" hidden>
@@ -186,6 +196,10 @@ function applyLang() {
   $("#lang").textContent = lang === "ja" ? "English" : "日本語";
   onState();
 }
+/* 自分の言葉。旗はサイト共通の便宜（英語に「正しい旗」は無い） */
+const OWN = { ja: ["🇯🇵", "日本語"], en: ["🇬🇧", "English"], zh: ["🇨🇳", "中文"], ko: ["🇰🇷", "한국어"], vi: ["🇻🇳", "Tiếng Việt"], tl: ["🇵🇭", "Tagalog"], ne: ["🇳🇵", "नेपाली"],
+  id: ["🇮🇩", "Bahasa Indonesia"], th: ["🇹🇭", "ไทย"], es: ["🇪🇸", "Español"], pt: ["🇧🇷", "Português"], fr: ["🇫🇷", "Français"], de: ["🇩🇪", "Deutsch"], xx: ["🌐", "Other"] };
+const flags = x => `${(OWN[x.own] || OWN.xx)[0]}<i>▸</i>${x.side === "F" ? "🇯🇵" : "🇬🇧"}`;   // 自分の言葉 ▸ 話したい言葉
 const TOPICS = [
   ["What did you eat today?", "きょう、何を食べた？"], ["A place you want to go next", "つぎに行きたい場所"],
   ["Your favorite convenience-store food", "コンビニで好きな食べもの"], ["Something that surprised you in Japan / abroad", "日本／海外でおどろいたこと"],
@@ -252,7 +266,8 @@ const hash = s => { let h = 7; for (const c of s) h = (h * 31 + c.charCodeAt(0))
 /* ============ 状態 ============ */
 let ST = { m: {}, sess: null, fin: 0 };          // m: {pid:{name,side,num,seat}}  sess:{mins,sets,set,endAt,by,topics}
 let me = null, myId = "", hub = null, link = null, isHost = false, joined = false, linking = false, claiming = false, dead = false;
-let peeked = false, myName = "", mySide = "", prevSeat = null, prevSet = 0, prevFin = 0, toastUntil = 0, toastHTML = "";
+const joinMsg = () => ({ t: "join", name: myName, side: mySide, own: mySide === "J" ? "ja" : myOwn });
+let peeked = false, myName = "", mySide = "", myOwn = "en", prevSeat = null, prevSet = 0, prevFin = 0, toastUntil = 0, toastHTML = "";
 const conns = {}, seen = {};                     // 店の側：客の線と、最後に声がかかった時刻
 const speaking = {};
 const order = () => Object.keys(ST.m).sort();
@@ -279,7 +294,7 @@ function apply(pid, d) {
     const side = d.side === "J" ? "J" : "F", used = Object.values(ST.m).filter(x => x.side === side).map(x => x.num);
     let num = 1; while (used.includes(num)) num++;
     if (num > 8) return false;
-    ST.m[pid] = { name: String(d.name || "").replace(/[<>]/g, "").slice(0, 14) || "?", side, num, seat: null };
+    ST.m[pid] = { name: String(d.name || "").replace(/[<>]/g, "").slice(0, 14) || "?", side, num, seat: null, own: side === "J" ? "ja" : OWN[d.own] && d.own !== "ja" ? d.own : "xx" };
   } else if (!m) return true;
   else if (d.t === "sit") {
     const s = d.seat | 0;
@@ -333,7 +348,7 @@ function tryClaim() {
   h.on("open", () => {
     claiming = false; hub = h; isHost = true; hostSince = Date.now();
     for (const p in ST.m) seen[p] = Date.now();
-    apply(myId, { t: "join", name: myName, side: mySide });
+    apply(myId, joinMsg());
     h.on("connection", onGuest); h.on("disconnected", () => { try { h.reconnect(); } catch (e) {} });
     push();
   });
@@ -349,7 +364,7 @@ function connectHub() {
   const fail = () => { if (done) return; done = true; linking = false; linkTry = null; clearTimeout(linkTimer); try { c.close(); } catch (e) {}
     if (joined) tryClaim(); else { peeked = true; ST = { m: {}, sess: null, fin: 0 }; onState(); } };   // 入る前は店にならない（のぞくだけ）
   linkTry = fail; linkTimer = setTimeout(fail, 7000);
-  c.on("open", () => { if (done) return; done = true; linking = false; linkTry = null; clearTimeout(linkTimer); link = c; lastSt = Date.now(); c.send(joined ? { t: "join", name: myName, side: mySide } : { t: "watch" }); });
+  c.on("open", () => { if (done) return; done = true; linking = false; linkTry = null; clearTimeout(linkTimer); link = c; lastSt = Date.now(); c.send(joined ? joinMsg() : { t: "watch" }); });
   c.on("data", d => {
     if (!d) return;
     if (d.t === "full") { dead = true; $("#bmsg").className = "msg err"; $("#bmsg").textContent = L("Your side of the bar is full (8). Please try again later.", "そちら側の席（8人）がいっぱいです。あとでまた来てください。"); return; }
@@ -428,7 +443,7 @@ function drawOv() {
     ov.appendChild(b);
   }
   for (const p in pos) {
-    const x = ST.m[p], c = document.createElement("span"); c.className = "chip " + x.side + (p === myId ? " me" : ""); c.dataset.p = p; c.innerHTML = `<b>${x.side}${x.num}</b><span class="fl">${x.side === "F" ? "🇯🇵" : "🇬🇧"}</span>`;
+    const x = ST.m[p], c = document.createElement("span"); c.className = "chip " + x.side + (p === myId ? " me" : ""); c.dataset.p = p; c.innerHTML = `<b>${x.side}${x.num}</b><span class="fl">${flags(x)}</span>`;
     c.style.left = (pos[p][0] * 16 + 8) / W * 100 + "%"; c.style.top = (pos[p][1] * 16 - 8) / H * 100 + "%"; ov.appendChild(c);
   }
   if (Date.now() < toastUntil) { const t = document.createElement("div"); t.className = "toast"; t.innerHTML = toastHTML; ov.appendChild(t); }
@@ -442,7 +457,7 @@ function onState() {
     : L(`In the bar now: ${n} — ${nf} learning Japanese, ${n - nf} Japanese speakers.`, `いま ${n}人：日本語を話したい人 ${nf}人／英語を話したい日本人 ${n - nf}人。`)
       + (ST.sess ? L(` Timer running (set ${ST.sess.set}/${ST.sess.sets}).`, ` タイマー進行中（セット ${ST.sess.set}/${ST.sess.sets}）。`) : "");
   const ro = $("#roster"); ro.innerHTML = "";
-  all.forEach(x => { const li = document.createElement("li"); li.innerHTML = `<span class="tag ${x.side}">${x.side}${x.num}</span>`; li.append(x.name + " "); const sm = document.createElement("small"); sm.textContent = x.seat != null ? TL[x.seat >> 2] : L("standing", "立ち"); li.appendChild(sm); ro.appendChild(li); });
+  all.forEach(x => { const li = document.createElement("li"); li.innerHTML = `<span class="tag ${x.side}">${x.side}${x.num}</span><span class="fl">${flags(x)}</span> `; li.append(x.name + " "); const sm = document.createElement("small"); sm.textContent = x.seat != null ? TL[x.seat >> 2] : L("standing", "立ち"); li.appendChild(sm); ro.appendChild(li); });
   if (m) {
     if (ST.sess && prevSet && ST.sess.set !== prevSet && m.seat != null) {
       toast(L("Seat change!<br>You → Table ", "席替え！<br>あなたは テーブル ") + TL[m.seat >> 2]); [660, 880, 1100].forEach((f, i) => beep(f, .12, i * .12));
@@ -485,7 +500,15 @@ function frame(t) {
 try { $("#name").value = localStorage.getItem("mtj-bar-name") || (JSON.parse(localStorage.getItem("mj-me") || "{}").name || ""); } catch (e) {}
 const ready = () => { $("#enter").disabled = !(mySide && myId && $("#name").value.trim()); };
 $("#name").oninput = ready;
-document.querySelectorAll(".side").forEach(b => b.onclick = () => { mySide = b.dataset.side; document.querySelectorAll(".side").forEach(x => x.classList.toggle("on", x === b)); ready(); });
+document.querySelectorAll(".side").forEach(b => b.onclick = () => { mySide = b.dataset.side; document.querySelectorAll(".side").forEach(x => x.classList.toggle("on", x === b)); $("#ownBox").hidden = mySide !== "F"; ready(); });
+$("#own").innerHTML = Object.keys(OWN).filter(k => k !== "ja").map(k => `<option value="${k}">${OWN[k][0]} ${OWN[k][1]}</option>`).join("");
+try { const o = localStorage.getItem("mtj-bar-own"); if (o && OWN[o] && o !== "ja") myOwn = o; } catch (e) {}
+$("#own").value = myOwn;
+$("#own").onchange = () => { myOwn = $("#own").value; try { localStorage.setItem("mtj-bar-own", myOwn); } catch (e) {} };
+/* 吹き出しを見る・見ないは、自分の画面だけの設定（相手の画面には何も起きない） */
+let bubOn = true; try { bubOn = localStorage.getItem("mtj-bar-bub") !== "0"; } catch (e) {}
+function setBub() { ov.classList.toggle("nobub", !bubOn); $("#bub").textContent = bubOn ? L("💬 Bubbles: shown", "💬 吹き出し：表示中") : L("💬 Bubbles: hidden", "💬 吹き出し：非表示"); }
+$("#bub").onclick = () => { bubOn = !bubOn; try { localStorage.setItem("mtj-bar-bub", bubOn ? "1" : "0"); } catch (e) {} setBub(); };
 /* ページを開いた時点で、のぞき窓として店につなぐ（入る前から中が見える） */
 me = new Peer(undefined, { debug: 0 });
 me.on("open", id => { myId = id; ready(); connectHub(); });
@@ -502,7 +525,7 @@ $("#enter").onclick = async () => {
   $("#jmsg").textContent = L("Opening the door…", "ドアを あけています…");
   await getStream();
   joined = true; $("#join").hidden = true; $("#ctl").hidden = false; setMic();
-  if (link && link.open) link.send({ t: "join", name: myName, side: mySide }); else connectHub();   // だれも居なければ、自分のタブが店になる
+  if (link && link.open) link.send(joinMsg()); else connectHub();   // だれも居なければ、自分のタブが店になる
   onState();
 };
 function setMic() { const b = $("#mic"); b.textContent = !hasMic ? L("🎤 No mic", "🎤 マイクなし") : muted ? L("🔇 Muted", "🔇 ミュート中") : L("🎤 Mic on", "🎤 マイクON"); b.disabled = !hasMic; }
@@ -516,10 +539,10 @@ for (const [id, set] of [["#segM", v => selM = v], ["#segS", v => selS = v]])
 $("#start").onclick = () => { sum(); $("#setup").showModal(); };
 $("#cancel").onclick = () => $("#setup").close();
 $("#go").onclick = () => { $("#setup").close(); act({ t: "start", mins: selM, sets: selS }); };
-$("#lang").onclick = () => { lang = lang === "ja" ? "en" : "ja"; try { localStorage.setItem("mj-lang", lang); } catch (e) {} applyLang(); setMic(); };
+$("#lang").onclick = () => { lang = lang === "ja" ? "en" : "ja"; try { localStorage.setItem("mj-lang", lang); } catch (e) {} applyLang(); setMic(); setBub(); };
 document.addEventListener("visibilitychange", () => { if (!document.hidden && me && me.disconnected) { try { me.reconnect(); } catch (e) {} } });
 addEventListener("pagehide", () => { try { hub && hub.destroy(); me && me.destroy(); } catch (e) {} });
-applyLang();
+applyLang(); setBub();
 </script>
 <script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "a549632ca5ba440a9dbdfd24bcbe11e5"}'></script>
 </body>
