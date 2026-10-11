@@ -1,0 +1,372 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="The wooden clacks outside your window in late December are a neighbourhood fire patrol. Who walks, what they call, and when to listen.">
+<link rel="canonical" href="https://moretojapan.com/hi-no-yojin/">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Two Clacks, Then a Voice">
+<meta property="og:description" content="The wooden clacks outside your window in late December are a neighbourhood fire patrol. Who walks, what they call, and when to listen.">
+<meta property="og:url" content="https://moretojapan.com/hi-no-yojin/">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2322406e'/%3E%3Ctext x='32' y='45' font-size='40' text-anchor='middle' fill='white' font-family='Hiragino Sans,sans-serif'%3E%E5%A5%A5%3C/text%3E%3C/svg%3E">
+<title>Two Clacks, Then a Voice — More to Japan</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Old+Mincho:wght@600;900&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&family=Zen+Kaku+Gothic+New:wght@500;700&display=swap">
+<style>
+  /* Layout: one reading column, diagrams break wider. Palette from the object: winter night indigo, the red of fire signs, the pale oak of the clappers. */
+  :root{
+    --paper:#edeef0;
+    --surface:#f7f7f8;
+    --ink:#191b20;
+    --ink-soft:#434751;
+    --ink-faint:#737986;
+    --rule:#cbced6;
+    --fire:#b7301f;
+    --fire-soft:#f4d9d3;
+    --wood:#8a6a2f;
+    --wood-soft:#ece0c6;
+    --night:#34507f;
+    --night-soft:#d5deee;
+    --f-display:"Zen Old Mincho","Hiragino Mincho ProN",serif;
+    --f-body:"Source Serif 4",Georgia,"Hiragino Mincho ProN",serif;
+    --f-ui:"Zen Kaku Gothic New",system-ui,sans-serif;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --paper:#12141a; --surface:#1a1d25; --ink:#e8e9ee; --ink-soft:#bcc0cb; --ink-faint:#8a90a0;
+      --rule:#323743; --fire:#f2836f; --fire-soft:#3d1c17; --wood:#d9b876; --wood-soft:#332a17; --night:#93b0e3; --night-soft:#1b2740;
+      color-scheme:dark;
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#12141a; --surface:#1a1d25; --ink:#e8e9ee; --ink-soft:#bcc0cb; --ink-faint:#8a90a0;
+    --rule:#323743; --fire:#f2836f; --fire-soft:#3d1c17; --wood:#d9b876; --wood-soft:#332a17; --night:#93b0e3; --night-soft:#1b2740;
+    color-scheme:dark;
+  }
+  *{box-sizing:border-box}
+  body{background:var(--paper);color:var(--ink);font-family:var(--f-body);font-size:19px;line-height:1.68;margin:0;padding-inline:16px;-webkit-font-smoothing:antialiased}
+  a{color:var(--night)}
+  .col{max-width:660px;margin:0 auto}
+  .wide{max-width:940px;margin:40px auto}
+  header{max-width:940px;margin:0 auto;padding-block:64px 36px}
+  .eyebrow{font-family:var(--f-ui);font-weight:700;font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--wood);margin:0 0 18px}
+  h1{font-family:var(--f-display);font-weight:900;font-size:clamp(40px,8vw,76px);line-height:1.04;margin:0 0 14px;text-wrap:balance}
+  h1 .k{color:var(--fire)}
+  .dek{font-size:clamp(19px,2.4vw,23px);color:var(--ink-soft);max-width:660px;margin:0;text-wrap:pretty}
+  .meta{display:flex;flex-wrap:wrap;gap:8px 22px;margin-top:28px;padding-top:16px;border-top:1px solid var(--rule);font-family:var(--f-ui);font-size:12.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-faint)}
+  h2{font-family:var(--f-display);font-weight:900;font-size:clamp(27px,3.6vw,36px);line-height:1.18;margin:64px 0 6px;text-wrap:balance}
+  h2 .jp{display:block;font-family:var(--f-ui);font-weight:500;font-size:14px;letter-spacing:.08em;color:var(--ink-faint);margin-top:6px}
+  p{margin:0 0 1.05em}
+  .facts{font-family:var(--f-ui);font-size:15px;line-height:1.6;background:var(--surface);border-left:3px solid var(--rule);padding:14px 18px;margin:22px 0 8px;display:grid;gap:6px}
+  .facts b{font-weight:700;color:var(--ink)}
+  blockquote.phrase{margin:22px 0;padding:0;font-size:18px;color:var(--ink-soft)}
+  blockquote.phrase strong{font-family:var(--f-display);font-weight:600;font-size:21px;color:var(--ink)}
+  .warn{font-family:var(--f-ui);font-size:15px;background:var(--fire-soft);color:var(--ink);padding:14px 18px;margin:22px 0}
+  figure{margin:0}
+  .fig{overflow-x:auto;background:var(--surface);padding:22px 18px 16px}
+  .fig svg{display:block;width:100%;height:auto;min-width:560px}
+  figcaption{font-family:var(--f-ui);font-size:14px;color:var(--ink-soft);margin-top:10px;padding-inline:4px}
+  .photo{font-family:var(--f-ui);font-size:14px;color:var(--ink-faint);border:1px dashed var(--rule);padding:12px 16px;margin:22px 0}
+  ol.plan{list-style:none;padding:0;margin:20px 0;display:grid;gap:10px;font-size:17.5px}
+  ol.plan li{display:grid;grid-template-columns:64px 1fr;gap:12px}
+  ol.plan time{font-family:var(--f-ui);font-weight:700;font-variant-numeric:tabular-nums;color:var(--wood)}
+  footer{max-width:660px;margin:72px auto 0;padding-block:20px 80px;border-top:1px solid var(--rule);font-family:var(--f-ui);font-size:13.5px;color:var(--ink-faint)}
+  .s-ink{fill:var(--ink)} .s-soft{fill:var(--ink-soft)} .s-faint{fill:var(--ink-faint)}
+  .s-fire{fill:var(--fire)} .s-firebg{fill:var(--fire-soft)} .s-wood{fill:var(--wood)} .s-woodbg{fill:var(--wood-soft)} .s-night{fill:var(--night)} .s-nightbg{fill:var(--night-soft)} .s-paper{fill:var(--paper)} .s-rule{fill:var(--rule)}
+  .l-ink{stroke:var(--ink-soft)} .l-fire{stroke:var(--fire)} .l-wood{stroke:var(--wood)} .l-night{stroke:var(--night)} .l-rule{stroke:var(--rule)}
+  svg text{font-family:var(--f-ui)}
+  .sitebar{border-bottom:1px solid var(--rule,#cfc9c4);background:var(--surface,#f7f7f5);margin-inline:-16px}
+  .sitebar .in{max-width:940px;margin:0 auto;padding:0 16px;height:58px;display:flex;align-items:center;gap:14px;font-family:var(--f-ui,system-ui,sans-serif);font-size:14px}
+  .sitebar a{color:var(--ink,#1d1a19);text-decoration:none}
+  .sitebar .brand{display:flex;align-items:center;gap:9px;font-weight:700}
+  .sitebar .brand i{display:grid;place-items:center;width:28px;height:28px;border-radius:8px;background:var(--beni,var(--accent,#22406e));color:var(--paper,#fff);font-style:normal;font-weight:700;font-size:15px}
+  .sitebar .sp{flex:1}
+  .sitebar .back{color:var(--ink-faint,#7a726d)}
+  .sitebar a:hover{text-decoration:underline}
+</style>
+</head>
+<body>
+
+<div class="sitebar"><div class="in">
+  <a class="brand" href="/"><i>奥</i>More to Japan</a>
+  <span class="sp"></span>
+  <a class="back" href="/#articles">All articles</a>
+</div></div>
+
+<header>
+  <p class="eyebrow">Late December · any residential block · after dark</p>
+  <h1>Two Clacks, Then a <span class="k">Voice</span></h1>
+  <p class="dek">The wooden knocking you heard from a hotel window in the last week of December was your neighbours walking the block against fire. Here is who they are, what they are calling, why it happens that week, and how to be standing in the right street when it does.</p>
+  <div class="meta"><span>火の用心 · hi no yōjin</span><span>Tokyo · Kyoto · Osaka</span><span>Facts checked October 2026</span></div>
+</header>
+
+<main class="col">
+  <p>You have spent a late-December night in Japan in a room on a residential street: a business hotel behind a shopping arcade, a rented flat in Shinagawa, a machiya south of Shijō. Some time after dinner there was a sharp wooden knock from outside, twice, then several voices calling the same four syllables, then the knock again, moving off down the street.</p>
+  <p>It was the year-end night patrol, the saimatsu yakei (歳末夜警), and it is one of the few neighbourhood customs a visitor can meet without an invitation, because it comes to you. The trade-off is that nobody runs it for you. It is organised block by block, announced on paper noticeboards in Japanese, and cancelled without notice if it rains.</p>
+
+  <h2>What you are hearing<span class="jp">拍子木 · hyōshigi</span></h2>
+  <p>The knock is a pair of hyōshigi (拍子木), two squared sticks of hardwood joined by a cord. On patrol the cord goes round the neck so the sticks hang ready. The same clappers open a kabuki curtain; here they do the job of a siren, at walking speed.</p>
+  <p>The call that goes with them is almost always the same.</p>
+  <blockquote class="phrase">What the walkers call between the clacks: <strong>火の用心</strong> (hi no yōjin).</blockquote>
+  <p>What comes after it varies by block. The best-known tail belongs to the decades when most kitchen fires were lit with a match.</p>
+  <blockquote class="phrase">The classic second line, called by one voice and answered by the group: <strong>マッチ一本火事のもと</strong> (matchi ippon kaji no moto).</blockquote>
+  <blockquote class="phrase">The version that adds burglars to the brief, spread by a television jingle that ran from the late 1970s: <strong>戸締り用心 火の用心</strong> (tojimari yōjin, hi no yōjin).</blockquote>
+  <blockquote class="phrase">The old-fashioned polite ending, which a children's patrol in Shinkawa, central Tokyo, was still using in 2024: <strong>さっしゃりませ</strong> (sasshari mase), tacked on after hi no yōjin.</blockquote>
+  <p>The rhythm of the clappers is not standard either. A Kyoto ward bulletin writes it as two clacks, the call, two clacks. The Shinkawa patrol teaches children two slow beats and two quick ones before they shout.</p>
+</main>
+
+<figure class="wide">
+  <div class="fig">
+    <svg viewBox="0 0 900 300" role="img" aria-label="Two clapper-and-call patterns drawn as a score">
+      <g font-size="13">
+        <text x="30" y="40" class="s-ink" font-weight="700">Shimogyō, Kyoto</text>
+        <text x="30" y="58" class="s-faint" font-size="12">ward bulletin, Dec 2023</text>
+        <line x1="190" y1="80" x2="870" y2="80" class="l-rule" stroke-width="1"/>
+        <rect x="205" y="52" width="12" height="56" class="s-wood"/><rect x="255" y="52" width="12" height="56" class="s-wood"/>
+        <text x="236" y="128" text-anchor="middle" class="s-wood" font-weight="700">kan · kan</text>
+        <rect x="320" y="58" width="270" height="44" class="s-firebg"/>
+        <text x="455" y="78" text-anchor="middle" class="s-fire" font-weight="700" font-size="17">火の用心！</text>
+        <text x="455" y="96" text-anchor="middle" class="s-soft" font-size="12">hi no yōjin</text>
+        <rect x="645" y="52" width="12" height="56" class="s-wood"/><rect x="695" y="52" width="12" height="56" class="s-wood"/>
+        <text x="676" y="128" text-anchor="middle" class="s-wood" font-weight="700">kan · kan</text>
+
+        <text x="30" y="190" class="s-ink" font-weight="700">Shinkawa, Tokyo</text>
+        <text x="30" y="208" class="s-faint" font-size="12">children's night, Dec 2024</text>
+        <line x1="190" y1="230" x2="870" y2="230" class="l-rule" stroke-width="1"/>
+        <rect x="205" y="202" width="26" height="56" class="s-wood"/><rect x="275" y="202" width="26" height="56" class="s-wood"/>
+        <rect x="335" y="202" width="12" height="56" class="s-wood"/><rect x="365" y="202" width="12" height="56" class="s-wood"/>
+        <text x="291" y="278" text-anchor="middle" class="s-wood" font-weight="700">tōn · tōn · ton-ton</text>
+        <rect x="430" y="208" width="410" height="44" class="s-firebg"/>
+        <text x="635" y="228" text-anchor="middle" class="s-fire" font-weight="700" font-size="17">火の用〜心　さっしゃりませ〜</text>
+        <text x="635" y="246" text-anchor="middle" class="s-soft" font-size="12">hi no yō-jin, sasshari mase</text>
+      </g>
+      <text x="30" y="294" class="s-faint" font-size="12">Order of sounds as each source writes it. Spacing is schematic, not timed.</text>
+    </svg>
+  </div>
+  <figcaption>The clappers always frame the voice, but each neighbourhood keeps its own beat. If the pattern outside your window does not match either line, that is normal.</figcaption>
+</figure>
+
+<main class="col">
+  <div class="facts">
+    <div><b>When:</b> After dark. Every published start time found for this piece falls between 19:00 and 20:00, with the walk over by about 21:00; volunteer fire corps may run later.</div>
+    <div><b>Reality check:</b> A patrol passes a given window once, in under a minute. Hearing it is easy. Seeing it means being in the street already.</div>
+  </div>
+
+  <h2>Who is walking<span class="jp">町会 · 消防団 · chōkai, shōbōdan</span></h2>
+  <p>Two different bodies do this, and they are easy to tell apart. The chōkai (町会), the neighbourhood association, sends out officers, shopkeepers and whoever volunteers, in ordinary winter coats with a lantern or a reflective vest. The shōbōdan (消防団), the volunteer fire corps attached to each fire station, goes out in dark uniforms and white helmets, sometimes with a small fire engine idling behind.</p>
+  <p>Children are often the point. A Shinagawa association's 2013 newsletter describes a "kids' hi no yōjin" it had run since 2006 on the third Saturday of each winter month, for third-graders and up, starting at 20:00 and lasting half an hour. The Shinkawa association gives its last night to children: the chairman shows them how to strike the clappers, and afterwards the children get sweets and the adults get beer. Another Shinagawa group ends with pork miso soup.</p>
+  <p>The same newsletter asks residents who meet the children to say something encouraging.</p>
+  <blockquote class="phrase">As the patrol passes you: <strong>お疲れさまです</strong> (otsukaresama desu). A nod with it is enough.</blockquote>
+
+  <h2>Why the last week of December<span class="jp">歳末特別警戒 · saimatsu tokubetsu keikai</span></h2>
+  <p>Winter is fire season on the Pacific side of Japan: dry air, and heaters in rooms full of paper and bedding. Tokyo's disaster-prevention office says about 39% of the city's building fires in 2023 fell in the four months from December to March. That is a lean, not a spike, and it does not explain one particular week.</p>
+  <p>The week comes from the calendar. The end of the year is when households are busiest, use more fire than usual and then leave their homes empty for the holiday, which is how Kyoto's ward bulletins put it, and it is when fire services declare a year-end special watch. Kyoto's fire department runs its watch from 20 to 31 December, Osaka's fire stations from 1 to 31 December. The neighbourhood patrol is the residents' share of that. A few associations do far more: Koyama 5-chōme in Shinagawa reported walking every night from 1 December to 31 March.</p>
+  <p>Most do two to five nights. The one district I found that prints every association's dates side by side is Shinagawa's second district, the old post-town streets of Minami-Shinagawa and Higashi-Shinagawa.</p>
+</main>
+
+<figure class="wide">
+  <div class="fig">
+    <svg viewBox="0 0 900 470" role="img" aria-label="Chart of the nights each of eleven Shinagawa neighbourhood associations patrolled in December 2025">
+      <!-- columns: day d (23..30) => x = 270 + (d-23)*75, width 75 -->
+      <rect x="495" y="46" width="75" height="352" class="s-firebg"/>
+      <g font-size="12" text-anchor="middle">
+        <text x="307" y="30" class="s-faint">Tue</text><text x="307" y="46" class="s-soft" font-weight="700" font-size="13">23</text>
+        <text x="382" y="30" class="s-faint">Wed</text><text x="382" y="46" class="s-soft" font-weight="700" font-size="13">24</text>
+        <text x="457" y="30" class="s-faint">Thu</text><text x="457" y="46" class="s-soft" font-weight="700" font-size="13">25</text>
+        <text x="532" y="30" class="s-fire">Fri</text><text x="532" y="44" class="s-fire" font-weight="700" font-size="14">26</text>
+        <text x="607" y="30" class="s-faint">Sat</text><text x="607" y="46" class="s-soft" font-weight="700" font-size="13">27</text>
+        <text x="682" y="30" class="s-faint">Sun</text><text x="682" y="46" class="s-soft" font-weight="700" font-size="13">28</text>
+        <text x="757" y="30" class="s-faint">Mon</text><text x="757" y="46" class="s-soft" font-weight="700" font-size="13">29</text>
+        <text x="832" y="30" class="s-faint">Tue</text><text x="832" y="46" class="s-soft" font-weight="700" font-size="13">30</text>
+      </g>
+      <g class="l-rule" stroke-width="1">
+        <line x1="270" y1="56" x2="270" y2="398"/><line x1="345" y1="56" x2="345" y2="398"/><line x1="420" y1="56" x2="420" y2="398"/><line x1="495" y1="56" x2="495" y2="398"/><line x1="570" y1="56" x2="570" y2="398"/><line x1="645" y1="56" x2="645" y2="398"/><line x1="720" y1="56" x2="720" y2="398"/><line x1="795" y1="56" x2="795" y2="398"/><line x1="870" y1="56" x2="870" y2="398"/>
+      </g>
+      <g font-size="14" text-anchor="end" class="s-ink">
+        <text x="255" y="79">同友会町会</text>
+        <text x="255" y="109">南品川南睦会</text>
+        <text x="255" y="139">博友町会</text>
+        <text x="255" y="169">三睦会町会</text>
+        <text x="255" y="199">真交町会</text>
+        <text x="255" y="229">東睦会</text>
+        <text x="255" y="259">六丁目睦会</text>
+        <text x="255" y="289">諏訪町会</text>
+        <text x="255" y="319">明睦会</text>
+        <text x="255" y="349">東品川第一自治会</text>
+        <text x="255" y="379">東親会</text>
+      </g>
+      <g class="s-night">
+        <rect x="274" y="64" width="292" height="18"/>
+        <rect x="349" y="94" width="292" height="18"/>
+        <rect x="424" y="124" width="367" height="18"/>
+        <rect x="424" y="154" width="217" height="18"/>
+        <rect x="499" y="184" width="217" height="18"/>
+        <rect x="499" y="214" width="217" height="18"/>
+        <rect x="499" y="244" width="292" height="18"/>
+        <rect x="499" y="274" width="367" height="18"/>
+        <rect x="499" y="304" width="367" height="18"/>
+        <rect x="499" y="334" width="142" height="18"/>
+        <rect x="499" y="364" width="142" height="18"/>
+      </g>
+      <g font-size="13" text-anchor="middle" font-weight="700">
+        <text x="150" y="420" text-anchor="end" class="s-faint" font-weight="500" font-size="12" transform="translate(105 0)">associations out</text>
+        <text x="307" y="420" class="s-soft">1</text><text x="382" y="420" class="s-soft">2</text><text x="457" y="420" class="s-soft">4</text>
+        <text x="532" y="420" class="s-fire" font-size="15">11</text>
+        <text x="607" y="420" class="s-soft">10</text><text x="682" y="420" class="s-soft">6</text><text x="757" y="420" class="s-soft">4</text><text x="832" y="420" class="s-soft">2</text>
+      </g>
+      <text x="30" y="452" class="s-faint" font-size="12">December 2025, Shinagawa second district, as reported in the district newsletter of 1 March 2026. Two more associations marked "paused this year".</text>
+    </svg>
+  </div>
+  <figcaption>Dates scatter from the 23rd to the 30th, but on 26 December 2025 all eleven associations that patrolled were out on the same night. The names are in kanji because that is how they appear on lanterns and noticeboards.</figcaption>
+</figure>
+
+<main class="col">
+  <h2>The gate, the hut and the clappers<span class="jp">自身番 · 木戸番 · jishinban, kidoban</span></h2>
+  <p>The patrol is older than the fire brigade. The Tokyo Fire Department's own history page cites a town notice of 1648 ordering townspeople to take turns on night watch, with the month's officers checking up on them. Edo's commoner blocks were closed off by wooden gates, kido (木戸), shut at about ten at night. Each block kept a jishinban (自身番), a guard post that was also the town office, where landlords at first sat watch themselves; one reference work counts 994 of them in Edo in 1850. A hired gatekeeper, the kidoban (木戸番), lived by the gate, went round the block at night with clappers, and when he let a latecomer through the side door he struck them to warn the next gate along. He sold sandals, candles and sweets from the hut.</p>
+  <p>The rakugo story <i>Nibansenji</i> (二番煎じ) is set on exactly this duty: a group of shop-owners on winter fire watch come back to the hut and warm themselves with sake they call herbal medicine, until the inspecting officer walks in. The authorities had banned drinking in the jishinban in 1698. For the other half of Edo's fire policy, the cleared firebreaks, see <a href="https://moretojapan.com/akihabara-namesake/">Akihabara's missing shrine</a>; for a hall lost to an ordinary fire in 1966, <a href="https://moretojapan.com/nishiarai-fire/">Nishiarai Daishi</a>.</p>
+</main>
+
+<figure class="wide">
+  <div class="fig">
+    <svg viewBox="0 0 900 340" role="img" aria-label="Schematic of an Edo block gate with its guard post and gatekeeper's hut">
+      <rect x="30" y="130" width="840" height="70" class="s-woodbg"/>
+      <text x="50" y="170" class="s-wood" font-size="13" font-weight="700">street through the block</text>
+      <!-- gate -->
+      <rect x="392" y="112" width="12" height="106" class="s-wood"/><rect x="496" y="112" width="12" height="106" class="s-wood"/>
+      <rect x="404" y="140" width="92" height="8" class="s-wood"/><rect x="404" y="180" width="92" height="8" class="s-wood"/>
+      <text x="450" y="100" text-anchor="middle" class="s-ink" font-size="14" font-weight="700">kido 木戸</text>
+      <text x="450" y="238" text-anchor="middle" class="s-soft" font-size="12">shut about 10 pm</text>
+      <!-- jishinban -->
+      <rect x="230" y="50" width="130" height="62" class="s-nightbg"/>
+      <rect x="230" y="50" width="130" height="6" class="s-night"/>
+      <text x="295" y="80" text-anchor="middle" class="s-ink" font-size="14" font-weight="700">jishinban 自身番</text>
+      <text x="295" y="98" text-anchor="middle" class="s-soft" font-size="12">town office, fire watch</text>
+      <text x="230" y="38" class="s-faint" font-size="12">994 in Edo, 1850</text>
+      <!-- kidoban -->
+      <rect x="250" y="218" width="110" height="56" class="s-firebg"/>
+      <rect x="250" y="218" width="110" height="6" class="s-fire"/>
+      <text x="305" y="246" text-anchor="middle" class="s-ink" font-size="14" font-weight="700">kidoban 木戸番</text>
+      <text x="305" y="263" text-anchor="middle" class="s-soft" font-size="12">gatekeeper's hut, shop</text>
+      <!-- next gate -->
+      <rect x="812" y="112" width="10" height="106" class="s-wood" opacity=".45"/>
+      <text x="817" y="100" text-anchor="middle" class="s-faint" font-size="12">next gate</text>
+      <path d="M520 165 L790 165" class="l-fire" stroke-width="2" stroke-dasharray="7 6" fill="none"/>
+      <path d="M790 158 L804 165 L790 172 Z" class="s-fire"/>
+      <rect x="610" y="146" width="7" height="24" class="s-fire"/><rect x="624" y="146" width="7" height="24" class="s-fire"/>
+      <text x="660" y="222" text-anchor="middle" class="s-fire" font-size="13" font-weight="700">okuri-hyōshigi</text>
+      <text x="660" y="240" text-anchor="middle" class="s-soft" font-size="12">clacks tell the next gate someone is coming</text>
+      <text x="30" y="322" class="s-faint" font-size="12">Schematic. Which side of the street each hut stood on varied from block to block.</text>
+    </svg>
+  </div>
+  <figcaption>In Edo the clappers were a signalling system between gates before they were a slogan. The gates are gone; the sound stayed with the people who inherited the watch.</figcaption>
+</figure>
+
+<main class="col">
+  <h2>A samurai's letter home<span class="jp">一筆啓上 · ippitsu keijō</span></h2>
+  <p>The phrase itself is credited to Honda Shigetsugu (本多重次), a retainer of Tokugawa Ieyasu, who is said to have written to his wife from a campaign: a line to tell you, mind the fire, don't let little Sen cry, keep the horse fat. In the form most Japanese know it, 一筆啓上 火の用心 お仙泣かすな 馬肥やせ. The Tokyo Fire Department argues the letter fits the Nagashino campaign of 1575, when his son Senchiyo was about three, and suggests Honda may be the first known user of the words.</p>
+  <p>Treat that as attribution, not proof. The wording differs between tellings, an Okayama prefectural page calls the first-use claim "one theory", and the fire department itself says nobody knows when the phrase entered official notices. The boy grew up to be lord of Maruoka Castle in Fukui, where the letter is carved in stone.</p>
+
+  <h2>Where a visitor hears it<span class="jp">東京 · 京都 · 大阪</span></h2>
+  <p>Anywhere people live at street level. You will not hear it from the 20th floor in Shinjuku or Umeda. Three places that publish something:</p>
+  <p><b>Tokyo.</b> The Yotsuya-sanchōme shopping street posted its 2025 watch online: 24 to 26 December, 19:00 to 21:00, with a tent beside Yotsuya Fire Station as the post, cancelled in rain. In Shinagawa's second district, the 2025 dates are the chart above. In Shinkawa, Chūō Ward, one association walked on 27 to 29 December 2024, with children on the last night from about 19:00.</p>
+  <p><b>Kyoto.</b> The whole city is on the same clock. In both 2024 and 2025 the fire department announced that all 11 fire corps, 205 branches, would keep a year-end watch from 20 to 31 December with night patrols. Shimogyō Ward, from Kyoto Station north to Shijō, tells residents to check their stoves when they hear the clappers.</p>
+  <p><b>Osaka.</b> Konohana Ward's newsletter of December 2024 describes the saimatsu yakei as adults and children walking together, and gives no dates.</p>
+  <blockquote class="phrase">To your host or the front desk, a few days ahead: <strong>このへんの夜警はいつですか</strong> (kono hen no yakei wa itsu desu ka).</blockquote>
+  <div class="facts">
+    <div><b>Getting there:</b> Yotsuya-sanchōme Station (四谷三丁目駅), Marunouchi Line, for the fire-station tent · Shimbamba Station (新馬場駅), Keikyū Line, two local stops from Shinagawa Station (品川駅), for Minami-Shinagawa</div>
+    <div><b>When:</b> 26 to 28 December is the densest stretch in every Tokyo schedule above. In Kyoto, any evening from the 20th.</div>
+    <div><b>Reality check:</b> All of these dates are from 2024 or 2025. As of October 2026 no 2026 schedule had been posted. The noticeboard on the street is the only current source.</div>
+  </div>
+
+  <h2>Things you can now read<span class="jp">掲示板 · keijiban</span></h2>
+  <p>The patrol is one night's sound. The writing is there all year, and most of it uses the same three characters: 火 fire, 防 guard, 消 extinguish. The paper that matters in December is on the keijiban (掲示板), the neighbourhood noticeboard, often a glass-fronted case by a park gate or the association hall. Look for 夜警 and a row of dates.</p>
+</main>
+
+<figure class="wide">
+  <div class="fig">
+    <svg viewBox="0 0 900 420" role="img" aria-label="Six pieces of fire-related writing seen on Japanese streets, with readings">
+      <g>
+        <rect x="30" y="20" width="270" height="170" class="s-firebg"/>
+        <text x="165" y="80" text-anchor="middle" class="s-fire" font-size="36" font-weight="700">火の用心</text>
+        <text x="165" y="110" text-anchor="middle" class="s-ink" font-size="14" font-weight="700">hi no yōjin</text>
+        <text x="165" y="140" text-anchor="middle" class="s-soft" font-size="13">stickers on doors and meter boxes,</text>
+        <text x="165" y="158" text-anchor="middle" class="s-soft" font-size="13">posters, paper charms in kitchens</text>
+
+        <rect x="315" y="20" width="270" height="170" class="s-paper"/>
+        <circle cx="450" cy="66" r="40" class="s-fire"/>
+        <text x="450" y="76" text-anchor="middle" class="s-paper" font-size="26" font-weight="700">消火栓</text>
+        <text x="450" y="130" text-anchor="middle" class="s-ink" font-size="14" font-weight="700">shōkasen</text>
+        <text x="450" y="152" text-anchor="middle" class="s-soft" font-size="13">hydrant: often a red disc on a pole;</text>
+        <text x="450" y="170" text-anchor="middle" class="s-soft" font-size="13">the lid is in the road nearby</text>
+
+        <rect x="600" y="20" width="270" height="170" class="s-paper"/>
+        <circle cx="735" cy="66" r="40" class="s-fire"/>
+        <text x="735" y="62" text-anchor="middle" class="s-paper" font-size="20" font-weight="700">防火</text>
+        <text x="735" y="86" text-anchor="middle" class="s-paper" font-size="20" font-weight="700">水槽</text>
+        <text x="735" y="130" text-anchor="middle" class="s-ink" font-size="14" font-weight="700">bōka suisō</text>
+        <text x="735" y="152" text-anchor="middle" class="s-soft" font-size="13">fire cistern, usually buried</text>
+        <text x="735" y="170" text-anchor="middle" class="s-soft" font-size="13">under a park or a pavement</text>
+
+        <rect x="30" y="205" width="270" height="170" class="s-paper"/>
+        <path d="M125 222 L205 222 L195 282 L135 282 Z" class="s-fire"/>
+        <text x="165" y="250" text-anchor="middle" class="s-paper" font-size="17" font-weight="700">防火</text>
+        <text x="165" y="271" text-anchor="middle" class="s-paper" font-size="17" font-weight="700">用水</text>
+        <text x="165" y="312" text-anchor="middle" class="s-ink" font-size="14" font-weight="700">bōka yōsui</text>
+        <text x="165" y="334" text-anchor="middle" class="s-soft" font-size="13">"water for fire": red buckets by</text>
+        <text x="165" y="352" text-anchor="middle" class="s-soft" font-size="13">doorways, stone tubs at old houses</text>
+
+        <rect x="315" y="205" width="270" height="170" class="s-nightbg"/>
+        <text x="450" y="262" text-anchor="middle" class="s-night" font-size="27" font-weight="700">歳末特別警戒</text>
+        <text x="450" y="292" text-anchor="middle" class="s-ink" font-size="14" font-weight="700">saimatsu tokubetsu keikai</text>
+        <text x="450" y="322" text-anchor="middle" class="s-soft" font-size="13">"year-end special watch": banners,</text>
+        <text x="450" y="340" text-anchor="middle" class="s-soft" font-size="13">tents and lanterns, late December</text>
+
+        <rect x="600" y="205" width="270" height="170" class="s-woodbg"/>
+        <text x="735" y="248" text-anchor="middle" class="s-wood" font-size="27" font-weight="700">夜警</text>
+        <text x="735" y="282" text-anchor="middle" class="s-wood" font-size="20" font-weight="700">雨天中止</text>
+        <text x="735" y="312" text-anchor="middle" class="s-ink" font-size="14" font-weight="700">yakei · uten chūshi</text>
+        <text x="735" y="334" text-anchor="middle" class="s-soft" font-size="13">on the noticeboard: "night patrol",</text>
+        <text x="735" y="352" text-anchor="middle" class="s-soft" font-size="13">and "cancelled if it rains"</text>
+      </g>
+      <text x="30" y="405" class="s-faint" font-size="12">Drawn as types, not copies of any one sign. Shapes and colours differ by city.</text>
+    </svg>
+  </div>
+  <figcaption>Four of the six carry 火, the first character of the call. Once you can pick out 火 and 防, an ordinary street turns out to be labelled for fire from one end to the other.</figcaption>
+</figure>
+
+<main class="col">
+  <div class="facts">
+    <div><b>Getting there:</b> Any residential side street, on foot.</div>
+    <div><b>When:</b> All year for the signs. Patrol notices go up in December.</div>
+    <div><b>Reality check:</b> Notices are often handwritten or dense with kanji. Photograph it and look for 12月, a run of numbers, and 午後7時 or 午後8時.</div>
+  </div>
+
+  <h2>The honest part</h2>
+  <p>You cannot book this, and you may miss it. In Shinagawa two of thirteen associations had stopped for the year. Rain cancels. Some blocks have no patrol at all.</p>
+  <p>If you do meet it, it is a small group of cold people walking for half an hour or so. There is no role for a stranger. Do not follow a group with children, and do not film faces.</p>
+  <div class="warn"><b>Not everyone likes it.</b> Clappers at nine at night wake small children. A lawyer on the Edogawa ward assembly wrote in January 2026 about a complaint brought to him by an association officer the month before. His reading was that the patrols are not illegal, and that associations should strike less after 21:00 and post their schedules in advance. Some groups now call without clappers, or clap without calling. I found no news report of a patrol shut down by complaints; this is a quiet local argument.</div>
+  <p>The history is softer than it is usually told. The Honda letter has a disputed date, and no source I found says when the match line was coined.</p>
+
+  <h2>If you only have one evening</h2>
+  <p>Tokyo, Saturday 26 December 2026. This is a bet on the 2025 pattern holding, in the district where eleven groups walked on the 26th.</p>
+  <ol class="plan">
+    <li><time>17:30</time><span>Shimbamba Station (新馬場駅). Walk the old Tōkaidō shopping street south through Minami-Shinagawa and find a keijiban. Look for 夜警 and tonight's date.</span></li>
+    <li><time>18:15</time><span>Eat on the street. Sit near the door.</span></li>
+    <li><time>19:00</time><span>Be outside, in the residential lanes one block either side of the shopping street. Stand still and listen.</span></li>
+    <li><time>19:10</time><span>When you hear them, walk toward the sound, let the group pass, and say otsukaresama desu.</span></li>
+    <li><time>20:00</time><span>A second chance: some groups, and the children's rounds, start now.</span></li>
+    <li><time>21:00</time><span>Done. Back to Shinagawa Station.</span></li>
+  </ol>
+  <p>Raining, or nothing on the noticeboard? Drop the listening and read the street instead: every 消火栓 and red bucket between you and the station.</p>
+</main>
+
+<footer>
+  Sources: Tokyo Fire Department e-library Q&amp;A on the origin of 火の用心; Shinagawa second district newsletter Kisetsu-kaze no. 243 (1 March 2026); Ebara first district newsletter Machikado no. 118 (January 2013); Yotsuya-sanchōme shopping street notice (December 2025); Shinkawa A Project note (December 2024); Kyoto City Fire Department press release (17 December 2024) and Shimogyō Ward bulletin no. 336 (15 December 2023); Osaka City Fire Department release (November 2025); Kōhō Konohana no. 343 (December 2024); Kotobank entries for 自身番, 木戸番 and 拍子木; Japan Foundation Erin lesson 22; Halmek Q&amp;A; Kanai Takashi, go2senkyo post (14 January 2026); Tokyo Metropolitan disaster-prevention material on winter fires. Schedules are from past years. Checked October 2026; check the noticeboard before you go.
+</footer>
+
+<!-- Cloudflare Web Analytics（Cookieを使わない。個人は追わない。何人・どのページ・どの国・どこから、だけ）-->
+<script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "a549632ca5ba440a9dbdfd24bcbe11e5"}'></script>
+</body>
+</html>

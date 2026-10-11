@@ -1,0 +1,359 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Japanese shop signs that are riddles: 春夏冬中, 二升五合, the わ board on a bathhouse door. How each one decodes and where to see them in Tokyo.">
+<link rel="canonical" href="https://moretojapan.com/signs-that-are-jokes/">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Signs That Are Jokes">
+<meta property="og:description" content="Japanese shop signs that are riddles: 春夏冬中, 二升五合, the わ board on a bathhouse door. How each one decodes and where to see them in Tokyo.">
+<meta property="og:url" content="https://moretojapan.com/signs-that-are-jokes/">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2322406e'/%3E%3Ctext x='32' y='45' font-size='40' text-anchor='middle' fill='white' font-family='Hiragino Sans,sans-serif'%3E%E5%A5%A5%3C/text%3E%3C/svg%3E">
+<title>Signs That Are Jokes — More to Japan</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Old+Mincho:wght@600;900&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&family=Zen+Kaku+Gothic+New:wght@500;700&display=swap">
+<style>
+  /* Layout: one reading column, diagrams break wider. Palette from the objects: a sento's indigo noren, the vermilion of a shop seal, an unpainted cedar board. */
+  :root{
+    --paper:#eeeeeb;
+    --surface:#f7f7f5;
+    --ink:#1b1c1f;
+    --ink-soft:#44474d;
+    --ink-faint:#747880;
+    --rule:#cdcfd3;
+    --ai:#2f4f7a;
+    --ai-soft:#d6dfec;
+    --shu:#b8402a;
+    --shu-soft:#f3dad3;
+    --ki:#8a6a3f;
+    --ki-soft:#eadfcd;
+    --f-display:"Zen Old Mincho","Hiragino Mincho ProN",serif;
+    --f-body:"Source Serif 4",Georgia,"Hiragino Mincho ProN",serif;
+    --f-ui:"Zen Kaku Gothic New",system-ui,sans-serif;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --paper:#131416; --surface:#1b1c1f; --ink:#e8e9ec; --ink-soft:#bfc2c8; --ink-faint:#8c9098;
+      --rule:#33363b; --ai:#8fb0dc; --ai-soft:#1b2a40; --shu:#f08a72; --shu-soft:#3f1f18; --ki:#d6b07c; --ki-soft:#33281a;
+      color-scheme:dark;
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#131416; --surface:#1b1c1f; --ink:#e8e9ec; --ink-soft:#bfc2c8; --ink-faint:#8c9098;
+    --rule:#33363b; --ai:#8fb0dc; --ai-soft:#1b2a40; --shu:#f08a72; --shu-soft:#3f1f18; --ki:#d6b07c; --ki-soft:#33281a;
+    color-scheme:dark;
+  }
+  *{box-sizing:border-box}
+  body{background:var(--paper);color:var(--ink);font-family:var(--f-body);font-size:19px;line-height:1.68;margin:0;padding-inline:16px;-webkit-font-smoothing:antialiased}
+  .col{max-width:660px;margin:0 auto}
+  .wide{max-width:940px;margin:40px auto}
+  header{max-width:940px;margin:0 auto;padding-block:64px 36px}
+  .eyebrow{font-family:var(--f-ui);font-weight:700;font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--ai);margin:0 0 18px}
+  h1{font-family:var(--f-display);font-weight:900;font-size:clamp(40px,8vw,76px);line-height:1.04;margin:0 0 14px;text-wrap:balance}
+  h1 .k{color:var(--shu)}
+  .dek{font-size:clamp(19px,2.4vw,23px);color:var(--ink-soft);max-width:660px;margin:0;text-wrap:pretty}
+  .meta{display:flex;flex-wrap:wrap;gap:8px 22px;margin-top:28px;padding-top:16px;border-top:1px solid var(--rule);font-family:var(--f-ui);font-size:12.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-faint)}
+  h2{font-family:var(--f-display);font-weight:900;font-size:clamp(27px,3.6vw,36px);line-height:1.18;margin:64px 0 6px;text-wrap:balance}
+  h2 .jp{display:block;font-family:var(--f-ui);font-weight:500;font-size:14px;letter-spacing:.08em;color:var(--ink-faint);margin-top:6px}
+  p{margin:0 0 1.05em}
+  .facts{font-family:var(--f-ui);font-size:15px;line-height:1.6;background:var(--surface);border-left:3px solid var(--rule);padding:14px 18px;margin:22px 0 8px;display:grid;gap:6px}
+  .facts b{font-weight:700;color:var(--ink)}
+  blockquote.phrase{margin:22px 0;padding:0;font-size:18px;color:var(--ink-soft)}
+  blockquote.phrase strong{font-family:var(--f-display);font-weight:600;font-size:21px;color:var(--ink)}
+  .warn{font-family:var(--f-ui);font-size:15px;background:var(--shu-soft);color:var(--ink);padding:14px 18px;margin:22px 0}
+  figure{margin:0}
+  .fig{overflow-x:auto;background:var(--surface);padding:22px 18px 16px}
+  .fig svg{display:block;width:100%;height:auto;min-width:560px}
+  figcaption{font-family:var(--f-ui);font-size:14px;color:var(--ink-soft);margin-top:10px;padding-inline:4px}
+  .photo{font-family:var(--f-ui);font-size:14px;color:var(--ink-faint);border:1px dashed var(--rule);padding:12px 16px;margin:22px 0}
+  ol.plan{list-style:none;padding:0;margin:20px 0;display:grid;gap:10px;font-size:17.5px}
+  ol.plan li{display:grid;grid-template-columns:64px 1fr;gap:12px}
+  ol.plan time{font-family:var(--f-ui);font-weight:700;font-variant-numeric:tabular-nums;color:var(--ai)}
+  footer{max-width:660px;margin:72px auto 0;padding-block:20px 80px;border-top:1px solid var(--rule);font-family:var(--f-ui);font-size:13.5px;color:var(--ink-faint)}
+  .s-ink{fill:var(--ink)} .s-soft{fill:var(--ink-soft)} .s-faint{fill:var(--ink-faint)}
+  .s-ai{fill:var(--ai)} .s-aibg{fill:var(--ai-soft)} .s-shu{fill:var(--shu)} .s-shubg{fill:var(--shu-soft)} .s-ki{fill:var(--ki)} .s-kibg{fill:var(--ki-soft)} .s-paper{fill:var(--paper)} .s-none{fill:none}
+  .l-ink{stroke:var(--ink-soft)} .l-strong{stroke:var(--ink)} .l-ai{stroke:var(--ai)} .l-shu{stroke:var(--shu)} .l-ki{stroke:var(--ki)} .l-rule{stroke:var(--rule)}
+  svg text{font-family:var(--f-ui)}
+  svg .kj{font-family:var(--f-display);font-weight:900}
+  .sitebar{border-bottom:1px solid var(--rule,#cfc9c4);background:var(--surface,#f7f7f5);margin-inline:-16px}
+  .sitebar .in{max-width:940px;margin:0 auto;padding:0 16px;height:58px;display:flex;align-items:center;gap:14px;font-family:var(--f-ui,system-ui,sans-serif);font-size:14px}
+  .sitebar a{color:var(--ink,#1d1a19);text-decoration:none}
+  .sitebar .brand{display:flex;align-items:center;gap:9px;font-weight:700}
+  .sitebar .brand i{display:grid;place-items:center;width:28px;height:28px;border-radius:8px;background:var(--beni,var(--accent,#22406e));color:var(--paper,#fff);font-style:normal;font-weight:700;font-size:15px}
+  .sitebar .sp{flex:1}
+  .sitebar .back{color:var(--ink-faint,#7a726d)}
+  .sitebar a:hover{text-decoration:underline}
+</style>
+</head>
+<body>
+
+<div class="sitebar"><div class="in">
+  <a class="brand" href="/"><i>奥</i>More to Japan</a>
+  <span class="sp"></span>
+  <a class="back" href="/#articles">All articles</a>
+</div></div>
+
+<header>
+  <p class="eyebrow">Tokyo · shop fronts, bathhouse doors, one Hiroshige print</p>
+  <h1>Signs That Are <span class="k">Jokes</span></h1>
+  <p class="dek">Some Japanese shop signs are riddles. Reading kana does not help, and a dictionary only half helps. Here is how seven of them work, which ones are as old as they look, and where in Tokyo you can stand in front of them.</p>
+  <div class="meta"><span>Hanjimono 判じ物</span><span>Okachimachi · Ueno · Kita-Senju · Ryōgoku · Daikan-yama</span><span>Facts checked October 2026</span></div>
+</header>
+
+<main class="col">
+  <p>By your third trip you read 営業中 on a door without thinking, and you know 準備中 means come back later. Then one evening a ramen shop has a wooden plaque that says 春夏冬中, and a bathhouse has a plank by the door with nothing on it but わ. You can sound out every character. Neither one means what it says.</p>
+  <p>These are hanjimono (判じ物), puzzles you are meant to work out: rebuses, sums and missing pieces. This piece trades a day of temples for a day of doorways, and the price is that the commonest ones have no fixed address. You find them by looking at every shop front you pass.</p>
+
+  <h2>The season that is missing<span class="jp">春夏冬中 · akinai-chū</span></h2>
+  <p>The plaque reads spring, summer, winter, 中. Autumn (秋, aki) is not there. "No autumn" is <i>aki nai</i>, which is also how you say 商い, trade. Add 中 and you have 商い中, open for business. A 2021 explainer in Gendai says the reading <i>akinashi</i> is also accepted, and that you see the sign most at Chinese restaurants.</p>
+  <p>The joke is done by subtraction. Nothing on the board is the answer; you have to notice what was left off.</p>
+  <div class="facts">
+    <div><b>Getting there:</b> No address. This one turns up on ramen shops, izakaya and neighbourhood Chinese restaurants anywhere in the country.</div>
+    <div><b>When:</b> Whenever the shop is open. It is the open sign.</div>
+    <div><b>Reality check:</b> No currently operating shop could be confirmed by name for this piece. Most examples are bought plaques, not heirlooms.</div>
+  </div>
+</main>
+
+<figure class="wide">
+  <div class="fig">
+    <svg viewBox="0 0 900 300" role="img" aria-label="Decoding 春夏冬中: the missing autumn gives akinai, trade">
+      <g>
+        <rect x="60" y="40" width="96" height="110" class="s-kibg"/><text x="108" y="120" text-anchor="middle" font-size="68" class="kj s-ink">春</text>
+        <rect x="170" y="40" width="96" height="110" class="s-kibg"/><text x="218" y="120" text-anchor="middle" font-size="68" class="kj s-ink">夏</text>
+        <rect x="280" y="40" width="96" height="110" class="s-none l-shu" stroke-width="2" stroke-dasharray="6 5"/><text x="328" y="120" text-anchor="middle" font-size="68" class="kj s-shu" opacity=".45">秋</text>
+        <rect x="390" y="40" width="96" height="110" class="s-kibg"/><text x="438" y="120" text-anchor="middle" font-size="68" class="kj s-ink">冬</text>
+        <rect x="500" y="40" width="96" height="110" class="s-aibg"/><text x="548" y="120" text-anchor="middle" font-size="68" class="kj s-ink">中</text>
+      </g>
+      <g font-size="14">
+        <text x="108" y="174" text-anchor="middle" class="s-soft">spring</text>
+        <text x="218" y="174" text-anchor="middle" class="s-soft">summer</text>
+        <text x="328" y="174" text-anchor="middle" class="s-shu" font-weight="700">autumn: not on the sign</text>
+        <text x="438" y="174" text-anchor="middle" class="s-soft">winter</text>
+        <text x="548" y="174" text-anchor="middle" class="s-soft">chū</text>
+      </g>
+      <path d="M328 186 L328 222" class="l-shu" stroke-width="2"/>
+      <text x="328" y="246" text-anchor="middle" font-size="17" class="s-shu" font-weight="700">aki + nai</text>
+      <text x="328" y="268" text-anchor="middle" font-size="13" class="s-soft">"there is no autumn"</text>
+      <path d="M420 240 L640 240" class="l-ink" stroke-width="2"/><path d="M640 233 L654 240 L640 247 Z" class="s-soft"/>
+      <text x="770" y="120" text-anchor="middle" font-size="52" class="kj s-ai">商い中</text>
+      <text x="770" y="246" text-anchor="middle" font-size="17" class="s-ink" font-weight="700">akinai-chū</text>
+      <text x="770" y="268" text-anchor="middle" font-size="13" class="s-soft">trading now = open</text>
+    </svg>
+  </div>
+  <figcaption>The answer is the one character that was never painted. Dashed box added here; on the real plaque there is no gap.</figcaption>
+</figure>
+
+<main class="col">
+  <h2>Sake arithmetic<span class="jp">二升五合 · 一斗二升五合</span></h2>
+  <p>The second family needs the old volume units. Ten gō (合) make one shō (升), the size of a big sake bottle. Ten shō make one to (斗). A square wooden measure is a masu, and 升 can be read <i>masu</i> too.</p>
+  <p>So 二升 is two masu: <i>masu-masu</i>, 益々, more and more. 五合 is half a shō, 半升, <i>hanjō</i>, which sounds like 繁盛, prosperity. Put 春夏冬 in front and the plaque says "trade prospers more and more." The long version, 一斗二升五合, starts with one to, which is five shō doubled: 五升倍, <i>go-shōbai</i>, ご商売, "your business."</p>
+  <div class="facts">
+    <div><b>Getting there:</b> No address. Look on framed calligraphy behind the counter, on noren, and on the wall of sake shops and izakaya.</div>
+    <div><b>When:</b> Any time; these are good-luck pieces, not open signs.</div>
+    <div><b>Reality check:</b> You will often see it indoors, after you have already sat down. No specific shop was verified.</div>
+  </div>
+  <blockquote class="phrase">When the owner sees you staring at one, ask: <strong>これは何と読みますか</strong> (kore wa nan to yomimasu ka). Most people who hang these enjoy explaining them.</blockquote>
+</main>
+
+<figure class="wide">
+  <div class="fig">
+    <svg viewBox="0 0 900 330" role="img" aria-label="Volume units behind 一斗二升五合">
+      <text x="40" y="34" font-size="13" class="s-faint">Each small box is 1 shō (升). Ten make 1 to (斗).</text>
+      <!-- row 1: itto -->
+      <text x="40" y="92" font-size="40" class="kj s-ink">一斗</text>
+      <g class="s-kibg l-ki" stroke-width="1.5">
+        <rect x="150" y="60" width="34" height="40"/><rect x="186" y="60" width="34" height="40"/><rect x="222" y="60" width="34" height="40"/><rect x="258" y="60" width="34" height="40"/><rect x="294" y="60" width="34" height="40"/>
+        <rect x="344" y="60" width="34" height="40"/><rect x="380" y="60" width="34" height="40"/><rect x="416" y="60" width="34" height="40"/><rect x="452" y="60" width="34" height="40"/><rect x="488" y="60" width="34" height="40"/>
+      </g>
+      <text x="239" y="120" text-anchor="middle" font-size="13" class="s-soft">5 shō</text>
+      <text x="433" y="120" text-anchor="middle" font-size="13" class="s-soft">5 shō again</text>
+      <text x="560" y="78" font-size="14" class="s-soft">5 shō, doubled = 五升倍</text>
+      <text x="560" y="102" font-size="18" class="s-ai" font-weight="700">go-shōbai → ご商売</text>
+      <text x="800" y="102" font-size="13" class="s-soft">your business</text>
+      <!-- row 2: nisho -->
+      <text x="40" y="192" font-size="40" class="kj s-ink">二升</text>
+      <g class="s-kibg l-ki" stroke-width="1.5"><rect x="150" y="160" width="34" height="40"/><rect x="186" y="160" width="34" height="40"/></g>
+      <text x="185" y="220" text-anchor="middle" font-size="13" class="s-soft">masu, masu</text>
+      <text x="560" y="178" font-size="14" class="s-soft">two measures = 升升</text>
+      <text x="560" y="202" font-size="18" class="s-ai" font-weight="700">masu-masu → 益々</text>
+      <text x="800" y="202" font-size="13" class="s-soft">more and more</text>
+      <!-- row 3: gogo -->
+      <text x="40" y="292" font-size="40" class="kj s-ink">五合</text>
+      <rect x="150" y="260" width="34" height="40" class="s-none l-ki" stroke-width="1.5"/>
+      <rect x="150" y="280" width="34" height="20" class="s-ki" opacity=".55"/>
+      <text x="167" y="320" text-anchor="middle" font-size="13" class="s-soft">half full</text>
+      <text x="560" y="278" font-size="14" class="s-soft">half a shō = 半升</text>
+      <text x="560" y="302" font-size="18" class="s-shu" font-weight="700">han-jō → 繁盛</text>
+      <text x="800" y="302" font-size="13" class="s-soft">prospers</text>
+      <path d="M540 56 L540 310" class="l-rule" stroke-width="1"/>
+    </svg>
+  </div>
+  <figcaption>None of the three puns works from the reading alone. You have to picture the measuring boxes: ten, two, and half of one.</figcaption>
+</figure>
+
+<main class="col">
+  <h2>A plank that says わ<span class="jp">わ板・ぬ板 · wa-ita, nu-ita</span></h2>
+  <p>At some Tokyo bathhouses a small board hangs by the entrance with a single kana on it. The board itself is half of the word. A board is an <i>ita</i>, so わ on a board is <i>wa-ita</i>, 沸いた: the water has been heated, come in. Turn it over and it says ぬ: <i>nu-ita</i>, 抜いた, the bath has been drained. A Rurubu report on Takara-yu (updated March 2024) shows one board with わ on the front and ぬ on the back.</p>
+  <p>Everyone assumes this is Edo wit. It is not. The web magazine Tokyo Sento wrote in 2015 that the boards are the idea of Uehara Yoshiharu (ウエハラヨシハル), who calls himself a sento artist and has been showing work in bathhouses since 1996. Rurubu says the same: the sign is "comparatively recent." The year he made the first one could not be found.</p>
+  <p>Two places where the board has been documented and the bath is still running:</p>
+  <p><b>Tsubame-yu (燕湯)</b>, near Okachimachi. Live Japan (updated 2020) describes the わ board on the door and the swap to ぬ at closing. The building is a nationally registered cultural property and the bath opens at six in the morning. Reports put the water at about 46 to 47°C, which is hotter than most people want.</p>
+  <div class="facts">
+    <div><b>Getting there:</b> Okachimachi Station (御徒町駅), about 4 min on foot · 台東区上野3-14-5</div>
+    <div><b>When:</b> 6:00–20:00. Closed Monday; some listings add Tuesday.</div>
+    <div><b>Reality check:</b> Closing days differ between sources. Phone 03-3831-7305 or check on the day.</div>
+  </div>
+  <p><b>Takara-yu (タカラ湯)</b>, in Senju-Motomachi. The building dates from 1938 and is known for a garden you look at from a veranda after the bath. A 2016 feature on the Tokyo bathhouse association's site captions a photo of the わ board at the entrance.</p>
+  <div class="facts">
+    <div><b>Getting there:</b> Kita-Senju Station (北千住駅), about 20 min on foot, or a bus to the Senju-Sakuragi stop and 5 min · 足立区千住元町27-1</div>
+    <div><b>When:</b> Opens 15:00. Closing is listed as 22:45 or 23:30 depending on the source. Closed Friday; one listing adds the first Thursday.</div>
+    <div><b>Reality check:</b> A long walk from the station through housing. Pay the standard Tokyo sento fee in cash at the desk.</div>
+  </div>
+  <div class="warn"><b>Not confirmed:</b> whether either board is hanging on the day you go. The reports are from 2016, 2020 and 2024. Daikoku-yu in Kita-Senju, photographed with the board in 2015, has since closed.</div>
+  <blockquote class="phrase">At the front desk, before you point a phone at the door: <strong>看板の写真を撮ってもいいですか</strong> (kanban no shashin o totte mo ii desu ka).</blockquote>
+
+  <h2>The bow over the bathhouse door<span class="jp">弓矢 · yumi-ya</span></h2>
+  <p>The older joke is a picture. Edo bathhouses hung a bow and arrow out front. To shoot a bow is <i>yumi iru</i> (弓射る); said fast it lands on <i>yu iru</i> (湯入る), to get in the bath. According to Nippon.com's series on the Edo-period encyclopedia <i>Morisada Mankō</i>, the pun signs faded, and from the Tenpō era (1830 onward) the standard sign became an indigo cloth with 男女 and 湯 on it. That cloth is the ゆ noren you already know.</p>
+  <p>Takara-yu has a bow and arrow mounted at its entrance today, shown in the same 2024 Rurubu report. It is a revival, not a survivor, but it is the easiest place to see the Edo sign in three dimensions.</p>
+  <div class="facts">
+    <div><b>Getting there:</b> Same as Takara-yu above.</div>
+    <div><b>When:</b> Visible from outside; go from 15:00 if you want the bath as well.</div>
+    <div><b>Reality check:</b> If you did not know the pun you would take it for decoration. There is no label.</div>
+  </div>
+</main>
+
+<figure class="wide">
+  <div class="fig">
+    <svg viewBox="0 0 900 380" role="img" aria-label="Three signs where an object supplies part of the word">
+      <text x="40" y="30" font-size="13" class="s-faint">What you see</text><text x="380" y="30" font-size="13" class="s-faint">What you say</text><text x="640" y="30" font-size="13" class="s-faint">What it means</text>
+      <path d="M40 40 L860 40" class="l-rule" stroke-width="1"/>
+      <!-- row 1 wa board -->
+      <rect x="60" y="58" width="70" height="92" rx="3" class="s-kibg l-ki" stroke-width="2"/>
+      <circle cx="95" cy="68" r="3" class="s-ki"/>
+      <text x="95" y="126" text-anchor="middle" font-size="48" class="kj s-ink">わ</text>
+      <text x="150" y="100" font-size="14" class="s-soft">kana "wa"</text><text x="150" y="120" font-size="14" class="s-ki" font-weight="700">+ the board (ita)</text>
+      <text x="380" y="100" font-size="20" class="s-ai" font-weight="700">wa-ita</text><text x="380" y="124" font-size="14" class="s-soft">flip side ぬ: nu-ita</text>
+      <text x="640" y="100" font-size="16" class="s-ink" font-weight="700">沸いた · heated, open</text><text x="640" y="124" font-size="14" class="s-soft">抜いた · drained, closed</text>
+      <path d="M40 166 L860 166" class="l-rule" stroke-width="1"/>
+      <!-- row 2 bow -->
+      <path d="M74 186 C128 206 128 262 74 282" class="s-none l-ki" stroke-width="4"/>
+      <path d="M74 186 L74 282" class="l-ink" stroke-width="1.5"/>
+      <path d="M62 234 L138 234" class="l-strong" stroke-width="2.5"/><path d="M138 227 L152 234 L138 241 Z" class="s-ink"/>
+      <text x="170" y="228" font-size="14" class="s-soft">a bow (yumi)</text><text x="170" y="248" font-size="14" class="s-soft">and an arrow</text>
+      <text x="380" y="228" font-size="20" class="s-ai" font-weight="700">yumi iru → yu iru</text><text x="380" y="252" font-size="14" class="s-soft">弓射る · to shoot a bow</text>
+      <text x="640" y="228" font-size="16" class="s-ink" font-weight="700">湯入る · get in the bath</text><text x="640" y="252" font-size="14" class="s-soft">Edo bathhouse sign</text>
+      <path d="M40 300 L860 300" class="l-rule" stroke-width="1"/>
+      <!-- row 3 kamawanu -->
+      <path d="M58 360 L58 322 C64 308 88 308 96 326" class="s-none l-strong" stroke-width="4"/>
+      <circle cx="128" cy="338" r="18" class="s-none l-strong" stroke-width="4"/>
+      <text x="176" y="352" text-anchor="middle" font-size="40" class="kj s-ink">ぬ</text>
+      <text x="210" y="334" font-size="14" class="s-soft">sickle, ring,</text><text x="210" y="354" font-size="14" class="s-soft">kana "nu"</text>
+      <text x="380" y="334" font-size="20" class="s-ai" font-weight="700">kama-wa-nu</text><text x="380" y="358" font-size="14" class="s-soft">鎌 · 輪 · ぬ</text>
+      <text x="640" y="334" font-size="16" class="s-ink" font-weight="700">構わぬ · "I don't care"</text><text x="640" y="358" font-size="14" class="s-soft">kabuki actor's pattern</text>
+    </svg>
+  </div>
+  <figcaption>In all three the object is a syllable. Read only the written kana and you get one letter out of three, or none.</figcaption>
+</figure>
+
+<main class="col">
+  <h2>Mountain whale, thirteen ri<span class="jp">山くじら · 十三里</span></h2>
+  <p>Hiroshige put two joke signs in one print. No. 114 of <i>One Hundred Famous Views of Edo</i>, "Bikuni Bridge in Snow," printed in the tenth month of 1858, has a big sign on the left reading 山くじら, mountain whale. It means boar. Meat-eating was frowned on, whale counted as fish, and a shop selling game called it whale from the hills. On the right a smaller sign says 十三里 and ○やき.</p>
+  <p>That one is arithmetic again, this time in distance. A ri (里) is about four kilometres. Chestnut is <i>kuri</i>, which can be written 九里, nine ri. <i>Yori</i>, "than," can be 四里, four ri. "Better than chestnuts" is 九里 + 四里 = 十三里, thirteen ri, and it meant roasted sweet potato. The usual account, repeated by the culture magazine Waraku, is that Kyoto sellers first called it 八里半, eight and a half ri, "not quite a chestnut," and an Edo shop in Koishikawa raised the claim. ○やき is <i>maru-yaki</i>, roasted whole. A second explanation ties the number to Kawagoe, the sweet-potato town said to be thirteen ri from Nihonbashi.</p>
+  <p>Nippon.com places the bridge at today's north-west corner of Ginza 1-chōme, where the Tokyo Expressway crosses Sotobori-dōri. Nothing of it is left. But the mountain whale still trades: Momonjiya (もゝんじや) in Ryōgoku, founded in 1718 according to the Sumida shopping-street association, bills itself as 山くじら すき焼, and reviewers describe stuffed boars hanging outside.</p>
+  <div class="facts">
+    <div><b>Getting there:</b> Ryōgoku Station (両国駅) west exit, about 5 min · 墨田区両国1-10-2</div>
+    <div><b>When:</b> Mon–Sat from 17:00; closing is listed as 21:00 or 22:00. Closed Sunday, though one listing says it opens on Sundays during sumo tournaments.</div>
+    <div><b>Reality check:</b> A sit-down boar hot-pot restaurant, not a snack stop. The frontage is free to look at.</div>
+  </div>
+  <p>The same sum hides in a shop name. Jūsan-ya (十三や) in Ueno makes boxwood combs. A comb is <i>kushi</i>: 九 (ku) + 四 (shi) = 十三. TV Tokyo's listings give the founding year as 1736 and the address as Ueno 2-12-21.</p>
+  <div class="facts">
+    <div><b>Getting there:</b> 台東区上野2-12-21, on the Shinobazu Pond side of Ueno; one account puts it two minutes from Ueno Park.</div>
+    <div><b>When:</b> Hours could not be confirmed. Check before you go.</div>
+    <div><b>Reality check:</b> Handmade combs with a reported wait of months. The joke is on the signboard and costs nothing.</div>
+  </div>
+</main>
+
+<figure class="wide">
+  <div class="fig">
+    <svg viewBox="0 0 900 250" role="img" aria-label="Number line from 0 to 13 ri showing chestnut at 9, sweet potato at 8.5 and then 13">
+      <!-- x = 60 + n*60 -->
+      <line x1="60" y1="130" x2="840" y2="130" class="l-ink" stroke-width="2"/>
+      <g class="l-ink" stroke-width="1.5">
+        <path d="M60 124 L60 136"/><path d="M120 124 L120 136"/><path d="M180 124 L180 136"/><path d="M240 124 L240 136"/><path d="M300 124 L300 136"/><path d="M360 124 L360 136"/><path d="M420 124 L420 136"/><path d="M480 124 L480 136"/><path d="M540 124 L540 136"/><path d="M600 124 L600 136"/><path d="M660 124 L660 136"/><path d="M720 124 L720 136"/><path d="M780 124 L780 136"/><path d="M840 124 L840 136"/>
+      </g>
+      <text x="60" y="158" text-anchor="middle" font-size="12" class="s-faint">0</text>
+      <text x="840" y="158" text-anchor="middle" font-size="12" class="s-faint">13 ri</text>
+      <!-- 9 ri span -->
+      <rect x="60" y="92" width="540" height="20" class="s-kibg"/>
+      <text x="330" y="107" text-anchor="middle" font-size="13" class="s-ink" font-weight="700">九里 · ku-ri · chestnut</text>
+      <!-- 4 ri span -->
+      <rect x="600" y="92" width="240" height="20" class="s-aibg"/>
+      <text x="720" y="107" text-anchor="middle" font-size="13" class="s-ink" font-weight="700">四里 · yo-ri · "than"</text>
+      <!-- markers -->
+      <circle cx="570" cy="130" r="7" class="s-ki"/>
+      <text x="570" y="182" text-anchor="middle" font-size="14" class="s-ki" font-weight="700">八里半 (8.5)</text>
+      <text x="570" y="202" text-anchor="middle" font-size="13" class="s-soft">"just short of chestnut"</text>
+      <circle cx="840" cy="130" r="8" class="s-shu"/>
+      <text x="840" y="62" text-anchor="end" font-size="26" class="kj s-shu">十三里</text>
+      <text x="840" y="82" text-anchor="end" font-size="13" class="s-soft">"better than chestnut"</text>
+      <text x="60" y="62" font-size="13" class="s-soft">Also 九 (ku) + 四 (shi) = kushi, a comb: Jūsan-ya.</text>
+      <text x="60" y="236" font-size="12" class="s-faint">One ri is roughly 4 km. Bars to scale with each other.</text>
+    </svg>
+  </div>
+  <figcaption>The sweet potato started half a ri behind the chestnut and was promoted four and a half ri past it, by advertising alone.</figcaption>
+</figure>
+
+<main class="col">
+  <h2>Sickle, ring, ぬ<span class="jp">かまわぬ · 鎌輪ぬ</span></h2>
+  <p>A sickle (鎌, kama), a ring (輪, wa) and the kana ぬ: <i>kamawanu</i>, 構わぬ, "I don't care" or "do as you like." The usual account, given by the dyers who still print it, is that town toughs wore it in the Genroku years and that the kabuki star Ichikawa Danjūrō VII made it a craze when he wore it as Yoemon in the Kasane plays. It is listed as that actor's pattern. The Edo-Tokyo Museum holds a hand towel with it and catalogues it as a picture puzzle.</p>
+  <p>Today it is also a shop sign. Kamawanu (かまわぬ), the tenugui company that began in Daikan-yama in 1987, uses the three marks as its name and logo.</p>
+  <div class="facts">
+    <div><b>Getting there:</b> Daikan-yama Station (代官山駅), about 3 min · 渋谷区猿楽町23-1</div>
+    <div><b>When:</b> Most listings say 11:00–19:00. One gives a shorter Sunday and a Tuesday closure, so check.</div>
+    <div><b>Reality check:</b> A polished shop in a fashionable district; the opposite of a bathhouse door. Easy, and worth five minutes.</div>
+  </div>
+  <blockquote class="phrase">To the staff, if you want the original and not a seasonal print: <strong>かまわぬの柄はありますか</strong> (kamawanu no gara wa arimasu ka).</blockquote>
+
+  <h2>The honest part</h2>
+  <p>The most photogenic one is the newest. The わ and ぬ boards are a living artist's idea, and a good one, but anyone who tells you Edo townsmen hung them is repeating a guess. The bow and arrow is the real Edo sign, and it died out long ago; what you see now is a tribute.</p>
+  <p>You cannot plan a trip around 春夏冬中 or 二升五合. No shop could be confirmed for either, and finding one tells you the owner likes a pun, not that the shop is old. Treat them as things to recognise, not places to reach.</p>
+  <p>Reading kana is close to useless here. Every one of these needs a kanji word you already know by ear, plus the old measures or the trick of reading an object as a syllable. You may follow the diagrams and still not hear the joke land.</p>
+  <p>And the two bathhouses are listed with conflicting closing days. Tsubame-yu's water is reported as very hot, and Takara-yu is a twenty-minute walk from the train.</p>
+
+  <h2>If you only have one day</h2>
+  <p>Pick a Wednesday or a Saturday. On the listings found, those are the days when none of the three stops with published closing days is shut; Jūsan-ya's days are unknown.</p>
+  <ol class="plan">
+    <li><time>8:00</time><span>Okachimachi Station. Walk to Tsubame-yu and look for the わ board on the door. Bathe if you can take the heat.</span></li>
+    <li><time>10:30</time><span>Cross Ueno to Jūsan-ya at Ueno 2-12-21. Read the name as a sum. Go in only if it is open.</span></li>
+    <li><time>12:00</time><span>Lunch around Ueno or Okachimachi. Check every plaque by every door for 春夏冬中.</span></li>
+    <li><time>14:15</time><span>Hibiya Line from Naka-Okachimachi Station (仲御徒町駅) to Kita-Senju Station, then walk or take the bus toward Senju-Sakuragi.</span></li>
+    <li><time>15:00</time><span>Takara-yu as it opens: the bow and arrow, the board, then the bath and the veranda.</span></li>
+    <li><time>17:30</time><span>Hibiya Line back to Akihabara, Sōbu Line two stops to Ryōgoku Station. Momonjiya's frontage, and dinner there if you booked.</span></li>
+  </ol>
+  <p>Running late? Drop Ryōgoku. Keep Takara-yu at opening time, because it is the one doorway where the oldest of these jokes and the youngest hang side by side.</p>
+  <figure style="margin:28px 0 0">
+    <div class="fig">
+      <svg viewBox="0 0 620 230" role="img" aria-label="Order of the four stops by train">
+        <path d="M70 150 L200 150 L390 60 L540 150" class="s-none l-ai" stroke-width="2" stroke-dasharray="6 5"/>
+        <g font-size="13">
+          <circle cx="70" cy="150" r="9" class="s-ki"/><text x="70" y="182" text-anchor="middle" class="s-ink" font-weight="700">Okachimachi</text><text x="70" y="200" text-anchor="middle" class="s-soft">8:00 · わ board</text>
+          <circle cx="200" cy="150" r="9" class="s-ki"/><text x="200" y="182" text-anchor="middle" class="s-ink" font-weight="700">Ueno 2-chōme</text><text x="200" y="200" text-anchor="middle" class="s-soft">10:30 · 十三や</text>
+          <circle cx="390" cy="60" r="10" class="s-shu"/><text x="390" y="34" text-anchor="middle" class="s-ink" font-weight="700">Kita-Senju</text><text x="408" y="66" class="s-soft">15:00 · bow + board</text>
+          <circle cx="540" cy="150" r="9" class="s-ai"/><text x="540" y="182" text-anchor="middle" class="s-ink" font-weight="700">Ryōgoku</text><text x="540" y="200" text-anchor="middle" class="s-soft">17:30 · 山くじら</text>
+        </g>
+        <text x="20" y="222" font-size="12" class="s-faint">Schematic, not a map. Kita-Senju is the far end; everything else is central.</text>
+      </svg>
+    </div>
+    <figcaption>Three of the four stops sit within a few train stops of each other. Only Takara-yu costs you real travel time.</figcaption>
+  </figure>
+</main>
+
+<footer>
+  Sources: Gendai Media on 春夏冬中 (Feb 2021); Tokyo Sento interview with Uehara Yoshiharu (Aug 2015); Tokyo Sento Association (1010.or.jp) Takara-yu feature (Aug 2016); Rurubu &amp; more on Takara-yu (updated Mar 2024); TJF interview with Uehara (2016); Live Japan on Tsubame-yu (updated 2020); Tokyo Metropolitan Bureau of Transportation and Discover Japan listings for Tsubame-yu; Nippon.com on Edo bathhouses in Morisada Mankō and on Hiroshige's "Bikuni Bridge in Snow"; Waraku on 十三里; Sumida shopping-street association and Momonjiya's own site; TV Tokyo listings for Jūsan-ya; Edo-Tokyo Museum digital archive and Kamawanu's company pages. Checked October 2026; opening days conflict between sources, so check before you go.
+</footer>
+
+<!-- Cloudflare Web Analytics（Cookieを使わない。個人は追わない。何人・どのページ・どの国・どこから、だけ）-->
+<script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "a549632ca5ba440a9dbdfd24bcbe11e5"}'></script>
+</body>
+</html>
