@@ -76,7 +76,15 @@
   .fl i{font-style:normal;font-size:.7em;color:var(--sub);margin:0 .1em}
   #ov.nobub .chip{display:none}
   .chip.me{background:#fff3b0}
-  .chip.idle{opacity:.8}.chip.idle::after{content:"☕"}
+  .chip.idle::after{content:"☕"}.chip.near::after{content:"👂"}
+  .tag.M{background:#7b4a2a}
+  .tblb{position:absolute;border:0;background:none;padding:0;cursor:pointer}
+  .tblb::after{content:"";position:absolute;inset:4%;border:.5cqw dashed #ffe14a;border-radius:8%;animation:blink 1s steps(2) infinite}
+  #chat{margin-top:12px;border-top:1px dashed var(--line);padding-top:10px}
+  #chatT{font-weight:700;font-size:14px}
+  #log{max-height:170px;overflow-y:auto;font-size:15px;margin:6px 0}
+  #log div{padding:2px 0;overflow-wrap:anywhere}#log b{font-weight:700}
+  #sayF{display:flex;gap:8px}#sayF input{flex:1;max-width:none;font-size:16px;padding:9px 12px}
   .chk{display:flex;gap:8px;align-items:flex-start;font-size:14.5px;margin:12px 0 0;cursor:pointer}
   .chk input{width:18px;height:18px;margin:3px 0 0;flex:none}
   .bub{border:1px solid var(--line);background:#fff;border-radius:999px;padding:5px 12px;font:inherit;font-size:13px;cursor:pointer;color:var(--ink)}
@@ -138,7 +146,7 @@
     </div>
     <p class="hint" data-en="Above your head everyone sees: your language ▸ the language you want to speak. You can hide the bubbles on your own screen, but you can't hide yours from other people." data-ja="頭の上に「自分の言葉 ▸ 話したい言葉」が出ます。吹き出しは自分の画面では消せますが、自分のぶんを相手から見えなくすることはできません。">Above your head everyone sees: your language ▸ the language you want to speak. You can hide the bubbles on your own screen, but you can't hide yours from other people.</p>
     <p class="hint" data-en="Your browser will ask for the microphone. Without it you can still come in and listen." data-ja="このあとマイクの許可を聞かれます。許可しなくても、入って聞くことはできます。">Your browser will ask for the microphone. Without it you can still come in and listen.</p>
-    <label class="chk"><input type="checkbox" id="idle0"><span data-en="Don't join the tables yet — just hang out at the counter. (No voice, and you are not shuffled. You can join any time.)" data-ja="まだテーブルには参加せず、カウンターでぼーっとする。（声はつながらず、席替えにも入りません。いつでも参加できます）">Don't join the tables yet — just hang out at the counter. (No voice, and you are not shuffled. You can join any time.)</span></label>
+    <label class="chk"><input type="checkbox" id="idle0"><span data-en="Don't join the tables yet — just hang out. (Chat with the master at the counter, or walk up to a table to listen and type. You can't talk by voice and you are not shuffled. Join any time.)" data-ja="まだテーブルには参加せず、ぼーっとする。（カウンターで店長と話したり、テーブルに近づいて聞いたり、文字で話したりできます。声は出せず、席替えにも入りません。いつでも参加できます）">Don't join the tables yet — just hang out. (Chat with the master at the counter, or walk up to a table to listen and type. You can't talk by voice and you are not shuffled. Join any time.)</span></label>
     <p style="margin:14px 0 0"><button class="btn" id="enter" disabled data-en="Enter the bar" data-ja="バーに入る">Enter the bar</button></p>
     <div class="msg" id="jmsg"></div>
   </div>
@@ -166,6 +174,10 @@
       </div>
       <ul class="mates" id="mates"></ul>
       <div class="topic" id="topic" hidden></div>
+      <div id="chat" hidden>
+        <div id="chatT"></div><div id="log"></div>
+        <form id="sayF"><input type="text" id="say" maxlength="140" autocomplete="off"><button class="btn sm" data-en="Send" data-ja="送る">Send</button></form>
+      </div>
       <div class="msg" id="bmsg"></div>
     </div>
   </div>
@@ -277,8 +289,11 @@ const conns = {}, seen = {};                     // 店の側：客の線と、�
 const speaking = {};
 const order = () => Object.keys(ST.m).sort();
 const where = () => {                            // 立っている人は来た順に立ち位置へ
-  const out = {}; let k = 0, c = 0;
-  for (const p of order()) { const m = ST.m[p]; out[p] = m.seat != null ? seatPos(m.seat) : m.idle ? [1 + c++ % 13, 3] : STANDS[k++ % STANDS.length]; }
+  const out = {}, nb = [0, 0, 0, 0]; let k = 0, c = 0;
+  for (const p of order()) { const m = ST.m[p];
+    if (m.seat != null) out[p] = seatPos(m.seat);
+    else if (m.idle && m.near != null) { const [tx, ty] = TABLES[m.near]; out[p] = [tx + [0, 1, -1, 2][nb[m.near]++ % 4], ty + 2]; }   // テーブルのすぐ下に立って聞く
+    else out[p] = m.idle ? [1 + c++ % 13, 3] : STANDS[k++ % STANDS.length]; }
   return out;
 };
 
@@ -303,9 +318,13 @@ function apply(pid, d) {
   } else if (!m) return true;
   else if (d.t === "sit") {
     const s = d.seat | 0;
-    if (s >= 0 && s < 16 && ((s & 3) < 2) === (m.side === "F") && !Object.values(ST.m).some(x => x.seat === s)) { m.seat = s; m.idle = false; }
+    if (s >= 0 && s < 16 && ((s & 3) < 2) === (m.side === "F") && !Object.values(ST.m).some(x => x.seat === s)) { m.seat = s; m.idle = false; m.near = null; }
   } else if (d.t === "stand") m.seat = null;
-  else if (d.t === "idle") { m.idle = !!d.v; if (m.idle) m.seat = null; }
+  else if (d.t === "idle") { m.idle = !!d.v; m.near = null; if (m.idle) m.seat = null; }
+  else if (d.t === "near") {                                  // ぼーっとしている人だけ。1テーブルに4人まで
+    const t = d.table == null ? null : d.table | 0;
+    if (m.idle && (t == null || (t >= 0 && t < 4 && Object.values(ST.m).filter(x => x.idle && x.near === t).length < 4))) m.near = t;
+  }
   else if (d.t === "start") {
     if (!ST.sess && m.seat != null && [3, 5, 10, 15].includes(d.mins) && d.sets >= 1 && d.sets <= 6)
       ST.sess = { mins: d.mins, sets: d.sets | 0, set: 1, endAt: Date.now() + d.mins * UNIT, by: pid, topics: pickTopics() };
@@ -319,12 +338,25 @@ function push() {
   for (const p in conns) { try { if (conns[p].open) conns[p].send({ t: "st", st }); } catch (e) {} }
   onState();
 }
+/* 文字の会話は、同じ場所にいる人にだけ配る（テーブル＋そばで聞いている人／カウンター）。どこにも残さない */
+const gkey = m => !m ? null : m.seat != null ? "t" + (m.seat >> 2) : m.idle ? (m.near != null ? "t" + m.near : "c") : null;
+const MASTER = [["いらっしゃい。ゆっくりしていってね。", "Welcome. Take your time."], ["今日は何を飲む？", "What are you drinking today?"],
+  ["テーブルの近くに行くと、話が聞こえるよ。", "Go near a table and you can hear them talk."], ["話したくなったら、光ってる席にすわってね。", "When you feel like talking, sit in a blinking seat."],
+  ["ぼーっとするのも、大事な時間だよ。", "Spacing out is important time too."], ["今日はどんな一日だった？", "How was your day?"],
+  ["おつかれさま。", "Good work today."], ["それ、日本語でなんて言うか知ってる？", "Do you know how to say that in Japanese?"], ["うんうん、それで？", "Mm-hm, and then?"]];
+function deliver(k, msg) { for (const p in ST.m) if (gkey(ST.m[p]) === k) { if (p === myId) onMsg(msg); else try { conns[p] && conns[p].send(msg); } catch (e) {} } }
+function relay(pid, text) {
+  const m = ST.m[pid], k = gkey(m), tx = String(text || "").replace(/\s+/g, " ").trim().slice(0, 140); if (!k || !tx) return;
+  deliver(k, { t: "msg", k, tag: m.side + m.num, side: m.side, name: m.name, text: tx });
+  if (k === "c") setTimeout(() => { const l = MASTER[Math.random() * MASTER.length | 0]; deliver("c", { t: "msg", k: "c", tag: "☕", side: "M", name: "Master", text: l[0] + " / " + l[1] }); }, 1100);
+}
 function onGuest(c) {
   c.on("data", d => {
     if (!d || typeof d !== "object") return;
     seen[c.peer] = Date.now();
     if (d.t === "hb") return;
     if (d.t === "watch") { conns[c.peer] = c; push(); return; }
+    if (d.t === "say") { relay(c.peer, d.text); return; }
     if (d.t === "join") {
       conns[c.peer] = c;
       if (!apply(c.peer, d)) { try { c.send({ t: "full" }); } catch (e) {} delete conns[c.peer]; setTimeout(() => c.close(), 500); return; }
@@ -374,6 +406,7 @@ function connectHub() {
   c.on("data", d => {
     if (!d) return;
     if (d.t === "full") { dead = true; $("#bmsg").className = "msg err"; $("#bmsg").textContent = L("Your side of the bar is full (8). Please try again later.", "そちら側の席（8人）がいっぱいです。あとでまた来てください。"); return; }
+    if (d.t === "msg") { onMsg(d); return; }
     if (d.t === "st") { lastSt = Date.now(); peeked = true; ST = d.st; if (ST.sess) ST.sess.endAt = Date.now() + ST.sess.remain; onState(); }
   });
   c.on("close", () => lost(c));
@@ -385,7 +418,7 @@ function lost(c) {
   const r = joined ? order().indexOf(myId) : 0;         // 店が消えたら、名前の若い順にだれかが店を引きつぐ
   setTimeout(connectHub, 300 + Math.max(0, r) * 1200);
 }
-const act = d => { if (isHost) { apply(myId, d); push(); } else if (link && link.open) link.send(d); };
+const act = d => { if (isHost) { if (d.t === "say") relay(myId, d.text); else { apply(myId, d); push(); } } else if (link && link.open) link.send(d); };
 setInterval(() => {
   if (link && link.open) { if (Date.now() - lastSt > 16000) lost(link); else link.send({ t: "hb" }); }   // 店は7秒おきに声をかける。16秒しんとしたら店が消えたとみなす
   else if (myId && !isHost) connectHub();
@@ -421,7 +454,11 @@ function drop(pid) {
   const o = calls[pid]; if (!o) return; delete calls[pid]; delete meters[pid]; delete speaking[pid];
   try { o.call.close(); } catch (e) {} if (o.el) { o.el.srcObject = null; o.el.remove(); }
 }
-function mates() { const m = ST.m[myId]; if (!m || m.seat == null) return []; return Object.keys(ST.m).filter(p => p !== myId && ST.m[p].seat != null && (ST.m[p].seat >> 2) === (m.seat >> 2)); }
+function mates() {
+  const m = ST.m[myId], k = gkey(m); if (!k || k === "c") return [];
+  return Object.keys(ST.m).filter(p => p !== myId && gkey(ST.m[p]) === k && (m.seat != null || ST.m[p].seat != null));   // 聞く人どうしはつながない
+}
+function micApply() { const m = ST.m[myId]; if (stream && hasMic) stream.getAudioTracks().forEach(t => t.enabled = !muted && !!m && m.seat != null); }   // 声が出るのは、すわっている時だけ
 function voice() {
   if (!me || !stream) return;
   const want = mates();
@@ -448,8 +485,12 @@ function drawOv() {
     if (mine && !taken[i]) { b.classList.add("can"); b.onclick = () => act({ t: "sit", seat: i }); b.setAttribute("aria-label", "Table " + TL[i >> 2]); } else b.disabled = true;
     ov.appendChild(b);
   }
+  if (m && m.idle && m.seat == null) {                       // ぼーっと中：テーブルを押すとそばへ、カウンターを押すと戻る
+    TABLES.forEach(([tx, ty], t) => { if (m.near === t) return; const b = document.createElement("button"); b.className = "tblb"; b.style.cssText = `left:${tx / 15 * 100}%;top:${ty / 13 * 100}%;width:13.33%;height:15.38%`; b.onclick = () => act({ t: "near", table: t }); b.setAttribute("aria-label", "Listen at table " + TL[t]); ov.appendChild(b); });
+    if (m.near != null) { const b = document.createElement("button"); b.className = "tblb"; b.style.cssText = "left:10%;top:6%;width:80%;height:17%"; b.onclick = () => act({ t: "near", table: null }); b.setAttribute("aria-label", "Back to the counter"); ov.appendChild(b); }
+  }
   for (const p in pos) {
-    const x = ST.m[p], c = document.createElement("span"); c.className = "chip " + x.side + (p === myId ? " me" : "") + (x.idle ? " idle" : ""); c.dataset.p = p; c.innerHTML = `<b>${x.side}${x.num}</b><span class="fl">${flags(x)}</span>`;
+    const x = ST.m[p], c = document.createElement("span"); c.className = "chip " + x.side + (p === myId ? " me" : "") + (x.idle ? (x.near != null ? " near" : " idle") : ""); c.dataset.p = p; c.innerHTML = `<b>${x.side}${x.num}</b><span class="fl">${flags(x)}</span>`;
     c.style.left = (pos[p][0] * 16 + 8) / W * 100 + "%"; c.style.top = (pos[p][1] * 16 - 8) / H * 100 + "%"; ov.appendChild(c);
   }
   if (Date.now() < toastUntil) { const t = document.createElement("div"); t.className = "toast"; t.innerHTML = toastHTML; ov.appendChild(t); }
@@ -463,18 +504,20 @@ function onState() {
     : L(`In the bar now: ${n} — ${nf} learning Japanese, ${n - nf} Japanese speakers.`, `いま ${n}人：日本語を話したい人 ${nf}人／英語を話したい日本人 ${n - nf}人。`)
       + (ST.sess ? L(` Timer running (set ${ST.sess.set}/${ST.sess.sets}).`, ` タイマー進行中（セット ${ST.sess.set}/${ST.sess.sets}）。`) : "");
   const ro = $("#roster"); ro.innerHTML = "";
-  all.forEach(x => { const li = document.createElement("li"); li.innerHTML = `<span class="tag ${x.side}">${x.side}${x.num}</span><span class="fl">${flags(x)}</span> `; li.append(x.name + " "); const sm = document.createElement("small"); sm.textContent = x.seat != null ? TL[x.seat >> 2] : x.idle ? L("☕ counter", "☕ カウンター") : L("standing", "立ち"); li.appendChild(sm); ro.appendChild(li); });
+  all.forEach(x => { const li = document.createElement("li"); li.innerHTML = `<span class="tag ${x.side}">${x.side}${x.num}</span><span class="fl">${flags(x)}</span> `; li.append(x.name + " "); const sm = document.createElement("small"); sm.textContent = x.seat != null ? TL[x.seat >> 2] : x.idle ? (x.near != null ? "👂" + TL[x.near] : L("☕ counter", "☕ カウンター")) : L("standing", "立ち"); li.appendChild(sm); ro.appendChild(li); });
   if (m) {
     if (ST.sess && prevSet && ST.sess.set !== prevSet && m.seat != null) {
       toast(L("Seat change!<br>You → Table ", "席替え！<br>あなたは テーブル ") + TL[m.seat >> 2]); [660, 880, 1100].forEach((f, i) => beep(f, .12, i * .12));
     }
     if (ST.fin && prevFin !== ST.fin && prevSet) { toast(L("Time's up — thank you!<br>お疲れさまでした", "おしまい！<br>おつかれさまでした"), 6000); [1100, 880, 660, 880].forEach((f, i) => beep(f, .15, i * .15)); }
     prevSet = ST.sess ? ST.sess.set : 0; prevFin = ST.fin; prevSeat = m.seat;
-    $("#who").innerHTML = `<span class="tag ${m.side}">${m.side}${m.num}</span>` + (m.seat != null ? L("Table ", "テーブル ") + TL[m.seat >> 2] : m.idle ? L("At the counter, just hanging out — you won't be shuffled", "カウンターで ぼーっと中 — 席替えには入りません") : L("Standing — tap a blinking seat", "立っています — 光っている席をタップ"));
+    $("#who").innerHTML = `<span class="tag ${m.side}">${m.side}${m.num}</span>` + (m.seat != null ? L("Table ", "テーブル ") + TL[m.seat >> 2] : m.idle ? (m.near != null ? L(`Listening by table ${TL[m.near]} — you can type, not talk`, `テーブル${TL[m.near]}のそばで聞いています — 文字は打てます（声は出ません）`) : L("At the counter with the master — tap a table to go and listen", "カウンターで店長と — テーブルを押すと、そばで聞けます")) : L("Standing — tap a blinking seat", "立っています — 光っている席をタップ"));
     $("#idle").textContent = m.idle ? L("Join the tables", "テーブルに参加する") : L("☕ Just hang out", "☕ ぼーっとする");
     const ms = mates();
-    $("#mates").innerHTML = ""; ms.forEach(p => { const li = document.createElement("li"), x = ST.m[p]; li.innerHTML = `<span class="tag ${x.side}">${x.side}${x.num}</span>`; li.append(x.name); $("#mates").appendChild(li); });
-    if (m.seat != null && !ms.length) $("#mates").innerHTML = `<li style="color:var(--sub)">${L("Nobody else at this table yet.", "このテーブルには まだだれもいません。")}</li>`;
+    $("#mates").innerHTML = ""; ms.forEach(p => { const li = document.createElement("li"), x = ST.m[p]; li.innerHTML = `<span class="tag ${x.side}">${x.side}${x.num}</span>`; li.append(x.name + (x.seat == null ? L(" 👂 listening", " 👂 聞いています") : "")); $("#mates").appendChild(li); });
+    micApply(); chatHead();
+    $("#mic").hidden = m.idle;
+    if (m.seat != null && !ms.some(p => ST.m[p].seat != null)) $("#mates").innerHTML += `<li style="color:var(--sub)">${L("Nobody else is sitting at this table yet.", "このテーブルには まだだれも すわっていません。")}</li>`;
     $("#stand").hidden = m.seat == null;
     $("#start").hidden = !!ST.sess; $("#start").disabled = m.seat == null;
     $("#stop").hidden = !(ST.sess && (ST.sess.by === myId || isHost));
@@ -483,6 +526,20 @@ function onState() {
     if (!dead) { $("#bmsg").className = "msg"; $("#bmsg").textContent = m.seat == null ? "" : hasMic ? "" : L("No microphone: you can listen, but others can't hear you.", "マイクなし：聞くことはできますが、あなたの声は届きません。"); }
   }
   drawOv(); voice(); tick();
+}
+/* 文字の会話 */
+let chatKey = null;
+function chatHead() {
+  const k = gkey(ST.m[myId]);
+  if (k !== chatKey) { chatKey = k; $("#log").innerHTML = ""; }
+  $("#chat").hidden = !k;
+  if (k) { $("#chatT").textContent = k === "c" ? L("Counter — chat with the master", "カウンター — 店長と話す") : L("Table ", "テーブル ") + TL[+k[1]] + L(" — text chat", " — 文字で話す"); $("#say").placeholder = L("Type a message…", "メッセージを書く…"); }
+}
+function onMsg(d) {
+  if (d.k !== gkey(ST.m[myId])) return;
+  const log = $("#log"), li = document.createElement("div"), tag = document.createElement("span"), nm = document.createElement("b");
+  tag.className = "tag " + d.side; tag.textContent = d.tag; nm.textContent = d.name + " "; li.append(tag, nm, d.text); log.appendChild(li);
+  while (log.children.length > 60) log.firstChild.remove(); log.scrollTop = log.scrollHeight;
 }
 function tick() {
   const s = ST.sess, now = $("#now");
@@ -536,8 +593,9 @@ $("#enter").onclick = async () => {
   onState();
 };
 function setMic() { const b = $("#mic"); b.textContent = !hasMic ? L("🎤 No mic", "🎤 マイクなし") : muted ? L("🔇 Muted", "🔇 ミュート中") : L("🎤 Mic on", "🎤 マイクON"); b.disabled = !hasMic; }
-$("#mic").onclick = () => { muted = !muted; stream.getAudioTracks().forEach(t => t.enabled = !muted); setMic(); };
+$("#mic").onclick = () => { muted = !muted; micApply(); setMic(); };
 $("#stand").onclick = () => act({ t: "stand" });
+$("#sayF").onsubmit = e => { e.preventDefault(); const v = $("#say").value.trim(); if (v) { act({ t: "say", text: v }); $("#say").value = ""; } };
 $("#idle").onclick = () => { const m = ST.m[myId]; if (m) act({ t: "idle", v: !m.idle }); };
 $("#stop").onclick = () => act({ t: "stop" });
 let selM = 5, selS = 3;
