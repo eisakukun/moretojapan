@@ -94,6 +94,9 @@
   #sayF{display:flex;gap:8px}#sayF input{flex:1;max-width:none;font-size:16px;padding:9px 12px}
   .chk{display:flex;gap:8px;align-items:flex-start;font-size:14.5px;margin:12px 0 0;cursor:pointer}
   .chk input{width:18px;height:18px;margin:3px 0 0;flex:none}
+  .bgm{display:inline-flex;align-items:center;gap:6px}
+  .bgm select{font:inherit;font-size:13px;border:1px solid var(--line);border-radius:999px;padding:5px 8px;background:#fff;color:var(--ink);width:auto}
+  .bgm input{width:80px}
   .bub{border:1px solid var(--line);background:#fff;border-radius:999px;padding:5px 12px;font:inherit;font-size:13px;cursor:pointer;color:var(--ink)}
   select#own{font:inherit;font-size:16px;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:#fff;color:var(--ink);max-width:320px;width:100%}
   .chip.talk::after{content:"♪";color:#e8a23a}
@@ -168,6 +171,7 @@
       <span><i style="background:var(--J)"></i><span data-en="Right: Japanese speakers who want English (J1–J8)" data-ja="右：英語を話したい日本人（J1〜J8）">Right: Japanese speakers who want English (J1–J8)</span></span>
       <span data-en="Bubble = own language ▸ language they want to speak" data-ja="吹き出し＝自分の言葉 ▸ 話したい言葉">Bubble = own language ▸ language they want to speak</span>
       <button class="bub" id="bub"></button>
+      <label class="bgm">🎵 <select id="bgm"></select><input type="range" id="vol" min="5" max="100" step="5" aria-label="BGM volume"></label>
     </div>
     <ul class="roster" id="roster"></ul>
     <div class="panel" id="ctl" hidden>
@@ -450,11 +454,53 @@ setInterval(() => {
   else if (myId && !isHost) connectHub();
 }, 5000);
 
+/* ============ BGM（自前の旋律をその場で鳴らす。音源ファイルなし。聞こえるのは自分だけ） ============ */
+const rpt = (a, n) => { let o = []; for (let i = 0; i < n; i++) o = o.concat(a); return o; };
+const BGM = {
+  jazz: { name: ["Bar jazz", "バーのジャズ"], bpm: 104, swing: .3, lt: "triangle", lv: .05, bt: "triangle", bv: .11, cv: .028, cd: 2.2,
+    lead: [0, 0, 77, 0, 76, 0, 74, 0, 0, 71, 0, 74, 0, 0, 71, 0, 72, 0, 0, 76, 0, 79, 0, 0, 0, 0, 76, 0, 73, 0, 69, 0,
+           0, 81, 0, 77, 0, 74, 0, 0, 79, 0, 0, 77, 0, 74, 71, 0, 0, 0, 79, 0, 76, 0, 72, 0, 76, 0, 73, 0, 0, 0, 0, 0],
+    bass: rpt([38, 0, 41, 0, 45, 0, 48, 0, 43, 0, 47, 0, 50, 0, 49, 0, 48, 0, 52, 0, 55, 0, 57, 0, 45, 0, 49, 0, 52, 0, 50, 0], 2),
+    ch: rpt([[65, 69, 72], 0, 0, [65, 69, 72], 0, 0, 0, 0, [65, 71, 74], 0, 0, [65, 71, 74], 0, 0, 0, 0, [64, 67, 71], 0, 0, [64, 67, 71], 0, 0, 0, 0, [61, 64, 67], 0, 0, [61, 64, 67], 0, 0, 0, 0], 2) },
+  hinata: { name: ["Sunny spot (slow)", "ひなた（のんびり）"], bpm: 76, swing: 0, lt: "sine", lv: .09, bt: "sine", bv: .1, cv: .03, cd: 7.5,
+    lead: [76, 0, 79, 0, 84, 0, 0, 0, 81, 0, 0, 76, 0, 0, 72, 0, 77, 0, 81, 0, 84, 0, 81, 0, 79, 0, 0, 74, 0, 0, 0, 0,
+           84, 0, 0, 79, 0, 76, 0, 0, 81, 0, 84, 0, 0, 0, 76, 0, 77, 0, 0, 72, 0, 77, 0, 0, 74, 0, 79, 0, 0, 0, 0, 0],
+    bass: rpt([48, 0, 0, 0, 55, 0, 0, 0, 45, 0, 0, 0, 52, 0, 0, 0, 41, 0, 0, 0, 48, 0, 0, 0, 43, 0, 0, 0, 50, 0, 0, 0], 2),
+    ch: rpt([[60, 64, 67], 0, 0, 0, 0, 0, 0, 0, [57, 60, 64], 0, 0, 0, 0, 0, 0, 0, [57, 60, 65], 0, 0, 0, 0, 0, 0, 0, [59, 62, 67], 0, 0, 0, 0, 0, 0, 0], 2) },
+  bit: { name: ["8-bit", "8ビット"], bpm: 112, swing: 0, lt: "square", lv: .03, bt: "triangle", bv: .09, cv: 0, cd: 1,
+    lead: [76, 0, 79, 0, 84, 0, 79, 0, 81, 0, 79, 76, 74, 0, 0, 0, 77, 0, 81, 0, 79, 0, 76, 0, 74, 76, 74, 72, 72, 0, 0, 0,
+           79, 0, 76, 0, 72, 0, 76, 0, 77, 0, 81, 0, 84, 0, 81, 0, 79, 0, 77, 76, 74, 0, 76, 0, 72, 0, 0, 0, 0, 0, 0, 0],
+    bass: [48, 0, 55, 0, 48, 0, 55, 0, 45, 0, 52, 0, 45, 0, 52, 0, 41, 0, 48, 0, 41, 0, 48, 0, 43, 0, 50, 0, 43, 0, 50, 0,
+           48, 0, 55, 0, 48, 0, 55, 0, 41, 0, 48, 0, 41, 0, 48, 0, 43, 0, 50, 0, 43, 0, 50, 0, 48, 0, 55, 0, 48, 0, 55, 0], ch: [] }
+};
+let bgmSel = "jazz", bgmVol = .4, bgmG = null, bStep = 0, bNext = 0;
+try { const v = localStorage.getItem("mtj-bar-bgm"); if (v === "off" || BGM[v]) bgmSel = v; const n = +localStorage.getItem("mtj-bar-vol"); if (n > 0 && n <= 100) bgmVol = n / 100; } catch (e) {}
+function wakeAC() { try { AC = AC || new (window.AudioContext || window.webkitAudioContext)(); if (AC.state === "suspended") AC.resume(); } catch (e) {} }
+function tone(m, t, d, type, v) {
+  if (!bgmG) { bgmG = AC.createGain(); bgmG.connect(AC.destination); } bgmG.gain.value = bgmVol;
+  const o = AC.createOscillator(), g = AC.createGain(); o.type = type; o.frequency.value = 440 * Math.pow(2, (m - 69) / 12);
+  g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(v, t + .015); g.gain.exponentialRampToValueAtTime(.0008, t + d);
+  o.connect(g).connect(bgmG); o.start(t); o.stop(t + d + .02);
+}
+setInterval(() => {
+  const T = BGM[bgmSel];
+  if (!T || !AC || AC.state !== "running" || document.hidden) { bNext = 0; return; }
+  const dt = 30 / T.bpm;
+  if (bNext < AC.currentTime) bNext = AC.currentTime + .06;
+  while (bNext < AC.currentTime + .4) {
+    const i = bStep++ % T.lead.length, t = bNext + (i % 2 ? T.swing * dt : 0);
+    if (T.lead[i]) tone(T.lead[i], t, dt * 1.8, T.lt, T.lv);
+    if (T.bass[i]) tone(T.bass[i], t, dt * 1.9, T.bt, T.bv);
+    if (T.ch[i]) T.ch[i].forEach(n => tone(n, t, dt * T.cd, "sine", T.cv));
+    bNext += dt;
+  }
+}, 120);
+
 /* ============ 声（同じテーブルの人とだけ線を張る） ============ */
 let stream = null, hasMic = false, muted = false, AC = null;
 const calls = {}, pending = {};
 async function getStream() {
-  AC = new (window.AudioContext || window.webkitAudioContext)();
+  wakeAC();
   try { stream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true } }); hasMic = true; watch(stream, "me"); }
   catch (e) { stream = AC.createMediaStreamDestination().stream; hasMic = false; }   // マイクなし＝聞くだけ（無音の線を出す）
 }
@@ -600,6 +646,10 @@ $("#own").value = myOwn;
 $("#own").onchange = () => { myOwn = $("#own").value; try { localStorage.setItem("mtj-bar-own", myOwn); } catch (e) {} };
 /* 吹き出しを見る・見ないは、自分の画面だけの設定（相手の画面には何も起きない） */
 let bubOn = true; try { bubOn = localStorage.getItem("mtj-bar-bub") !== "0"; } catch (e) {}
+/* BGMは自分の耳にだけ鳴る。選ぶのも音量も自分の画面だけ */
+function setBgmUI() { $("#bgm").innerHTML = Object.keys(BGM).map(k => `<option value="${k}">${L(...BGM[k].name)}</option>`).join("") + `<option value="off">${L("No music", "BGMなし")}</option>`; $("#bgm").value = bgmSel; $("#vol").value = Math.round(bgmVol * 100); }
+$("#bgm").onchange = () => { bgmSel = $("#bgm").value; bStep = 0; bNext = 0; wakeAC(); try { localStorage.setItem("mtj-bar-bgm", bgmSel); } catch (e) {} };
+$("#vol").oninput = () => { bgmVol = $("#vol").value / 100; if (bgmG) bgmG.gain.value = bgmVol; wakeAC(); try { localStorage.setItem("mtj-bar-vol", $("#vol").value); } catch (e) {} };
 function setBub() { ov.classList.toggle("nobub", !bubOn); $("#bub").textContent = bubOn ? L("💬 Bubbles: shown", "💬 吹き出し：表示中") : L("💬 Bubbles: hidden", "💬 吹き出し：非表示"); }
 $("#bub").onclick = () => { bubOn = !bubOn; try { localStorage.setItem("mtj-bar-bub", bubOn ? "1" : "0"); } catch (e) {} setBub(); };
 /* ページを開いた時点で、のぞき窓として店につなぐ（入る前から中が見える） */
@@ -655,10 +705,10 @@ for (const [id, set] of [["#segM", v => selM = v], ["#segS", v => selS = v]])
 $("#start").onclick = () => { sum(); $("#setup").showModal(); };
 $("#cancel").onclick = () => $("#setup").close();
 $("#go").onclick = () => { $("#setup").close(); act({ t: "start", mins: selM, sets: selS }); };
-$("#lang").onclick = () => { lang = lang === "ja" ? "en" : "ja"; try { localStorage.setItem("mj-lang", lang); } catch (e) {} applyLang(); setMic(); setBub(); };
+$("#lang").onclick = () => { lang = lang === "ja" ? "en" : "ja"; try { localStorage.setItem("mj-lang", lang); } catch (e) {} applyLang(); setMic(); setBub(); setBgmUI(); };
 document.addEventListener("visibilitychange", () => { if (!document.hidden && me && me.disconnected) { try { me.reconnect(); } catch (e) {} } });
 addEventListener("pagehide", () => { try { hub && hub.destroy(); me && me.destroy(); } catch (e) {} });
-applyLang(); setBub();
+applyLang(); setBub(); setBgmUI();
 </script>
 <script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "a549632ca5ba440a9dbdfd24bcbe11e5"}'></script>
 </body>
