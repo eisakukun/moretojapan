@@ -100,6 +100,12 @@
   .bgm{display:inline-flex;align-items:center;gap:6px}
   .bgm select{font:inherit;font-size:13px;border:1px solid var(--line);border-radius:999px;padding:5px 8px;background:#fff;color:var(--ink);width:auto}
   .bgm input{width:80px}
+  .dpad{display:grid;grid-template-columns:repeat(3,52px);grid-template-rows:repeat(3,44px);justify-content:center;margin:10px 0 2px;user-select:none;-webkit-user-select:none}
+  .dpad button{border:0;background:#33373b;color:#d6d9dd;font-size:17px;padding:0;touch-action:none;cursor:pointer}
+  .dpad button:active{background:#15181b}
+  .dpad .u{grid-area:1/2;border-radius:10px 10px 0 0}.dpad .l{grid-area:2/1;border-radius:10px 0 0 10px}
+  .dpad .r{grid-area:2/3;border-radius:0 10px 10px 0}.dpad .d{grid-area:3/2;border-radius:0 0 10px 10px}
+  @media(hover:hover) and (pointer:fine){.dpad{display:none}}
   .bub{border:1px solid var(--line);background:#fff;border-radius:999px;padding:5px 12px;font:inherit;font-size:13px;cursor:pointer;color:var(--ink)}
   select#own{font:inherit;font-size:16px;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:#fff;color:var(--ink);max-width:320px;width:100%}
   .chip.talk::after{content:"♪";color:#e8a23a}
@@ -159,7 +165,7 @@
     </div>
     <p class="hint" data-en="Above your head everyone sees: your language ▸ the language you want to speak. You can hide the bubbles on your own screen, but you can't hide yours from other people." data-ja="頭の上に「自分の言葉 ▸ 話したい言葉」が出ます。吹き出しは自分の画面では消せますが、自分のぶんを相手から見えなくすることはできません。">Above your head everyone sees: your language ▸ the language you want to speak. You can hide the bubbles on your own screen, but you can't hide yours from other people.</p>
     <p class="hint" data-en="Your browser will ask for the microphone. Without it you can still come in and listen." data-ja="このあとマイクの許可を聞かれます。許可しなくても、入って聞くことはできます。">Your browser will ask for the microphone. Without it you can still come in and listen.</p>
-    <label class="chk"><input type="checkbox" id="idle0"><span data-en="Don't join the tables yet — just hang out. (Chat with the master at the counter, or walk up to a table to listen and type. You can't talk by voice and you are not shuffled. Join any time.)" data-ja="まだテーブルには参加せず、ぼーっとする。（カウンターで店長と話したり、テーブルに近づいて聞いたり、文字で話したりできます。声は出せず、席替えにも入りません。いつでも参加できます）">Don't join the tables yet — just hang out. (Chat with the master at the counter, or walk up to a table to listen and type. You can't talk by voice and you are not shuffled. Join any time.)</span></label>
+    <label class="chk"><input type="checkbox" id="idle0"><span data-en="Don't join the tables yet — just hang out. (Chat with the master at the counter, walk up to a table to listen and type, and talk by voice with other people who are hanging out — the closer, the louder. The tables can't hear you and you are not shuffled. Sit in any free seat to join.)" data-ja="まだテーブルには参加せず、ぼーっとする。（カウンターで店長と話したり、テーブルに近づいて聞いたり文字で話したり、ぼーっとしている人どうしで声で話せます（近いほど大きく聞こえます）。テーブルには声が届かず、席替えにも入りません。空いている席にすわれば参加できます）">Don't join the tables yet — just hang out. (Chat with the master at the counter, walk up to a table to listen and type, and talk by voice with other people who are hanging out — the closer, the louder. The tables can't hear you and you are not shuffled. Sit in any free seat to join.)</span></label>
     <p style="margin:14px 0 0"><button class="btn" id="enter" disabled data-en="Enter the bar" data-ja="バーに入る">Enter the bar</button></p>
     <div class="msg" id="jmsg"></div>
   </div>
@@ -169,6 +175,10 @@
     <div class="top px"><span class="nm" id="barName"></span><span class="set" id="setTxt"></span><span class="clock" id="clock">--:--</span></div>
     <div class="now idle px" id="now"></div>
     <div class="stage"><canvas id="cv" width="240" height="208"></canvas><div id="ov" class="px"></div></div>
+    <div class="dpad" id="dpad" hidden>
+      <button class="u" data-d="0,-1" aria-label="up">▲</button><button class="l" data-d="-1,0" aria-label="left">◀</button>
+      <button class="r" data-d="1,0" aria-label="right">▶</button><button class="d" data-d="0,1" aria-label="down">▼</button>
+    </div>
     <div class="legend">
       <span><i style="background:var(--F)"></i><span data-en="Left: learning Japanese (F1–F8)" data-ja="左：日本語を話したい人（F1〜F8）">Left: learning Japanese (F1–F8)</span></span>
       <span><i style="background:var(--J)"></i><span data-en="Right: Japanese speakers who want English (J1–J8)" data-ja="右：英語を話したい日本人（J1〜J8）">Right: Japanese speakers who want English (J1–J8)</span></span>
@@ -470,6 +480,13 @@ function lost(c) {
 }
 const act = d => { if (isHost) { if (d.t === "say") relay(myId, d.text); else if (d.t === "mv") { apply(myId, d); pushOne(myId); } else { apply(myId, d); push(); } } else if (link && link.open) link.send(d); };
 /* パソコン：矢印キー（またはWASD）で歩く。いすに入るとすわり、テーブルのそばに立つと聞ける */
+document.querySelectorAll("#dpad button").forEach(b => {       // スマホ：押しているあいだ歩きつづける
+  const [dx, dy] = b.dataset.d.split(",").map(Number); let iv = 0;
+  const go = () => act({ t: "mv", dx, dy }), stop = () => { clearInterval(iv); iv = 0; };
+  b.addEventListener("pointerdown", e => { e.preventDefault(); stop(); go(); iv = setInterval(go, 190); });
+  for (const ev of ["pointerup", "pointercancel", "pointerleave"]) b.addEventListener(ev, stop);
+  b.addEventListener("contextmenu", e => e.preventDefault());
+});
 const MV = { ArrowUp: [0, -1], ArrowDown: [0, 1], ArrowLeft: [-1, 0], ArrowRight: [1, 0], w: [0, -1], s: [0, 1], a: [-1, 0], d: [1, 0] };
 let lastMv = 0;
 addEventListener("keydown", e => {
@@ -526,12 +543,12 @@ setInterval(() => {
 }, 120);
 
 /* ============ 声（同じテーブルの人とだけ線を張る） ============ */
-let stream = null, hasMic = false, muted = false, AC = null;
+let silent = null, stream = null, hasMic = false, muted = false, AC = null;
 const calls = {}, pending = {};
 async function getStream() {
-  wakeAC();
+  wakeAC(); silent = AC.createMediaStreamDestination().stream;
   try { stream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true } }); hasMic = true; watch(stream, "me"); }
-  catch (e) { stream = AC.createMediaStreamDestination().stream; hasMic = false; }   // マイクなし＝聞くだけ（無音の線を出す）
+  catch (e) { stream = silent; hasMic = false; }   // マイクなし＝聞くだけ（無音の線を出す）
 }
 const meters = {};
 function watch(s, id) {
@@ -541,12 +558,16 @@ setInterval(() => {
   for (const id in meters) { const { an, buf } = meters[id]; an.getByteTimeDomainData(buf); let v = 0; for (const b of buf) v = Math.max(v, Math.abs(b - 128)); speaking[id === "me" ? myId : id] = v > 10 && !(id === "me" && muted); }
   document.querySelectorAll(".chip").forEach(c => c.classList.toggle("talk", !!speaking[c.dataset.p]));
 }, 150);
-function wire(pid, call) {
-  const o = calls[pid] = { call, t0: Date.now(), el: null };
+/* 線の種類は3つ。
+   talk   ＝同じテーブルにすわっている人どうし（おたがいの声）
+   listen ＝すわっている人 → そばで聞いている人（聞く側からは無音を返す＝テーブルには声が入らない）
+   idle   ＝ぼーっとしている人どうし（近いほど大きく聞こえる） */
+function wire(pid, call, kind) {
+  const o = calls[pid] = { call, t0: Date.now(), el: null, kind };
   call.on("stream", s => {
     if (o.el) return;
     const a = o.el = document.createElement("audio"); a.autoplay = true; a.playsInline = true; a.srcObject = s; $("#audios").appendChild(a); a.play().catch(() => {});
-    watch(s, pid);
+    watch(s, pid); setVols();
   });
   const end = () => { if (calls[pid] === o) drop(pid); };
   call.on("close", end); call.on("error", end);
@@ -555,20 +576,38 @@ function drop(pid) {
   const o = calls[pid]; if (!o) return; delete calls[pid]; delete meters[pid]; delete speaking[pid];
   try { o.call.close(); } catch (e) {} if (o.el) { o.el.srcObject = null; o.el.remove(); }
 }
-function mates() {
-  const m = ST.m[myId], k = gkey(m); if (!k || k === "c") return [];
-  return Object.keys(ST.m).filter(p => p !== myId && gkey(ST.m[p]) === k && (m.seat != null || ST.m[p].seat != null));   // 聞く人どうしはつながない
+const HEAR = 6;                                   // ぼーっとしている人の声が届くマス数
+const dist = (a, b) => Math.hypot(a.x - b.x, a.y - b.y);
+function wantCalls() {
+  const m = ST.m[myId], out = {}; if (!m) return out;
+  for (const p in ST.m) { if (p === myId) continue; const x = ST.m[p];
+    if (m.seat != null) { if (x.seat != null) { if ((x.seat >> 2) === (m.seat >> 2)) out[p] = "talk"; } else if (x.idle && x.near === (m.seat >> 2)) out[p] = "listen"; }
+    else if (m.idle) {
+      if (x.seat != null) { if (m.near === (x.seat >> 2)) out[p] = "listen"; }
+      else if (x.idle && dist(m, x) <= (calls[p] && calls[p].kind === "idle" ? HEAR + 1 : HEAR)) out[p] = "idle";   // 切れぎわでつながったり切れたりしないよう、1マスの遊び
+    }
+  }
+  return out;
 }
-function micApply() { const m = ST.m[myId]; if (stream && hasMic) stream.getAudioTracks().forEach(t => t.enabled = !muted && !!m && m.seat != null); }   // 声が出るのは、すわっている時だけ
+const mates = () => { const w = wantCalls(); return Object.keys(w).filter(p => w[p] !== "idle"); };
+const sendFor = kind => kind === "listen" && ST.m[myId] && ST.m[myId].seat == null ? silent : stream;
+function setVols() {                              // 近いほど大きく（iPhoneは機種の決まりで音量を変えられず、届く範囲では同じ大きさ）
+  const m = ST.m[myId];
+  for (const p in calls) { const o = calls[p], x = ST.m[p]; if (!o.el) continue;
+    let v = 1; if (o.kind === "idle" && m && x) { const d = dist(m, x); v = d <= 1.5 ? 1 : Math.max(.06, Math.pow(1 - (d - 1.5) / (HEAR - .5), 2)); }
+    try { o.el.volume = v; } catch (e) {} }
+}
+function micApply() { if (stream && hasMic) stream.getAudioTracks().forEach(t => t.enabled = !muted); }
 function voice() {
   if (!me || !stream) return;
-  const want = mates();
-  for (const p in calls) if (!want.includes(p) || (!calls[p].el && Date.now() - calls[p].t0 > 12000)) drop(p);   // 席を離れたら、その場で切る
-  for (const p of want) {
+  const want = wantCalls();
+  for (const p in calls) if (want[p] !== calls[p].kind || (!calls[p].el && Date.now() - calls[p].t0 > 12000)) drop(p);   // 関係が変わったら、その場で切ってつなぎ直す
+  for (const p in want) {
     if (calls[p]) continue;
-    if (pending[p]) { const c = pending[p]; delete pending[p]; c.answer(stream); wire(p, c); }
-    else if (myId < p) { const c = me.call(p, stream); if (c) wire(p, c); }                                      // 名前の若いほうがかける
+    if (pending[p]) { const c = pending[p]; delete pending[p]; c.answer(sendFor(want[p])); wire(p, c, want[p]); }
+    else if (myId < p) { const c = me.call(p, sendFor(want[p])); if (c) wire(p, c, want[p]); }                         // 名前の若いほうがかける
   }
+  setVols();
 }
 setInterval(voice, 3000);
 
@@ -613,12 +652,13 @@ function onState() {
     }
     if (ST.fin && prevFin !== ST.fin && prevSet) { toast(L("Time's up — thank you!<br>お疲れさまでした", "おしまい！<br>おつかれさまでした"), 6000); [1100, 880, 660, 880].forEach((f, i) => beep(f, .15, i * .15)); }
     prevSet = ST.sess ? ST.sess.set : 0; prevFin = ST.fin; prevSeat = m.seat;
-    $("#who").innerHTML = `<span class="tag ${m.side}">${m.side}${m.num}</span>` + (m.seat != null ? L("Table ", "テーブル ") + TL[m.seat >> 2] : m.idle ? (m.near != null ? L(`Listening by table ${TL[m.near]} — you can type, not talk`, `テーブル${TL[m.near]}のそばで聞いています — 文字は打てます（声は出ません）`) : L("At the counter with the master — tap a table to go and listen", "カウンターで店長と — テーブルを押すと、そばで聞けます")) : L("Standing — tap a blinking seat", "立っています — 光っている席をタップ") + (matchMedia("(hover:hover)").matches ? L(" (or walk with the arrow keys)", "（矢印キーでも歩けます）") : ""));
+    $("#who").innerHTML = `<span class="tag ${m.side}">${m.side}${m.num}</span>` + (m.seat != null ? L("Table ", "テーブル ") + TL[m.seat >> 2] : m.idle ? (m.near != null ? L(`Listening by table ${TL[m.near]} — the table can't hear you, but you can type`, `テーブル${TL[m.near]}のそばで聞いています — テーブルに声は届きません（文字は打てます）`) : L("Just hanging out — go near a table to listen, or near others to talk", "ぼーっと中 — テーブルに近づくと聞けて、ぼーっとしている人に近づくと話せます")) : L("Standing — tap a blinking seat", "立っています — 光っている席をタップ") + (matchMedia("(hover:hover)").matches ? L(" (or walk with the arrow keys)", "（矢印キーでも歩けます）") : L(" (or walk with the pad)", "（十字キーでも歩けます）")));
     $("#idle").textContent = m.idle ? L("Join the tables", "テーブルに参加する") : L("☕ Just hang out", "☕ ぼーっとする");
     const ms = mates();
     $("#mates").innerHTML = ""; ms.forEach(p => { const li = document.createElement("li"), x = ST.m[p]; li.innerHTML = `<span class="tag ${x.side}">${x.side}${x.num}</span>`; li.append(x.name + (x.seat == null ? L(" 👂 listening", " 👂 聞いています") : "")); $("#mates").appendChild(li); });
     micApply(); chatHead();
-    $("#mic").hidden = m.idle;
+    const near = Object.values(wantCalls()).filter(k => k === "idle").length;
+    if (m.idle && m.seat == null) { const li = document.createElement("li"); li.style.color = "var(--sub)"; li.textContent = near ? L(`${near} other(s) hanging out within earshot — the closer you stand, the louder.`, `声の届くところに ぼーっとしている人が ${near}人 — 近づくほど大きく聞こえます。`) : L("Walk close to someone else who is hanging out and you can talk.", "ぼーっとしている人に近づくと、声で話せます。"); $("#mates").appendChild(li); }
     if (m.seat != null && !ms.some(p => ST.m[p].seat != null)) $("#mates").innerHTML += `<li style="color:var(--sub)">${L("Nobody else is sitting at this table yet.", "このテーブルには まだだれも すわっていません。")}</li>`;
     $("#stand").hidden = m.seat == null;
     $("#start").hidden = !!ST.sess; $("#start").disabled = m.seat == null;
@@ -688,7 +728,7 @@ $("#bub").onclick = () => { bubOn = !bubOn; try { localStorage.setItem("mtj-bar-
 /* ページを開いた時点で、のぞき窓として店につなぐ（入る前から中が見える） */
 me = new Peer(undefined, { debug: 0 });
 me.on("open", id => { myId = id; ready(); connectHub(); });
-me.on("call", c => { if (mates().includes(c.peer)) { c.answer(stream); wire(c.peer, c); } else { pending[c.peer] = c; setTimeout(() => { if (pending[c.peer] === c) { delete pending[c.peer]; try { c.close(); } catch (e) {} } }, 9000); } });
+me.on("call", c => { const k = wantCalls()[c.peer]; if (k && stream) { c.answer(sendFor(k)); wire(c.peer, c, k); } else { pending[c.peer] = c; setTimeout(() => { if (pending[c.peer] === c) { delete pending[c.peer]; try { c.close(); } catch (e) {} } }, 9000); } });
 me.on("disconnected", () => { try { me.reconnect(); } catch (e) {} });
 me.on("error", e => {
   if (e && e.type === "peer-unavailable" && String(e.message || "").includes(HUB) && linkTry) linkTry();   // 店がまだ無い
@@ -700,7 +740,7 @@ $("#enter").onclick = async () => {
   try { localStorage.setItem("mtj-bar-name", myName); } catch (e) {}
   $("#jmsg").textContent = L("Opening the door…", "ドアを あけています…");
   await getStream();
-  joined = true; $("#join").hidden = true; $("#ctl").hidden = false; setMic();
+  joined = true; $("#join").hidden = true; $("#ctl").hidden = false; $("#dpad").hidden = false; setMic();
   if (link && link.open) link.send(joinMsg()); else connectHub();   // だれも居なければ、自分のタブが店になる
   onState();
 };
