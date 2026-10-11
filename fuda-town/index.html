@@ -44,6 +44,7 @@
     box-shadow:inset 0 0 0 .6cqw var(--c0),inset 0 0 0 1cqw var(--c2);border-radius:1.6cqw;padding:2.6cqw 3.4cqw;min-height:21cqw;cursor:pointer;z-index:5}
   #boxMain{font-size:4.6cqw}
   #boxMain .q{font-size:7cqw;display:block;text-align:center}
+  #rc{font:inherit;font-size:5cqw;width:5.2em;text-align:center;letter-spacing:.2em;text-transform:uppercase;border:.6cqw solid var(--c3);border-radius:1cqw;background:#fff;color:var(--c3);padding:.4cqw}
   #boxSub{font-size:3.5cqw;color:var(--c2);margin-top:.4cqw}
   .more{position:absolute;right:2.6cqw;bottom:1.2cqw;font-size:3.4cqw;animation:bob .7s steps(2) infinite}
   @keyframes bob{50%{transform:translateY(-1cqw)}}
@@ -159,7 +160,7 @@
 
   <div class="about">
     <h1 data-en="Fuda Town — the words are hiding" data-ja="ふだの町 — ことばは、かくれている">Fuda Town — the words are hiding</h1>
-    <p data-en="Fuda (札) means card. Somewhere in this town — inside a pot, under a vending machine, in the tall grass — there are word cards. Face something and press A to look. <b>The rarer the card, the harder the Japanese</b>: ★ is a simple word in kana, ★★★★★ is a proverb. Cards are also your moves in battle: pick one, answer what it means, and it hits. Rare cards hit harder — if you really know them. Hidden cards come back every day." data-ja="まちの どこかに、ことばの札（カード）が かくれています。つぼの中、自販機の下、草むら。むきあって A でしらべます。<b>めずらしい札ほど、ことばが むずかしい</b>：★はかんたんな単語、★★★★★はことわざ。札はバトルの技にもなります。えらんで、意味を当てると、当たる。めずらしい札ほど強い——ほんとうに覚えていれば。かくれた札は毎日もどります。">Fuda (札) means card. Somewhere in this town — inside a pot, under a vending machine, in the tall grass — there are word cards. Face something and press A to look. <b>The rarer the card, the harder the Japanese</b>: ★ is a simple word in kana, ★★★★★ is a proverb. Cards are also your moves in battle: pick one, answer what it means, and it hits. Rare cards hit harder — if you really know them. Hidden cards come back every day.</p>
+    <p data-en="Fuda (札) means card. Somewhere in this town — inside a pot, under a vending machine, in the tall grass — there are word cards. Face something and press A to look. <b>The rarer the card, the harder the Japanese</b>: ★ is a simple word in kana, ★★★★★ is a proverb. Cards are also your moves in battle: pick one, answer what it means, and it hits. Rare cards hit harder — if you really know them. Hidden cards come back every day. MENU → Online battle lets two people fight with their own cards." data-ja="まちの どこかに、ことばの札（カード）が かくれています。つぼの中、自販機の下、草むら。むきあって A でしらべます。<b>めずらしい札ほど、ことばが むずかしい</b>：★はかんたんな単語、★★★★★はことわざ。札はバトルの技にもなります。えらんで、意味を当てると、当たる。めずらしい札ほど強い——ほんとうに覚えていれば。かくれた札は毎日もどります。メニュー→オンライン対戦で、ふたりで自分の札どうしを戦わせられます。">Fuda (札) means card. Somewhere in this town — inside a pot, under a vending machine, in the tall grass — there are word cards. Face something and press A to look. <b>The rarer the card, the harder the Japanese</b>: ★ is a simple word in kana, ★★★★★ is a proverb. Cards are also your moves in battle: pick one, answer what it means, and it hits. Rare cards hit harder — if you really know them. Hidden cards come back every day. MENU → Online battle lets two people fight with their own cards.</p>
   </div>
 </div>
 
@@ -245,6 +246,39 @@ const sfx = {
   rustle: () => [300, 240, 300].forEach((f, i) => beep(f, .05, .03, i * .07))
 };
 let bumpAt = 0;
+
+/* ============ BGM（自前の旋律を矩形波と三角波で鳴らす。音源ファイルなし） ============ */
+const bar = (a, b) => [a, 0, b, 0, a, 0, b, 0], drive = a => [a, a, a + 12, a, a, a, a + 12, a];
+const TUNES = {
+  town: { bpm: 112,
+    lead: [76, 0, 79, 0, 84, 0, 79, 0, 81, 0, 79, 76, 74, 0, 0, 0, 77, 0, 81, 0, 79, 0, 76, 0, 74, 76, 74, 72, 72, 0, 0, 0,
+           79, 0, 76, 0, 72, 0, 76, 0, 77, 0, 81, 0, 84, 0, 81, 0, 79, 0, 77, 76, 74, 0, 76, 0, 72, 0, 0, 0, 0, 0, 0, 0],
+    bass: [].concat(bar(48, 55), bar(45, 52), bar(41, 48), bar(43, 50), bar(48, 55), bar(41, 48), bar(43, 50), bar(48, 55)) },
+  battle: { bpm: 156,
+    lead: [69, 0, 72, 69, 76, 0, 72, 69, 67, 0, 71, 67, 74, 0, 71, 67, 65, 0, 69, 65, 72, 0, 69, 65, 64, 64, 68, 68, 71, 71, 76, 0,
+           81, 0, 76, 0, 72, 76, 81, 0, 79, 0, 74, 0, 71, 74, 79, 0, 77, 0, 72, 0, 69, 72, 77, 0, 76, 74, 72, 71, 68, 71, 76, 0],
+    bass: [].concat(drive(45), drive(43), drive(41), drive(40), drive(45), drive(43), drive(41), drive(40)) }
+};
+let tune = "town", stepI = 0, nextT = 0;
+function setBgm(n) { if (tune === n) return; tune = n; stepI = 0; nextT = 0; }
+function note(m, t, d, type, v) {
+  const o = AC.createOscillator(), g = AC.createGain(); o.type = type; o.frequency.value = 440 * Math.pow(2, (m - 69) / 12);
+  g.gain.setValueAtTime(v, t); g.gain.setValueAtTime(v, t + d * .7); g.gain.linearRampToValueAtTime(0, t + d);
+  o.connect(g).connect(AC.destination); o.start(t); o.stop(t + d + .01);
+}
+setInterval(() => {
+  if (!AC || S.mute || S.bgm === false || document.hidden || AC.state !== "running") { nextT = 0; return; }
+  const T = TUNES[tune], dt = 30 / T.bpm;
+  if (nextT < AC.currentTime) nextT = AC.currentTime + .05;
+  while (nextT < AC.currentTime + .35) {
+    const i = stepI++ % T.lead.length;
+    if (T.lead[i]) note(T.lead[i], nextT, dt * .9, "square", .02);
+    if (T.bass[i]) note(T.bass[i], nextT, dt * .9, "triangle", .055);
+    nextT += dt;
+  }
+}, 120);
+const wake = () => { try { AC = AC || new (window.AudioContext || window.webkitAudioContext)(); if (AC.state === "suspended") AC.resume(); } catch (e) {} };   // 音は最初に触ったときから
+addEventListener("pointerdown", wake); addEventListener("keydown", wake);
 function speak(c) {
   if (S.mute || !window.speechSynthesis) return;
   try {
@@ -432,7 +466,7 @@ const say = (n, ja, en) => tell(`${n.name[lang === "ja" ? 1 : 0]}「${learn() ==
 async function fighter(n) {
   await say(n, n.hi[0], n.hi[1]);
   const k = await choose(L(`Battle ${n.name[0]}?`, `${n.name[1]}と バトルする？`), "", [L("Yes", "はい"), L("No", "いいえ")], { cls: "two", cancel: true });
-  if (k === 0) await battle(n);
+  if (k === 0) { setBgm("battle"); try { await battle(n); } finally { setBgm("town"); } }
 }
 const HINTS = [
   ["自販機の下、見た？", "Did you look under the vending machine?"],
@@ -503,15 +537,123 @@ async function menu() {
   for (;;) {
     const k = await choose(L("MENU", "メニュー"), "", [
       L("Cards", "あつめた札") + "  " + owned().length + "/" + CARDS.length,
+      L("Online battle", "オンライン対戦"),
       L("I'm learning: ", "まなぶ ことば：") + (learn() === "ja" ? "日本語" : "English"),
-      L("Sound: ", "おと：") + (S.mute ? L("off", "なし") : L("on", "あり")),
+      L("Music: ", "BGM：") + (S.bgm === false ? L("off", "なし") : L("on", "あり")),
+      L("Sound: ", "おと：") + (S.mute ? L("all off", "ぜんぶ なし") : L("on", "あり")),
       L("Close", "とじる")], { cancel: true });
     if (k === 0) await collection();
-    else if (k === 1) { S.learn = learn() === "ja" ? "en" : "ja"; save(); }
-    else if (k === 2) { S.mute = !S.mute; save(); }
+    else if (k === 1) return online();
+    else if (k === 2) { S.learn = learn() === "ja" ? "en" : "ja"; save(); }
+    else if (k === 3) { S.bgm = S.bgm === false; save(); }
+    else if (k === 4) { S.mute = !S.mute; save(); }
     else return;
   }
 }
+
+/* ============ オンライン対戦（部屋番号でふたり。ブラウザどうしを直接つなぐ） ============ */
+let NET = null;
+const RC = (new URLSearchParams(location.search).get("r") || "").toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 4);
+const loadPeer = () => window.Peer ? Promise.resolve() : new Promise((res, rej) => { const el = document.createElement("script"); el.src = "/vendor-lib/peerjs.min.js"; el.onload = res; el.onerror = rej; document.head.appendChild(el); });
+function hold(main, sub) { box.hidden = false; boxMain.innerHTML = main; boxSub.innerHTML = sub || ""; opts.innerHTML = ""; optEls = []; more.hidden = true; waitA = null; }
+function netPut(d) { if (!NET) return; if (NET.w) { const f = NET.w; NET.w = null; f(d); } else NET.q.push(d); }
+function netOpen(c) { NET.conn = c; c.on("data", netPut); c.on("close", () => { if (NET && NET.conn === c) netPut({ t: "bye" }); }); }
+const netRecv = () => new Promise(res => { if (NET.q.length) res(NET.q.shift()); else NET.w = res; });
+const netSend = d => { try { NET.conn.send(d); } catch (e) {} };
+function netClose() { if (!NET) return; const n = NET; NET = null; try { n.conn && n.conn.send({ t: "bye" }); } catch (e) {} setTimeout(() => { try { n.peer.destroy(); } catch (e) {} }, 400); }
+const keepAlive = peer => peer.on("disconnected", () => { try { if (NET && NET.peer === peer) peer.reconnect(); } catch (e) {} });   // iPhoneで別アプリに行くと受付との線が切れる
+async function online(code) {
+  hold(L("Connecting…", "つないでいます…"));
+  try { await loadPeer(); } catch (e) { return tell(L("Could not load. Check your connection.", "読み込めませんでした。通信を たしかめてください。")); }
+  try {
+    if (!code) {
+      const k = await choose(L("ONLINE BATTLE", "オンライン対戦"), L("Two players enter the same room code.", "ふたりで 同じ部屋番号に 入る。"),
+        [L("Make a room", "部屋を つくる"), L("Join with a code", "番号で 入る"), L("Back", "もどる")], { cancel: true });
+      if (k === 0) { if (!await hostRoom()) return; }
+      else if (k === 1) { code = await askCode(); if (!code || !await joinRoom(code)) return; }
+      else return;
+    } else if (!await joinRoom(code)) return;
+    setBgm("battle");
+    await duel();
+  } finally { netClose(); setBgm("town"); }
+}
+async function hostRoom() {
+  const AB = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789", code = Array.from({ length: 4 }, () => AB[Math.random() * AB.length | 0]).join("");
+  hold(L("Making a room…", "部屋を つくっています…"));
+  const peer = new Peer("mtj-fuda-" + code, { debug: 0 }); NET = { peer, q: [], w: null };
+  const opened = await new Promise(res => { peer.on("open", () => res(true)); peer.on("error", () => res(false)); setTimeout(() => res(false), 12000); });
+  if (!opened) { await tell(L("Could not make a room. Try again.", "部屋を つくれませんでした。もう一度。")); return false; }
+  keepAlive(peer);
+  const came = new Promise(res => peer.on("connection", c => { if (NET && !NET.conn) { netOpen(c); c.on("open", () => res("c")); } }));
+  let copied = false;
+  for (;;) {
+    const r = await Promise.race([came, choose(L("Room ", "部屋番号 ") + `<b style="letter-spacing:.25em">${code}</b>`,
+      copied ? L("Link copied! Send it to your friend. Waiting…", "リンクを コピーした！ あいてに 送ろう。まっています…") : L("Tell your friend this code. Waiting…", "この番号を あいてに 伝えよう。まっています…"),
+      [L("Copy invite link", "招待リンクを コピー"), L("Cancel", "やめる")], { cancel: true })]);
+    if (r === "c") { if (canCancel) canCancel(); return true; }
+    if (r !== 0) return false;
+    try { await navigator.clipboard.writeText(location.origin + location.pathname + "?r=" + code); copied = true; } catch (e) {}
+  }
+}
+async function askCode() {
+  const p = choose(L("Room code ", "部屋番号 ") + `<input id="rc" maxlength="4" autocomplete="off" autocapitalize="characters" spellcheck="false">`, "", [L("Join", "入る"), L("Back", "もどる")], { cancel: true, cls: "two" });
+  const el = $("#rc"); el.onclick = e => e.stopPropagation(); el.onkeydown = e => { if (e.key === "Enter" && optEls[0]) optEls[0].click(); }; el.focus();
+  const k = await p, v = el.value.toUpperCase().replace(/[^A-Z0-9]/g, "");
+  if (k !== 0) return "";
+  if (v.length !== 4) { await tell(L("The code is 4 letters.", "番号は 4文字です。")); return ""; }
+  return v;
+}
+async function joinRoom(code) {
+  hold(L("Looking for room ", "部屋を さがしています ") + code + "…");
+  const peer = new Peer(undefined, { debug: 0 }); NET = { peer, q: [], w: null };
+  const ok = await new Promise(res => {
+    const t0 = Date.now(); let done = false, c = null;
+    const fin = v => { if (!done) { done = true; res(v); } };
+    const dial = () => { if (done || !NET || NET.peer !== peer) return; c = peer.connect("mtj-fuda-" + code, { reliable: true }); c.on("open", () => { netOpen(c); fin(true); }); };
+    peer.on("open", dial);
+    peer.on("error", e => { if (done) return; if (e && e.type === "peer-unavailable" && Date.now() - t0 < 15000) setTimeout(dial, 3000); else fin(false); });   // 作った人が一瞬はなれているだけのことがある
+    setTimeout(() => fin(false), 25000);
+  });
+  if (!ok) { await tell(L("Room not found.", "部屋が 見つかりません。"), L("Check the code and try again.", "番号を たしかめて もう一度。")); return false; }
+  keepAlive(peer); return true;
+}
+async function duel() {
+  const ids = owned(), got = []; let my = 20, op = 20, round = 0;
+  const R = L("RIVAL", "あいて");
+  full.innerHTML = `<div class="bt"><div class="row e"><div class="info">${R} <span id="en"></span><div class="hp"><i id="eh"></i></div></div><img class="pix" id="ei" src="${MOCHI}" alt=""></div>` +
+    `<div class="row m"><img class="pix" id="mi" src="${MOCHI}" alt="" style="transform:scaleX(-1)"><div class="info">${L("YOU", "じぶん")} <span id="mn"></span><div class="hp"><i id="mh"></i></div></div></div></div>`;
+  full.hidden = false;
+  const bars = () => { $("#eh").style.width = op / 20 * 100 + "%"; $("#mh").style.width = my / 20 * 100 + "%"; $("#mn").textContent = my + "/20"; $("#en").textContent = op + "/20"; };
+  const flash = id => { const el = $(id); el.classList.remove("hit"); void el.offsetWidth; el.classList.add("hit"); };
+  bars(); sfx.get();
+  await tell(L("A rival appeared!", "あいてが あらわれた！"), L("Each turn you both play one card. Answer right and it hits.", "まいターン おたがい 札を1まい。意味を当てれば 当たる。"));
+  for (;;) {
+    round++;
+    const hand = shuffle(ids).slice(0, 3).map(i => CARDS[i]);
+    const k = await choose(L(`Turn ${round} — which card?`, `ターン${round} — どの札を つかう？`), "",
+      hand.map(c => `<span class="hc"><b>${front(c)}</b><small>${"★".repeat(c.s)} ⚔${dmg(c)}</small></span>`).concat([L("Give up", "こうさん")]), { cls: "hand" });
+    if (k === hand.length) { await tell(L("You gave up.", "こうさん した。")); return; }
+    const c = hand[k], ok = await quiz(c);
+    netSend({ t: "play", c: c.i, ok });
+    hold(L("Waiting for your rival…", "あいてを まっています…"));
+    let d; do { d = await netRecv(); } while (d.t !== "play" && d.t !== "bye");
+    if (d.t === "bye") { S.wins.online = (S.wins.online || 0) + 1; save(); await tell(L("Your rival left. You win!", "あいてが いなくなった。あなたの かち！")); return; }
+    const oc = CARDS[d.c] || CARDS[0]; got.push(oc);
+    if (ok) { op = Math.max(0, op - dmg(c)); bars(); flash("#ei"); sfx.hit(); await tell(L(`「${c.j}」 hits! ${dmg(c)} damage.`, `「${c.j}」が 当たった！ ${dmg(c)}ダメージ。`)); }
+    else await tell(L("Your card fizzled…", "じぶんの札は ふはつ…"));
+    await tell(`${R}:「${oc.j}」`, (oc.k !== oc.j ? oc.k + " — " : "") + oc.e);
+    if (d.ok) { my = Math.max(0, my - dmg(oc)); bars(); flash("#mi"); sfx.hit(); await tell(L(`You take ${dmg(oc)} damage.`, `${dmg(oc)}ダメージを うけた。`)); }
+    else await tell(L("…but your rival got it wrong!", "…しかし あいては 意味を まちがえた！"));
+    if (my <= 0 || op <= 0) break;
+  }
+  if (my <= 0 && op <= 0) return tell(L("Both down — it's a draw!", "あいうち — ひきわけ！"));
+  if (my <= 0) return tell(L("You lost…", "まけた…"), L("Learn rarer cards and try again.", "めずらしい札を おぼえて、もう一度。"));
+  S.wins.online = (S.wins.online || 0) + 1; save();
+  await tell(L("You win!", "かち！"));
+  const fresh = got.filter(x => !S.own[x.i]);
+  if (fresh.length) await gain(shuffle(fresh)[0], L("You picked up one of your rival's cards!", "あいての札を 1まい おぼえた！"));
+}
+
 async function collection() {
   full.innerHTML = `<div class="col"><div id="det"></div>` + [1, 2, 3, 4, 5].map(s =>
     `<h3>${"★".repeat(s)}</h3><div class="grid">` + CARDS.filter(c => c.s === s).map(c => S.own[c.i]
@@ -595,14 +737,15 @@ $("#lang").onclick = () => { if (busy) return; lang = lang === "ja" ? "en" : "ja
 /* ============ はじまり ============ */
 applyLang();
 requestAnimationFrame(frame);
-if (!S.intro) run(async () => {
+async function intro() {
   await tell(L("Welcome to Fuda Town.", "ふだの町へ ようこそ。"), L("Word cards are hiding all over this town.", "この町には ことばの札が かくれている。"));
   await tell(L("Face a pot, a sign, a machine… and press A.", "つぼ、かんばん、自販機… むきあって Aを おそう。"), L("Rarer cards are harder words.", "めずらしい札ほど むずかしい ことば。"));
   const st = ["ねこ", "みず", "パン"].map(cardBy);
   st.forEach(c => { S.own[c.i] = (S.own[c.i] || 0) + 1; }); S.intro = true; save(); hud(); sfx.get();
   full.innerHTML = `<div class="show">${st.map(c => cardHTML(c)).join("")}</div>`; full.hidden = false;
   await tell(L("Here are 3 cards to start with.", "さいしょの札を 3まい どうぞ。"), L("Talk to people in town to battle with them.", "町の人に 話しかけると バトルできる。"));
-});
+}
+(async () => { if (!S.intro) await run(intro); if (RC.length === 4) run(() => online(RC)); })();
 </script>
 <script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "a549632ca5ba440a9dbdfd24bcbe11e5"}'></script>
 </body>
