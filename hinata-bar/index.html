@@ -856,7 +856,8 @@ $("#enter").onclick = async () => {
 function setMic() { const b = $("#mic"); b.textContent = !hasMic ? L("🎤 No mic", "🎤 マイクなし") : muted ? L("🔇 Muted", "🔇 ミュート中") : L("🎤 Mic on", "🎤 マイクON"); b.disabled = !hasMic; }
 $("#mic").onclick = () => { muted = !muted; micApply(); setMic(); };
 $("#stand").onclick = () => act({ t: "stand" });
-$("#sayF").onsubmit = e => { e.preventDefault(); const v = $("#say").value.trim(); if (v) { act({ t: "say", text: v, all: chatTab === "a" ? 1 : 0 }); $("#say").value = ""; } };
+$("#sayF").onsubmit = e => { e.preventDefault(); const v = $("#say").value.trim(); if (v) { act({ t: "say", text: v, all: chatTab === "a" ? 1 : 0 }); $("#say").value = ""; } else $("#say").blur(); };   // 何も書かずにEnter＝書き込みをやめて、歩けるようにもどる
+$("#say").addEventListener("keydown", e => { if (e.key === "Escape" && !e.isComposing) $("#say").blur(); });
 $("#tabA").onclick = () => setTab("a"); $("#tabP").onclick = () => setTab("p");
 $("#chatBtn").onclick = () => setChat(!chatOn); $("#sideX").onclick = () => setChat(false);
 $("#idle").onclick = () => { const m = ST.m[myId]; if (m) act({ t: "idle", v: !m.idle }); };
