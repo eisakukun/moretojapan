@@ -106,6 +106,12 @@
   .dpad .u{grid-area:1/2;border-radius:10px 10px 0 0}.dpad .l{grid-area:2/1;border-radius:10px 0 0 10px}
   .dpad .r{grid-area:2/3;border-radius:0 10px 10px 0}.dpad .d{grid-area:3/2;border-radius:0 0 10px 10px}
   @media(hover:hover) and (pointer:fine){.dpad{display:none}}
+  #tbox{position:absolute;left:2%;right:2%;bottom:2%;background:#fff;border:3px solid var(--dk);border-radius:10px;box-shadow:inset 0 0 0 2px #fff,inset 0 0 0 4px #c9bfae;
+    padding:10px 16px 12px;font-size:clamp(14px,2.7vw,20px);line-height:1.4;cursor:pointer;z-index:6}
+  #tbox small{display:block;font-size:.78em;color:var(--sub)}
+  #tbox .more{position:absolute;right:12px;bottom:6px;font-size:.7em;animation:blink 1s steps(2) infinite}
+  .dpad .a{grid-area:2/2;background:#8e2f4c;color:#fff;font-weight:800;border-radius:50%;margin:3px 7px;font-size:15px}
+  .kb{display:none}@media(hover:hover) and (pointer:fine){.kb{display:inline}}
   .bub{border:1px solid var(--line);background:#fff;border-radius:999px;padding:5px 12px;font:inherit;font-size:13px;cursor:pointer;color:var(--ink)}
   select#own{font:inherit;font-size:16px;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:#fff;color:var(--ink);max-width:320px;width:100%}
   .chip.talk::after{content:"♪";color:#e8a23a}
@@ -174,15 +180,16 @@
   <div id="bar">
     <div class="top px"><span class="nm" id="barName"></span><span class="set" id="setTxt"></span><span class="clock" id="clock">--:--</span></div>
     <div class="now idle px" id="now"></div>
-    <div class="stage"><canvas id="cv" width="240" height="208"></canvas><div id="ov" class="px"></div></div>
+    <div class="stage"><canvas id="cv" width="240" height="208"></canvas><div id="ov" class="px"></div><div id="tbox" class="px" hidden></div></div>
     <div class="dpad" id="dpad" hidden>
       <button class="u" data-d="0,-1" aria-label="up">▲</button><button class="l" data-d="-1,0" aria-label="left">◀</button>
-      <button class="r" data-d="1,0" aria-label="right">▶</button><button class="d" data-d="0,1" aria-label="down">▼</button>
+      <button class="a" id="btnA" aria-label="talk / look">A</button><button class="r" data-d="1,0" aria-label="right">▶</button><button class="d" data-d="0,1" aria-label="down">▼</button>
     </div>
     <div class="legend">
       <span><i style="background:var(--F)"></i><span data-en="Left: learning Japanese (F1–F8)" data-ja="左：日本語を話したい人（F1〜F8）">Left: learning Japanese (F1–F8)</span></span>
       <span><i style="background:var(--J)"></i><span data-en="Right: Japanese speakers who want English (J1–J8)" data-ja="右：英語を話したい日本人（J1〜J8）">Right: Japanese speakers who want English (J1–J8)</span></span>
       <span data-en="Bubble = own language ▸ language they want to speak" data-ja="吹き出し＝自分の言葉 ▸ 話したい言葉">Bubble = own language ▸ language they want to speak</span>
+      <span class="kb" data-en="⌨ Arrow keys: walk · Space: talk / look" data-ja="⌨ 矢印キー：歩く ／ スペース：話す・しらべる">⌨ Arrow keys: walk · Space: talk / look</span>
       <button class="bub" id="bub"></button>
       <label class="bgm">🎵 <select id="bgm"></select><input type="range" id="vol" min="5" max="100" step="5" aria-label="BGM volume"></label>
     </div>
@@ -480,18 +487,44 @@ function lost(c) {
 }
 const act = d => { if (isHost) { if (d.t === "say") relay(myId, d.text); else if (d.t === "mv") { apply(myId, d); pushOne(myId); } else { apply(myId, d); push(); } } else if (link && link.open) link.send(d); };
 /* パソコン：矢印キー（またはWASD）で歩く。いすに入るとすわり、テーブルのそばに立つと聞ける */
-document.querySelectorAll("#dpad button").forEach(b => {       // スマホ：押しているあいだ歩きつづける
+document.querySelectorAll("#dpad button[data-d]").forEach(b => {       // スマホ：押しているあいだ歩きつづける
   const [dx, dy] = b.dataset.d.split(",").map(Number); let iv = 0;
   const go = () => act({ t: "mv", dx, dy }), stop = () => { clearInterval(iv); iv = 0; };
   b.addEventListener("pointerdown", e => { e.preventDefault(); stop(); go(); iv = setInterval(go, 190); });
   for (const ev of ["pointerup", "pointercancel", "pointerleave"]) b.addEventListener(ev, stop);
   b.addEventListener("contextmenu", e => e.preventDefault());
 });
+/* 向いている先を「しらべる・話す」。パソコンはスペース、スマホは十字キーのまん中のA */
+const tbox = $("#tbox"); let tboxNext = null;
+function say(ja, en, next) { tbox.hidden = false; tbox.innerHTML = ""; const a = document.createElement("div"), b = document.createElement("small"), c = document.createElement("span"); a.textContent = ja; b.textContent = en; c.className = "more"; c.textContent = "▼"; tbox.append(a, b, c); tboxNext = next || null; }
+function interact() {
+  if (!tbox.hidden) { tbox.hidden = true; const f = tboxNext; tboxNext = null; if (f) f(); return; }
+  const m = ST.m[myId]; if (!m) return;
+  if (m.seat != null) return say(`テーブル${TL[m.seat >> 2]}に すわっている。歩いて出ると 立てる。`, `You're sitting at table ${TL[m.seat >> 2]}. Walk away to stand up.`);
+  const d = m.dir != null ? m.dir : m.idle ? 0 : 1, x = m.x + [0, 0, -1, 1][d], y = m.y + [-1, 1, 0, 0][d], pos = where();
+  const who = Object.keys(pos).find(p => p !== myId && pos[p][0] === x && pos[p][1] === y), t = tableAt(x, y), si = seatAt(x, y);
+  if (who) { const q = ST.m[who], own = (OWN[q.own] || OWN.xx)[1], want = q.side === "F" ? "日本語" : "English";
+    say(`${q.side}${q.num} ${q.name}。${own} を話す人。${want} を話したい。`, `${q.side}${q.num} ${q.name}. Speaks ${own}. Wants to speak ${want === "日本語" ? "Japanese" : "English"}.`); }
+  else if (y === 2 && x >= 6 && x <= 8) say("店長「いらっしゃい。なににする？」", "Master: “Welcome. What'll it be?”", openMenu);
+  else if (y === 2 && x === 12) say(`チップのびん。いま ${ST.tips || 0}。`, `The tip jar. ${ST.tips || 0} so far.`);
+  else if (y === 2) say("カウンターの むこうの たなに、お酒のびんが ならんでいる。", "Bottles line the shelf behind the counter.");
+  else if (t >= 0) { const n = Object.values(ST.m).filter(q => q.seat != null && (q.seat >> 2) === t).length; say(`テーブル${TL[t]}。${n ? n + "人 すわっている" : "まだ だれも すわっていない"}。左が青いいす、右が赤いいす。`, `Table ${TL[t]}. ${n ? n + " seated" : "Nobody seated yet"}. Blue chairs on the left, red on the right.`); }
+  else if (si >= 0) { const mine = ((si & 3) < 2) === (m.side === "F");
+    mine ? say("あいている席。そのまま歩いて入ると すわれる。", "A free seat. Walk into it to sit down.") : say((si & 3) < 2 ? "青いいす。日本語を話したい人の席だ。" : "赤いいす。英語を話したい日本人の席だ。", (si & 3) < 2 ? "A blue chair — for people who want to speak Japanese." : "A red chair — for Japanese speakers who want English."); }
+  else if (y === 3 && (x === 0 || x === 14)) say("鉢植え。日がよく当たって、げんきそうだ。", "A potted plant. It gets plenty of sun and looks happy.");
+  else if (y > 12 && x >= 6 && x <= 8) say("出口のマット。帰るときは、このページを閉じるだけ。", "The doormat. To leave, just close this page.");
+  else if (y > 12 || x < 0 || x > 14) say("かべだ。", "A wall.");
+}
+tbox.onclick = interact;
+$("#btnA").addEventListener("pointerdown", e => { e.preventDefault(); interact(); });
 const MV = { ArrowUp: [0, -1], ArrowDown: [0, 1], ArrowLeft: [-1, 0], ArrowRight: [1, 0], w: [0, -1], s: [0, 1], a: [-1, 0], d: [1, 0] };
 let lastMv = 0;
 addEventListener("keydown", e => {
   if (!joined || e.metaKey || e.ctrlKey || e.altKey || (e.target.closest && e.target.closest("input,select,textarea,dialog"))) return;
+  if (e.key === " " || e.key === "Enter") { e.preventDefault(); if (document.activeElement && document.activeElement !== document.body) document.activeElement.blur(); if (!e.repeat) interact(); return; }
+  if (e.key === "Escape" && !tbox.hidden) { tbox.hidden = true; tboxNext = null; return; }
   const k = MV[e.key.length === 1 ? e.key.toLowerCase() : e.key]; if (!k) return;
+  if (!tbox.hidden) { tbox.hidden = true; tboxNext = null; }
   e.preventDefault(); const now = Date.now(); if (now - lastMv < 150) return; lastMv = now;
   act({ t: "mv", dx: k[0], dy: k[1] });
 });
