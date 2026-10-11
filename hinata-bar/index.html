@@ -66,10 +66,18 @@
   .seat{position:absolute;width:6.667%;height:7.692%;border:0;background:none;padding:0;cursor:pointer}
   .seat.can::after{content:"";position:absolute;inset:8%;border:.5cqw dashed #fff;border-radius:22%;animation:blink 1s steps(2) infinite}
   @keyframes blink{50%{opacity:.25}}
-  .chip{position:absolute;transform:translate(-50%,-100%);font-size:2.5cqw;line-height:1;padding:.3cqw .8cqw;border-radius:.8cqw;color:#fff;white-space:nowrap;border:.3cqw solid var(--dk);pointer-events:none}
-  .chip.F{background:var(--F)}.chip.J{background:var(--J)}
-  .chip.me{outline:.5cqw solid #ffe14a}
-  .chip.talk::after{content:"♪";margin-left:.4cqw;color:#ffe14a}
+  /* 頭の上の吹き出し：番号＋話したい言葉の旗 */
+  .chip{position:absolute;transform:translate(-50%,-100%);display:flex;align-items:center;gap:.5cqw;font-size:2.4cqw;line-height:1;padding:.5cqw .9cqw;
+    border-radius:1.3cqw;background:#fff;white-space:nowrap;border:.35cqw solid var(--dk);pointer-events:none}
+  .chip::before{content:"";position:absolute;left:50%;bottom:-.95cqw;width:1.1cqw;height:1.1cqw;background:inherit;
+    border-right:.35cqw solid var(--dk);border-bottom:.35cqw solid var(--dk);transform:translateX(-50%) rotate(45deg)}
+  .chip.F{color:var(--F)}.chip.J{color:var(--J)}
+  .chip .fl{font-size:2.9cqw;font-family:"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif}
+  .chip.me{background:#fff3b0}
+  .chip.talk::after{content:"♪";color:#e8a23a}
+  .peek{background:#fff7dc;border:1px solid #f0e0a8;border-radius:12px;padding:9px 12px;font-size:14.5px;margin-bottom:14px}
+  .roster{list-style:none;margin:10px 2px 0;padding:0;display:flex;flex-wrap:wrap;gap:6px 14px;font-size:14px}
+  .roster small{color:var(--sub)}
   .tl{position:absolute;transform:translate(-50%,-50%);font-size:4cqw;color:#fff8e0;text-shadow:.3cqw .3cqw 0 #5b3520;pointer-events:none}
   .toast{position:absolute;left:50%;top:44%;transform:translate(-50%,-50%);background:#fff;border:.6cqw solid var(--dk);border-radius:1.6cqw;
     padding:2cqw 4cqw;font-size:4.4cqw;text-align:center;line-height:1.4;box-shadow:0 .8cqw 0 #0003;z-index:5;white-space:nowrap}
@@ -109,7 +117,8 @@
 
   <!-- ============ 入口 ============ -->
   <div class="panel" id="join">
-    <label class="lbl" for="name" data-en="Your name (shown at your table)" data-ja="なまえ（テーブルの人に見えます）">Your name (shown at your table)</label>
+    <div class="peek" id="peek"></div>
+    <label class="lbl" for="name" data-en="Your name (shown in the bar)" data-ja="なまえ（バーの中で見えます）">Your name (shown in the bar)</label>
     <input type="text" id="name" maxlength="14" autocomplete="off">
     <span class="lbl" data-en="Which side are you?" data-ja="どちら側ですか？">Which side are you?</span>
     <div class="sides">
@@ -122,15 +131,17 @@
   </div>
 
   <!-- ============ バー ============ -->
-  <div id="bar" hidden>
+  <div id="bar">
     <div class="top px"><span class="nm" id="barName"></span><span class="set" id="setTxt"></span><span class="clock" id="clock">--:--</span></div>
     <div class="now idle px" id="now"></div>
     <div class="stage"><canvas id="cv" width="240" height="208"></canvas><div id="ov" class="px"></div></div>
     <div class="legend">
       <span><i style="background:var(--F)"></i><span data-en="Left: learning Japanese (F1–F8)" data-ja="左：日本語を話したい人（F1〜F8）">Left: learning Japanese (F1–F8)</span></span>
       <span><i style="background:var(--J)"></i><span data-en="Right: Japanese speakers who want English (J1–J8)" data-ja="右：英語を話したい日本人（J1〜J8）">Right: Japanese speakers who want English (J1–J8)</span></span>
+      <span data-en="Flag in the bubble = the language that person wants to speak" data-ja="吹き出しの旗＝その人が話したい言葉">Flag in the bubble = the language that person wants to speak</span>
     </div>
-    <div class="panel">
+    <ul class="roster" id="roster"></ul>
+    <div class="panel" id="ctl" hidden>
       <div class="mine">
         <div class="who" id="who"></div>
         <button class="btn sm ghost" id="mic"></button>
@@ -173,7 +184,7 @@ function applyLang() {
   document.documentElement.lang = lang;
   document.querySelectorAll("[data-en]").forEach(el => { el.innerHTML = el.dataset[lang]; });
   $("#lang").textContent = lang === "ja" ? "English" : "日本語";
-  if (joined) onState();
+  onState();
 }
 const TOPICS = [
   ["What did you eat today?", "きょう、何を食べた？"], ["A place you want to go next", "つぎに行きたい場所"],
@@ -241,7 +252,7 @@ const hash = s => { let h = 7; for (const c of s) h = (h * 31 + c.charCodeAt(0))
 /* ============ 状態 ============ */
 let ST = { m: {}, sess: null, fin: 0 };          // m: {pid:{name,side,num,seat}}  sess:{mins,sets,set,endAt,by,topics}
 let me = null, myId = "", hub = null, link = null, isHost = false, joined = false, linking = false, claiming = false, dead = false;
-let myName = "", mySide = "", prevSeat = null, prevSet = 0, prevFin = 0, toastUntil = 0, toastHTML = "";
+let peeked = false, myName = "", mySide = "", prevSeat = null, prevSet = 0, prevFin = 0, toastUntil = 0, toastHTML = "";
 const conns = {}, seen = {};                     // 店の側：客の線と、最後に声がかかった時刻
 const speaking = {};
 const order = () => Object.keys(ST.m).sort();
@@ -292,6 +303,7 @@ function onGuest(c) {
     if (!d || typeof d !== "object") return;
     seen[c.peer] = Date.now();
     if (d.t === "hb") return;
+    if (d.t === "watch") { conns[c.peer] = c; push(); return; }
     if (d.t === "join") {
       conns[c.peer] = c;
       if (!apply(c.peer, d)) { try { c.send({ t: "full" }); } catch (e) {} delete conns[c.peer]; setTimeout(() => c.close(), 500); return; }
@@ -307,6 +319,7 @@ setInterval(() => {
   if (now - hostSince > 12000) for (const p of Object.keys(ST.m)) {       // 線が切れたままの人は席をあける
     if (p !== myId && (!conns[p] || now - (seen[p] || 0) > 20000)) { delete ST.m[p]; delete conns[p]; ch = true; }
   }
+  for (const p of Object.keys(conns)) if (!ST.m[p] && now - (seen[p] || 0) > 20000) { try { conns[p].close(); } catch (e) {} delete conns[p]; }
   if (ST.sess && now >= ST.sess.endAt) {
     if (ST.sess.set < ST.sess.sets) { shuffleSeats(); ST.sess.set++; ST.sess.endAt = now + ST.sess.mins * UNIT; ST.sess.topics = pickTopics(); }
     else { ST.sess = null; ST.fin = now; }
@@ -315,7 +328,7 @@ setInterval(() => {
   if (ch || now - lastPush > 7000) push();
 }, 500);
 function tryClaim() {
-  if (claiming || isHost || dead) return; claiming = true;
+  if (claiming || isHost || dead || !joined) return; claiming = true;
   const h = new Peer(HUB, { debug: 0 });
   h.on("open", () => {
     claiming = false; hub = h; isHost = true; hostSince = Date.now();
@@ -333,13 +346,14 @@ function connectHub() {
   if (isHost || linking || claiming || dead || (link && link.open)) return;
   linking = true;
   const c = me.connect(HUB, { reliable: true }); let done = false;
-  const fail = () => { if (done) return; done = true; linking = false; linkTry = null; clearTimeout(linkTimer); try { c.close(); } catch (e) {} tryClaim(); };
+  const fail = () => { if (done) return; done = true; linking = false; linkTry = null; clearTimeout(linkTimer); try { c.close(); } catch (e) {}
+    if (joined) tryClaim(); else { peeked = true; ST = { m: {}, sess: null, fin: 0 }; onState(); } };   // 入る前は店にならない（のぞくだけ）
   linkTry = fail; linkTimer = setTimeout(fail, 7000);
-  c.on("open", () => { if (done) return; done = true; linking = false; linkTry = null; clearTimeout(linkTimer); link = c; lastSt = Date.now(); c.send({ t: "join", name: myName, side: mySide }); });
+  c.on("open", () => { if (done) return; done = true; linking = false; linkTry = null; clearTimeout(linkTimer); link = c; lastSt = Date.now(); c.send(joined ? { t: "join", name: myName, side: mySide } : { t: "watch" }); });
   c.on("data", d => {
     if (!d) return;
     if (d.t === "full") { dead = true; $("#bmsg").className = "msg err"; $("#bmsg").textContent = L("Your side of the bar is full (8). Please try again later.", "そちら側の席（8人）がいっぱいです。あとでまた来てください。"); return; }
-    if (d.t === "st") { lastSt = Date.now(); ST = d.st; if (ST.sess) ST.sess.endAt = Date.now() + ST.sess.remain; onState(); }
+    if (d.t === "st") { lastSt = Date.now(); peeked = true; ST = d.st; if (ST.sess) ST.sess.endAt = Date.now() + ST.sess.remain; onState(); }
   });
   c.on("close", () => lost(c));
 }
@@ -347,13 +361,13 @@ let lastSt = 0;
 function lost(c) {
   if (link !== c) return; link = null; try { c.close(); } catch (e) {}
   if (dead) return;
-  const r = order().indexOf(myId);                      // 店が消えたら、名前の若い順にだれかが店を引きつぐ
+  const r = joined ? order().indexOf(myId) : 0;         // 店が消えたら、名前の若い順にだれかが店を引きつぐ
   setTimeout(connectHub, 300 + Math.max(0, r) * 1200);
 }
 const act = d => { if (isHost) { apply(myId, d); push(); } else if (link && link.open) link.send(d); };
 setInterval(() => {
   if (link && link.open) { if (Date.now() - lastSt > 16000) lost(link); else link.send({ t: "hb" }); }   // 店は7秒おきに声をかける。16秒しんとしたら店が消えたとみなす
-  else if (joined && !isHost) connectHub();
+  else if (myId && !isHost) connectHub();
 }, 5000);
 
 /* ============ 声（同じテーブルの人とだけ線を張る） ============ */
@@ -414,14 +428,21 @@ function drawOv() {
     ov.appendChild(b);
   }
   for (const p in pos) {
-    const x = ST.m[p], c = document.createElement("span"); c.className = "chip " + x.side + (p === myId ? " me" : ""); c.dataset.p = p; c.textContent = x.side + x.num;
-    c.style.left = (pos[p][0] * 16 + 8) / W * 100 + "%"; c.style.top = (pos[p][1] * 16 - 5) / H * 100 + "%"; ov.appendChild(c);
+    const x = ST.m[p], c = document.createElement("span"); c.className = "chip " + x.side + (p === myId ? " me" : ""); c.dataset.p = p; c.innerHTML = `<b>${x.side}${x.num}</b><span class="fl">${x.side === "F" ? "🇯🇵" : "🇬🇧"}</span>`;
+    c.style.left = (pos[p][0] * 16 + 8) / W * 100 + "%"; c.style.top = (pos[p][1] * 16 - 8) / H * 100 + "%"; ov.appendChild(c);
   }
   if (Date.now() < toastUntil) { const t = document.createElement("div"); t.className = "toast"; t.innerHTML = toastHTML; ov.appendChild(t); }
 }
 function onState() {
   const m = ST.m[myId], n = Object.keys(ST.m).length;
   $("#barName").textContent = L("Hinata Bar #", "ひなたバー ♯") + (ROOM !== "1" ? ROOM : "") + "　" + n + "/16";
+  const all = Object.values(ST.m).sort((a, b) => a.side === b.side ? a.num - b.num : a.side < b.side ? -1 : 1), nf = all.filter(x => x.side === "F").length;
+  $("#peek").textContent = !peeked ? L("Peeking into the bar…", "バーを のぞいています…")
+    : !n ? L("Nobody is here yet. Be the first one in.", "いまは だれもいません。最初のひとりになろう。")
+    : L(`In the bar now: ${n} — ${nf} learning Japanese, ${n - nf} Japanese speakers.`, `いま ${n}人：日本語を話したい人 ${nf}人／英語を話したい日本人 ${n - nf}人。`)
+      + (ST.sess ? L(` Timer running (set ${ST.sess.set}/${ST.sess.sets}).`, ` タイマー進行中（セット ${ST.sess.set}/${ST.sess.sets}）。`) : "");
+  const ro = $("#roster"); ro.innerHTML = "";
+  all.forEach(x => { const li = document.createElement("li"); li.innerHTML = `<span class="tag ${x.side}">${x.side}${x.num}</span>`; li.append(x.name + " "); const sm = document.createElement("small"); sm.textContent = x.seat != null ? TL[x.seat >> 2] : L("standing", "立ち"); li.appendChild(sm); ro.appendChild(li); });
   if (m) {
     if (ST.sess && prevSet && ST.sess.set !== prevSet && m.seat != null) {
       toast(L("Seat change!<br>You → Table ", "席替え！<br>あなたは テーブル ") + TL[m.seat >> 2]); [660, 880, 1100].forEach((f, i) => beep(f, .12, i * .12));
@@ -462,24 +483,27 @@ function frame(t) {
 
 /* ============ 入口・ボタン ============ */
 try { $("#name").value = localStorage.getItem("mtj-bar-name") || (JSON.parse(localStorage.getItem("mj-me") || "{}").name || ""); } catch (e) {}
-const ready = () => { $("#enter").disabled = !(mySide && $("#name").value.trim()); };
+const ready = () => { $("#enter").disabled = !(mySide && myId && $("#name").value.trim()); };
 $("#name").oninput = ready;
 document.querySelectorAll(".side").forEach(b => b.onclick = () => { mySide = b.dataset.side; document.querySelectorAll(".side").forEach(x => x.classList.toggle("on", x === b)); ready(); });
+/* ページを開いた時点で、のぞき窓として店につなぐ（入る前から中が見える） */
+me = new Peer(undefined, { debug: 0 });
+me.on("open", id => { myId = id; ready(); connectHub(); });
+me.on("call", c => { if (mates().includes(c.peer)) { c.answer(stream); wire(c.peer, c); } else { pending[c.peer] = c; setTimeout(() => { if (pending[c.peer] === c) { delete pending[c.peer]; try { c.close(); } catch (e) {} } }, 9000); } });
+me.on("disconnected", () => { try { me.reconnect(); } catch (e) {} });
+me.on("error", e => {
+  if (e && e.type === "peer-unavailable" && String(e.message || "").includes(HUB) && linkTry) linkTry();   // 店がまだ無い
+  else if (!myId) { $("#jmsg").className = "msg err"; $("#jmsg").textContent = L("Could not connect. Please reload and try again.", "つながりませんでした。読み込み直してください。"); }
+});
+requestAnimationFrame(frame);
 $("#enter").onclick = async () => {
   myName = $("#name").value.trim().slice(0, 14); $("#enter").disabled = true;
   try { localStorage.setItem("mtj-bar-name", myName); } catch (e) {}
   $("#jmsg").textContent = L("Opening the door…", "ドアを あけています…");
   await getStream();
-  me = new Peer(undefined, { debug: 0 });
-  me.on("open", id => {
-    myId = id; joined = true; $("#join").hidden = true; $("#bar").hidden = false; setMic(); onState(); requestAnimationFrame(frame); connectHub();
-  });
-  me.on("call", c => { if (mates().includes(c.peer)) { c.answer(stream); wire(c.peer, c); } else { pending[c.peer] = c; setTimeout(() => { if (pending[c.peer] === c) { delete pending[c.peer]; try { c.close(); } catch (e) {} } }, 9000); } });
-  me.on("disconnected", () => { try { me.reconnect(); } catch (e) {} });
-  me.on("error", e => {
-    if (e && e.type === "peer-unavailable" && String(e.message || "").includes(HUB) && linkTry) linkTry();   // 店がまだ無い→自分が店になる
-    else if (!joined) { $("#jmsg").className = "msg err"; $("#jmsg").textContent = L("Could not connect. Please reload and try again.", "つながりませんでした。読み込み直してください。"); }
-  });
+  joined = true; $("#join").hidden = true; $("#ctl").hidden = false; setMic();
+  if (link && link.open) link.send({ t: "join", name: myName, side: mySide }); else connectHub();   // だれも居なければ、自分のタブが店になる
+  onState();
 };
 function setMic() { const b = $("#mic"); b.textContent = !hasMic ? L("🎤 No mic", "🎤 マイクなし") : muted ? L("🔇 Muted", "🔇 ミュート中") : L("🎤 Mic on", "🎤 マイクON"); b.disabled = !hasMic; }
 $("#mic").onclick = () => { muted = !muted; stream.getAudioTracks().forEach(t => t.enabled = !muted); setMic(); };
