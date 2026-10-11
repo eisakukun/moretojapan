@@ -64,7 +64,7 @@
   .now.en{background:#cfe3ff;color:#123a73}
   .now.idle{background:#efe9dc;color:var(--sub)}
   .stage{position:relative;aspect-ratio:15/13;background:#d9a066;border:4px solid var(--dk);border-top:0;border-radius:0 0 10px 10px;overflow:hidden;user-select:none;-webkit-user-select:none}
-  canvas{position:absolute;inset:0;width:100%;height:100%;image-rendering:pixelated;image-rendering:crisp-edges}
+  .stage canvas{position:absolute;inset:0;width:100%;height:100%;image-rendering:pixelated;image-rendering:crisp-edges}
   #ov{position:absolute;inset:0;container-type:inline-size}
   .seat{position:absolute;width:6.667%;height:7.692%;border:0;background:none;padding:0;cursor:pointer}
   .seat.can::after{content:"";position:absolute;inset:8%;border:.5cqw dashed #fff;border-radius:22%;animation:blink 1s steps(2) infinite}
@@ -112,6 +112,14 @@
   #tbox .more{position:absolute;right:12px;bottom:6px;font-size:.7em;animation:blink 1s steps(2) infinite}
   .dpad .a{grid-area:2/2;background:#8e2f4c;color:#fff;font-weight:800;border-radius:50%;margin:3px 7px;font-size:15px}
   .kb{display:none}@media(hover:hover) and (pointer:fine){.kb{display:inline}}
+  .avp{image-rendering:pixelated;image-rendering:crisp-edges;width:64px;height:76px;background:#d9a066;border:2px solid var(--dk);border-radius:10px}
+  .lookrow{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+  .lk{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 4px}
+  .lk button{border:2px solid var(--line);background:#fff;border-radius:10px;padding:3px;cursor:pointer;line-height:0}
+  .lk button.on{border-color:var(--ai);box-shadow:0 0 0 2px #22406e33}
+  .lk canvas{image-rendering:pixelated;image-rendering:crisp-edges;width:40px;height:48px;background:#d9a066;border-radius:6px}
+  .lk i{display:block;width:32px;height:32px;border-radius:6px;border:1px solid #0002}
+  #look .big{display:flex;justify-content:center;margin-bottom:6px}#look .avp{width:96px;height:114px}
   .bub{border:1px solid var(--line);background:#fff;border-radius:999px;padding:5px 12px;font:inherit;font-size:13px;cursor:pointer;color:var(--ink)}
   select#own{font:inherit;font-size:16px;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:#fff;color:var(--ink);max-width:320px;width:100%}
   .chip.talk::after{content:"♪";color:#e8a23a}
@@ -169,6 +177,10 @@
       <label class="lbl" for="own" data-en="Your own language (shown above your head)" data-ja="自分の言葉（頭の上に出ます）">Your own language (shown above your head)</label>
       <select id="own"></select>
     </div>
+    <span class="lbl" data-en="Your look (optional — skip it and you get a random one)" data-ja="見た目（えらばなくてもOK。そのときはランダムです）">Your look (optional — skip it and you get a random one)</span>
+    <div class="lookrow"><canvas class="avp" id="avJoin" width="16" height="19"></canvas>
+      <button class="btn sm ghost" id="lookBtn" type="button" data-en="👤 Choose my look" data-ja="👤 見た目をえらぶ">👤 Choose my look</button>
+      <button class="btn sm ghost" id="diceBtn" type="button" data-en="🎲 Another random" data-ja="🎲 ほかのランダム">🎲 Another random</button></div>
     <p class="hint" data-en="Above your head everyone sees: your language ▸ the language you want to speak. You can hide the bubbles on your own screen, but you can't hide yours from other people." data-ja="頭の上に「自分の言葉 ▸ 話したい言葉」が出ます。吹き出しは自分の画面では消せますが、自分のぶんを相手から見えなくすることはできません。">Above your head everyone sees: your language ▸ the language you want to speak. You can hide the bubbles on your own screen, but you can't hide yours from other people.</p>
     <p class="hint" data-en="Your browser will ask for the microphone. Without it you can still come in and listen." data-ja="このあとマイクの許可を聞かれます。許可しなくても、入って聞くことはできます。">Your browser will ask for the microphone. Without it you can still come in and listen.</p>
     <label class="chk"><input type="checkbox" id="idle0"><span data-en="Don't join the tables yet — just hang out. (Chat with the master at the counter, walk up to a table to listen and type, and talk by voice with other people who are hanging out — the closer, the louder. The tables can't hear you and you are not shuffled. Sit in any free seat to join.)" data-ja="まだテーブルには参加せず、ぼーっとする。（カウンターで店長と話したり、テーブルに近づいて聞いたり文字で話したり、ぼーっとしている人どうしで声で話せます（近いほど大きく聞こえます）。テーブルには声が届かず、席替えにも入りません。空いている席にすわれば参加できます）">Don't join the tables yet — just hang out. (Chat with the master at the counter, walk up to a table to listen and type, and talk by voice with other people who are hanging out — the closer, the louder. The tables can't hear you and you are not shuffled. Sit in any free seat to join.)</span></label>
@@ -198,6 +210,7 @@
       <div class="mine">
         <div class="who" id="who"></div>
         <button class="btn sm ghost" id="mic"></button>
+        <button class="btn sm ghost" id="look2" data-en="👤 Look" data-ja="👤 見た目">👤 Look</button>
         <button class="btn sm ghost" id="ord" data-en="🍶 Order" data-ja="🍶 注文する">🍶 Order</button>
         <button class="btn sm ghost" id="idle"></button>
         <button class="btn sm ghost" id="stand" data-en="Stand up" data-ja="席を立つ">Stand up</button>
@@ -225,6 +238,7 @@
   </dialog>
 </div>
 <dialog id="order"><div id="ordBody"></div></dialog>
+<dialog id="look"><div id="lookBody"></div></dialog>
 <div id="audios" hidden></div>
 
 <script src="/vendor-lib/peerjs.min.js"></script>
@@ -276,6 +290,38 @@ const W = 240, H = 208, TL = "ABCD";
 const TABLES = [[3, 4], [10, 4], [3, 8], [10, 8]];
 const seatPos = i => { const [tx, ty] = TABLES[i >> 2], s = i & 3; return [s < 2 ? tx - 1 : tx + 2, ty + (s & 1)]; };
 const STANDS = []; for (let x = 1; x <= 13; x++) STANDS.push([x, 11]); STANDS.push([7, 6], [7, 7], [7, 10]);
+/* 見た目は5つの数字：[はだ, かみの色, かみがた, ふく, かざり]。えらばなければランダム */
+const SKIN = ["#fbe3c8", "#f6d2ae", "#eab98c", "#c98d5e", "#8d5a3a", "#5c3a26"],
+  HAIR = ["#2a2030", "#5b3520", "#b5743c", "#e8c060", "#a03a2c", "#9a9fa8", "#ececf2", "#3f7fd9"],
+  SHIRT = ["#3fa34d", "#e8a23a", "#9b59b6", "#f1f1e6", "#2aa7a0", "#e06a9a", "#5a6acf", "#c8c43a"];
+const AVN = [SKIN.length, HAIR.length, 5, SHIRT.length, 4];
+const okAv = a => Array.isArray(a) && a.length === 5 && a.every((v, i) => Number.isInteger(v) && v >= 0 && v < AVN[i]);
+const rnd = n => Math.random() * n | 0;
+const randAv = () => [rnd(6), rnd(8) < 6 ? rnd(5) : 5 + rnd(3), rnd(5), rnd(8), Math.random() < .7 ? 0 : 1 + rnd(3)];
+function person(g, ox, oy, dir, av) {
+  const R = (c, x, y, w, h) => { g.fillStyle = c; g.fillRect(ox + x, oy + y, w, h); }, D = "#2a2030";
+  const skin = SKIN[av[0]], hair = HAIR[av[1]], hs = av[2], shirt = SHIRT[av[3]], ac = av[4];
+  if (hs === 4) { R(D, 2, -1, 12, 7); R(hair, 3, 0, 10, 6); }                                  // ふわっと大きい髪
+  R(D, 4, 0, 8, 1); R(D, 3, 1, 10, 8); R(hair, 4, 1, 8, 3); R(hair, 4, 4, 8, 4);
+  if (hs === 3) { R(skin, 4, 2, 8, 2); if (dir === 0) R(skin, 4, 4, 8, 4); }                    // ぼうず
+  if (dir === 1) { R(skin, 4, 4, 8, 4); R(D, 6, 5, 1, 2); R(D, 9, 5, 1, 2); }
+  else if (dir === 2) { R(skin, 4, 4, 6, 4); R(D, 5, 5, 1, 2); }
+  else if (dir === 3) { R(skin, 6, 4, 6, 4); R(D, 10, 5, 1, 2); }
+  if (hs === 2) { R(D, 6, -2, 4, 2); R(hair, 7, -1, 2, 1); }                                    // おだんご
+  R(D, 4, 9, 8, 5); R(shirt, 5, 9, 6, 4); R(skin, 3, 10, 1, 2); R(skin, 12, 10, 1, 2);
+  R("#34405a", 5, 14, 2, 2); R("#34405a", 9, 14, 2, 2);
+  if (hs === 1) { R(D, 2, 4, 1, 7); R(D, 13, 4, 1, 7); R(hair, 3, 3, 1, 8); R(hair, 12, 3, 1, 8); if (dir === 0) R(hair, 4, 8, 8, 3); }   // ロング
+  if (ac === 1) {                                                                               // めがね
+    if (dir === 1) { R("#bfe3ff", 5, 5, 2, 2); R("#bfe3ff", 9, 5, 2, 2); R(D, 7, 5, 2, 1); R(D, 6, 6, 1, 1); R(D, 9, 6, 1, 1); }
+    else if (dir === 2) { R("#bfe3ff", 4, 5, 2, 2); R(D, 5, 6, 1, 1); R(D, 6, 5, 4, 1); }
+    else if (dir === 3) { R("#bfe3ff", 10, 5, 2, 2); R(D, 10, 6, 1, 1); R(D, 6, 5, 4, 1); }
+  } else if (ac === 2) {                                                                        // ぼうし（服と同じ色）
+    R(D, 3, -1, 10, 1); R(D, 3, 0, 10, 3); R(shirt, 4, 0, 8, 3);
+    if (dir === 1) R(D, 3, 3, 10, 1); else if (dir === 2) R(D, 1, 3, 6, 1); else if (dir === 3) R(D, 9, 3, 6, 1);
+  } else if (ac === 3) {                                                                        // ひげ
+    if (dir === 1) { R(hair, 5, 7, 6, 1); R(hair, 4, 6, 1, 2); R(hair, 11, 6, 1, 2); } else if (dir === 2) R(hair, 4, 7, 4, 1); else if (dir === 3) R(hair, 8, 7, 4, 1);
+  }
+}
 const bg = document.createElement("canvas"); bg.width = W; bg.height = H;
 (function paint() {
   const g = bg.getContext("2d"), R = (c, x, y, w, h) => { g.fillStyle = c; g.fillRect(x, y, w, h); };
@@ -292,7 +338,7 @@ const bg = document.createElement("canvas"); bg.width = W; bg.height = H;
   const cols = ["#d9534f", "#3fa34d", "#e8a23a", "#3f7fd9", "#9b59b6", "#f1f1e6"];
   for (const sx of [14, 150]) { R("#8a5a3c", sx, 21, 76, 3); R("#5b3520", sx, 24, 76, 1); for (let i = 0; i < 9; i++) { const x = sx + 3 + i * 8, c = cols[(i * 5 + sx) % 6]; R("#2a2030", x, 9, 5, 12); R(c, x + 1, 12, 3, 8); R(c, x + 1, 9, 3, 2); R("#fff", x + 1, 13, 1, 3); } }
   // マスター（カウンターの向こう）
-  person(g, 112, 20, 1, "#f2c9a0", "#3a2a20", "#f1f1e6");
+  person(g, 112, 20, 1, [1, 1, 0, 3, 0]);
   // カウンター
   R("#5b3520", 24, 32, 192, 16); R("#c98a4b", 25, 33, 190, 6); R("#e3a868", 25, 33, 190, 1); R("#8a5a3c", 25, 40, 190, 7); for (let x = 40; x < 216; x += 24) R("#5b3520", x, 40, 1, 7);
   R("#f1f1e6", 60, 30, 4, 4); R("#e8a23a", 170, 29, 3, 5); R("#8fd3ff", 150, 30, 3, 4);
@@ -311,23 +357,12 @@ const bg = document.createElement("canvas"); bg.width = W; bg.height = H;
     R("#f1f1e6", X + 5, Y + 7, 3, 4); R("#e8a23a", X + 5, Y + 8, 3, 3); R("#f1f1e6", X + 24, Y + 16, 3, 4); R("#8fd3ff", X + 24, Y + 17, 3, 3);
   });
 })();
-function person(g, ox, oy, dir, skin, hair, shirt) {
-  const R = (c, x, y, w, h) => { g.fillStyle = c; g.fillRect(ox + x, oy + y, w, h); }, D = "#2a2030";
-  R(D, 4, 0, 8, 1); R(D, 3, 1, 10, 8); R(hair, 4, 1, 8, 3); R(hair, 4, 4, 8, 4);
-  if (dir === 1) { R(skin, 4, 4, 8, 4); R(D, 6, 5, 1, 2); R(D, 9, 5, 1, 2); }
-  else if (dir === 2) { R(skin, 4, 4, 6, 4); R(D, 5, 5, 1, 2); }
-  else if (dir === 3) { R(skin, 6, 4, 6, 4); R(D, 10, 5, 1, 2); }
-  R(D, 4, 9, 8, 5); R(shirt, 5, 9, 6, 4); R(skin, 3, 10, 1, 2); R(skin, 12, 10, 1, 2);
-  R("#34405a", 5, 14, 2, 2); R("#34405a", 9, 14, 2, 2);
-}
-const SKIN = ["#f6d2ae", "#eab98c", "#c98d5e", "#8d5a3a"], HAIR = ["#2a2030", "#5b3520", "#b5743c", "#e8c060", "#a03a2c", "#7a7f8a"],
-  SHIRT = ["#3fa34d", "#e8a23a", "#9b59b6", "#f1f1e6", "#2aa7a0", "#e06a9a", "#5a6acf", "#c8c43a"];
 const hash = s => { let h = 7; for (const c of s) h = (h * 31 + c.charCodeAt(0)) >>> 0; return h; };
 
 /* ============ 状態 ============ */
 let ST = { m: {}, sess: null, fin: 0 };          // m: {pid:{name,side,num,seat}}  sess:{mins,sets,set,endAt,by,topics}
 let me = null, myId = "", hub = null, link = null, isHost = false, joined = false, linking = false, claiming = false, dead = false;
-const joinMsg = () => ({ t: "join", name: myName, side: mySide, idle: $("#idle0").checked, own: mySide === "J" ? "ja" : myOwn });
+const joinMsg = () => ({ t: "join", name: myName, side: mySide, av: myAv, idle: $("#idle0").checked, own: mySide === "J" ? "ja" : myOwn });
 let peeked = false, myName = "", mySide = "", myOwn = "en", prevSeat = null, prevSet = 0, prevFin = 0, toastUntil = 0, toastHTML = "";
 const conns = {}, seen = {};                     // 店の側：客の線と、最後に声がかかった時刻
 const speaking = {};
@@ -361,9 +396,10 @@ function apply(pid, d) {
     const side = d.side === "J" ? "J" : "F", used = Object.values(ST.m).filter(x => x.side === side).map(x => x.num);
     let num = 1; while (used.includes(num)) num++;
     if (num > 8) return false;
-    ST.m[pid] = { name: String(d.name || "").replace(/[<>]/g, "").slice(0, 14) || "?", side, num, seat: null, idle: !!d.idle, own: side === "J" ? "ja" : OWN[d.own] && d.own !== "ja" ? d.own : "xx" };
+    ST.m[pid] = { name: String(d.name || "").replace(/[<>]/g, "").slice(0, 14) || "?", side, num, seat: null, idle: !!d.idle, av: okAv(d.av) ? d.av : randAv(), own: side === "J" ? "ja" : OWN[d.own] && d.own !== "ja" ? d.own : "xx" };
     place(pid, d.idle ? COUNTER.concat(STANDS) : STANDS.concat(COUNTER)); fixNear(ST.m[pid]);
   } else if (!m) return true;
+  else if (d.t === "av") { if (okAv(d.av)) m.av = d.av; }
   else if (d.t === "mv") {                                    // 矢印キーで1マス歩く
     const dx = Math.sign(d.dx | 0), dy = dx ? 0 : Math.sign(d.dy | 0); if (!dx && !dy) return true;
     const [cx, cy] = m.seat != null ? seatPos(m.seat) : [m.x, m.y], x = cx + dx, y = cy + dy, si = seatAt(x, y);
@@ -735,7 +771,7 @@ function frame(t) {
   for (const p in disp) if (!tgt[p]) delete disp[p];
   const ids = Object.keys(pos).sort((a, b) => pos[a][1] - pos[b][1]);
   for (const p of ids) { const x = ST.m[p], h = hash(p), bob = speaking[p] ? (t / 150 | 0) % 2 : 0;
-    person(cvg, Math.round(pos[p][0] * 16), Math.round(pos[p][1] * 16) - 4 - bob, x.seat == null ? (x.dir != null ? x.dir : x.idle ? 0 : 1) : (x.seat & 3) < 2 ? 3 : 2, SKIN[h % 4], HAIR[(h >> 3) % 6], SHIRT[(h >> 7) % 8]);
+    person(cvg, Math.round(pos[p][0] * 16), Math.round(pos[p][1] * 16) - 4 - bob, x.seat == null ? (x.dir != null ? x.dir : x.idle ? 0 : 1) : (x.seat & 3) < 2 ? 3 : 2, okAv(x.av) ? x.av : [h % 6, (h >> 3) % 5, 0, (h >> 7) % 8, 0]);
     const dr = DRINKS[x.drink]; if (dr) { const gx = Math.round(pos[p][0] * 16) + ((x.seat != null && (x.seat & 3) >= 2) ? -1 : 13), gy = Math.round(pos[p][1] * 16) + 4 - bob;
       cvg.fillStyle = "#2a2030"; cvg.fillRect(gx, gy, 5, 7); cvg.fillStyle = dr.c; cvg.fillRect(gx + 1, gy + 1, 3, 5); if (dr.foam) { cvg.fillStyle = "#fff"; cvg.fillRect(gx + 1, gy + 1, 3, 2); } } }
   requestAnimationFrame(frame);
@@ -783,6 +819,33 @@ $("#stand").onclick = () => act({ t: "stand" });
 $("#sayF").onsubmit = e => { e.preventDefault(); const v = $("#say").value.trim(); if (v) { act({ t: "say", text: v }); $("#say").value = ""; } };
 $("#idle").onclick = () => { const m = ST.m[myId]; if (m) act({ t: "idle", v: !m.idle }); };
 $("#stop").onclick = () => act({ t: "stop" });
+/* 見た目。4つの型から選ぶか、こまかく変える。何もしなければランダムのまま入る */
+let myAv = randAv(); try { const a = JSON.parse(localStorage.getItem("mtj-bar-av")); if (okAv(a)) myAv = a; } catch (e) {}
+const PRESET = [[1, 0, 0, 6, 0], [0, 3, 0, 4, 0], [4, 0, 0, 1, 0], [3, 1, 1, 5, 0]];
+function drawAv(cv, av, dir) { const g = cv.getContext("2d"); g.clearRect(0, 0, 16, 19); person(g, 0, 3, dir == null ? 1 : dir, av); }
+function setAv(av, keep) {
+  myAv = av.slice(); drawAv($("#avJoin"), myAv);
+  if (keep) { try { localStorage.setItem("mtj-bar-av", JSON.stringify(myAv)); } catch (e) {} }
+  if (joined) act({ t: "av", av: myAv });
+  if ($("#look").open) lookUI();
+}
+function lookUI() {
+  const b = $("#lookBody"); b.innerHTML = `<div class="big"><canvas class="avp" width="16" height="19"></canvas></div>`; drawAv(b.querySelector("canvas"), myAv);
+  const row = (title, items) => { const l = document.createElement("span"); l.className = "lbl"; l.textContent = title; const r = document.createElement("div"); r.className = "lk"; items.forEach(([el, on, f]) => { const bt = document.createElement("button"); bt.type = "button"; if (on) bt.className = "on"; bt.appendChild(el); bt.onclick = f; r.appendChild(bt); }); b.append(l, r); };
+  const cv = av => { const c = document.createElement("canvas"); c.width = 16; c.height = 19; drawAv(c, av); return c; };
+  const sw = c => { const i = document.createElement("i"); i.style.background = c; return i; };
+  const set = (i, v) => () => { const a = myAv.slice(); a[i] = v; setAv(a, true); };
+  row(L("Start from a type", "型からえらぶ"), PRESET.map(pz => [cv(pz), false, () => setAv(pz, true)]).concat([[Object.assign(document.createElement("i"), { textContent: "🎲", style: "display:grid;place-items:center;font-size:20px;line-height:1;width:40px;height:48px;border:0" }), false, () => setAv(randAv(), true)]]));
+  row(L("Skin", "はだ"), SKIN.map((c, v) => [sw(c), myAv[0] === v, set(0, v)]));
+  row(L("Hair colour", "かみの色"), HAIR.map((c, v) => [sw(c), myAv[1] === v, set(1, v)]));
+  row(L("Hair style", "かみがた"), [0, 1, 2, 3, 4].map(v => { const a = myAv.slice(); a[2] = v; return [cv(a), myAv[2] === v, set(2, v)]; }));
+  row(L("Extra", "かざり"), [0, 1, 2, 3].map(v => { const a = myAv.slice(); a[4] = v; return [cv(a), myAv[4] === v, set(4, v)]; }));
+  row(L("Clothes", "ふく"), SHIRT.map((c, v) => [sw(c), myAv[3] === v, set(3, v)]));
+  foot(b, [[L("Done", "これでOK"), "", () => $("#look").close()]]);
+}
+for (const id of ["#lookBtn", "#look2"]) $(id).onclick = () => { lookUI(); $("#look").showModal(); };
+$("#diceBtn").onclick = () => { try { localStorage.removeItem("mtj-bar-av"); } catch (e) {} setAv(randAv(), false); };
+drawAv($("#avJoin"), myAv);
 function openMenu() {
   const b = $("#ordBody");
   b.innerHTML = `<p class="say"><b>${L("Master", "店長")}</b>なににする？<small>What'll it be?</small></p><p class="hint" style="margin:0 0 10px">${L("Today it's on the house — no money moves.", "今日は店のおごり。お金は動きません。")}</p>`;
