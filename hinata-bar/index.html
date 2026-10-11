@@ -1,0 +1,502 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Hinata Bar # — a 16-seat language exchange bar</title>
+<meta name="description" content="A tiny pixel bar with four tables. Japanese speakers who want English sit on the right, learners of Japanese on the left. Talk by voice with your table only. When the timer ends, everyone is shuffled to a new table. Free, no sign-up.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Hinata Bar # — a 16-seat language exchange bar">
+<meta property="og:description" content="Four tables, sixteen seats. Talk with your table, then the timer shuffles everyone.">
+<meta property="og:url" content="https://moretojapan.com/hinata-bar/">
+<link rel="canonical" href="https://moretojapan.com/hinata-bar/">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23e8a23a'/%3E%3Ctext x='32' y='47' font-size='42' text-anchor='middle' fill='white' font-family='Hiragino Sans,sans-serif' font-weight='800'%3E%E2%99%AF%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DotGothic16&display=swap" rel="stylesheet">
+<style>
+  :root{--paper:#faf7f2;--ink:#1b1f26;--sub:#5d6673;--line:#e4ddd2;--ai:#22406e;--aka:#d94f2b;--card:#fff;
+    --F:#3f7fd9;--J:#d9534f;--dk:#2a2030}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--paper);color:var(--ink);line-height:1.7;
+    font-family:"Hiragino Sans","Noto Sans JP",system-ui,-apple-system,sans-serif;-webkit-font-smoothing:antialiased}
+  a{color:var(--ai)}
+  header{position:sticky;top:0;z-index:50;background:#faf7f2e6;backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+  nav{display:flex;align-items:center;gap:18px;height:52px;max-width:1040px;margin:0 auto;padding:0 16px}
+  .logo{font-weight:800;font-size:18px;text-decoration:none;color:var(--ink);display:flex;align-items:center;gap:9px;white-space:nowrap}
+  .logo i{display:grid;place-items:center;width:28px;height:28px;border-radius:9px;background:var(--ai);color:#fff;font-style:normal;font-size:15px;font-weight:700}
+  nav .sp{flex:1}
+  nav a.nl{color:var(--sub);text-decoration:none;font-size:15px;white-space:nowrap}
+  @media(max-width:760px){nav a.nl{display:none}}
+  .lang{border:1px solid var(--line);background:#fff;border-radius:999px;padding:6px 14px;font:inherit;font-size:13px;cursor:pointer;color:var(--sub);width:auto}
+  .wrap{max-width:760px;margin:0 auto;padding:0 12px 50px}
+  h1{font-size:clamp(24px,4.4vw,34px);line-height:1.25;margin:22px 0 6px}
+  .lead{color:var(--sub);font-size:15.5px;margin:0 0 14px}
+  .px{font-family:"DotGothic16","Hiragino Sans",monospace}
+
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px;margin:14px 0}
+  .lbl{font-weight:700;font-size:14px;margin:14px 0 8px;display:block}
+  .lbl:first-child{margin-top:0}
+  input[type=text]{font:inherit;font-size:17px;padding:11px 14px;border:1px solid var(--line);border-radius:12px;background:#fff;color:var(--ink);width:100%;max-width:320px}
+  .sides{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  @media(max-width:520px){.sides{grid-template-columns:1fr}}
+  .side{font:inherit;text-align:left;border:2px solid var(--line);border-radius:14px;background:#fff;padding:12px 14px;cursor:pointer;color:var(--ink);line-height:1.45}
+  .side b{display:block;font-size:16px}.side span{font-size:13.5px;color:var(--sub)}
+  .side.F.on{border-color:var(--F);background:#eef4fd}.side.J.on{border-color:var(--J);background:#fdf0ef}
+  .btn{border:0;border-radius:12px;padding:12px 20px;font:inherit;font-size:16px;font-weight:700;cursor:pointer;background:var(--aka);color:#fff}
+  .btn:disabled{opacity:.4;cursor:default}
+  .btn.ghost{background:#fff;color:var(--ink);border:1px solid var(--line)}
+  .btn.sm{padding:8px 14px;font-size:14px;border-radius:10px}
+  .btn.off{background:#777}
+  .hint{color:var(--sub);font-size:13.5px;margin:8px 0 0}
+  .msg{min-height:1.5em;color:var(--sub);font-size:14px;margin-top:10px}
+  .msg.err{color:#c8412a;font-weight:700}
+
+  /* ============ バーの中 ============ */
+  .top{display:flex;align-items:center;gap:10px;background:var(--dk);color:#fff;border-radius:14px 14px 0 0;padding:8px 14px;font-size:15px}
+  .top .nm{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .top .clock{font-size:26px;letter-spacing:.04em;line-height:1}
+  .top .set{font-size:13px;opacity:.8;white-space:nowrap}
+  .now{background:#ffe9a8;color:#5a4300;text-align:center;font-size:15px;padding:4px 10px;min-height:30px}
+  .now.en{background:#cfe3ff;color:#123a73}
+  .now.idle{background:#efe9dc;color:var(--sub)}
+  .stage{position:relative;aspect-ratio:15/13;background:#d9a066;border:4px solid var(--dk);border-top:0;border-radius:0 0 10px 10px;overflow:hidden;user-select:none;-webkit-user-select:none}
+  canvas{position:absolute;inset:0;width:100%;height:100%;image-rendering:pixelated;image-rendering:crisp-edges}
+  #ov{position:absolute;inset:0;container-type:inline-size}
+  .seat{position:absolute;width:6.667%;height:7.692%;border:0;background:none;padding:0;cursor:pointer}
+  .seat.can::after{content:"";position:absolute;inset:8%;border:.5cqw dashed #fff;border-radius:22%;animation:blink 1s steps(2) infinite}
+  @keyframes blink{50%{opacity:.25}}
+  .chip{position:absolute;transform:translate(-50%,-100%);font-size:2.5cqw;line-height:1;padding:.3cqw .8cqw;border-radius:.8cqw;color:#fff;white-space:nowrap;border:.3cqw solid var(--dk);pointer-events:none}
+  .chip.F{background:var(--F)}.chip.J{background:var(--J)}
+  .chip.me{outline:.5cqw solid #ffe14a}
+  .chip.talk::after{content:"♪";margin-left:.4cqw;color:#ffe14a}
+  .tl{position:absolute;transform:translate(-50%,-50%);font-size:4cqw;color:#fff8e0;text-shadow:.3cqw .3cqw 0 #5b3520;pointer-events:none}
+  .toast{position:absolute;left:50%;top:44%;transform:translate(-50%,-50%);background:#fff;border:.6cqw solid var(--dk);border-radius:1.6cqw;
+    padding:2cqw 4cqw;font-size:4.4cqw;text-align:center;line-height:1.4;box-shadow:0 .8cqw 0 #0003;z-index:5;white-space:nowrap}
+  .legend{display:flex;gap:14px;flex-wrap:wrap;font-size:13px;color:var(--sub);margin:8px 2px 0}
+  .legend i{display:inline-block;width:12px;height:12px;border-radius:3px;vertical-align:-1px;margin-right:5px}
+
+  .mine{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .mine .who{flex:1;min-width:150px;font-size:16px}
+  .tag{display:inline-block;color:#fff;border-radius:6px;padding:0 7px;font-size:14px;margin-right:4px}
+  .tag.F{background:var(--F)}.tag.J{background:var(--J)}
+  .mates{margin:10px 0 0;padding:0;list-style:none;font-size:15px}
+  .mates li{padding:3px 0}
+  .topic{margin-top:10px;border-top:1px dashed var(--line);padding-top:10px;font-size:15px}
+  .topic small{display:block;color:var(--sub);font-size:13px}
+
+  dialog{border:0;border-radius:18px;padding:20px;max-width:420px;width:calc(100% - 32px);color:var(--ink)}
+  dialog::backdrop{background:#0007}
+  .seg{display:flex;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#fff}
+  .seg button{flex:1;border:0;background:none;padding:10px 4px;font:inherit;font-size:15px;cursor:pointer;color:var(--sub)}
+  .seg button.on{background:var(--ai);color:#fff;font-weight:700}
+  .sum{font-size:15px;margin:14px 0;text-align:center}
+  .row{display:flex;gap:10px;justify-content:flex-end}
+  [hidden]{display:none!important}
+</style>
+</head>
+<body>
+<header><nav>
+  <a class="logo" href="/"><i>奥</i>More to Japan</a><span class="sp"></span>
+  <a class="nl" href="/play/" data-en="Language exchange" data-ja="言語交換">Language exchange</a>
+  <a class="nl" href="/fuda-town/" data-en="Fuda Town" data-ja="ふだの町">Fuda Town</a>
+  <button class="lang" id="lang">日本語</button>
+</nav></header>
+
+<div class="wrap">
+  <h1 class="px" data-en="Hinata Bar #" data-ja="ひなたバー ♯">Hinata Bar #</h1>
+  <p class="lead" data-en="Four tables, sixteen seats. You talk by voice with your own table — the other tables can't hear you. When the timer ends, everyone is shuffled to a new table." data-ja="テーブル4つ、席は16。声で話せるのは自分のテーブルだけ——ほかのテーブルには聞こえません。時間が来たら、全員の席がシャッフルされます。">Four tables, sixteen seats. You talk by voice with your own table — the other tables can't hear you. When the timer ends, everyone is shuffled to a new table.</p>
+
+  <!-- ============ 入口 ============ -->
+  <div class="panel" id="join">
+    <label class="lbl" for="name" data-en="Your name (shown at your table)" data-ja="なまえ（テーブルの人に見えます）">Your name (shown at your table)</label>
+    <input type="text" id="name" maxlength="14" autocomplete="off">
+    <span class="lbl" data-en="Which side are you?" data-ja="どちら側ですか？">Which side are you?</span>
+    <div class="sides">
+      <button class="side F" data-side="F"><b data-en="◀ Left seats" data-ja="◀ 左の席">◀ Left seats</b><span data-en="I want to speak Japanese (I'm not a native speaker)." data-ja="日本語を話したい（外国の人）。">I want to speak Japanese (I'm not a native speaker).</span></button>
+      <button class="side J" data-side="J"><b data-en="Right seats ▶" data-ja="右の席 ▶">Right seats ▶</b><span data-en="I'm a Japanese speaker and want to speak English." data-ja="日本人で、英語を話したい。">I'm a Japanese speaker and want to speak English.</span></button>
+    </div>
+    <p class="hint" data-en="Your browser will ask for the microphone. Without it you can still come in and listen." data-ja="このあとマイクの許可を聞かれます。許可しなくても、入って聞くことはできます。">Your browser will ask for the microphone. Without it you can still come in and listen.</p>
+    <p style="margin:14px 0 0"><button class="btn" id="enter" disabled data-en="Enter the bar" data-ja="バーに入る">Enter the bar</button></p>
+    <div class="msg" id="jmsg"></div>
+  </div>
+
+  <!-- ============ バー ============ -->
+  <div id="bar" hidden>
+    <div class="top px"><span class="nm" id="barName"></span><span class="set" id="setTxt"></span><span class="clock" id="clock">--:--</span></div>
+    <div class="now idle px" id="now"></div>
+    <div class="stage"><canvas id="cv" width="240" height="208"></canvas><div id="ov" class="px"></div></div>
+    <div class="legend">
+      <span><i style="background:var(--F)"></i><span data-en="Left: learning Japanese (F1–F8)" data-ja="左：日本語を話したい人（F1〜F8）">Left: learning Japanese (F1–F8)</span></span>
+      <span><i style="background:var(--J)"></i><span data-en="Right: Japanese speakers who want English (J1–J8)" data-ja="右：英語を話したい日本人（J1〜J8）">Right: Japanese speakers who want English (J1–J8)</span></span>
+    </div>
+    <div class="panel">
+      <div class="mine">
+        <div class="who" id="who"></div>
+        <button class="btn sm ghost" id="mic"></button>
+        <button class="btn sm ghost" id="stand" data-en="Stand up" data-ja="席を立つ">Stand up</button>
+        <button class="btn sm" id="start" data-en="▶ Start" data-ja="▶ スタート">▶ Start</button>
+        <button class="btn sm off" id="stop" hidden data-en="■ Stop" data-ja="■ とめる">■ Stop</button>
+      </div>
+      <ul class="mates" id="mates"></ul>
+      <div class="topic" id="topic" hidden></div>
+      <div class="msg" id="bmsg"></div>
+    </div>
+  </div>
+
+  <dialog id="setup">
+    <span class="lbl" data-en="Minutes per set" data-ja="1セットの時間">Minutes per set</span>
+    <div class="seg" id="segM"><button data-v="3">3</button><button data-v="5" class="on">5</button><button data-v="10">10</button><button data-v="15">15</button></div>
+    <span class="lbl" data-en="How many sets" data-ja="何セットやる？">How many sets</span>
+    <div class="seg" id="segS"><button data-v="1">1</button><button data-v="2">2</button><button data-v="3" class="on">3</button><button data-v="4">4</button><button data-v="5">5</button><button data-v="6">6</button></div>
+    <div class="sum" id="sum"></div>
+    <p class="hint" style="margin:0 0 14px" data-en="After each set, every number is shuffled to a new seat. The timer runs for the whole bar." data-ja="1セット終わるごとに、全員の番号がランダムに席替えされます。タイマーはバー全体で動きます。">After each set, every number is shuffled to a new seat. The timer runs for the whole bar.</p>
+    <div class="row"><button class="btn ghost" id="cancel" data-en="Cancel" data-ja="やめる">Cancel</button><button class="btn" id="go" data-en="OK — Start" data-ja="OK・スタート">OK — Start</button></div>
+  </dialog>
+</div>
+<div id="audios" hidden></div>
+
+<script src="/vendor-lib/peerjs.min.js"></script>
+<script>
+"use strict";
+const $ = s => document.querySelector(s);
+const qs = new URLSearchParams(location.search);
+const ROOM = (qs.get("room") || "1").replace(/[^a-z0-9]/gi, "").slice(0, 12) || "1";
+const HUB = "mtj-hinata-bar-" + ROOM;          // この名前を先に取れた人のタブが「店」になる
+const UNIT = qs.get("sec") ? 1000 : 60000;      // ?sec=1 は確認用（分→秒）
+
+/* ============ ことば ============ */
+let lang = "en";
+try { if (localStorage.getItem("mj-lang") === "ja") lang = "ja"; } catch (e) {}
+const L = (en, ja) => lang === "ja" ? ja : en;
+function applyLang() {
+  document.documentElement.lang = lang;
+  document.querySelectorAll("[data-en]").forEach(el => { el.innerHTML = el.dataset[lang]; });
+  $("#lang").textContent = lang === "ja" ? "English" : "日本語";
+  if (joined) onState();
+}
+const TOPICS = [
+  ["What did you eat today?", "きょう、何を食べた？"], ["A place you want to go next", "つぎに行きたい場所"],
+  ["Your favorite convenience-store food", "コンビニで好きな食べもの"], ["Something that surprised you in Japan / abroad", "日本／海外でおどろいたこと"],
+  ["What do you do on a rainy day?", "雨の日は何をする？"], ["A word you learned recently", "さいきん覚えた言葉"],
+  ["Your hometown in three words", "ふるさとを3つの言葉で"], ["The best thing you bought this year", "今年買ってよかったもの"],
+  ["A food you can't eat", "食べられないもの"], ["Morning person or night person?", "朝型？夜型？"],
+  ["A movie or anime you'd recommend", "おすすめの映画・アニメ"], ["What would you do with a free week?", "1週間休みがあったら？"],
+  ["Something small that made you happy lately", "さいきんの小さなうれしいこと"], ["Your go-to karaoke song", "カラオケの十八番"],
+  ["Cats or dogs — and why?", "ねこ派？いぬ派？ なぜ？"], ["A habit you want to start", "はじめたい習慣"]
+];
+
+/* ============ 絵（色つきドット。画像ファイルなし） ============ */
+const W = 240, H = 208, TL = "ABCD";
+const TABLES = [[3, 4], [10, 4], [3, 8], [10, 8]];
+const seatPos = i => { const [tx, ty] = TABLES[i >> 2], s = i & 3; return [s < 2 ? tx - 1 : tx + 2, ty + (s & 1)]; };
+const STANDS = []; for (let x = 1; x <= 13; x++) STANDS.push([x, 11]); STANDS.push([7, 6], [7, 7], [7, 10]);
+const bg = document.createElement("canvas"); bg.width = W; bg.height = H;
+(function paint() {
+  const g = bg.getContext("2d"), R = (c, x, y, w, h) => { g.fillStyle = c; g.fillRect(x, y, w, h); };
+  // 床
+  R("#d9a066", 0, 48, W, H - 48);
+  for (let y = 48; y < H; y += 16) { R("#b9824e", 0, y + 15, W, 1); for (let x = (y / 16 % 2) * 20; x < W; x += 40) R("#b9824e", x, y, 1, 15); }
+  // ひなた（窓からの日だまり）
+  g.globalAlpha = .28; for (let i = 0; i < 9; i++) R("#fff6b8", 96 - i * 3, 48 + i * 8, 48 + i * 6, 8); g.globalAlpha = 1;
+  // 奥の壁
+  R("#f6e7b8", 0, 0, W, 30); R("#e9d39a", 0, 24, W, 6); R("#7b4a2a", 0, 30, W, 2);
+  // 窓と太陽
+  R("#7b4a2a", 102, 3, 36, 23); R("#8fd3ff", 104, 5, 32, 19); R("#ffd94a", 124, 7, 8, 8); R("#fff3a0", 126, 9, 4, 4); R("#fff", 107, 16, 9, 3); R("#fff", 110, 14, 5, 2); R("#7b4a2a", 119, 5, 2, 19);
+  // 棚とびん
+  const cols = ["#d9534f", "#3fa34d", "#e8a23a", "#3f7fd9", "#9b59b6", "#f1f1e6"];
+  for (const sx of [14, 150]) { R("#8a5a3c", sx, 21, 76, 3); R("#5b3520", sx, 24, 76, 1); for (let i = 0; i < 9; i++) { const x = sx + 3 + i * 8, c = cols[(i * 5 + sx) % 6]; R("#2a2030", x, 9, 5, 12); R(c, x + 1, 12, 3, 8); R(c, x + 1, 9, 3, 2); R("#fff", x + 1, 13, 1, 3); } }
+  // マスター（カウンターの向こう）
+  person(g, 112, 20, 1, "#f2c9a0", "#3a2a20", "#f1f1e6");
+  // カウンター
+  R("#5b3520", 24, 32, 192, 16); R("#c98a4b", 25, 33, 190, 6); R("#e3a868", 25, 33, 190, 1); R("#8a5a3c", 25, 40, 190, 7); for (let x = 40; x < 216; x += 24) R("#5b3520", x, 40, 1, 7);
+  R("#f1f1e6", 60, 30, 4, 4); R("#e8a23a", 170, 29, 3, 5); R("#8fd3ff", 150, 30, 3, 4);
+  // 鉢植え
+  for (const px of [2, 222]) { R("#2a2030", px + 3, 60, 10, 8); R("#b5553c", px + 4, 61, 8, 6); R("#2c7a3a", px + 2, 50, 12, 10); R("#3fa34d", px + 4, 48, 8, 9); R("#7fd08a", px + 6, 50, 2, 3); }
+  // 入口のマット
+  R("#6e2c2c", 100, 198, 40, 10); R("#a54545", 102, 200, 36, 8); R("#d98a5a", 106, 203, 28, 1);
+  // テーブルといす（左＝青、右＝赤）
+  TABLES.forEach(([tx, ty], t) => {
+    for (let s = 0; s < 4; s++) { const [x, y] = seatPos(t * 4 + s), X = x * 16, Y = y * 16, c = s < 2 ? ["#3f7fd9", "#7fb0f0"] : ["#d9534f", "#f08a84"];
+      R("#2a2030", X + 3, Y + 5, 10, 10); R(c[0], X + 4, Y + 6, 8, 7); R(c[1], X + 4, Y + 6, 8, 2); R("#2a2030", X + 4, Y + 14, 2, 2); R("#2a2030", X + 10, Y + 14, 2, 2); }
+    const X = tx * 16, Y = ty * 16;
+    g.globalAlpha = .18; R("#000", X + 2, Y + 28, 30, 5); g.globalAlpha = 1;
+    R("#5b3520", X + 1, Y + 1, 30, 29); R("#b5743c", X + 2, Y + 2, 28, 23); R("#d79a5c", X + 2, Y + 2, 28, 2); R("#8a5a3c", X + 2, Y + 25, 28, 4);
+    R("#f1f1e6", X + 5, Y + 7, 3, 4); R("#e8a23a", X + 5, Y + 8, 3, 3); R("#f1f1e6", X + 24, Y + 16, 3, 4); R("#8fd3ff", X + 24, Y + 17, 3, 3);
+  });
+})();
+function person(g, ox, oy, dir, skin, hair, shirt) {
+  const R = (c, x, y, w, h) => { g.fillStyle = c; g.fillRect(ox + x, oy + y, w, h); }, D = "#2a2030";
+  R(D, 4, 0, 8, 1); R(D, 3, 1, 10, 8); R(hair, 4, 1, 8, 3); R(hair, 4, 4, 8, 4);
+  if (dir === 1) { R(skin, 4, 4, 8, 4); R(D, 6, 5, 1, 2); R(D, 9, 5, 1, 2); }
+  else if (dir === 2) { R(skin, 4, 4, 6, 4); R(D, 5, 5, 1, 2); }
+  else if (dir === 3) { R(skin, 6, 4, 6, 4); R(D, 10, 5, 1, 2); }
+  R(D, 4, 9, 8, 5); R(shirt, 5, 9, 6, 4); R(skin, 3, 10, 1, 2); R(skin, 12, 10, 1, 2);
+  R("#34405a", 5, 14, 2, 2); R("#34405a", 9, 14, 2, 2);
+}
+const SKIN = ["#f6d2ae", "#eab98c", "#c98d5e", "#8d5a3a"], HAIR = ["#2a2030", "#5b3520", "#b5743c", "#e8c060", "#a03a2c", "#7a7f8a"],
+  SHIRT = ["#3fa34d", "#e8a23a", "#9b59b6", "#f1f1e6", "#2aa7a0", "#e06a9a", "#5a6acf", "#c8c43a"];
+const hash = s => { let h = 7; for (const c of s) h = (h * 31 + c.charCodeAt(0)) >>> 0; return h; };
+
+/* ============ 状態 ============ */
+let ST = { m: {}, sess: null, fin: 0 };          // m: {pid:{name,side,num,seat}}  sess:{mins,sets,set,endAt,by,topics}
+let me = null, myId = "", hub = null, link = null, isHost = false, joined = false, linking = false, claiming = false, dead = false;
+let myName = "", mySide = "", prevSeat = null, prevSet = 0, prevFin = 0, toastUntil = 0, toastHTML = "";
+const conns = {}, seen = {};                     // 店の側：客の線と、最後に声がかかった時刻
+const speaking = {};
+const order = () => Object.keys(ST.m).sort();
+const where = () => {                            // 立っている人は来た順に立ち位置へ
+  const out = {}; let k = 0;
+  for (const p of order()) { const m = ST.m[p]; out[p] = m.seat != null ? seatPos(m.seat) : STANDS[k++ % STANDS.length]; }
+  return out;
+};
+
+/* ---------- 店（ホスト）の仕事 ---------- */
+const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.random() * (i + 1) | 0; [a[i], a[j]] = [a[j], a[i]]; } return a; };
+const pickTopics = () => shuffle(TOPICS.map((_, i) => i)).slice(0, 4);
+function shuffleSeats() {
+  // 番号をランダムに。左右は守り、どのテーブルにも両方の側が座るように順に配る
+  const ids = Object.keys(ST.m), F = shuffle(ids.filter(p => ST.m[p].side === "F")), J = shuffle(ids.filter(p => ST.m[p].side === "J"));
+  const T = Math.min(4, Math.max(1, Math.ceil(Math.max(F.length, J.length) / 2))), tabs = shuffle([0, 1, 2, 3]).slice(0, T);
+  F.forEach((p, i) => { ST.m[p].seat = tabs[i % T] * 4 + (i / T | 0); });
+  J.forEach((p, i) => { ST.m[p].seat = tabs[i % T] * 4 + 2 + (i / T | 0); });
+}
+function apply(pid, d) {
+  const m = ST.m[pid];
+  if (d.t === "join") {
+    if (m) return true;
+    const side = d.side === "J" ? "J" : "F", used = Object.values(ST.m).filter(x => x.side === side).map(x => x.num);
+    let num = 1; while (used.includes(num)) num++;
+    if (num > 8) return false;
+    ST.m[pid] = { name: String(d.name || "").replace(/[<>]/g, "").slice(0, 14) || "?", side, num, seat: null };
+  } else if (!m) return true;
+  else if (d.t === "sit") {
+    const s = d.seat | 0;
+    if (s >= 0 && s < 16 && ((s & 3) < 2) === (m.side === "F") && !Object.values(ST.m).some(x => x.seat === s)) m.seat = s;
+  } else if (d.t === "stand") m.seat = null;
+  else if (d.t === "start") {
+    if (!ST.sess && m.seat != null && [3, 5, 10, 15].includes(d.mins) && d.sets >= 1 && d.sets <= 6)
+      ST.sess = { mins: d.mins, sets: d.sets | 0, set: 1, endAt: Date.now() + d.mins * UNIT, by: pid, topics: pickTopics() };
+  } else if (d.t === "stop") { if (ST.sess && (ST.sess.by === pid || pid === myId)) ST.sess = null; }
+  return true;
+}
+let lastPush = 0;
+function push() {
+  lastPush = Date.now();
+  const st = { m: ST.m, fin: ST.fin, sess: ST.sess && Object.assign({}, ST.sess, { remain: ST.sess.endAt - Date.now() }) };
+  for (const p in conns) { try { if (conns[p].open) conns[p].send({ t: "st", st }); } catch (e) {} }
+  onState();
+}
+function onGuest(c) {
+  c.on("data", d => {
+    if (!d || typeof d !== "object") return;
+    seen[c.peer] = Date.now();
+    if (d.t === "hb") return;
+    if (d.t === "join") {
+      conns[c.peer] = c;
+      if (!apply(c.peer, d)) { try { c.send({ t: "full" }); } catch (e) {} delete conns[c.peer]; setTimeout(() => c.close(), 500); return; }
+    } else apply(c.peer, d);
+    push();
+  });
+  c.on("close", () => { if (conns[c.peer] === c) { delete conns[c.peer]; delete ST.m[c.peer]; push(); } });
+}
+let hostSince = 0;
+setInterval(() => {
+  if (!isHost) return;
+  const now = Date.now(); let ch = false;
+  if (now - hostSince > 12000) for (const p of Object.keys(ST.m)) {       // 線が切れたままの人は席をあける
+    if (p !== myId && (!conns[p] || now - (seen[p] || 0) > 20000)) { delete ST.m[p]; delete conns[p]; ch = true; }
+  }
+  if (ST.sess && now >= ST.sess.endAt) {
+    if (ST.sess.set < ST.sess.sets) { shuffleSeats(); ST.sess.set++; ST.sess.endAt = now + ST.sess.mins * UNIT; ST.sess.topics = pickTopics(); }
+    else { ST.sess = null; ST.fin = now; }
+    ch = true;
+  }
+  if (ch || now - lastPush > 7000) push();
+}, 500);
+function tryClaim() {
+  if (claiming || isHost || dead) return; claiming = true;
+  const h = new Peer(HUB, { debug: 0 });
+  h.on("open", () => {
+    claiming = false; hub = h; isHost = true; hostSince = Date.now();
+    for (const p in ST.m) seen[p] = Date.now();
+    apply(myId, { t: "join", name: myName, side: mySide });
+    h.on("connection", onGuest); h.on("disconnected", () => { try { h.reconnect(); } catch (e) {} });
+    push();
+  });
+  h.on("error", e => { if (isHost) return; claiming = false; try { h.destroy(); } catch (x) {} setTimeout(connectHub, e && e.type === "unavailable-id" ? 700 : 2000); });
+}
+
+/* ---------- 客の仕事 ---------- */
+let linkTimer = 0, linkTry = null;
+function connectHub() {
+  if (isHost || linking || claiming || dead || (link && link.open)) return;
+  linking = true;
+  const c = me.connect(HUB, { reliable: true }); let done = false;
+  const fail = () => { if (done) return; done = true; linking = false; linkTry = null; clearTimeout(linkTimer); try { c.close(); } catch (e) {} tryClaim(); };
+  linkTry = fail; linkTimer = setTimeout(fail, 7000);
+  c.on("open", () => { if (done) return; done = true; linking = false; linkTry = null; clearTimeout(linkTimer); link = c; lastSt = Date.now(); c.send({ t: "join", name: myName, side: mySide }); });
+  c.on("data", d => {
+    if (!d) return;
+    if (d.t === "full") { dead = true; $("#bmsg").className = "msg err"; $("#bmsg").textContent = L("Your side of the bar is full (8). Please try again later.", "そちら側の席（8人）がいっぱいです。あとでまた来てください。"); return; }
+    if (d.t === "st") { lastSt = Date.now(); ST = d.st; if (ST.sess) ST.sess.endAt = Date.now() + ST.sess.remain; onState(); }
+  });
+  c.on("close", () => lost(c));
+}
+let lastSt = 0;
+function lost(c) {
+  if (link !== c) return; link = null; try { c.close(); } catch (e) {}
+  if (dead) return;
+  const r = order().indexOf(myId);                      // 店が消えたら、名前の若い順にだれかが店を引きつぐ
+  setTimeout(connectHub, 300 + Math.max(0, r) * 1200);
+}
+const act = d => { if (isHost) { apply(myId, d); push(); } else if (link && link.open) link.send(d); };
+setInterval(() => {
+  if (link && link.open) { if (Date.now() - lastSt > 16000) lost(link); else link.send({ t: "hb" }); }   // 店は7秒おきに声をかける。16秒しんとしたら店が消えたとみなす
+  else if (joined && !isHost) connectHub();
+}, 5000);
+
+/* ============ 声（同じテーブルの人とだけ線を張る） ============ */
+let stream = null, hasMic = false, muted = false, AC = null;
+const calls = {}, pending = {};
+async function getStream() {
+  AC = new (window.AudioContext || window.webkitAudioContext)();
+  try { stream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true } }); hasMic = true; watch(stream, "me"); }
+  catch (e) { stream = AC.createMediaStreamDestination().stream; hasMic = false; }   // マイクなし＝聞くだけ（無音の線を出す）
+}
+const meters = {};
+function watch(s, id) {
+  try { const an = AC.createAnalyser(); an.fftSize = 256; AC.createMediaStreamSource(s).connect(an); meters[id] = { an, buf: new Uint8Array(128) }; } catch (e) {}
+}
+setInterval(() => {
+  for (const id in meters) { const { an, buf } = meters[id]; an.getByteTimeDomainData(buf); let v = 0; for (const b of buf) v = Math.max(v, Math.abs(b - 128)); speaking[id === "me" ? myId : id] = v > 10 && !(id === "me" && muted); }
+  document.querySelectorAll(".chip").forEach(c => c.classList.toggle("talk", !!speaking[c.dataset.p]));
+}, 150);
+function wire(pid, call) {
+  const o = calls[pid] = { call, t0: Date.now(), el: null };
+  call.on("stream", s => {
+    if (o.el) return;
+    const a = o.el = document.createElement("audio"); a.autoplay = true; a.playsInline = true; a.srcObject = s; $("#audios").appendChild(a); a.play().catch(() => {});
+    watch(s, pid);
+  });
+  const end = () => { if (calls[pid] === o) drop(pid); };
+  call.on("close", end); call.on("error", end);
+}
+function drop(pid) {
+  const o = calls[pid]; if (!o) return; delete calls[pid]; delete meters[pid]; delete speaking[pid];
+  try { o.call.close(); } catch (e) {} if (o.el) { o.el.srcObject = null; o.el.remove(); }
+}
+function mates() { const m = ST.m[myId]; if (!m || m.seat == null) return []; return Object.keys(ST.m).filter(p => p !== myId && ST.m[p].seat != null && (ST.m[p].seat >> 2) === (m.seat >> 2)); }
+function voice() {
+  if (!me || !stream) return;
+  const want = mates();
+  for (const p in calls) if (!want.includes(p) || (!calls[p].el && Date.now() - calls[p].t0 > 12000)) drop(p);   // 席を離れたら、その場で切る
+  for (const p of want) {
+    if (calls[p]) continue;
+    if (pending[p]) { const c = pending[p]; delete pending[p]; c.answer(stream); wire(p, c); }
+    else if (myId < p) { const c = me.call(p, stream); if (c) wire(p, c); }                                      // 名前の若いほうがかける
+  }
+}
+setInterval(voice, 3000);
+
+/* ============ 画面 ============ */
+const ov = $("#ov");
+function toast(html, ms) { toastHTML = html; toastUntil = Date.now() + (ms || 4000); drawOv(); setTimeout(drawOv, (ms || 4000) + 50); }
+function beep(f, d, when) { try { const o = AC.createOscillator(), g = AC.createGain(), t = AC.currentTime + (when || 0); o.type = "square"; o.frequency.value = f; g.gain.setValueAtTime(.05, t); g.gain.linearRampToValueAtTime(0, t + d); o.connect(g).connect(AC.destination); o.start(t); o.stop(t + d); } catch (e) {} }
+function drawOv() {
+  const pos = where(), m = ST.m[myId]; ov.innerHTML = "";
+  TABLES.forEach(([tx, ty], t) => { const d = document.createElement("div"); d.className = "tl"; d.textContent = TL[t]; d.style.left = (tx + 1) / 15 * 100 + "%"; d.style.top = (ty * 16 + 14) / H * 100 + "%"; ov.appendChild(d); });
+  const taken = {}; for (const p in ST.m) if (ST.m[p].seat != null) taken[ST.m[p].seat] = 1;
+  for (let i = 0; i < 16; i++) {
+    const [x, y] = seatPos(i), b = document.createElement("button"); b.className = "seat"; b.style.left = x / 15 * 100 + "%"; b.style.top = y / 13 * 100 + "%";
+    const mine = m && ((i & 3) < 2) === (m.side === "F");
+    if (mine && !taken[i]) { b.classList.add("can"); b.onclick = () => act({ t: "sit", seat: i }); b.setAttribute("aria-label", "Table " + TL[i >> 2]); } else b.disabled = true;
+    ov.appendChild(b);
+  }
+  for (const p in pos) {
+    const x = ST.m[p], c = document.createElement("span"); c.className = "chip " + x.side + (p === myId ? " me" : ""); c.dataset.p = p; c.textContent = x.side + x.num;
+    c.style.left = (pos[p][0] * 16 + 8) / W * 100 + "%"; c.style.top = (pos[p][1] * 16 - 5) / H * 100 + "%"; ov.appendChild(c);
+  }
+  if (Date.now() < toastUntil) { const t = document.createElement("div"); t.className = "toast"; t.innerHTML = toastHTML; ov.appendChild(t); }
+}
+function onState() {
+  const m = ST.m[myId], n = Object.keys(ST.m).length;
+  $("#barName").textContent = L("Hinata Bar #", "ひなたバー ♯") + (ROOM !== "1" ? ROOM : "") + "　" + n + "/16";
+  if (m) {
+    if (ST.sess && prevSet && ST.sess.set !== prevSet && m.seat != null) {
+      toast(L("Seat change!<br>You → Table ", "席替え！<br>あなたは テーブル ") + TL[m.seat >> 2]); [660, 880, 1100].forEach((f, i) => beep(f, .12, i * .12));
+    }
+    if (ST.fin && prevFin !== ST.fin && prevSet) { toast(L("Time's up — thank you!<br>お疲れさまでした", "おしまい！<br>おつかれさまでした"), 6000); [1100, 880, 660, 880].forEach((f, i) => beep(f, .15, i * .15)); }
+    prevSet = ST.sess ? ST.sess.set : 0; prevFin = ST.fin; prevSeat = m.seat;
+    $("#who").innerHTML = `<span class="tag ${m.side}">${m.side}${m.num}</span>` + (m.seat != null ? L("Table ", "テーブル ") + TL[m.seat >> 2] : L("Standing — tap a blinking seat", "立っています — 光っている席をタップ"));
+    const ms = mates();
+    $("#mates").innerHTML = ""; ms.forEach(p => { const li = document.createElement("li"), x = ST.m[p]; li.innerHTML = `<span class="tag ${x.side}">${x.side}${x.num}</span>`; li.append(x.name); $("#mates").appendChild(li); });
+    if (m.seat != null && !ms.length) $("#mates").innerHTML = `<li style="color:var(--sub)">${L("Nobody else at this table yet.", "このテーブルには まだだれもいません。")}</li>`;
+    $("#stand").hidden = m.seat == null;
+    $("#start").hidden = !!ST.sess; $("#start").disabled = m.seat == null;
+    $("#stop").hidden = !(ST.sess && (ST.sess.by === myId || isHost));
+    const tp = $("#topic");
+    if (ST.sess && m.seat != null) { const t = TOPICS[ST.sess.topics[m.seat >> 2]]; tp.hidden = false; tp.innerHTML = `<small>${L("If you run out of things to say", "話すことに こまったら")}</small>`; tp.append(t[1] + " / " + t[0]); } else tp.hidden = true;
+    if (!dead) { $("#bmsg").className = "msg"; $("#bmsg").textContent = m.seat == null ? "" : hasMic ? "" : L("No microphone: you can listen, but others can't hear you.", "マイクなし：聞くことはできますが、あなたの声は届きません。"); }
+  }
+  drawOv(); voice(); tick();
+}
+function tick() {
+  const s = ST.sess, now = $("#now");
+  if (!s) { $("#clock").textContent = "--:--"; $("#setTxt").textContent = ""; now.className = "now idle px"; now.textContent = L("Sit down, then press Start.", "席にすわって、スタートを押そう。"); return; }
+  const r = Math.max(0, s.endAt - Date.now()), sec = Math.ceil(r / 1000);
+  $("#clock").textContent = String(sec / 60 | 0).padStart(2, "0") + ":" + String(sec % 60).padStart(2, "0");
+  $("#setTxt").textContent = L("Set ", "セット ") + s.set + "/" + s.sets;
+  const first = r > s.mins * UNIT / 2;   // 前半は日本語、後半は英語
+  now.className = "now px" + (first ? "" : " en"); now.textContent = first ? L("Now: 日本語 time (first half)", "いまは 日本語タイム（前半）") : L("Now: English time (second half)", "いまは English タイム（後半）");
+}
+setInterval(tick, 250);
+const cvg = $("#cv").getContext("2d"); cvg.imageSmoothingEnabled = false;
+function frame(t) {
+  cvg.drawImage(bg, 0, 0);
+  const pos = where(), ids = Object.keys(pos).sort((a, b) => pos[a][1] - pos[b][1]);
+  for (const p of ids) { const x = ST.m[p], h = hash(p), bob = speaking[p] ? (t / 150 | 0) % 2 : 0;
+    person(cvg, pos[p][0] * 16, pos[p][1] * 16 - 4 - bob, x.seat == null ? 1 : (x.seat & 3) < 2 ? 3 : 2, SKIN[h % 4], HAIR[(h >> 3) % 6], SHIRT[(h >> 7) % 8]); }
+  requestAnimationFrame(frame);
+}
+
+/* ============ 入口・ボタン ============ */
+try { $("#name").value = localStorage.getItem("mtj-bar-name") || (JSON.parse(localStorage.getItem("mj-me") || "{}").name || ""); } catch (e) {}
+const ready = () => { $("#enter").disabled = !(mySide && $("#name").value.trim()); };
+$("#name").oninput = ready;
+document.querySelectorAll(".side").forEach(b => b.onclick = () => { mySide = b.dataset.side; document.querySelectorAll(".side").forEach(x => x.classList.toggle("on", x === b)); ready(); });
+$("#enter").onclick = async () => {
+  myName = $("#name").value.trim().slice(0, 14); $("#enter").disabled = true;
+  try { localStorage.setItem("mtj-bar-name", myName); } catch (e) {}
+  $("#jmsg").textContent = L("Opening the door…", "ドアを あけています…");
+  await getStream();
+  me = new Peer(undefined, { debug: 0 });
+  me.on("open", id => {
+    myId = id; joined = true; $("#join").hidden = true; $("#bar").hidden = false; setMic(); onState(); requestAnimationFrame(frame); connectHub();
+  });
+  me.on("call", c => { if (mates().includes(c.peer)) { c.answer(stream); wire(c.peer, c); } else { pending[c.peer] = c; setTimeout(() => { if (pending[c.peer] === c) { delete pending[c.peer]; try { c.close(); } catch (e) {} } }, 9000); } });
+  me.on("disconnected", () => { try { me.reconnect(); } catch (e) {} });
+  me.on("error", e => {
+    if (e && e.type === "peer-unavailable" && String(e.message || "").includes(HUB) && linkTry) linkTry();   // 店がまだ無い→自分が店になる
+    else if (!joined) { $("#jmsg").className = "msg err"; $("#jmsg").textContent = L("Could not connect. Please reload and try again.", "つながりませんでした。読み込み直してください。"); }
+  });
+};
+function setMic() { const b = $("#mic"); b.textContent = !hasMic ? L("🎤 No mic", "🎤 マイクなし") : muted ? L("🔇 Muted", "🔇 ミュート中") : L("🎤 Mic on", "🎤 マイクON"); b.disabled = !hasMic; }
+$("#mic").onclick = () => { muted = !muted; stream.getAudioTracks().forEach(t => t.enabled = !muted); setMic(); };
+$("#stand").onclick = () => act({ t: "stand" });
+$("#stop").onclick = () => act({ t: "stop" });
+let selM = 5, selS = 3;
+const sum = () => { $("#sum").textContent = L(`${selM} min × ${selS} set${selS > 1 ? "s" : ""} = ${selM * selS} min`, `${selM}分 × ${selS}セット ＝ ${selM * selS}分`); };
+for (const [id, set] of [["#segM", v => selM = v], ["#segS", v => selS = v]])
+  $(id).onclick = e => { const b = e.target.closest("button"); if (!b) return; set(+b.dataset.v); $(id).querySelectorAll("button").forEach(x => x.classList.toggle("on", x === b)); sum(); };
+$("#start").onclick = () => { sum(); $("#setup").showModal(); };
+$("#cancel").onclick = () => $("#setup").close();
+$("#go").onclick = () => { $("#setup").close(); act({ t: "start", mins: selM, sets: selS }); };
+$("#lang").onclick = () => { lang = lang === "ja" ? "en" : "ja"; try { localStorage.setItem("mj-lang", lang); } catch (e) {} applyLang(); setMic(); };
+document.addEventListener("visibilitychange", () => { if (!document.hidden && me && me.disconnected) { try { me.reconnect(); } catch (e) {} } });
+addEventListener("pagehide", () => { try { hub && hub.destroy(); me && me.destroy(); } catch (e) {} });
+applyLang();
+</script>
+<script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "a549632ca5ba440a9dbdfd24bcbe11e5"}'></script>
+</body>
+</html>
