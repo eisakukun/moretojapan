@@ -90,11 +90,29 @@
   .drk b{display:block;font-size:16px}.drk small{color:var(--sub);font-size:13px}
   .tblb{position:absolute;border:0;background:none;padding:0;cursor:pointer}
   .tblb::after{content:"";position:absolute;inset:4%;border:.5cqw dashed #ffe14a;border-radius:8%;animation:blink 1s steps(2) infinite}
-  #chat{margin-top:12px;border-top:1px dashed var(--line);padding-top:10px}
-  #chatT{font-weight:700;font-size:14px}
-  #log{max-height:170px;overflow-y:auto;font-size:15px;margin:6px 0}
-  #log div{padding:2px 0;overflow-wrap:anywhere}#log b{font-weight:700}
-  #sayF{display:flex;gap:8px}#sayF input{flex:1;max-width:none;font-size:16px;padding:9px 12px}
+  /* チャット欄。広い画面ではバーの右、せまい画面ではバーの下。出す・しまうは自分の画面だけ */
+  #side{display:flex;flex-direction:column;background:var(--card);border:1px solid var(--line);border-radius:14px;margin-top:14px;height:340px;overflow:hidden}
+  #side[hidden]{display:none}
+  .sh{display:flex;align-items:center;background:var(--dk);color:#fff;padding:8px 8px 8px 14px;font-size:15px}
+  .sh b{flex:1;font-weight:400}
+  .sh button{border:0;background:none;color:#fff;font-size:20px;line-height:1;cursor:pointer;padding:2px 8px;width:auto}
+  .tabs{display:flex;border-bottom:1px solid var(--line)}
+  .tabs button{flex:1;border:0;border-bottom:3px solid transparent;background:none;font:inherit;font-size:13.5px;padding:8px 6px;cursor:pointer;color:var(--sub);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .tabs button.on{color:var(--ink);font-weight:700;border-bottom-color:var(--aka)}
+  .tabs button:disabled{opacity:.45;cursor:default}
+  .tabs button.new::after,#chatBtn.new::after{content:"";display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--aka);margin-left:6px;vertical-align:1px}
+  .log{flex:1;min-height:0;overflow-y:auto;font-size:15px;padding:8px 12px;line-height:1.5}
+  .log[hidden]{display:none}
+  .log div{padding:2px 0;overflow-wrap:anywhere}.log b{font-weight:700}
+  .log:empty::before{content:attr(data-empty);color:var(--sub);font-size:13.5px}
+  #chatT{font-size:12.5px;color:var(--sub);padding:0 12px 6px;line-height:1.45}
+  #sayF{display:flex;gap:8px;padding:8px 10px 10px;border-top:1px solid var(--line)}#sayF input{flex:1;min-width:0;max-width:none;font-size:16px;padding:9px 12px}
+  @media(min-width:1020px){
+    body.chat .wrap{max-width:1110px}
+    body.chat .wrap>:not(#bar):not(dialog){max-width:752px}
+    body.chat #bar{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:14px;align-items:start}
+    body.chat #side{margin-top:0;position:sticky;top:62px;height:min(calc(100vh - 74px),760px)}
+  }
   .chk{display:flex;gap:8px;align-items:flex-start;font-size:14.5px;margin:12px 0 0;cursor:pointer}
   .chk input{width:18px;height:18px;margin:3px 0 0;flex:none}
   .bgm{display:inline-flex;align-items:center;gap:6px}
@@ -190,6 +208,7 @@
 
   <!-- ============ バー ============ -->
   <div id="bar">
+   <div id="main">
     <div class="top px"><span class="nm" id="barName"></span><span class="set" id="setTxt"></span><span class="clock" id="clock">--:--</span></div>
     <div class="now idle px" id="now"></div>
     <div class="stage"><canvas id="cv" width="240" height="208"></canvas><div id="ov" class="px"></div><div id="tbox" class="px" hidden></div></div>
@@ -203,6 +222,7 @@
       <span data-en="Bubble = own language ▸ language they want to speak" data-ja="吹き出し＝自分の言葉 ▸ 話したい言葉">Bubble = own language ▸ language they want to speak</span>
       <span class="kb" data-en="⌨ Arrow keys: walk · Space: talk / look" data-ja="⌨ 矢印キー：歩く ／ スペース：話す・しらべる">⌨ Arrow keys: walk · Space: talk / look</span>
       <button class="bub" id="bub"></button>
+      <button class="bub" id="chatBtn" hidden></button>
       <label class="bgm">🎵 <select id="bgm"></select><input type="range" id="vol" min="5" max="100" step="5" aria-label="BGM volume"></label>
     </div>
     <ul class="roster" id="roster"></ul>
@@ -219,12 +239,16 @@
       </div>
       <ul class="mates" id="mates"></ul>
       <div class="topic" id="topic" hidden></div>
-      <div id="chat" hidden>
-        <div id="chatT"></div><div id="log"></div>
-        <form id="sayF"><input type="text" id="say" maxlength="140" autocomplete="off"><button class="btn sm" data-en="Send" data-ja="送る">Send</button></form>
-      </div>
       <div class="msg" id="bmsg"></div>
     </div>
+   </div>
+    <aside id="side" hidden>
+      <div class="sh px"><b data-en="💬 Chat" data-ja="💬 チャット">💬 Chat</b><button id="sideX" aria-label="close">×</button></div>
+      <div class="tabs"><button id="tabA" data-en="Everyone" data-ja="みんな">Everyone</button><button id="tabP"></button></div>
+      <div class="log" id="logA"></div><div class="log" id="log" hidden></div>
+      <div id="chatT"></div>
+      <form id="sayF"><input type="text" id="say" maxlength="140" autocomplete="off"><button class="btn sm" data-en="Send" data-ja="送る">Send</button></form>
+    </aside>
   </div>
 
   <dialog id="setup">
@@ -444,9 +468,10 @@ const MASTER = [["いらっしゃい。ゆっくりしていってね。", "Welc
   ["テーブルの近くに行くと、話が聞こえるよ。", "Go near a table and you can hear them talk."], ["話したくなったら、光ってる席にすわってね。", "When you feel like talking, sit in a blinking seat."],
   ["ぼーっとするのも、大事な時間だよ。", "Spacing out is important time too."], ["今日はどんな一日だった？", "How was your day?"],
   ["おつかれさま。", "Good work today."], ["それ、日本語でなんて言うか知ってる？", "Do you know how to say that in Japanese?"], ["うんうん、それで？", "Mm-hm, and then?"]];
-function deliver(k, msg) { for (const p in ST.m) if (gkey(ST.m[p]) === k) { if (p === myId) onMsg(msg); else try { conns[p] && conns[p].send(msg); } catch (e) {} } }
-function relay(pid, text) {
-  const m = ST.m[pid], k = gkey(m), tx = String(text || "").replace(/\s+/g, " ").trim().slice(0, 140); if (!k || !tx) return;
+/* k が "a" のときは「みんな」＝バーに入っている全員（のぞき窓の人には配らない） */
+function deliver(k, msg) { for (const p in ST.m) if (k === "a" || gkey(ST.m[p]) === k) { if (p === myId) onMsg(msg); else try { conns[p] && conns[p].send(msg); } catch (e) {} } }
+function relay(pid, text, all) {
+  const m = ST.m[pid], k = !m ? null : all ? "a" : gkey(m), tx = String(text || "").replace(/\s+/g, " ").trim().slice(0, 140); if (!k || !tx) return;
   deliver(k, { t: "msg", k, tag: m.side + m.num, side: m.side, name: m.name, text: tx });
   if (k === "c") setTimeout(() => { const l = MASTER[Math.random() * MASTER.length | 0]; deliver("c", { t: "msg", k: "c", tag: "☕", side: "M", name: "Master", text: l[0] + " / " + l[1] }); }, 1100);
 }
@@ -457,7 +482,7 @@ function onGuest(c) {
     seen[c.peer] = Date.now();
     if (d.t === "hb") return;
     if (d.t === "watch") { conns[c.peer] = c; push(); return; }
-    if (d.t === "say") { relay(c.peer, d.text); return; }
+    if (d.t === "say") { relay(c.peer, d.text, d.all); return; }
     if (d.t === "join") {
       conns[c.peer] = c;
       if (!apply(c.peer, d)) { try { c.send({ t: "full" }); } catch (e) {} delete conns[c.peer]; setTimeout(() => c.close(), 500); return; }
@@ -521,7 +546,7 @@ function lost(c) {
   const r = joined ? order().indexOf(myId) : 0;         // 店が消えたら、名前の若い順にだれかが店を引きつぐ
   setTimeout(connectHub, 300 + Math.max(0, r) * 1200);
 }
-const act = d => { if (isHost) { if (d.t === "say") relay(myId, d.text); else if (d.t === "mv") { apply(myId, d); pushOne(myId); } else { apply(myId, d); push(); } } else if (link && link.open) link.send(d); };
+const act = d => { if (isHost) { if (d.t === "say") relay(myId, d.text, d.all); else if (d.t === "mv") { apply(myId, d); pushOne(myId); } else { apply(myId, d); push(); } } else if (link && link.open) link.send(d); };
 /* パソコン：矢印キー（またはWASD）で歩く。いすに入るとすわり、テーブルのそばに立つと聞ける */
 document.querySelectorAll("#dpad button[data-d]").forEach(b => {       // スマホ：押しているあいだ歩きつづける
   const [dx, dy] = b.dataset.d.split(",").map(Number); let iv = 0;
@@ -739,18 +764,33 @@ function onState() {
   drawOv(); voice(); tick();
 }
 /* 文字の会話 */
-let chatKey = null;
+let chatKey = null, chatTab = "a", chatOn = true; try { chatOn = localStorage.getItem("mtj-bar-chat") !== "0"; } catch (e) {}
 function chatHead() {
   const k = gkey(ST.m[myId]);
-  if (k !== chatKey) { chatKey = k; $("#log").innerHTML = ""; }
-  $("#chat").hidden = !k;
-  if (k) { $("#chatT").textContent = k === "c" ? L("Counter — chat with the master", "カウンター — 店長と話す") : L("Table ", "テーブル ") + TL[+k[1]] + L(" — text chat", " — 文字で話す"); $("#say").placeholder = L("Type a message…", "メッセージを書く…"); }
+  if (k !== chatKey) { chatKey = k; $("#log").innerHTML = ""; $("#tabP").classList.remove("new"); }
+  if (!k && chatTab === "p") chatTab = "a";
+  const here = !k ? L("This spot", "この場所") : k === "c" ? L("Counter", "カウンター") : L("Table ", "テーブル ") + TL[+k[1]];
+  $("#tabP").textContent = here; $("#tabP").disabled = !k;
+  $("#tabA").classList.toggle("on", chatTab === "a"); $("#tabP").classList.toggle("on", chatTab === "p");
+  $("#logA").hidden = chatTab !== "a"; $("#log").hidden = chatTab !== "p";
+  $("#logA").dataset.empty = L("Nothing yet. Say hi!", "まだ何もありません。ひとこと どうぞ。");
+  $("#log").dataset.empty = k === "c" ? L("Type something and the master answers.", "何か書くと、店長が返事をします。") : L("Nothing yet.", "まだ何もありません。");
+  $("#chatT").textContent = chatTab === "a" ? L("Goes to everyone in the bar. Not saved anywhere.", "バーの中の全員に届きます。どこにも残りません。")
+    : k === "c" ? L("Goes to the people at the counter. Not saved.", "カウンターの人にだけ届きます。残りません。") : L("Goes only to this table and the people listening beside it. Not saved.", "このテーブルと、そばで聞いている人にだけ届きます。残りません。");
+  $("#say").placeholder = L("Type a message…", "メッセージを書く…");
+  $("#chatBtn").hidden = !joined;
+  $("#chatBtn").textContent = chatOn ? L("💬 Chat: shown", "💬 チャット：表示中") : L("💬 Chat: hidden", "💬 チャット：非表示");
+  $("#side").hidden = !(joined && chatOn); document.body.classList.toggle("chat", joined && chatOn);
 }
+function setTab(t) { chatTab = t; $(t === "a" ? "#tabA" : "#tabP").classList.remove("new"); chatHead(); const g = $(t === "a" ? "#logA" : "#log"); g.scrollTop = g.scrollHeight; }
+function setChat(on) { chatOn = on; try { localStorage.setItem("mtj-bar-chat", on ? "1" : "0"); } catch (e) {} if (on) $("#chatBtn").classList.remove("new"); chatHead(); if (on) setTab(chatTab); }
 function onMsg(d) {
-  if (d.k !== gkey(ST.m[myId])) return;
-  const log = $("#log"), li = document.createElement("div"), tag = document.createElement("span"), nm = document.createElement("b");
+  const all = d.k === "a"; if (!all && d.k !== gkey(ST.m[myId])) return;
+  const log = $(all ? "#logA" : "#log"), li = document.createElement("div"), tag = document.createElement("span"), nm = document.createElement("b");
   tag.className = "tag " + d.side; tag.textContent = d.tag; nm.textContent = d.name + " "; li.append(tag, nm, d.text); log.appendChild(li);
   while (log.children.length > 60) log.firstChild.remove(); log.scrollTop = log.scrollHeight;
+  if (!chatOn) $("#chatBtn").classList.add("new");
+  if ((all ? "a" : "p") !== chatTab) $(all ? "#tabA" : "#tabP").classList.add("new");
 }
 function tick() {
   const s = ST.sess, now = $("#now");
@@ -816,7 +856,9 @@ $("#enter").onclick = async () => {
 function setMic() { const b = $("#mic"); b.textContent = !hasMic ? L("🎤 No mic", "🎤 マイクなし") : muted ? L("🔇 Muted", "🔇 ミュート中") : L("🎤 Mic on", "🎤 マイクON"); b.disabled = !hasMic; }
 $("#mic").onclick = () => { muted = !muted; micApply(); setMic(); };
 $("#stand").onclick = () => act({ t: "stand" });
-$("#sayF").onsubmit = e => { e.preventDefault(); const v = $("#say").value.trim(); if (v) { act({ t: "say", text: v }); $("#say").value = ""; } };
+$("#sayF").onsubmit = e => { e.preventDefault(); const v = $("#say").value.trim(); if (v) { act({ t: "say", text: v, all: chatTab === "a" ? 1 : 0 }); $("#say").value = ""; } };
+$("#tabA").onclick = () => setTab("a"); $("#tabP").onclick = () => setTab("p");
+$("#chatBtn").onclick = () => setChat(!chatOn); $("#sideX").onclick = () => setChat(false);
 $("#idle").onclick = () => { const m = ST.m[myId]; if (m) act({ t: "idle", v: !m.idle }); };
 $("#stop").onclick = () => act({ t: "stop" });
 /* 見た目。4つの型から選ぶか、こまかく変える。何もしなければランダムのまま入る */
