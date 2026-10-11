@@ -1,0 +1,609 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Fuda Town — find hidden word cards, battle with them</title>
+<meta name="description" content="Walk a tiny pixel town in Japan. Word cards are hidden in pots, vending machines and tall grass. The rarer the card, the harder the Japanese — and the harder it hits in a card battle. Free, no sign-up.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Fuda Town — find hidden word cards, battle with them">
+<meta property="og:description" content="A tiny pixel town where Japanese words are hiding. Find the cards, learn them, battle with them.">
+<meta property="og:url" content="https://moretojapan.com/fuda-town/">
+<link rel="canonical" href="https://moretojapan.com/fuda-town/">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%234a6a48'/%3E%3Ctext x='32' y='46' font-size='40' text-anchor='middle' fill='%23e0f0c8' font-family='Hiragino Sans,sans-serif' font-weight='800'%3E%E6%9C%AD%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DotGothic16&display=swap" rel="stylesheet">
+<style>
+  :root{--paper:#faf7f2;--ink:#1b1f26;--sub:#5d6673;--line:#e4ddd2;--ai:#22406e;--aka:#d94f2b;
+    --c0:#e0f0c8;--c1:#98b878;--c2:#4a6a48;--c3:#182818}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--paper);color:var(--ink);line-height:1.7;
+    font-family:"Hiragino Sans","Noto Sans JP",system-ui,-apple-system,sans-serif;-webkit-font-smoothing:antialiased}
+  a{color:var(--ai)}
+  header{position:sticky;top:0;z-index:50;background:#faf7f2e6;backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+  nav{display:flex;align-items:center;gap:18px;height:52px;max-width:1040px;margin:0 auto;padding:0 16px}
+  .logo{font-weight:800;font-size:18px;text-decoration:none;color:var(--ink);display:flex;align-items:center;gap:9px;white-space:nowrap}
+  .logo i{display:grid;place-items:center;width:28px;height:28px;border-radius:9px;background:var(--ai);color:#fff;font-style:normal;font-size:15px;font-weight:700}
+  nav .sp{flex:1}
+  nav a.nl{color:var(--sub);text-decoration:none;font-size:15px;white-space:nowrap}
+  @media(max-width:760px){nav a.nl{display:none}}
+  .lang{border:1px solid var(--line);background:#fff;border-radius:999px;padding:6px 14px;font:inherit;font-size:13px;cursor:pointer;color:var(--sub);width:auto}
+  .wrap{max-width:600px;margin:0 auto;padding:0 12px}
+
+  /* ============ 本体（ゲーム機） ============ */
+  .gb{margin:12px auto 18px;background:#cfcabd;border-radius:16px 16px 44px 16px;padding:14px 14px 18px;
+    box-shadow:inset 0 -6px 0 #b3ad9f,0 6px 18px #0002;user-select:none;-webkit-user-select:none}
+  .screen{position:relative;aspect-ratio:10/9;background:var(--c0);border:6px solid #3a3f38;border-radius:6px;overflow:hidden;
+    container-type:inline-size;font-family:"DotGothic16","Hiragino Sans",monospace;color:var(--c3);line-height:1.35}
+  canvas{width:100%;height:100%;display:block;image-rendering:pixelated;image-rendering:crisp-edges}
+  .pix{image-rendering:pixelated}
+  #hud{position:absolute;top:1.5cqw;right:1.5cqw;background:var(--c0);border:.7cqw solid var(--c3);padding:.2cqw 1.6cqw;font-size:3.6cqw}
+
+  .box{position:absolute;left:1.5cqw;right:1.5cqw;bottom:1.5cqw;background:var(--c0);border:.9cqw solid var(--c3);
+    box-shadow:inset 0 0 0 .6cqw var(--c0),inset 0 0 0 1cqw var(--c2);border-radius:1.6cqw;padding:2.6cqw 3.4cqw;min-height:21cqw;cursor:pointer;z-index:5}
+  #boxMain{font-size:4.6cqw}
+  #boxMain .q{font-size:7cqw;display:block;text-align:center}
+  #boxSub{font-size:3.5cqw;color:var(--c2);margin-top:.4cqw}
+  .more{position:absolute;right:2.6cqw;bottom:1.2cqw;font-size:3.4cqw;animation:bob .7s steps(2) infinite}
+  @keyframes bob{50%{transform:translateY(-1cqw)}}
+  .opts{display:grid;gap:1.2cqw;margin-top:1.6cqw}
+  .opts:empty{display:none}
+  .opts.two,.opts.quiz{grid-template-columns:1fr 1fr}
+  .opts.hand{grid-template-columns:1fr 1fr 1fr}
+  .opt{font:inherit;font-size:4cqw;color:var(--c3);background:var(--c0);border:.6cqw solid var(--c2);border-radius:1cqw;
+    padding:1.2cqw 1.6cqw;cursor:pointer;text-align:left;min-height:9cqw}
+  .opt.on{border-color:var(--c3);background:var(--c1)}
+  .opt.on::before{content:"▶";margin-right:.6cqw;font-size:3cqw}
+  .hand .opt{text-align:center;padding:1cqw .6cqw}
+  .hand .opt.on::before{content:none}
+  .hand .opt:last-child{grid-column:1/-1;min-height:0;text-align:center}
+  .hc b{display:block;font-weight:400;font-size:4.4cqw;line-height:1.2;word-break:break-all}
+  .hc small{font-size:3cqw;color:var(--c2)}
+  .opt.on .hc small{color:var(--c3)}
+
+  .full{position:absolute;inset:0;background:var(--c0);z-index:4;overflow-y:auto;padding:2cqw 2cqw 30cqw}
+  /* カード。4色の中だけでレア度を描き分ける */
+  .card{display:inline-flex;flex-direction:column;align-items:center;justify-content:center;gap:.4cqw;width:27cqw;aspect-ratio:5/7;
+    border:.9cqw solid var(--c3);border-radius:2cqw;background:var(--c0);padding:1.4cqw;text-align:center;vertical-align:top;position:relative}
+  .card .st{font-size:2.8cqw;letter-spacing:-.1cqw}
+  .card .cj{font-size:6.4cqw;line-height:1.15;word-break:break-all}
+  .card .cj.lg{font-size:4.4cqw}
+  .card .ck{font-size:2.5cqw;color:var(--c2);word-break:break-all}
+  .card .ce{font-size:2.9cqw;line-height:1.2}
+  .card.big{width:46cqw}
+  .card.big .st{font-size:4.6cqw}.card.big .cj{font-size:11cqw}.card.big .cj.lg{font-size:7cqw}
+  .card.big .ck{font-size:3.8cqw}.card.big .ce{font-size:4.4cqw}
+  .card.r2{box-shadow:inset 0 0 0 .6cqw var(--c0),inset 0 0 0 1.1cqw var(--c2)}
+  .card.r3{background:var(--c1);box-shadow:inset 0 0 0 .6cqw var(--c1),inset 0 0 0 1.1cqw var(--c3)}
+  .card.r4{background:var(--c2);color:var(--c0)}.card.r4 .ck{color:var(--c1)}
+  .card.r4{box-shadow:inset 0 0 0 .6cqw var(--c2),inset 0 0 0 1.1cqw var(--c0)}
+  .card.r5{background:var(--c3);color:var(--c0);box-shadow:inset 0 0 0 .6cqw var(--c3),inset 0 0 0 1.1cqw var(--c1)}
+  .card.r5 .ck{color:var(--c1)}
+  .card.r5::after{content:"";position:absolute;inset:2cqw;border:.4cqw dashed var(--c1);border-radius:1cqw;pointer-events:none}
+  .show{display:flex;gap:2cqw;justify-content:center;align-items:center;height:62cqw}
+  .show .card{animation:pop .35s steps(4)}
+  @keyframes pop{from{transform:scale(.2)}}
+
+  /* バトル */
+  .bt{height:50cqw;display:flex;flex-direction:column;justify-content:space-between;padding:1cqw 2cqw}
+  .bt .row{display:flex;align-items:center;justify-content:space-between;gap:3cqw}
+  .bt img{width:21cqw;height:21cqw}
+  .bt .m img{width:23cqw;height:23cqw}
+  .bt .info{flex:1;font-size:4cqw;border-bottom:.8cqw solid var(--c3);border-left:.8cqw solid var(--c3);padding:0 0 1cqw 2cqw}
+  .bt .m .info{border-left:0;border-right:.8cqw solid var(--c3);padding:0 2cqw 1cqw 0}
+  .hp{height:2.6cqw;border:.6cqw solid var(--c3);border-radius:2cqw;background:var(--c0);margin-top:.6cqw;overflow:hidden}
+  .hp i{display:block;height:100%;background:var(--c2);width:100%;transition:width .4s steps(8)}
+  .hit{animation:hit .3s steps(3)}
+  @keyframes hit{33%{opacity:0}66%{opacity:1;transform:translateX(2cqw)}}
+  .bt .m .hit{animation:hit2 .3s steps(3)}
+  @keyframes hit2{33%{opacity:0}66%{opacity:1}}
+
+  /* あつめた札 */
+  .col h3{font-size:4.4cqw;margin:1cqw 0;font-weight:400}
+  .grid{display:grid;grid-template-columns:repeat(6,1fr);gap:1cqw}
+  .slot{font:inherit;aspect-ratio:5/7;border:.5cqw solid var(--c2);border-radius:1cqw;background:var(--c0);color:var(--c3);
+    font-size:3.2cqw;line-height:1.1;padding:.3cqw;cursor:pointer;word-break:break-all;overflow:hidden}
+  .slot.no{color:var(--c1);border-style:dashed;cursor:default}
+  .slot.r3{background:var(--c1)}.slot.r4{background:var(--c2);color:var(--c0)}.slot.r5{background:var(--c3);color:var(--c0)}
+  #det{display:flex;justify-content:center;margin:1cqw 0 2cqw;min-height:0}
+
+  /* ボタン */
+  .pad{display:flex;justify-content:space-between;align-items:center;margin-top:14px;padding:0 6px}
+  .dp{display:grid;grid-template-columns:repeat(3,44px);grid-template-rows:repeat(3,44px)}
+  .dp button,.ab button,.mn{border:0;background:#33373b;color:#b9bdc2;font-size:15px;cursor:pointer;touch-action:none;padding:0;font-family:inherit}
+  .dp button:active,.ab button:active{background:#15181b}
+  .dp .u{grid-area:1/2;border-radius:8px 8px 0 0}.dp .l{grid-area:2/1;border-radius:8px 0 0 8px}
+  .dp .c{grid-area:2/2;pointer-events:none}.dp .r{grid-area:2/3;border-radius:0 8px 8px 0}.dp .d{grid-area:3/2;border-radius:0 0 8px 8px}
+  .ab{display:flex;gap:14px;align-items:flex-end}
+  .ab button{width:58px;height:58px;border-radius:50%;background:#8e2f4c;color:#fff;font-weight:800;font-size:18px}
+  .ab .b{margin-top:22px}.ab .a{margin-bottom:22px}
+  .mn{display:block;margin:6px auto 0;border-radius:999px;padding:5px 16px;font-size:12px;letter-spacing:.1em;background:#8a8578;color:#fff}
+  .keys{color:var(--sub);font-size:13px;text-align:center;margin:8px 0 0}
+  @media(hover:none){.keys{display:none}}
+
+  .about{color:var(--sub);font-size:14.5px;margin:0 0 40px}
+  .about h1{font-size:22px;color:var(--ink);margin:18px 0 6px;line-height:1.3}
+  .about b{color:var(--ink)}
+</style>
+</head>
+<body>
+<header><nav>
+  <a class="logo" href="/"><i>奥</i>More to Japan</a><span class="sp"></span>
+  <a class="nl" href="/#games" data-en="More games" data-ja="ほかのゲーム">More games</a>
+  <a class="nl" href="/play/" data-en="Language exchange" data-ja="言語交換">Language exchange</a>
+  <button class="lang" id="lang">日本語</button>
+</nav></header>
+
+<div class="wrap">
+  <div class="gb">
+    <div class="screen" id="screen">
+      <canvas id="cv" width="160" height="144"></canvas>
+      <div id="hud"></div>
+      <div class="full" id="full" hidden></div>
+      <div class="box" id="box" hidden>
+        <div id="boxMain"></div><div id="boxSub"></div>
+        <div class="opts" id="opts"></div><span class="more" id="more">▼</span>
+      </div>
+    </div>
+    <div class="pad">
+      <div class="dp">
+        <button class="u" data-d="0" aria-label="up">▲</button><button class="l" data-d="2" aria-label="left">◀</button>
+        <button class="c"></button><button class="r" data-d="3" aria-label="right">▶</button><button class="d" data-d="1" aria-label="down">▼</button>
+      </div>
+      <div class="ab"><button class="b" id="btnB">B</button><button class="a" id="btnA">A</button></div>
+    </div>
+    <button class="mn" id="btnM" data-en="MENU" data-ja="メニュー">MENU</button>
+  </div>
+  <p class="keys" data-en="Arrow keys to walk · Z / Enter = A (look, talk) · X = menu" data-ja="矢印キーで歩く ・ Z / Enter ＝ A（しらべる・話す） ・ X ＝ メニュー">Arrow keys to walk · Z / Enter = A (look, talk) · X = menu</p>
+
+  <div class="about">
+    <h1 data-en="Fuda Town — the words are hiding" data-ja="ふだの町 — ことばは、かくれている">Fuda Town — the words are hiding</h1>
+    <p data-en="Fuda (札) means card. Somewhere in this town — inside a pot, under a vending machine, in the tall grass — there are word cards. Face something and press A to look. <b>The rarer the card, the harder the Japanese</b>: ★ is a simple word in kana, ★★★★★ is a proverb. Cards are also your moves in battle: pick one, answer what it means, and it hits. Rare cards hit harder — if you really know them. Hidden cards come back every day." data-ja="まちの どこかに、ことばの札（カード）が かくれています。つぼの中、自販機の下、草むら。むきあって A でしらべます。<b>めずらしい札ほど、ことばが むずかしい</b>：★はかんたんな単語、★★★★★はことわざ。札はバトルの技にもなります。えらんで、意味を当てると、当たる。めずらしい札ほど強い——ほんとうに覚えていれば。かくれた札は毎日もどります。">Fuda (札) means card. Somewhere in this town — inside a pot, under a vending machine, in the tall grass — there are word cards. Face something and press A to look. <b>The rarer the card, the harder the Japanese</b>: ★ is a simple word in kana, ★★★★★ is a proverb. Cards are also your moves in battle: pick one, answer what it means, and it hits. Rare cards hit harder — if you really know them. Hidden cards come back every day.</p>
+  </div>
+</div>
+
+<script>
+"use strict";
+const $ = s => document.querySelector(s);
+const PAL = ["#e0f0c8", "#98b878", "#4a6a48", "#182818"];
+
+/* ============ ことば ============ */
+let lang = "en";
+try { if (localStorage.getItem("mj-lang") === "ja") lang = "ja"; } catch (e) {}
+const L = (en, ja) => lang === "ja" ? ja : en;
+function applyLang() {
+  document.documentElement.lang = lang;
+  document.querySelectorAll("[data-en]").forEach(el => { el.innerHTML = el.dataset[lang]; });
+  $("#lang").textContent = lang === "ja" ? "English" : "日本語";
+  hud();
+}
+
+/* ============ 札（★＝レア度＝むずかしさ） ============ */
+const CARDS = [
+  // ★ かなの単語
+  ["ねこ","ねこ","neko","cat",1],["いぬ","いぬ","inu","dog",1],["みず","みず","mizu","water",1],["やま","やま","yama","mountain",1],
+  ["はな","はな","hana","flower",1],["あめ","あめ","ame","rain",1],["そら","そら","sora","sky",1],["さかな","さかな","sakana","fish",1],
+  ["ごはん","ごはん","gohan","rice / a meal",1],["おちゃ","おちゃ","ocha","tea",1],["パン","ぱん","pan","bread",1],["ほん","ほん","hon","book",1],
+  // ★★ 漢字の基本語
+  ["駅","えき","eki","station",2],["電車","でんしゃ","densha","train",2],["友達","ともだち","tomodachi","friend",2],["天気","てんき","tenki","weather",2],
+  ["食べる","たべる","taberu","to eat",2],["飲む","のむ","nomu","to drink",2],["高い","たかい","takai","expensive / tall",2],["安い","やすい","yasui","cheap",2],
+  ["右","みぎ","migi","right",2],["左","ひだり","hidari","left",2],["今日","きょう","kyō","today",2],["明日","あした","ashita","tomorrow",2],
+  // ★★★ 毎日つかう言い回し
+  ["いただきます","いただきます","itadakimasu","said before eating",3],["おつかれさま","おつかれさま","otsukaresama","thanks for your hard work",3],
+  ["よろしく","よろしく","yoroshiku","nice to meet you / I'm in your hands",3],["大丈夫","だいじょうぶ","daijōbu","it's okay / I'm fine",3],
+  ["すみません","すみません","sumimasen","excuse me / sorry",3],["お邪魔します","おじゃまします","ojama shimasu","said when entering a home",3],
+  ["懐かしい","なつかしい","natsukashii","nostalgic",3],["めんどくさい","めんどくさい","mendokusai","what a hassle",3],
+  ["微妙","びみょう","bimyō","meh / not sure about it",3],["自販機","じはんき","jihanki","vending machine",3],
+  // ★★★★ 英語に一語で無いもの
+  ["ぺこぺこ","ぺこぺこ","pekopeko","starving",4],["わくわく","わくわく","wakuwaku","excited, can't wait",4],
+  ["木漏れ日","こもれび","komorebi","sunlight through leaves",4],["積ん読","つんどく","tsundoku","buying books, never reading them",4],
+  ["口寂しい","くちさびしい","kuchisabishii","eating because your mouth is lonely",4],["空気を読む","くうきをよむ","kūki o yomu","to read the room",4],
+  ["猫舌","ねこじた","nekojita","can't eat hot food",4],["一人前","いちにんまえ","ichininmae","one serving / a full-fledged adult",4],
+  // ★★★★★ ことわざ・四字熟語
+  ["一期一会","いちごいちえ","ichigo ichie","this meeting happens only once",5],["七転び八起き","ななころびやおき","nanakorobi yaoki","fall seven times, get up eight",5],
+  ["猿も木から落ちる","さるもきからおちる","saru mo ki kara ochiru","even experts make mistakes",5],["花より団子","はなよりだんご","hana yori dango","food over flowers",5],
+  ["十人十色","じゅうにんといろ","jūnin toiro","ten people, ten colours",5],["石の上にも三年","いしのうえにもさんねん","ishi no ue ni mo sannen","patience wins in the end",5]
+].map((a, i) => ({ i, j: a[0], k: a[1], r: a[2], e: a[3], s: a[4] }));
+const cardBy = j => CARDS.find(c => c.j === j);
+
+/* ============ セーブ（この端末の中だけ） ============ */
+const SKEY = "mtj-fuda-town";
+let S = { own: {}, found: {}, day: "", evt: "", wins: {}, learn: "", mute: false, x: 12, y: 6, intro: false };
+try { Object.assign(S, JSON.parse(localStorage.getItem(SKEY) || "{}")); } catch (e) {}
+const save = () => { try { localStorage.setItem(SKEY, JSON.stringify(S)); } catch (e) {} };
+const today = () => new Date().toLocaleDateString("sv");
+if (S.day !== today()) { S.day = today(); S.found = {}; save(); }   // かくれた札は毎日もどる
+const learn = () => S.learn || (lang === "ja" ? "en" : "ja");
+const front = c => learn() === "ja" ? c.j : c.e;
+const back = c => learn() === "ja" ? c.e : c.j;
+const owned = () => Object.keys(S.own).map(Number);
+const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.random() * (i + 1) | 0; [a[i], a[j]] = [a[j], a[i]]; } return a; };
+function pick(s) {   // そのレア度から1枚。まだ持っていない札を先に出す
+  const pool = CARDS.filter(c => c.s === s), fresh = pool.filter(c => !S.own[c.i]);
+  return shuffle(fresh.length ? fresh : pool)[0];
+}
+function hud() { $("#hud").textContent = "札 " + owned().length + "/" + CARDS.length; }
+
+/* ============ 音（矩形波だけ） ============ */
+let AC;
+function beep(f, d = .08, v = .04, when = 0) {
+  if (S.mute) return;
+  try {
+    AC = AC || new (window.AudioContext || window.webkitAudioContext)();
+    const o = AC.createOscillator(), g = AC.createGain(), t = AC.currentTime + when;
+    o.type = "square"; o.frequency.value = f; g.gain.setValueAtTime(v, t); g.gain.setValueAtTime(v, t + d * .8); g.gain.linearRampToValueAtTime(0, t + d);
+    o.connect(g).connect(AC.destination); o.start(t); o.stop(t + d);
+  } catch (e) {}
+}
+const sfx = {
+  get: () => [523, 659, 784, 1047].forEach((f, i) => beep(f, .11, .04, i * .09)),
+  ok: () => { beep(784, .08); beep(1047, .12, .04, .08); },
+  ng: () => { beep(196, .1); beep(147, .18, .04, .1); },
+  hit: () => { beep(110, .06, .06); beep(82, .1, .06, .06); },
+  sel: () => beep(660, .04, .03),
+  rustle: () => [300, 240, 300].forEach((f, i) => beep(f, .05, .03, i * .07))
+};
+let bumpAt = 0;
+function speak(c) {
+  if (S.mute || !window.speechSynthesis) return;
+  try {
+    const ja = learn() === "ja", u = new SpeechSynthesisUtterance(ja ? c.k : c.e.split(/[\/,]/)[0]);
+    u.lang = ja ? "ja-JP" : "en-US"; u.rate = .9; speechSynthesis.cancel(); speechSynthesis.speak(u);
+  } catch (e) {}
+}
+
+/* ============ 地図 ============ */
+const MAP = [
+  "TTTTTTTTTTTTTTTTTTTTTTTT",
+  "TJ.ggggT.....L....TggKrT",
+  "T..ggggT.RRRR.....TgggrT",
+  "TTTgTTTT.HHDH.S...TTgTTT",
+  "T..g.....,,,,.......g..T",
+  "T.P......,..V....f..g.OT",
+  "T,,,,,,,,,,,,,,,,,,,,,,T",
+  "T.f.,....B..,..RRRR....T",
+  "T...,.WWW...,..HDHH.P..T",
+  "TFFF,.WWWW..,....,.....T",
+  "Tggg,..WWW..,,,,,,..S..T",
+  "Tggg,.......,......TTTTT",
+  "Tggg,,,,,,,,,..f...TgggT",
+  "T.r....P....,......ggggT",
+  "T.RRR.......,..L...TgPgT",
+  "T.HDH..S....,......TTTTT",
+  "T..,........,....WW....T",
+  "T..,,,,,,,,,,...WWWW.r.T",
+  "T....f.....K....WWW....T",
+  "TTTTTTTTTTTTTTTTTTTTTTTT"
+];
+const MW = 24, MH = MAP.length;
+const tileAt = (x, y) => (MAP[y] || "")[x] || "T";
+const WALK = ".,gf";
+
+/* タイルは全部ここで描く（画像ファイルなし） */
+function makeAtlas(alt) {
+  const A = {};
+  const T = (ch, fn, bare) => {
+    const c = document.createElement("canvas"); c.width = c.height = 16; const g = c.getContext("2d");
+    const R = (k, x, y, w, h) => { g.fillStyle = PAL[k]; g.fillRect(x, y, w, h); };
+    if (!bare) { R(0, 0, 0, 16, 16); R(1, 3, 4, 1, 1); R(1, 11, 9, 1, 1); R(1, 7, 13, 1, 1); R(1, 13, 2, 1, 1); }
+    fn(R); A[ch] = c;
+  };
+  T(".", R => {});
+  T(",", R => { R(0, 0, 0, 16, 16); R(1, 0, 15, 2, 1); R(1, 9, 0, 2, 1); });
+  T("g", R => { R(1, 0, 0, 16, 16); for (const y of [1, 9]) for (const x of [1, 9]) { R(2, x, y + 2, 1, 3); R(2, x + 2, y, 1, 5); R(2, x + 4, y + 2, 1, 3); R(3, x + 2, y + 5, 1, 1); } });
+  T("T", R => { R(3, 2, 0, 12, 12); R(3, 1, 2, 14, 8); R(2, 3, 1, 10, 10); R(2, 2, 3, 12, 6); R(1, 4, 3, 3, 2); R(1, 9, 6, 2, 2); R(3, 6, 12, 4, 4); R(2, 7, 12, 2, 3); });
+  T("W", R => { R(1, 0, 0, 16, 16); const o = alt ? 3 : 0; R(0, 2 + o, 3, 4, 1); R(0, 10 - o, 8, 4, 1); R(0, 4 + o, 13, 4, 1); });
+  T("R", R => { R(2, 0, 0, 16, 16); R(3, 0, 0, 16, 1); for (const y of [4, 8, 12]) R(3, 0, y, 16, 1); for (const x of [3, 11]) { R(3, x, 1, 1, 3); R(3, x + 4, 5, 1, 3); R(3, x, 9, 1, 3); R(3, x + 4, 13, 1, 3); } });
+  T("H", R => { R(0, 0, 0, 16, 16); R(3, 0, 0, 16, 1); R(3, 4, 4, 8, 8); R(1, 5, 5, 6, 6); R(3, 7, 5, 1, 6); R(3, 5, 8, 6, 1); R(3, 0, 15, 16, 1); });
+  T("D", R => { R(0, 0, 0, 16, 16); R(3, 0, 0, 16, 1); R(3, 3, 2, 10, 14); R(2, 4, 3, 8, 13); R(0, 10, 9, 1, 2); });
+  T("S", R => { R(3, 7, 10, 2, 5); R(3, 2, 3, 12, 8); R(0, 3, 4, 10, 6); R(2, 4, 5, 8, 1); R(2, 4, 7, 6, 1); });
+  T("P", R => { R(3, 4, 5, 8, 10); R(3, 3, 7, 10, 6); R(2, 5, 6, 6, 8); R(3, 3, 4, 10, 2); R(1, 6, 7, 1, 4); });
+  T("V", R => { R(3, 2, 0, 12, 16); R(0, 3, 1, 10, 8); R(2, 4, 2, 2, 3); R(1, 7, 2, 2, 3); R(2, 10, 2, 2, 3); R(2, 4, 6, 2, 2); R(1, 7, 6, 2, 2); R(2, 10, 6, 2, 2); R(2, 3, 10, 10, 5); R(3, 5, 12, 6, 2); R(0, 11, 10, 1, 2); });
+  T("J", R => { R(3, 3, 1, 10, 2); R(3, 1, 3, 14, 3); R(3, 3, 6, 10, 9); R(0, 4, 7, 8, 7); R(3, 6, 9, 4, 5); R(2, 7, 10, 2, 4); R(3, 2, 15, 12, 1); });
+  T("L", R => { R(3, 6, 1, 4, 1); R(3, 4, 2, 8, 2); R(3, 5, 4, 6, 5); R(0, 6, 5, 4, 3); R(3, 6, 9, 4, 5); R(2, 7, 9, 2, 5); R(3, 4, 14, 8, 2); });
+  T("K", R => { R(3, 4, 1, 2, 2); R(3, 10, 1, 2, 2); R(3, 4, 2, 8, 6); R(1, 5, 4, 6, 3); R(3, 6, 5, 1, 1); R(3, 9, 5, 1, 1); R(3, 3, 8, 10, 7); R(0, 5, 9, 6, 5); R(3, 7, 11, 2, 1); });
+  T("B", R => { R(3, 4, 2, 8, 10); R(2, 5, 3, 6, 8); R(3, 6, 5, 4, 1); R(0, 6, 8, 4, 2); R(3, 7, 12, 2, 4); });
+  T("O", R => { R(3, 1, 0, 14, 2); R(3, 2, 2, 2, 5); R(3, 12, 2, 2, 5); R(3, 2, 6, 12, 9); R(2, 3, 7, 10, 7); R(3, 4, 8, 8, 3); });
+  T("f", R => { for (const [x, y] of [[3, 4], [10, 9]]) { R(3, x, y, 3, 3); R(0, x + 1, y + 1, 1, 1); R(2, x + 1, y + 3, 1, 2); } });
+  T("F", R => { R(3, 0, 5, 16, 2); R(3, 0, 10, 16, 2); R(3, 2, 3, 2, 11); R(3, 11, 3, 2, 11); });
+  T("r", R => { R(3, 5, 4, 6, 2); R(3, 3, 6, 10, 8); R(2, 4, 7, 8, 6); R(2, 6, 5, 4, 2); R(1, 5, 7, 4, 2); });
+  return A;
+}
+const ATLAS = [makeAtlas(0), makeAtlas(1)];
+
+/* 人のドット。向き4つ・歩き2コマ */
+function drawChar(g, ox, oy, dir, f, st) {
+  const R = (k, x, y, w, h) => { g.fillStyle = PAL[k]; g.fillRect(ox + x, oy + y, w, h); };
+  if (st.cat) { R(3, 4, 7, 2, 2); R(3, 9, 7, 2, 2); R(3, 4, 8, 7, 4); R(0, 5, 9, 1, 1); R(0, 8, 9, 1, 1); R(3, 5, 12, 8, 3); R(3, 13, 9, 1, 4); R(3, 5, 15, 1, 1); R(3, 11, 15, 1, 1); return; }
+  R(3, 4, 0, 8, 1); R(3, 3, 1, 10, 8);
+  if (st.cap) R(1, 4, 1, 8, 2);
+  if (st.bun) R(3, 6, -1, 4, 1);
+  if (dir === 0) R(2, 4, 4, 8, 4);
+  else if (dir === 1) { R(0, 4, 4, 8, 4); R(3, 6, 5, 1, 2); R(3, 9, 5, 1, 2); }
+  else if (dir === 2) { R(0, 4, 4, 6, 4); R(2, 10, 4, 2, 4); R(3, 5, 5, 1, 2); }
+  else { R(0, 6, 4, 6, 4); R(2, 4, 4, 2, 4); R(3, 10, 5, 1, 2); }
+  R(3, 4, 9, 8, 5); R(st.body, 5, 9, 6, 4); R(0, 3, 10, 1, 2); R(0, 12, 10, 1, 2);
+  R(3, 5, 14, 2, f === 1 ? 2 : 1); R(3, 9, 14, 2, f === 2 ? 2 : 1); if (!f) { R(3, 5, 14, 2, 2); R(3, 9, 14, 2, 2); }
+}
+
+/* いきもの。左半分だけ書いて鏡うつしにする */
+function critter(rows) {
+  const c = document.createElement("canvas"); c.width = c.height = 16; const g = c.getContext("2d");
+  rows.forEach((r, y) => { for (let x = 0; x < 8; x++) { const ch = r[x]; if (ch === " " || ch === undefined) continue; g.fillStyle = PAL[+ch]; g.fillRect(x, y, 1, 1); g.fillRect(15 - x, y, 1, 1); } });
+  return c.toDataURL();
+}
+const MOCHI = critter(["        ", "  33    ", " 3113   ", " 3113333", " 3100000", "  300000", " 3000000", " 3003300", " 3003300", " 3000000", " 3011003", " 3000000", "  300000", "  311111", "   33333", "        "]);
+const MONS = {
+  daruma: critter(["        ", "    3333", "  332222", " 3222222", " 3223333", "32230000", "32203300", "32200300", "32200000", "32230003", "32223333", "32222222", "32221122", " 3222112", "  332222", "    3333"]),
+  kappa: critter(["    3333", "  331111", " 3333333", " 3222222", "32200222", "32203222", "32222233", " 3222311", "  322233", " 3322222", "31322222", "31322112", " 3322112", "  322222", "  332332", "  333 33"]),
+  kon: critter([" 3      ", " 33     ", " 313    ", " 3113333", " 3111111", " 3100111", " 3103111", "  311111", "  331113", "   33133", "   31111", "  311111", "  311001", "  311001", "  331111", "   33333"])
+};
+
+/* ============ 画面の箱（せりふ・えらぶ） ============ */
+const box = $("#box"), boxMain = $("#boxMain"), boxSub = $("#boxSub"), opts = $("#opts"), more = $("#more"), full = $("#full");
+let mode = "walk", busy = false, waitA = null, optEls = [], optI = 0, canCancel = null;
+function tell(main, sub = "") {
+  return new Promise(res => { box.hidden = false; boxMain.innerHTML = main; boxSub.innerHTML = sub; opts.innerHTML = ""; optEls = []; more.hidden = false; waitA = res; });
+}
+function choose(main, sub, list, o = {}) {
+  return new Promise(res => {
+    box.hidden = false; boxMain.innerHTML = main; boxSub.innerHTML = sub || ""; more.hidden = true; waitA = null;
+    opts.className = "opts " + (o.cls || ""); opts.innerHTML = "";
+    const fin = i => { optEls = []; opts.innerHTML = ""; canCancel = null; sfx.sel(); res(i); };
+    optEls = list.map((h, i) => { const b = document.createElement("button"); b.className = "opt"; b.innerHTML = h; b.onclick = e => { e.stopPropagation(); fin(i); }; opts.appendChild(b); return b; });
+    optI = 0; hi(); canCancel = o.cancel ? () => fin(-1) : null;
+  });
+}
+function hi() { optEls.forEach((b, i) => b.classList.toggle("on", i === optI)); }
+async function run(fn) {
+  if (busy) return; busy = true; mode = "ui"; held.length = 0;
+  try { await fn(); } finally { box.hidden = true; full.hidden = true; full.innerHTML = ""; mode = "walk"; busy = false; }
+}
+function pressA() {
+  if (mode === "walk") return interact();
+  if (optEls.length) return optEls[optI].click();
+  if (waitA) { const f = waitA; waitA = null; f(); }
+}
+function pressB() { if (mode === "walk") run(menu); else if (canCancel) canCancel(); }
+box.onclick = () => { if (!optEls.length) pressA(); };
+
+/* ============ 札を見せる・もらう ============ */
+function cardHTML(c, big) {
+  return `<div class="card r${c.s}${big ? " big" : ""}"><div class="st">${"★".repeat(c.s)}</div><div class="cj${c.j.length > 4 ? " lg" : ""}">${c.j}</div>` +
+    `<div class="ck">${c.k !== c.j ? c.k + "<br>" : ""}${c.r}</div><div class="ce">${c.e}</div></div>`;
+}
+async function gain(c, pre) {
+  sfx.get(); if (pre) await tell(pre);
+  const isNew = !S.own[c.i]; S.own[c.i] = (S.own[c.i] || 0) + 1; save(); hud();
+  full.innerHTML = `<div class="show">${cardHTML(c, true)}</div>`; full.hidden = false; speak(c);
+  await tell(`${c.j} ＝ ${c.e}`, isNew ? L("New card! " + "★".repeat(c.s), "あたらしい札！ " + "★".repeat(c.s)) : L("You have this one — now ×" + S.own[c.i], "もっている札 — ×" + S.own[c.i] + " になった"));
+  full.hidden = true; full.innerHTML = "";
+}
+async function quiz(c) {
+  const o = shuffle([c, ...shuffle(CARDS.filter(x => x !== c && x.s === c.s)).slice(0, 3)]);
+  const k = await choose(`<span class="q">${front(c)}</span>`, learn() === "ja" ? L("What does it mean?", "どういう いみ？") : L("Which one is it in Japanese?", "日本語では どれ？"), o.map(back), { cls: "quiz" });
+  const ok = o[k] === c; ok ? sfx.ok() : sfx.ng(); speak(c);
+  await tell((ok ? "○ " : "× ") + c.j + (c.k !== c.j ? "（" + c.k + "）" : ""), c.r + " — " + c.e);
+  return ok;
+}
+
+/* ============ バトル ============ */
+const dmg = c => 2 + c.s * 2;
+async function battle(n) {
+  const ids = owned();
+  if (!ids.length) return tell(L("You have no cards yet. Look around town!", "まだ札が ない。まちを しらべよう！"));
+  const E = { hp: n.hp }, M = { hp: 20 };
+  full.innerHTML = `<div class="bt"><div class="row e"><div class="info">${n.mon}<div class="hp"><i id="eh"></i></div></div><img class="pix" id="ei" src="${MONS[n.img]}" alt=""></div>` +
+    `<div class="row m"><img class="pix" id="mi" src="${MOCHI}" alt=""><div class="info">MOCHI <span id="mn"></span><div class="hp"><i id="mh"></i></div></div></div></div>`;
+  full.hidden = false;
+  const bars = () => { $("#eh").style.width = E.hp / n.hp * 100 + "%"; $("#mh").style.width = M.hp / 20 * 100 + "%"; $("#mn").textContent = Math.max(0, M.hp) + "/20"; };
+  const flash = id => { const el = $(id); el.classList.remove("hit"); void el.offsetWidth; el.classList.add("hit"); };
+  bars();
+  await tell(L(`${n.name[0]} sends out ${n.mon}!`, `${n.name[1]}は ${n.mon}を くりだした！`), L("Pick a card, answer what it means — then it hits.", "札をえらんで、意味を当てると 当たる。"));
+  for (;;) {
+    const hand = shuffle(ids).slice(0, 3).map(i => CARDS[i]);
+    const k = await choose(L("Which card?", "どの札を つかう？"), "",
+      hand.map(c => `<span class="hc"><b>${front(c)}</b><small>${"★".repeat(c.s)} ⚔${dmg(c)}</small></span>`).concat([L("Run", "にげる")]), { cls: "hand" });
+    if (k === hand.length) { await tell(L("Got away safely!", "うまく にげきれた！")); return; }
+    const c = hand[k];
+    if (await quiz(c)) {
+      E.hp = Math.max(0, E.hp - dmg(c)); bars(); flash("#ei"); sfx.hit();
+      await tell(L(`「${c.j}」 hits! ${dmg(c)} damage.`, `「${c.j}」が 当たった！ ${dmg(c)}ダメージ。`));
+    } else await tell(L("The card fizzled…", "札は ふはつに おわった…"));
+    if (E.hp <= 0) {
+      S.wins[n.id] = (S.wins[n.id] || 0) + 1; save();
+      await tell(L(`${n.mon} is out! You win!`, `${n.mon}は たおれた！ かち！`));
+      await tell(`${n.name[lang === "ja" ? 1 : 0]}「${n.lose[learn() === "ja" ? 0 : 1]}」`, n.lose[learn() === "ja" ? 1 : 0]);
+      await gain(pick(n.prize), L(`${n.name[0]} gave you a card!`, `${n.name[1]}から 札を もらった！`));
+      return;
+    }
+    // あいての番。出してくる札も、読めば覚えられる
+    const ec = shuffle(CARDS.filter(x => x.s <= n.prize))[0];
+    await tell(`${n.mon}:「${ec.j}」`, (ec.k !== ec.j ? ec.k + " — " : "") + ec.e);
+    if (Math.random() < .15) await tell(L("…but it missed!", "…しかし はずれた！"));
+    else { M.hp -= n.atk; bars(); flash("#mi"); sfx.hit(); await tell(L(`MOCHI takes ${n.atk} damage.`, `MOCHIは ${n.atk}ダメージを うけた。`)); }
+    if (M.hp <= 0) { await tell(L("MOCHI is out of energy…", "MOCHIは ちからつきた…"), L("Find more cards and come back. Nothing is lost.", "札をあつめて また来よう。なにも へらない。")); return; }
+  }
+}
+
+/* ============ まちの人 ============ */
+const say = (n, ja, en) => tell(`${n.name[lang === "ja" ? 1 : 0]}「${learn() === "ja" ? ja : en}」`, learn() === "ja" ? en : ja);
+async function fighter(n) {
+  await say(n, n.hi[0], n.hi[1]);
+  const k = await choose(L(`Battle ${n.name[0]}?`, `${n.name[1]}と バトルする？`), "", [L("Yes", "はい"), L("No", "いいえ")], { cls: "two", cancel: true });
+  if (k === 0) await battle(n);
+}
+const HINTS = [
+  ["自販機の下、見た？", "Did you look under the vending machine?"],
+  ["北東の森に、たぬきがいるよ。", "There is a tanuki in the north-east woods."],
+  ["森のはしの木に、何かひっかかってる。", "Something is stuck in a tree at the edge of the woods."],
+  ["北西のほこらには、すごい札があるらしい。", "They say the little shrine in the north-west holds an amazing card."],
+  ["草むらを歩くと、札が出てくるよ。", "Walk through tall grass and cards turn up."]
+];
+const NPCS = [
+  { x: 10, y: 5, st: { body: 1, bun: 1 }, name: ["Granny Ume", "ウメばあ"], n: 0,
+    talk: async n => { await say(n, "こんにちは。いい天気だね。", "Hello. Nice weather, isn't it."); const h = HINTS[n.n++ % HINTS.length]; await say(n, h[0], h[1]); } },
+  { x: 8, y: 16, st: { cat: 1 }, name: ["Cat", "ねこ"], talk: async n => { await say(n, "にゃー。", "Meow."); } },
+  { id: "a", x: 18, y: 9, st: { body: 0 }, name: ["Sota", "ソウタ"], mon: "DARUMARU", img: "daruma", hp: 14, atk: 2, prize: 2,
+    hi: ["札、もってる？ バトルしよう！", "Got cards? Let's battle!"], lose: ["まけた！ これ、あげる。", "I lost! Here, take this."], talk: fighter },
+  { id: "b", x: 6, y: 13, st: { body: 2, bun: 1 }, name: ["Mio", "ミオ"], mon: "KAPPAN", img: "kappa", hp: 22, atk: 3, prize: 3,
+    hi: ["わたしの札は、ちょっとむずかしいよ。", "My cards are a little harder."], lose: ["すごい！ よく知ってるね。", "Wow! You really know your words."], talk: fighter },
+  { id: "c", x: 20, y: 16, st: { body: 3 }, name: ["Old Gen", "ゲンじい"], mon: "KONKON", img: "kon", hp: 32, atk: 4, prize: 4,
+    hi: ["わしに勝てるかな？", "Think you can beat me?"], lose: ["見事じゃ。これを持っていけ。", "Splendid. Take this with you."], talk: fighter }
+];
+
+/* しらべる場所。s＝かくれている札のレア度（0＝なにもない） */
+const OBJ = {
+  "2,5": { s: 1, m: ["A big pot. You reach inside…", "大きな つぼ。手を 入れてみる…"] },
+  "12,5": { s: 3, id: "自販機", m: ["A vending machine. Something is under it…", "自販機だ。下に なにか ある…"] },
+  "9,7": { s: 2, m: ["A postbox. A card is sticking out of the slot…", "ポストだ。口から 札が はみ出している…"] },
+  "20,8": { s: 2, m: ["A pot by the house. You peek in…", "家の よこの つぼ。のぞいてみる…"] },
+  "22,5": { s: 3, m: ["An old well. Something is tied to the rope…", "古い 井戸。つなに なにか むすんである…"] },
+  "7,13": { s: 1, m: ["A pot. You reach inside…", "つぼだ。手を 入れてみる…"] },
+  "15,14": { s: 2, m: ["A stone lantern. Something is inside…", "石どうろう。中に なにか ある…"] },
+  "13,1": { s: 0, m: ["A stone lantern. Empty.", "石どうろう。からっぽ。"] },
+  "11,18": { s: 3, m: ["A tanuki statue. It is holding something…", "たぬきの 置物。なにか 持っている…"] },
+  "21,1": { s: 4, m: ["A tanuki statue, deep in the woods. Under its hat…", "森の おくの たぬき。かさの 下に…"] },
+  "1,1": { s: 5, m: ["A tiny shrine. You bow, then look behind the door…", "小さな ほこら。おじぎして、とびらの おくを 見る…"] },
+  "21,14": { s: 4, m: ["A pot hidden in the grass…", "草に かくれた つぼ…"] },
+  "22,1": { s: 3, m: ["You roll the rock aside…", "岩を どかしてみる…"] },
+  "21,17": { s: 2, m: ["You look behind the rock…", "岩の うらを 見る…"] },
+  "19,11": { s: 4, m: ["Something is stuck in the branches…", "えだに なにか ひっかかっている…"] },
+  "14,3": { s: 0, m: ["FUDA TOWN — the words are hiding. Face things and press A.", "ふだの町 — ことばは かくれている。むきあって Aで しらべよう。"] },
+  "7,15": { s: 0, m: ["Rarer cards are harder words — and hit harder in battle.", "めずらしい札ほど ことばが むずかしく、バトルで つよい。"] },
+  "20,10": { ev: 1 }
+};
+const DEF = { T: ["Just a tree.", "ただの 木だ。"], W: ["The water is clear.", "水が すんでいる。"], D: ["It's locked.", "かぎが かかっている。"], r: ["Just a rock.", "ただの 岩だ。"], F: ["A fence.", "さくだ。"], H: ["Someone's house.", "だれかの 家だ。"] };
+
+async function useObj(o, key) {
+  if (o.ev) return eventBoard();
+  await tell(L(...o.m));
+  if (!o.s) return;
+  if (S.found[key]) return tell(L("…nothing more today. Come back tomorrow.", "…きょうは もう なにもない。また あした。"));
+  S.found[key] = 1; save();
+  await gain(o.id ? cardBy(o.id) : pick(o.s), L("A card was hiding here!", "札が かくれていた！"));
+}
+/* きょうの腕だめし。持っている札から3問、ぜんぶ当てると★3以上が1枚 */
+async function eventBoard() {
+  await tell(L("NOTICE BOARD — Today's challenge", "けいじばん — きょうの うでだめし"), L("3 questions from your own cards. All correct = a rare card.", "じぶんの札から 3問。ぜんぶ当てると めずらしい札。"));
+  if (S.evt === today()) return tell(L("You already cleared today's challenge. Come back tomorrow!", "きょうは もう クリアした。また あした！"));
+  const k = await choose(L("Try it?", "やってみる？"), "", [L("Yes", "はい"), L("No", "いいえ")], { cls: "two", cancel: true });
+  if (k !== 0) return;
+  let ok = 0;
+  for (const i of shuffle(owned()).slice(0, 3)) if (await quiz(CARDS[i])) ok++;
+  if (ok < 3) return tell(L(`${ok}/3. Not quite — you can try again.`, `${ok}/3。おしい — なんどでも できる。`));
+  S.evt = today(); save();
+  const r = Math.random();
+  await gain(pick(r < .6 ? 3 : r < .9 ? 4 : 5), L("3/3! A card drops out of the board!", "3/3！ けいじばんから 札が おちてきた！"));
+}
+
+/* ============ メニュー・あつめた札 ============ */
+async function menu() {
+  for (;;) {
+    const k = await choose(L("MENU", "メニュー"), "", [
+      L("Cards", "あつめた札") + "  " + owned().length + "/" + CARDS.length,
+      L("I'm learning: ", "まなぶ ことば：") + (learn() === "ja" ? "日本語" : "English"),
+      L("Sound: ", "おと：") + (S.mute ? L("off", "なし") : L("on", "あり")),
+      L("Close", "とじる")], { cancel: true });
+    if (k === 0) await collection();
+    else if (k === 1) { S.learn = learn() === "ja" ? "en" : "ja"; save(); }
+    else if (k === 2) { S.mute = !S.mute; save(); }
+    else return;
+  }
+}
+async function collection() {
+  full.innerHTML = `<div class="col"><div id="det"></div>` + [1, 2, 3, 4, 5].map(s =>
+    `<h3>${"★".repeat(s)}</h3><div class="grid">` + CARDS.filter(c => c.s === s).map(c => S.own[c.i]
+      ? `<button class="slot r${s}" data-i="${c.i}">${c.j}</button>` : `<button class="slot no" disabled>？</button>`).join("") + `</div>`).join("") + `</div>`;
+  full.hidden = false; full.scrollTop = 0;
+  full.onclick = e => { const b = e.target.closest(".slot[data-i]"); if (!b) return; const c = CARDS[+b.dataset.i]; $("#det").innerHTML = cardHTML(c, true); full.scrollTop = 0; speak(c); };
+  await choose(L("Tap a card to read it.", "札を おすと 読める。"), "", [L("Back", "もどる")], { cancel: true });
+  full.hidden = true; full.innerHTML = ""; full.onclick = null;
+}
+
+/* ============ 歩く ============ */
+const DIRS = [[0, -1], [0, 1], [-1, 0], [1, 0]];
+const P = { x: S.x, y: S.y, dir: 1, moving: false, tx: 0, ty: 0, t0: 0, step: 0 };
+if (!WALK.includes(tileAt(P.x, P.y))) { P.x = 12; P.y = 6; }
+const held = [];
+const STEP = 170;
+function interact() {
+  const x = P.x + DIRS[P.dir][0], y = P.y + DIRS[P.dir][1], n = NPCS.find(n => n.x === x && n.y === y);
+  if (n) { n.dir = P.dir ^ 1; return run(() => n.talk(n)); }
+  const o = OBJ[x + "," + y]; if (o) return run(() => useObj(o, x + "," + y));
+  const d = DEF[tileAt(x, y)]; if (d) run(() => tell(L(...d)));
+}
+function arrive() {
+  S.x = P.x; S.y = P.y; save();
+  if (tileAt(P.x, P.y) === "g" && Math.random() < .12) run(async () => {
+    sfx.rustle(); const r = Math.random();
+    await tell(L("Something rustles in the grass…", "草むらが ガサガサ…"));
+    await gain(pick(r < .6 ? 1 : r < .9 ? 2 : 3), L("A card was lying there!", "札が おちていた！"));
+  });
+}
+function update(t) {
+  if (P.moving && t - P.t0 >= STEP) { P.x = P.tx; P.y = P.ty; P.moving = false; P.step++; arrive(); }
+  if (!P.moving && mode === "walk" && held.length) {
+    P.dir = held[held.length - 1];
+    const x = P.x + DIRS[P.dir][0], y = P.y + DIRS[P.dir][1];
+    if (WALK.includes(tileAt(x, y)) && !NPCS.some(n => n.x === x && n.y === y)) { P.moving = true; P.tx = x; P.ty = y; P.t0 = t; }
+    else if (t - bumpAt > 350) { bumpAt = t; beep(120, .05, .03); }
+  }
+}
+const g = $("#cv").getContext("2d"); g.imageSmoothingEnabled = false;
+function render(t) {
+  const k = P.moving ? Math.min(1, (t - P.t0) / STEP) : 0;
+  const px = (P.x + (P.moving ? (P.tx - P.x) * k : 0)) * 16, py = (P.y + (P.moving ? (P.ty - P.y) * k : 0)) * 16;
+  const cx = Math.round(Math.max(0, Math.min(MW * 16 - 160, px - 72))), cy = Math.round(Math.max(0, Math.min(MH * 16 - 144, py - 64)));
+  const A = ATLAS[(t / 600 | 0) % 2];
+  for (let y = cy >> 4; y <= (cy + 143) >> 4; y++) for (let x = cx >> 4; x <= (cx + 159) >> 4; x++) g.drawImage(A[tileAt(x, y)], x * 16 - cx, y * 16 - cy);
+  for (const n of NPCS) drawChar(g, n.x * 16 - cx, n.y * 16 - cy - (n.st.cat ? 0 : 2), n.dir == null ? 1 : n.dir, 0, n.st);
+  const sx = Math.round(px) - cx, sy = Math.round(py) - cy;
+  drawChar(g, sx, sy - 2, P.dir, P.moving ? (k < .5 ? 1 + P.step % 2 : 0) : 0, { body: 2, cap: 1 });
+  if (!P.moving && tileAt(P.x, P.y) === "g") g.drawImage(A.g, 0, 10, 16, 6, sx, sy + 10, 16, 6);   // 草むらに足がうまる
+}
+function frame(t) { update(t); render(t); requestAnimationFrame(frame); }
+
+/* ============ 入力 ============ */
+const KEYS = { ArrowUp: 0, ArrowDown: 1, ArrowLeft: 2, ArrowRight: 3, w: 0, s: 1, a: 2, d: 3 };
+function dirDown(d) {
+  if (mode === "walk") { if (!held.includes(d)) held.push(d); return; }
+  if (optEls.length) { optI = (optI + (d === 0 || d === 2 ? -1 : 1) + optEls.length) % optEls.length; hi(); optEls[optI].scrollIntoView({ block: "nearest" }); }
+}
+const dirUp = d => { const i = held.indexOf(d); if (i >= 0) held.splice(i, 1); };
+addEventListener("keydown", e => {
+  if (e.target.closest && e.target.closest("input,textarea,select")) return;
+  const d = KEYS[e.key.length === 1 ? e.key.toLowerCase() : e.key];
+  if (d != null) { e.preventDefault(); if (!e.repeat || mode !== "walk") dirDown(d); return; }
+  if (e.key === "z" || e.key === "Z" || e.key === "Enter" || e.key === " ") { e.preventDefault(); if (!e.repeat) pressA(); }
+  else if (e.key === "x" || e.key === "X" || e.key === "Escape") { e.preventDefault(); if (!e.repeat) pressB(); }
+});
+addEventListener("keyup", e => { const d = KEYS[e.key.length === 1 ? e.key.toLowerCase() : e.key]; if (d != null) dirUp(d); });
+addEventListener("blur", () => { held.length = 0; });
+document.querySelectorAll(".dp [data-d]").forEach(b => {
+  const d = +b.dataset.d;
+  b.addEventListener("pointerdown", e => { e.preventDefault(); b.setPointerCapture(e.pointerId); dirDown(d); });
+  for (const ev of ["pointerup", "pointercancel", "lostpointercapture"]) b.addEventListener(ev, () => dirUp(d));
+  b.addEventListener("contextmenu", e => e.preventDefault());
+});
+$("#btnA").addEventListener("pointerdown", e => { e.preventDefault(); pressA(); });
+$("#btnB").addEventListener("pointerdown", e => { e.preventDefault(); pressB(); });
+$("#btnM").addEventListener("click", () => { if (mode === "walk") run(menu); });
+$("#lang").onclick = () => { if (busy) return; lang = lang === "ja" ? "en" : "ja"; try { localStorage.setItem("mj-lang", lang); } catch (e) {} applyLang(); };
+
+/* ============ はじまり ============ */
+applyLang();
+requestAnimationFrame(frame);
+if (!S.intro) run(async () => {
+  await tell(L("Welcome to Fuda Town.", "ふだの町へ ようこそ。"), L("Word cards are hiding all over this town.", "この町には ことばの札が かくれている。"));
+  await tell(L("Face a pot, a sign, a machine… and press A.", "つぼ、かんばん、自販機… むきあって Aを おそう。"), L("Rarer cards are harder words.", "めずらしい札ほど むずかしい ことば。"));
+  const st = ["ねこ", "みず", "パン"].map(cardBy);
+  st.forEach(c => { S.own[c.i] = (S.own[c.i] || 0) + 1; }); S.intro = true; save(); hud(); sfx.get();
+  full.innerHTML = `<div class="show">${st.map(c => cardHTML(c)).join("")}</div>`; full.hidden = false;
+  await tell(L("Here are 3 cards to start with.", "さいしょの札を 3まい どうぞ。"), L("Talk to people in town to battle with them.", "町の人に 話しかけると バトルできる。"));
+});
+</script>
+<script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "a549632ca5ba440a9dbdfd24bcbe11e5"}'></script>
+</body>
+</html>
