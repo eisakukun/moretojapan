@@ -78,6 +78,13 @@
   .chip.me{background:#fff3b0}
   .chip.idle::after{content:"☕"}.chip.near::after{content:"👂"}
   .tag.M{background:#7b4a2a}
+  .jar{position:absolute;left:79%;top:5.2%;font-size:2.2cqw;line-height:1;background:#fff;border:.3cqw solid var(--dk);border-radius:.8cqw;padding:.3cqw .7cqw;pointer-events:none}
+  .say{margin:0 0 12px;font-size:17px;line-height:1.5}
+  .say b{display:block;font-size:12.5px;color:var(--sub);font-weight:700}
+  .say small{display:block;font-size:13.5px;color:var(--sub)}
+  .drk{display:flex;align-items:center;gap:12px;width:100%;text-align:left;font:inherit;border:1px solid var(--line);background:#fff;border-radius:12px;padding:9px 12px;margin:0 0 6px;cursor:pointer;color:var(--ink)}
+  .drk i{flex:none;width:14px;height:20px;border:2px solid var(--dk);border-radius:2px 2px 4px 4px}
+  .drk b{display:block;font-size:16px}.drk small{color:var(--sub);font-size:13px}
   .tblb{position:absolute;border:0;background:none;padding:0;cursor:pointer}
   .tblb::after{content:"";position:absolute;inset:4%;border:.5cqw dashed #ffe14a;border-radius:8%;animation:blink 1s steps(2) infinite}
   #chat{margin-top:12px;border-top:1px dashed var(--line);padding-top:10px}
@@ -167,6 +174,7 @@
       <div class="mine">
         <div class="who" id="who"></div>
         <button class="btn sm ghost" id="mic"></button>
+        <button class="btn sm ghost" id="ord" data-en="🍶 Order" data-ja="🍶 注文する">🍶 Order</button>
         <button class="btn sm ghost" id="idle"></button>
         <button class="btn sm ghost" id="stand" data-en="Stand up" data-ja="席を立つ">Stand up</button>
         <button class="btn sm" id="start" data-en="▶ Start" data-ja="▶ スタート">▶ Start</button>
@@ -192,6 +200,7 @@
     <div class="row"><button class="btn ghost" id="cancel" data-en="Cancel" data-ja="やめる">Cancel</button><button class="btn" id="go" data-en="OK — Start" data-ja="OK・スタート">OK — Start</button></div>
   </dialog>
 </div>
+<dialog id="order"><div id="ordBody"></div></dialog>
 <div id="audios" hidden></div>
 
 <script src="/vendor-lib/peerjs.min.js"></script>
@@ -217,6 +226,16 @@ function applyLang() {
 const OWN = { ja: ["🇯🇵", "日本語"], en: ["🇬🇧", "English"], zh: ["🇨🇳", "中文"], ko: ["🇰🇷", "한국어"], vi: ["🇻🇳", "Tiếng Việt"], tl: ["🇵🇭", "Tagalog"], ne: ["🇳🇵", "नेपाली"],
   id: ["🇮🇩", "Bahasa Indonesia"], th: ["🇹🇭", "ไทย"], es: ["🇪🇸", "Español"], pt: ["🇧🇷", "Português"], fr: ["🇫🇷", "Français"], de: ["🇩🇪", "Deutsch"], xx: ["🌐", "Other"] };
 const flags = x => `${(OWN[x.own] || OWN.xx)[0]}<i>▸</i>${x.side === "F" ? "🇯🇵" : "🇬🇧"}`;   // 自分の言葉 ▸ 話したい言葉
+/* のみもの。注文のことばが、そのまま日本語の練習になる */
+const DRINKS = [
+  { j: "生ビール", r: "nama bīru", e: "draft beer", c: "#e8a23a", foam: 1 }, { j: "ハイボール", r: "haibōru", e: "whisky and soda", c: "#e9c46a" },
+  { j: "日本酒", r: "nihonshu", e: "sake", c: "#f6f6ee" }, { j: "梅酒", r: "umeshu", e: "plum liqueur", c: "#c96a3a" },
+  { j: "レモンサワー", r: "remon sawā", e: "lemon sour", c: "#f3ea8a", foam: 1 }, { j: "緑茶", r: "ryokucha", e: "green tea (no alcohol)", c: "#7fbf5a" },
+  { j: "ラムネ", r: "ramune", e: "ramune soda (no alcohol)", c: "#8fd3ff" }
+];
+/* チップの窓口。ここに支払いページの住所（Stripeの支払いリンクなど）を入れると、本物のチップになる。
+   空のあいだは「気持ちだけ」＝びんの数字が増えるだけで、お金は動かない。 */
+const TIP_URL = "";
 const TOPICS = [
   ["What did you eat today?", "きょう、何を食べた？"], ["A place you want to go next", "つぎに行きたい場所"],
   ["Your favorite convenience-store food", "コンビニで好きな食べもの"], ["Something that surprised you in Japan / abroad", "日本／海外でおどろいたこと"],
@@ -253,6 +272,7 @@ const bg = document.createElement("canvas"); bg.width = W; bg.height = H;
   // カウンター
   R("#5b3520", 24, 32, 192, 16); R("#c98a4b", 25, 33, 190, 6); R("#e3a868", 25, 33, 190, 1); R("#8a5a3c", 25, 40, 190, 7); for (let x = 40; x < 216; x += 24) R("#5b3520", x, 40, 1, 7);
   R("#f1f1e6", 60, 30, 4, 4); R("#e8a23a", 170, 29, 3, 5); R("#8fd3ff", 150, 30, 3, 4);
+  R("#2a2030", 193, 24, 10, 11); R("#dff3ff", 194, 25, 8, 9); R("#ffd94a", 195, 30, 6, 4); R("#e8a23a", 196, 31, 2, 2); R("#2a2030", 194, 23, 8, 2);
   // 鉢植え
   for (const px of [2, 222]) { R("#2a2030", px + 3, 60, 10, 8); R("#b5553c", px + 4, 61, 8, 6); R("#2c7a3a", px + 2, 50, 12, 10); R("#3fa34d", px + 4, 48, 8, 9); R("#7fd08a", px + 6, 50, 2, 3); }
   // 入口のマット
@@ -324,6 +344,12 @@ function apply(pid, d) {
   else if (d.t === "near") {                                  // ぼーっとしている人だけ。1テーブルに4人まで
     const t = d.table == null ? null : d.table | 0;
     if (m.idle && (t == null || (t >= 0 && t < 4 && Object.values(ST.m).filter(x => x.idle && x.near === t).length < 4))) m.near = t;
+  } else if (d.t === "drink") {
+    const dr = DRINKS[d.id | 0]; if (!dr) return true; m.drink = d.id | 0;
+    const k = gkey(m); if (k) deliver(k, { t: "msg", k, tag: "☕", side: "M", name: "Master", text: `${m.side}${m.num} ${m.name} ← ${dr.j}（${dr.e}）` });
+  } else if (d.t === "tip") {
+    ST.tips = (ST.tips || 0) + 1;
+    const k = gkey(m); if (k) deliver(k, { t: "msg", k, tag: "☕", side: "M", name: "Master", text: `${m.side}${m.num} ${m.name}、チップ ありがとう！ / Thank you for the tip!` });
   }
   else if (d.t === "start") {
     if (!ST.sess && m.seat != null && [3, 5, 10, 15].includes(d.mins) && d.sets >= 1 && d.sets <= 6)
@@ -334,7 +360,7 @@ function apply(pid, d) {
 let lastPush = 0;
 function push() {
   lastPush = Date.now();
-  const st = { m: ST.m, fin: ST.fin, sess: ST.sess && Object.assign({}, ST.sess, { remain: ST.sess.endAt - Date.now() }) };
+  const st = { m: ST.m, fin: ST.fin, tips: ST.tips || 0, sess: ST.sess && Object.assign({}, ST.sess, { remain: ST.sess.endAt - Date.now() }) };
   for (const p in conns) { try { if (conns[p].open) conns[p].send({ t: "st", st }); } catch (e) {} }
   onState();
 }
@@ -493,6 +519,7 @@ function drawOv() {
     const x = ST.m[p], c = document.createElement("span"); c.className = "chip " + x.side + (p === myId ? " me" : "") + (x.idle ? (x.near != null ? " near" : " idle") : ""); c.dataset.p = p; c.innerHTML = `<b>${x.side}${x.num}</b><span class="fl">${flags(x)}</span>`;
     c.style.left = (pos[p][0] * 16 + 8) / W * 100 + "%"; c.style.top = (pos[p][1] * 16 - 8) / H * 100 + "%"; ov.appendChild(c);
   }
+  const jar = document.createElement("div"); jar.className = "jar"; jar.textContent = "TIP " + (ST.tips || 0); ov.appendChild(jar);
   if (Date.now() < toastUntil) { const t = document.createElement("div"); t.className = "toast"; t.innerHTML = toastHTML; ov.appendChild(t); }
 }
 function onState() {
@@ -556,7 +583,9 @@ function frame(t) {
   cvg.drawImage(bg, 0, 0);
   const pos = where(), ids = Object.keys(pos).sort((a, b) => pos[a][1] - pos[b][1]);
   for (const p of ids) { const x = ST.m[p], h = hash(p), bob = speaking[p] ? (t / 150 | 0) % 2 : 0;
-    person(cvg, pos[p][0] * 16, pos[p][1] * 16 - 4 - bob, x.seat == null ? (x.idle ? 0 : 1) : (x.seat & 3) < 2 ? 3 : 2, SKIN[h % 4], HAIR[(h >> 3) % 6], SHIRT[(h >> 7) % 8]); }
+    person(cvg, pos[p][0] * 16, pos[p][1] * 16 - 4 - bob, x.seat == null ? (x.idle ? 0 : 1) : (x.seat & 3) < 2 ? 3 : 2, SKIN[h % 4], HAIR[(h >> 3) % 6], SHIRT[(h >> 7) % 8]);
+    const dr = DRINKS[x.drink]; if (dr) { const gx = pos[p][0] * 16 + ((x.seat != null && (x.seat & 3) >= 2) ? -1 : 13), gy = pos[p][1] * 16 + 4 - bob;
+      cvg.fillStyle = "#2a2030"; cvg.fillRect(gx, gy, 5, 7); cvg.fillStyle = dr.c; cvg.fillRect(gx + 1, gy + 1, 3, 5); if (dr.foam) { cvg.fillStyle = "#fff"; cvg.fillRect(gx + 1, gy + 1, 3, 2); } } }
   requestAnimationFrame(frame);
 }
 
@@ -598,6 +627,27 @@ $("#stand").onclick = () => act({ t: "stand" });
 $("#sayF").onsubmit = e => { e.preventDefault(); const v = $("#say").value.trim(); if (v) { act({ t: "say", text: v }); $("#say").value = ""; } };
 $("#idle").onclick = () => { const m = ST.m[myId]; if (m) act({ t: "idle", v: !m.idle }); };
 $("#stop").onclick = () => act({ t: "stop" });
+function openMenu() {
+  const b = $("#ordBody");
+  b.innerHTML = `<p class="say"><b>${L("Master", "店長")}</b>なににする？<small>What'll it be?</small></p><p class="hint" style="margin:0 0 10px">${L("Today it's on the house — no money moves.", "今日は店のおごり。お金は動きません。")}</p>`;
+  DRINKS.forEach((d, i) => { const bt = document.createElement("button"); bt.className = "drk"; bt.innerHTML = `<i style="background:${d.c}"></i><span><b>${d.j}</b><small>${d.r} — ${d.e}</small></span>`; bt.onclick = () => ordered(i); b.appendChild(bt); });
+  foot(b, [[L("Not now", "やめておく"), "ghost", () => $("#order").close()]]);
+  $("#order").showModal();
+}
+function foot(b, list) { const r = document.createElement("div"); r.className = "row"; r.style.marginTop = "14px"; list.forEach(([t, c, f]) => { const x = document.createElement("button"); x.className = "btn " + c; x.textContent = t; x.onclick = f; r.appendChild(x); }); b.appendChild(r); }
+function ordered(i) {
+  act({ t: "drink", id: i });
+  const d = DRINKS[i], b = $("#ordBody");
+  b.innerHTML = `<p class="say"><b>${L("You", "あなた")}</b>${d.j}を ください。<small>${d.r} o kudasai — ${d.e}, please.</small></p>` +
+    `<p class="say"><b>${L("Master", "店長")}</b>はい、${d.j}。チップも 入れますか？<small>Here you go. Would you like to leave a tip?</small></p>` +
+    `<p class="hint" style="margin:0">${TIP_URL ? L("The tip goes to the person who runs this bar. A payment page opens in a new tab.", "チップは このバーを作っている人に入ります。支払いのページが別のタブで開きます。") : L("For now it's just the thought: the real tip window isn't open yet, and no money moves.", "いまは気持ちだけ。本物のチップの窓口は準備中で、お金は動きません。")}</p>`;
+  foot(b, [[L("Not today", "今日はいい"), "ghost", () => $("#order").close()], [L("🪙 Leave a tip", "🪙 チップを入れる"), "", () => {
+    act({ t: "tip" }); if (TIP_URL) window.open(TIP_URL, "_blank", "noopener");
+    b.innerHTML = `<p class="say"><b>${L("Master", "店長")}</b>ありがとう！ ゆっくりしていってね。<small>Thank you! Take your time.</small></p>`;
+    foot(b, [[L("Close", "とじる"), "", () => $("#order").close()]]);
+  }]]);
+}
+$("#ord").onclick = openMenu;
 let selM = 5, selS = 3;
 const sum = () => { $("#sum").textContent = L(`${selM} min × ${selS} set${selS > 1 ? "s" : ""} = ${selM * selS} min`, `${selM}分 × ${selS}セット ＝ ${selM * selS}分`); };
 for (const [id, set] of [["#segM", v => selM = v], ["#segS", v => selS = v]])
