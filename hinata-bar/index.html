@@ -9,6 +9,9 @@
 <meta property="og:title" content="Hinata Bar # — a 16-seat language exchange bar">
 <meta property="og:description" content="Four tables, sixteen seats. Talk with your table, then the timer shuffles everyone.">
 <meta property="og:url" content="https://moretojapan.com/hinata-bar/">
+<meta property="og:image" content="https://moretojapan.com/hinata-bar/og.png">
+<meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="canonical" href="https://moretojapan.com/hinata-bar/">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23e8a23a'/%3E%3Ctext x='32' y='47' font-size='42' text-anchor='middle' fill='white' font-family='Hiragino Sans,sans-serif' font-weight='800'%3E%E2%99%AF%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -260,7 +263,7 @@ const bg = document.createElement("canvas"); bg.width = W; bg.height = H;
 (function paint() {
   const g = bg.getContext("2d"), R = (c, x, y, w, h) => { g.fillStyle = c; g.fillRect(x, y, w, h); };
   // 床
-  R("#d9a066", 0, 48, W, H - 48);
+  R("#d9a066", 0, 32, W, H - 32);
   for (let y = 48; y < H; y += 16) { R("#b9824e", 0, y + 15, W, 1); for (let x = (y / 16 % 2) * 20; x < W; x += 40) R("#b9824e", x, y, 1, 15); }
   // ひなた（窓からの日だまり）
   g.globalAlpha = .28; for (let i = 0; i < 9; i++) R("#fff6b8", 96 - i * 3, 48 + i * 8, 48 + i * 6, 8); g.globalAlpha = 1;
@@ -312,14 +315,17 @@ let peeked = false, myName = "", mySide = "", myOwn = "en", prevSeat = null, pre
 const conns = {}, seen = {};                     // 店の側：客の線と、最後に声がかかった時刻
 const speaking = {};
 const order = () => Object.keys(ST.m).sort();
-const where = () => {                            // 立っている人は来た順に立ち位置へ
-  const out = {}, nb = [0, 0, 0, 0]; let k = 0, c = 0;
-  for (const p of order()) { const m = ST.m[p];
-    if (m.seat != null) out[p] = seatPos(m.seat);
-    else if (m.idle && m.near != null) { const [tx, ty] = TABLES[m.near]; out[p] = [tx + [0, 1, -1, 2][nb[m.near]++ % 4], ty + 2]; }   // テーブルのすぐ下に立って聞く
-    else out[p] = m.idle ? [1 + c++ % 13, 3] : STANDS[k++ % STANDS.length]; }
-  return out;
-};
+const where = () => { const out = {}; for (const p in ST.m) { const m = ST.m[p]; out[p] = m.seat != null ? seatPos(m.seat) : [m.x == null ? 7 : m.x, m.y == null ? 11 : m.y]; } return out; };
+/* 歩ける床：カウンターの手前〜入口。テーブルと鉢植えは通れない。いすは「すわる」になる */
+const seatAt = (x, y) => { for (let i = 0; i < 16; i++) { const q = seatPos(i); if (q[0] === x && q[1] === y) return i; } return -1; };
+const tableAt = (x, y) => TABLES.findIndex(([tx, ty]) => x >= tx && x <= tx + 1 && y >= ty && y <= ty + 1);
+const ringOf = (x, y) => TABLES.findIndex(([tx, ty]) => x >= tx - 1 && x <= tx + 2 && y >= ty - 1 && y <= ty + 2);   // テーブルのまわり1マス
+const floor = (x, y) => x >= 0 && x <= 14 && y >= 3 && y <= 12 && tableAt(x, y) < 0 && seatAt(x, y) < 0 && !(y === 3 && (x === 0 || x === 14));
+const occ = (x, y, me) => Object.keys(ST.m).some(p => p !== me && ST.m[p].seat == null && ST.m[p].x === x && ST.m[p].y === y);
+function place(pid, list) { const m = ST.m[pid]; for (const [x, y] of list) if (floor(x, y) && !occ(x, y, pid)) { m.x = x; m.y = y; return; } }
+function fixNear(m) { const t = m.idle && m.seat == null ? ringOf(m.x, m.y) : -1; m.near = t >= 0 && (m.near === t || Object.values(ST.m).filter(x => x !== m && x.idle && x.near === t).length < 4) ? t : null; }
+const COUNTER = []; for (let x = 1; x <= 13; x++) COUNTER.push([x, 3]);
+const beside = s => { const [x, y] = seatPos(s), d = (s & 3) < 2 ? -1 : 1; return [[x + d, y], [x + d, y - 1], [x + d, y + 1]].concat(STANDS); };
 
 /* ---------- 店（ホスト）の仕事 ---------- */
 const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.random() * (i + 1) | 0; [a[i], a[j]] = [a[j], a[i]]; } return a; };
@@ -339,15 +345,26 @@ function apply(pid, d) {
     let num = 1; while (used.includes(num)) num++;
     if (num > 8) return false;
     ST.m[pid] = { name: String(d.name || "").replace(/[<>]/g, "").slice(0, 14) || "?", side, num, seat: null, idle: !!d.idle, own: side === "J" ? "ja" : OWN[d.own] && d.own !== "ja" ? d.own : "xx" };
+    place(pid, d.idle ? COUNTER.concat(STANDS) : STANDS.concat(COUNTER)); fixNear(ST.m[pid]);
   } else if (!m) return true;
+  else if (d.t === "mv") {                                    // 矢印キーで1マス歩く
+    const dx = Math.sign(d.dx | 0), dy = dx ? 0 : Math.sign(d.dy | 0); if (!dx && !dy) return true;
+    const [cx, cy] = m.seat != null ? seatPos(m.seat) : [m.x, m.y], x = cx + dx, y = cy + dy, si = seatAt(x, y);
+    m.dir = dy < 0 ? 0 : dy > 0 ? 1 : dx < 0 ? 2 : 3;
+    if (si >= 0) { if (((si & 3) < 2) === (m.side === "F") && !Object.values(ST.m).some(q => q.seat === si)) { m.seat = si; m.idle = false; m.near = null; } }   // 自分の側の空いたいすに歩いて入る＝すわる
+    else if (floor(x, y) && !occ(x, y, pid)) { m.seat = null; m.x = x; m.y = y; fixNear(m); }
+  }
   else if (d.t === "sit") {
     const s = d.seat | 0;
     if (s >= 0 && s < 16 && ((s & 3) < 2) === (m.side === "F") && !Object.values(ST.m).some(x => x.seat === s)) { m.seat = s; m.idle = false; m.near = null; }
-  } else if (d.t === "stand") m.seat = null;
-  else if (d.t === "idle") { m.idle = !!d.v; m.near = null; if (m.idle) m.seat = null; }
+  } else if (d.t === "stand") { if (m.seat != null) { const st = m.seat; m.seat = null; place(pid, beside(st)); fixNear(m); } }
+  else if (d.t === "idle") { m.idle = !!d.v; if (m.idle && m.seat != null) { const st = m.seat; m.seat = null; place(pid, COUNTER.concat(beside(st))); } fixNear(m); }
   else if (d.t === "near") {                                  // ぼーっとしている人だけ。1テーブルに4人まで
     const t = d.table == null ? null : d.table | 0;
-    if (m.idle && (t == null || (t >= 0 && t < 4 && Object.values(ST.m).filter(x => x.idle && x.near === t).length < 4))) m.near = t;
+    if (!m.idle || m.seat != null) return true;
+    if (t == null) place(pid, COUNTER);
+    else if (t >= 0 && t < 4) { const [tx, ty] = TABLES[t]; place(pid, [[tx, ty + 2], [tx + 1, ty + 2], [tx - 1, ty + 2], [tx + 2, ty + 2], [tx, ty - 1], [tx + 1, ty - 1], [tx - 1, ty - 1], [tx + 2, ty - 1]]); }
+    fixNear(m);
   } else if (d.t === "drink") {
     const dr = DRINKS[d.id | 0]; if (!dr) return true; m.drink = d.id | 0;
     const k = gkey(m); if (k) deliver(k, { t: "msg", k, tag: "☕", side: "M", name: "Master", text: `${m.side}${m.num} ${m.name} ← ${dr.j}（${dr.e}）` });
@@ -380,6 +397,7 @@ function relay(pid, text) {
   deliver(k, { t: "msg", k, tag: m.side + m.num, side: m.side, name: m.name, text: tx });
   if (k === "c") setTimeout(() => { const l = MASTER[Math.random() * MASTER.length | 0]; deliver("c", { t: "msg", k: "c", tag: "☕", side: "M", name: "Master", text: l[0] + " / " + l[1] }); }, 1100);
 }
+function pushOne(pid) { const d = { t: "m1", p: pid, m: ST.m[pid] }; for (const p in conns) { try { if (conns[p].open) conns[p].send(d); } catch (e) {} } onState(); }
 function onGuest(c) {
   c.on("data", d => {
     if (!d || typeof d !== "object") return;
@@ -390,7 +408,8 @@ function onGuest(c) {
     if (d.t === "join") {
       conns[c.peer] = c;
       if (!apply(c.peer, d)) { try { c.send({ t: "full" }); } catch (e) {} delete conns[c.peer]; setTimeout(() => c.close(), 500); return; }
-    } else apply(c.peer, d);
+    } else if (d.t === "mv") { apply(c.peer, d); pushOne(c.peer); return; }
+    else apply(c.peer, d);
     push();
   });
   c.on("close", () => { if (conns[c.peer] === c) { delete conns[c.peer]; delete ST.m[c.peer]; push(); } });
@@ -437,6 +456,7 @@ function connectHub() {
     if (!d) return;
     if (d.t === "full") { dead = true; $("#bmsg").className = "msg err"; $("#bmsg").textContent = L("Your side of the bar is full (8). Please try again later.", "そちら側の席（8人）がいっぱいです。あとでまた来てください。"); return; }
     if (d.t === "msg") { onMsg(d); return; }
+    if (d.t === "m1") { if (d.m) ST.m[d.p] = d.m; onState(); return; }
     if (d.t === "st") { lastSt = Date.now(); peeked = true; ST = d.st; if (ST.sess) ST.sess.endAt = Date.now() + ST.sess.remain; onState(); }
   });
   c.on("close", () => lost(c));
@@ -448,7 +468,16 @@ function lost(c) {
   const r = joined ? order().indexOf(myId) : 0;         // 店が消えたら、名前の若い順にだれかが店を引きつぐ
   setTimeout(connectHub, 300 + Math.max(0, r) * 1200);
 }
-const act = d => { if (isHost) { if (d.t === "say") relay(myId, d.text); else { apply(myId, d); push(); } } else if (link && link.open) link.send(d); };
+const act = d => { if (isHost) { if (d.t === "say") relay(myId, d.text); else if (d.t === "mv") { apply(myId, d); pushOne(myId); } else { apply(myId, d); push(); } } else if (link && link.open) link.send(d); };
+/* パソコン：矢印キー（またはWASD）で歩く。いすに入るとすわり、テーブルのそばに立つと聞ける */
+const MV = { ArrowUp: [0, -1], ArrowDown: [0, 1], ArrowLeft: [-1, 0], ArrowRight: [1, 0], w: [0, -1], s: [0, 1], a: [-1, 0], d: [1, 0] };
+let lastMv = 0;
+addEventListener("keydown", e => {
+  if (!joined || e.metaKey || e.ctrlKey || e.altKey || (e.target.closest && e.target.closest("input,select,textarea,dialog"))) return;
+  const k = MV[e.key.length === 1 ? e.key.toLowerCase() : e.key]; if (!k) return;
+  e.preventDefault(); const now = Date.now(); if (now - lastMv < 150) return; lastMv = now;
+  act({ t: "mv", dx: k[0], dy: k[1] });
+});
 setInterval(() => {
   if (link && link.open) { if (Date.now() - lastSt > 16000) lost(link); else link.send({ t: "hb" }); }   // 店は7秒おきに声をかける。16秒しんとしたら店が消えたとみなす
   else if (myId && !isHost) connectHub();
@@ -584,7 +613,7 @@ function onState() {
     }
     if (ST.fin && prevFin !== ST.fin && prevSet) { toast(L("Time's up — thank you!<br>お疲れさまでした", "おしまい！<br>おつかれさまでした"), 6000); [1100, 880, 660, 880].forEach((f, i) => beep(f, .15, i * .15)); }
     prevSet = ST.sess ? ST.sess.set : 0; prevFin = ST.fin; prevSeat = m.seat;
-    $("#who").innerHTML = `<span class="tag ${m.side}">${m.side}${m.num}</span>` + (m.seat != null ? L("Table ", "テーブル ") + TL[m.seat >> 2] : m.idle ? (m.near != null ? L(`Listening by table ${TL[m.near]} — you can type, not talk`, `テーブル${TL[m.near]}のそばで聞いています — 文字は打てます（声は出ません）`) : L("At the counter with the master — tap a table to go and listen", "カウンターで店長と — テーブルを押すと、そばで聞けます")) : L("Standing — tap a blinking seat", "立っています — 光っている席をタップ"));
+    $("#who").innerHTML = `<span class="tag ${m.side}">${m.side}${m.num}</span>` + (m.seat != null ? L("Table ", "テーブル ") + TL[m.seat >> 2] : m.idle ? (m.near != null ? L(`Listening by table ${TL[m.near]} — you can type, not talk`, `テーブル${TL[m.near]}のそばで聞いています — 文字は打てます（声は出ません）`) : L("At the counter with the master — tap a table to go and listen", "カウンターで店長と — テーブルを押すと、そばで聞けます")) : L("Standing — tap a blinking seat", "立っています — 光っている席をタップ") + (matchMedia("(hover:hover)").matches ? L(" (or walk with the arrow keys)", "（矢印キーでも歩けます）") : ""));
     $("#idle").textContent = m.idle ? L("Join the tables", "テーブルに参加する") : L("☕ Just hang out", "☕ ぼーっとする");
     const ms = mates();
     $("#mates").innerHTML = ""; ms.forEach(p => { const li = document.createElement("li"), x = ST.m[p]; li.innerHTML = `<span class="tag ${x.side}">${x.side}${x.num}</span>`; li.append(x.name + (x.seat == null ? L(" 👂 listening", " 👂 聞いています") : "")); $("#mates").appendChild(li); });
@@ -625,12 +654,16 @@ function tick() {
 }
 setInterval(tick, 250);
 const cvg = $("#cv").getContext("2d"); cvg.imageSmoothingEnabled = false;
+const disp = {};
 function frame(t) {
   cvg.drawImage(bg, 0, 0);
-  const pos = where(), ids = Object.keys(pos).sort((a, b) => pos[a][1] - pos[b][1]);
+  const tgt = where(), pos = {};
+  for (const p in tgt) { const d = disp[p] || (disp[p] = tgt[p].slice()); for (const i of [0, 1]) { const g = tgt[p][i] - d[i]; d[i] = Math.abs(g) < .05 || Math.abs(g) > 3 ? tgt[p][i] : d[i] + Math.sign(g) * Math.min(Math.abs(g), .14); } pos[p] = d; }
+  for (const p in disp) if (!tgt[p]) delete disp[p];
+  const ids = Object.keys(pos).sort((a, b) => pos[a][1] - pos[b][1]);
   for (const p of ids) { const x = ST.m[p], h = hash(p), bob = speaking[p] ? (t / 150 | 0) % 2 : 0;
-    person(cvg, pos[p][0] * 16, pos[p][1] * 16 - 4 - bob, x.seat == null ? (x.idle ? 0 : 1) : (x.seat & 3) < 2 ? 3 : 2, SKIN[h % 4], HAIR[(h >> 3) % 6], SHIRT[(h >> 7) % 8]);
-    const dr = DRINKS[x.drink]; if (dr) { const gx = pos[p][0] * 16 + ((x.seat != null && (x.seat & 3) >= 2) ? -1 : 13), gy = pos[p][1] * 16 + 4 - bob;
+    person(cvg, Math.round(pos[p][0] * 16), Math.round(pos[p][1] * 16) - 4 - bob, x.seat == null ? (x.dir != null ? x.dir : x.idle ? 0 : 1) : (x.seat & 3) < 2 ? 3 : 2, SKIN[h % 4], HAIR[(h >> 3) % 6], SHIRT[(h >> 7) % 8]);
+    const dr = DRINKS[x.drink]; if (dr) { const gx = Math.round(pos[p][0] * 16) + ((x.seat != null && (x.seat & 3) >= 2) ? -1 : 13), gy = Math.round(pos[p][1] * 16) + 4 - bob;
       cvg.fillStyle = "#2a2030"; cvg.fillRect(gx, gy, 5, 7); cvg.fillStyle = dr.c; cvg.fillRect(gx + 1, gy + 1, 3, 5); if (dr.foam) { cvg.fillStyle = "#fff"; cvg.fillRect(gx + 1, gy + 1, 3, 2); } } }
   requestAnimationFrame(frame);
 }
