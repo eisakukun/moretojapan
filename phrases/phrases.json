@@ -1,5 +1,14 @@
 [
  {
+  "id": "01-point-card",
+  "slug": "point-card",
+  "h1": "“Do you have a point card?” — how to answer at a Japanese konbini",
+  "ja": "ポイントカードはお持ちですか？",
+  "date": "2026-10-13",
+  "time": "20:08",
+  "duration": 29.2
+ },
+ {
   "id": "10-irasshaimase",
   "slug": "irasshaimase-no-reply",
   "h1": "What do you say back to いらっしゃいませ (irasshaimase)? Nothing.",

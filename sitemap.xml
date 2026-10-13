@@ -179,6 +179,11 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://moretojapan.com/phrases/point-card/</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://moretojapan.com/phrases/irasshaimase-no-reply/</loc>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
