@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="en">
 <head>
+<script>if("IntersectionObserver" in window && !matchMedia("(prefers-reduced-motion:reduce)").matches)document.documentElement.classList.add("js")</script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>More to Japan — learn Japanese with your whole body</title>
@@ -174,9 +175,156 @@
 
   footer{border-top:1px solid var(--line);padding:40px 0 60px;color:var(--sub);font-size:14px}
   footer .wrap{display:flex;gap:18px;flex-wrap:wrap;align-items:center}
+  /* ================= 動き =================
+     出現は transition ではなく keyframes（backwards）で付ける。transform を残さないので
+     .tile や .card の hover の持ち上がりとぶつからない。
+     隠すのは html.js のときだけ＝スクリプトが死んでも中身は見える。 */
+  @keyframes rise{ from{opacity:0;transform:translateY(24px)} }
+  @keyframes pop{ from{opacity:0;transform:scale(.6)} 60%{transform:scale(1.08)} }
+  @keyframes wig{ 0%,100%{transform:rotate(0)} 30%{transform:rotate(-14deg) scale(1.15)} 65%{transform:rotate(10deg) scale(1.15)} }
+  @keyframes drift{ from{background-position:0% 50%} to{background-position:100% 50%} }
+  .js .rv{opacity:0}
+  .js .rv.in{opacity:1;animation:rise .7s cubic-bezier(.2,.7,.2,1) backwards;animation-delay:var(--d,0s)}
+
+  /* 読んだ量の棒（いちばん上） */
+  #prog{position:fixed;left:0;top:0;height:3px;width:100%;z-index:60;transform-origin:0 50%;
+    transform:scaleX(0);background:linear-gradient(90deg,var(--ai),var(--aka));pointer-events:none}
+
+  /* 開いた瞬間：ヒーローが上から順に立ち上がる */
+  .hero > div:first-child > *{animation:rise .8s cubic-bezier(.2,.7,.2,1) backwards}
+  .hero > div:first-child > :nth-child(1){animation-delay:.05s}
+  .hero > div:first-child > :nth-child(2){animation-delay:.15s}
+  .hero > div:first-child > :nth-child(3){animation-delay:.28s}
+  .hero > div:first-child > :nth-child(4){animation-delay:.4s}
+  .hero > div:first-child > :nth-child(5){animation-delay:.5s}
+  .hero .drop{animation:rise .9s .25s cubic-bezier(.2,.7,.2,1) backwards}
+
+  /* 名前の帯：Maria → マリア → 真・理・愛 が順に出る */
+  .nameStrip{animation:rise .7s backwards}
+  .nsFlow > .nsChip, .nsFlow .nsAr, .nsK i{animation:pop .5s backwards}
+  .nsFlow > .nsChip:nth-child(1){animation-delay:.35s}
+  .nsFlow > .nsAr{animation-delay:.6s}
+  .nsFlow > .nsChip.kana{animation-delay:.8s}
+  .nsGrp .nsAr{animation-delay:1.05s}
+  .nsK i:nth-child(1){animation-delay:1.25s}
+  .nsK i:nth-child(2){animation-delay:1.42s}
+  .nsK i:nth-child(3){animation-delay:1.59s}
+
+  /* 触ったときの反応 */
+  .card{transition:transform .2s,box-shadow .2s,border-color .2s}
+  a.card:hover, a:hover > .card{transform:translateY(-4px);box-shadow:0 12px 30px #22406e1a;border-color:#cfd8e6}
+  .card .ic{width:fit-content}
+  .card:hover .ic{animation:wig .55s}
+  .btn:hover{transform:translateY(-2px)}
+  .btn:active{transform:translateY(0)}
+  .logo i{transition:transform .35s cubic-bezier(.3,1.6,.5,1)}
+  .logo:hover i{transform:rotate(-12deg) scale(1.1)}
+  .tile .go{transition:transform .15s}
+  .tile:hover .go{transform:translateX(4px)}
+  .face{background-size:220% 220%;animation:drift 9s ease-in-out infinite alternate}
+
+  /* ---- インスタ始めました ---- */
+  .ig{display:block;text-decoration:none;color:inherit}
+  .igIn{position:relative;border-radius:22px;padding:26px 30px;display:grid;grid-template-columns:1fr auto;
+    gap:30px;align-items:center;background:var(--card);border:1px solid var(--line);overflow:hidden;
+    transition:transform .2s,box-shadow .2s}
+  /* 枠の色がゆっくり流れる */
+  .igIn::before{content:"";position:absolute;inset:0;border-radius:inherit;padding:2px;
+    background:linear-gradient(120deg,#22406e,#d94f2b,#e8a13a,#22406e);background-size:300% 300%;
+    animation:drift 7s linear infinite alternate;
+    -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+    -webkit-mask-composite:xor;mask-composite:exclude;pointer-events:none}
+  .ig:hover .igIn{transform:translateY(-4px);box-shadow:0 14px 34px #d94f2b1f}
+  .igIn h3{font-size:25px;margin:6px 0 8px;line-height:1.35}
+  .igIn p{margin:0 0 16px;color:var(--sub);font-size:15.5px;max-width:34em}
+  .igBtn{display:inline-flex;align-items:center;gap:9px;background:var(--ink);color:#fff;font-weight:700;
+    border-radius:999px;padding:10px 20px;font-size:15px;transition:background .15s;white-space:nowrap}
+  .ig:hover .igBtn{background:var(--aka)}
+  .igBtn svg{width:19px;height:19px;flex:none}
+  /* 投稿そっくりの小さい画面。フレーズが入れ替わる */
+  .reel{width:158px;aspect-ratio:9/15;border-radius:18px;background:#f1ebe0;border:1px solid #ddd3c2;
+    display:flex;flex-direction:column;align-items:center;padding:12px 10px;text-align:center;
+    box-shadow:0 10px 24px #1b1f2622;transform:rotate(3deg);transition:transform .25s}
+  .ig:hover .reel{transform:rotate(0) scale(1.03)}
+  .reel .rb{font-size:7.5px;letter-spacing:.14em;color:#8a8275;font-weight:700}
+  .reel .rp{margin-top:14px;background:#1b1f26;color:#fff;font-size:8.5px;font-weight:800;letter-spacing:.06em;
+    border-radius:999px;padding:4px 10px}
+  .reel .rj{flex:1;display:grid;place-items:center;font-size:17px;word-break:keep-all;font-weight:800;line-height:1.45;color:var(--ink)}
+  .reel .re{min-height:38px;font-size:12.5px;font-weight:800;color:var(--aka);line-height:1.3}
+  .reel .rj.sw,.reel .re.sw{animation:pop .45s backwards}
+  @media(max-width:640px){ .igIn{grid-template-columns:1fr;padding:22px 20px;gap:20px} .reel{margin:0 auto} .igBtn{font-size:14px;padding:10px 16px} }
+
+  @media(prefers-reduced-motion:reduce){
+    *,*::before,*::after{animation:none!important;transition:none!important}
+    .js .rv{opacity:1}
+    #prog{display:none}
+  }
+  /* ================= スクロールに連動する動き（スクロールテリング） =================
+     「出たら再生」ではなく、指の動きそのものがコマ送りになる。値は JS が --p（0〜1）で渡す。
+     html.js が無いとき（スクリプトなし／動きを減らす設定）は --p の既定=1 で全部見えたまま止まる。 */
+
+  /* 見出しの上の朱い線が引かれる */
+  .js section h2.rv::before{content:"";display:block;width:44px;height:3px;border-radius:2px;background:var(--aka);
+    margin-bottom:14px;transform:scaleX(0);transform-origin:0 50%;transition:transform .8s .15s cubic-bezier(.2,.7,.2,1)}
+  .js section h2.rv.in::before{transform:scaleX(1)}
+
+  /* ---- 場面：読めるのに、読めない（春夏冬中） ---- */
+  #scene{padding:0;border-top:0;background:linear-gradient(170deg,#0e1626,#1b2a45);color:#eaf2ff}
+  .js #scene{height:340vh}
+  .scPin{padding:72px 24px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:34px;text-align:center}
+  .js .scPin{position:sticky;top:0;height:100vh;height:100svh;padding:64px 24px 24px;overflow:hidden}
+  .scTag{color:#8ef0c0;font-weight:800;font-size:12px;letter-spacing:.2em;text-transform:uppercase}
+  /* 木の札 */
+  .plaque{position:relative;background:#f1e6cf;color:#1b1f26;border-radius:10px;padding:20px 26px 16px;
+    box-shadow:0 0 0 5px #c9a56a,0 0 0 7px #8a6a3a,0 24px 60px #0008;
+    transform:scale(calc(.86 + .14*var(--p,1)))}
+  .row{display:flex;justify-content:center;font-weight:800;font-size:clamp(40px,10.5vw,92px);line-height:1.1;
+    font-family:"Hiragino Mincho ProN","Yu Mincho","Noto Serif JP",serif}
+  .row i{font-style:normal;display:grid;justify-items:center;padding:0 .08em}
+  .row i s{text-decoration:none;font:600 clamp(10px,1.5vw,13px)/1.4 "Hiragino Sans",system-ui,sans-serif;
+    color:#8a6a3a;letter-spacing:.04em;margin-top:6px;opacity:var(--p,1)}
+  /* 抜けている「秋」。幅ごと開く */
+  .row i.gap{width:calc(1.16em*var(--p,1));padding:0;overflow:hidden;opacity:var(--p,1)}
+  .row i.gap b{font-weight:800;color:transparent;-webkit-text-stroke:1.5px #d94f2b;position:relative}
+  .row i.gap s{color:#d94f2b}
+  .rowA{opacity:calc(1 - var(--p,1))}
+  .rowB{position:absolute;inset:20px 26px 16px;align-items:start;opacity:var(--p,1);
+    transform:translateY(calc((1 - var(--p,1))*14px))}
+  .rowB i{color:#d94f2b}
+  .rowB i s{opacity:1}
+  /* 札の下の一行。同じ場所で入れ替わる */
+  .caps{position:relative;width:min(100%,720px);min-height:9.5em;display:grid}
+  .caps > *{grid-area:1/1;margin:0;align-self:start}
+  .js .caps > *{opacity:var(--p,0);transform:translateY(calc((1 - var(--p,0))*18px))}
+  .cap{font-size:clamp(16px,2.4vw,21px);color:#c9d6ea;line-height:1.7}
+  .cap b{color:#fff}
+  .say{font-size:clamp(25px,4.6vw,46px);font-weight:800;line-height:1.35;letter-spacing:-.01em;color:#fff;text-wrap:balance}
+  .js .say span{opacity:calc(.16 + .84*var(--c,0))}
+  .say em{font-style:normal;color:#ff8a66}
+  .scLink{display:inline-block;margin-top:18px;color:#8ef0c0;font-size:15px;font-weight:700;text-decoration:none;
+    opacity:var(--p,1)}
+  .scLink + .scLink{margin-left:20px}
+  /* 静止版（js なし）は順に全部並べる */
+  html:not(.js) .caps{display:block;min-height:0}
+  html:not(.js) .caps > *{margin:0 0 14px}
+  html:not(.js) .rowA{display:none}
+  html:not(.js) .rowB{position:static}
+
+  /* ---- 横に流れる大きな字（スクロールした分だけ動く） ---- */
+  .band{overflow:hidden;padding:34px 0 6px;border-top:1px solid var(--line);user-select:none}
+  .band div{white-space:nowrap;font-weight:800;font-size:clamp(46px,9vw,112px);line-height:1.15;letter-spacing:-.01em;
+    color:transparent;-webkit-text-stroke:1.4px #22406e55;will-change:transform;
+    transform:translateX(calc(var(--x,0)*1px))}
+  .band div + div{-webkit-text-stroke-color:#d94f2b66;font-family:"Hiragino Mincho ProN","Yu Mincho",serif}
+  .band + section{border-top:0;padding-top:34px}
+
+  /* ゲームの棚：画面に入るにつれて手前に来る */
+  .js .shelf{transform:scale(calc(.9 + .1*var(--p,1)));opacity:calc(.35 + .65*var(--p,1));transform-origin:50% 0;will-change:transform}
+  .js .hero > div:first-child, .js .hero .drop{will-change:transform}
 </style>
 </head>
 <body>
+<div id="prog" aria-hidden="true"></div>
 
 <header>
   <div class="wrap">
@@ -252,6 +400,44 @@
   </div>
 </div>
 
+<!-- ===================== 場面：読めるのに読めない ===================== -->
+<section id="scene">
+  <div class="scPin">
+    <div class="scTag" data-en="A sign on a ramen shop door" data-ja="ラーメン屋の戸口の札">A sign on a ramen shop door</div>
+    <div class="plaque" data-a="0" data-b=".12" aria-hidden="true">
+      <div class="row rowA" data-a=".6" data-b=".7">
+        <i><b>春</b><s data-a=".05" data-b=".1" data-en="spring" data-ja="はる">spring</s></i>
+        <i><b>夏</b><s data-a=".1" data-b=".15" data-en="summer" data-ja="なつ">summer</s></i>
+        <i class="gap" data-a=".34" data-b=".44"><b>秋</b><s data-en="autumn" data-ja="あき">autumn</s></i>
+        <i><b>冬</b><s data-a=".15" data-b=".2" data-en="winter" data-ja="ふゆ">winter</s></i>
+        <i><b>中</b><s data-a=".2" data-b=".25" data-en="in progress" data-ja="〜中">in progress</s></i>
+      </div>
+      <div class="row rowB" data-a=".6" data-b=".7">
+        <i><b>商</b><s>aki</s></i><i><b>い</b><s>nai</s></i><i><b>中</b><s>chū</s></i>
+      </div>
+    </div>
+    <div class="caps">
+      <p class="cap" data-a=".05" data-b=".13" data-c=".28" data-d=".34"
+         data-en="You can read <b>every character</b>.<br>Spring, summer, winter. It still makes no sense."
+         data-ja="<b>字は全部読める。</b><br>春、夏、冬。なのに意味が取れない。">You can read <b>every character</b>.<br>Spring, summer, winter. It still makes no sense.</p>
+      <p class="cap" data-a=".36" data-b=".44" data-c=".53" data-d=".59"
+         data-en="Autumn is missing.<br><b>No autumn</b> — <b>aki nai</b>."
+         data-ja="秋がない。<br><b>あき、ない。</b>">Autumn is missing.<br><b>No autumn</b> — <b>aki nai</b>.</p>
+      <p class="cap" data-a=".62" data-b=".7" data-c=".78" data-d=".84"
+         data-en="<b>Akinai-chū</b> — “Open for business.”<br>The answer is the one thing not written on the board."
+         data-ja="<b>商い中</b> ─ 営業しています。<br>答えは、札に書いていない一字のほう。">“Open for business.”</p>
+      <div data-a=".84" data-b=".88">
+        <p class="say" id="say" data-en="The deep Japan is not hidden. It is just <em>unreadable</em>."
+           data-ja="深い日本は、隠れていない。<em>読めない</em>だけだ。">The deep Japan is not hidden. It is just <em>unreadable</em>.</p>
+        <span data-a=".95" data-b="1" class="scLink" style="margin:0">
+          <a class="scLink" href="/why/" data-en="Why this site exists →" data-ja="このサイトがある理由 →">Why this site exists →</a>
+          <a class="scLink" href="/signs-that-are-jokes/" data-en="Seven more signs like this →" data-ja="こういう看板をあと七つ →">Seven more signs like this →</a>
+        </span>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- ===================== GAMES（棚1つ。足すときはタイルを1枚増やすだけ） ===================== -->
 <section id="game" style="border-top:0">
   <div class="wrap">
@@ -299,6 +485,32 @@
         </a>
       </div>
     </div>
+  </div>
+</section>
+
+<!-- ===================== インスタ始めました ===================== -->
+<section id="instagram" style="border-top:0;padding-top:0">
+  <div class="wrap">
+    <a class="ig" href="https://www.instagram.com/moose.86080290/" target="_blank" rel="noopener">
+      <div class="igIn">
+        <div>
+          <div class="nsTag" data-en="New · Instagram" data-ja="新しく始めました ・ Instagram">New · Instagram</div>
+          <h3 data-en="We are on Instagram now." data-ja="インスタ、始めました。">We are on Instagram now.</h3>
+          <p data-en="Two Japanese phrases a day, 25 seconds each. The things you really get asked at the konbini counter — and what to say back. From a breaker in Tokyo."
+             data-ja="日本語のフレーズを1日2本、1本25秒。コンビニのレジで本当に聞かれるひとことと、その返し方。東京のブレイクダンサーが教えます。">Two Japanese phrases a day, 25 seconds each. The things you really get asked at the konbini counter — and what to say back. From a breaker in Tokyo.</p>
+          <span class="igBtn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.3" cy="6.7" r="1" fill="currentColor" stroke="none"/></svg>
+            <span data-en="Follow @moose.86080290" data-ja="@moose.86080290 をフォロー">Follow @moose.86080290</span>
+          </span>
+        </div>
+        <div class="reel" aria-hidden="true">
+          <span class="rb">MORE TO JAPAN</span>
+          <span class="rp">JAPANESE IN 20 SEC</span>
+          <span class="rj" id="reelJ">袋は<br>ご利用ですか？</span>
+          <span class="re" id="reelE">???</span>
+        </div>
+      </div>
+    </a>
   </div>
 </section>
 
@@ -377,6 +589,11 @@
     </a>
   </div>
 </section>
+
+<div class="band" id="band" aria-hidden="true">
+  <div>NOT ON THE MAP &nbsp;·&nbsp; NOT IN THE GUIDEBOOK &nbsp;·&nbsp; NOT ON THE MAP &nbsp;·&nbsp; NOT IN THE GUIDEBOOK &nbsp;·&nbsp; NOT ON THE MAP</div>
+  <div>地図に載っていない日本 ・ まだ誰も英語で書いていない ・ 地図に載っていない日本 ・ まだ誰も英語で書いていない</div>
+</div>
 
 <section id="articles">
   <div class="wrap">
@@ -618,6 +835,7 @@
     <span>© <span id="yr"></span> More to Japan</span>
     <span class="sp" style="flex:1"></span>
     <a href="/#articles" data-en="Articles" data-ja="読みもの">Articles</a>
+    <a href="https://www.instagram.com/moose.86080290/" target="_blank" rel="noopener">Instagram</a>
     <a href="/tweet/" data-en="Tweets" data-ja="つぶやき">Tweets</a>
     <a href="/play/" data-en="Language exchange" data-ja="言語交換">Language exchange</a>
     <a href="/live/" data-en="Live" data-ja="配信">Live</a>
@@ -635,6 +853,7 @@
     <a href="/about/" data-en="About" data-ja="このサイトについて">About</a>
     <a href="/contact/" data-en="Contact" data-ja="連絡先">Contact</a>
     <a href="/privacy/" data-en="Privacy" data-ja="プライバシー">Privacy</a>
+    <a href="/legal/" data-en="Commerce disclosure" data-ja="特定商取引法に基づく表記">Commerce disclosure</a>
   </div>
 </footer>
 
@@ -681,6 +900,7 @@ function applyLang() {
   });
   document.getElementById("lang").textContent = lang === "en" ? "日本語" : "English";
   try { localStorage.setItem("mj-lang", lang); } catch (e) {}
+  dispatchEvent(new Event("mj-lang"));
 }
 document.getElementById("lang").addEventListener("click", () => {
   lang = lang === "en" ? "ja" : "en";
@@ -738,6 +958,145 @@ document.getElementById("form").addEventListener("submit", async e => {
                          "うまく送れませんでした。少しして、もう一度お試しください。");
   }
 });
+/* ---------- 動き：スクロールで出る／読んだ量の棒／インスタの小さい画面 ---------- */
+(function () {
+  const still = matchMedia("(prefers-reduced-motion:reduce)").matches;
+
+  // 出現。横に並ぶものは列ごとに少しずらす（17枚ある記事を1枚ずつ待たせない）
+  if (document.documentElement.classList.contains("js")) {
+    const io = new IntersectionObserver(es => es.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); }
+    }), { threshold: 0.1, rootMargin: "0px 0px -5% 0px" });
+    const mark = (sel, cols, step) => document.querySelectorAll(sel).forEach(el => {
+      const i = Array.prototype.indexOf.call(el.parentNode.children, el);
+      el.style.setProperty("--d", ((cols ? i % cols : i) * step).toFixed(2) + "s");
+      el.classList.add("rv"); io.observe(el);
+    });
+    mark("section h2, section .lead, #board .card, #market .card, .igIn, .face, .about > div:last-child", 1, 0);
+    mark(".grid3 > .card, .price > .card", 3, 0.09);
+    mark(".tiles > .tile", 2, 0.08);
+    mark("ul.ticks > li, form > label", 0, 0.07);
+  }
+
+  // ---- スクロール連動。1回の scroll につき1コマだけ描く ----
+  const on = document.documentElement.classList.contains("js");
+  const cl = v => v < 0 ? 0 : v > 1 ? 1 : v;
+  const ease = t => t * t * (3 - 2 * t);
+  const prog = document.getElementById("prog");
+  const scene = document.getElementById("scene");
+  const say = document.getElementById("say");
+  const keyed = on ? Array.from(scene.querySelectorAll("[data-a]")).map(el => ({
+    el, a: +el.dataset.a, b: +el.dataset.b,
+    c: el.dataset.c ? +el.dataset.c : 2, d: el.dataset.d ? +el.dataset.d : 3 })) : [];
+  // 決めの一文は1字（英語は1語）ずつ灯す。言語を切り替えたら割り直す
+  let chars = [];
+  const split = () => {
+    if (!on) return;
+    const ja = document.documentElement.lang === "ja";
+    const walk = node => Array.from(node.childNodes).forEach(n => {
+      if (n.nodeType === 3) {
+        const f = document.createDocumentFragment();
+        (ja ? Array.from(n.textContent) : n.textContent.split(/(\s+)/)).forEach(w => {
+          if (!w.trim()) { f.appendChild(document.createTextNode(w)); return; }
+          const sp = document.createElement("span"); sp.textContent = w; f.appendChild(sp);
+        });
+        n.replaceWith(f);
+      } else if (n.nodeType === 1 && n.tagName !== "SPAN") walk(n);
+    });
+    walk(say);
+    chars = Array.from(say.querySelectorAll("span"));
+    draw();
+  };
+  const heroTxt = document.querySelector(".hero > div:first-child");
+  const heroBox = document.querySelector(".hero .drop");
+  const shelf = document.querySelector(".shelf");
+  const band = Array.from(document.querySelectorAll("#band div"));
+  let tick = false;
+  let pending = Array.from(document.querySelectorAll(".rv"));
+  function draw() {
+    tick = false;
+    const vh = innerHeight, y = scrollY;
+    const max = document.documentElement.scrollHeight - vh;
+    prog.style.transform = "scaleX(" + (max > 0 ? cl(y / max) : 0) + ")";
+    if (!on) return;
+
+    // 出現の取りこぼし防止：速く飛ばしても、画面より上に来たものは必ず出す
+    pending = pending.filter(el => {
+      if (el.classList.contains("in")) return false;
+      const t = el.getBoundingClientRect();
+      if (t.top < vh * 0.94 && (t.width || t.height)) { el.classList.add("in"); return false; }
+      return true;
+    });
+
+    // ヒーロー：字は先に上へ抜け、カタカナの箱は遅れてついてくる（奥行き）
+    if (y < vh * 1.3) {
+      heroTxt.style.transform = "translateY(" + (-y * 0.1).toFixed(1) + "px)";
+      heroTxt.style.opacity = (1 - cl((y - vh * 0.25) / (vh * 0.6))).toFixed(3);
+      heroBox.style.transform = "translateY(" + (y * 0.07).toFixed(1) + "px) scale(" + (1 + cl(y / vh) * 0.04).toFixed(4) + ")";
+    }
+
+    // 場面：止まっている間のスクロール量を 0〜1 にして、各部品の出番に配る
+    const r = scene.getBoundingClientRect();
+    if (r.top < vh && r.bottom > 0) {
+      const P = cl(-r.top / (r.height - vh));
+      const enter = cl(1 - r.top / vh);            // 札は止まる前、入ってくる途中から大きくなる
+      keyed.forEach(k => {
+        let p = ease(cl((P - k.a) / (k.b - k.a))) * (1 - ease(cl((P - k.c) / (k.d - k.c))));
+        if (k.el.classList.contains("plaque")) p = ease(enter);
+        k.el.style.setProperty("--p", p.toFixed(3));
+      });
+      const q = cl((P - 0.85) / 0.11) * (chars.length + 1);
+      chars.forEach((c, i) => c.style.setProperty("--c", cl(q - i).toFixed(2)));
+    }
+
+    // 棚：下から入ってきて画面の6割の高さに来るまでに手前へ
+    const s = shelf.getBoundingClientRect();
+    if (s.top < vh * 1.1 && s.bottom > 0) shelf.style.setProperty("--p", ease(cl((vh - s.top) / (vh * 0.45))).toFixed(3));
+
+    // 大きな字：2行が逆向きに流れる
+    const b = band[0].parentNode.getBoundingClientRect();
+    if (b.top < vh && b.bottom > 0) {
+      const t = (vh - b.top) * 0.35;
+      band[0].style.setProperty("--x", (-t).toFixed(1));
+      band[1].style.setProperty("--x", (t - 520).toFixed(1));
+    }
+  }
+  addEventListener("scroll", () => { if (!tick) { tick = true; requestAnimationFrame(draw); } }, { passive: true });
+  addEventListener("resize", draw);
+  addEventListener("mj-lang", split);
+  split(); draw();
+
+  // 料金：見えたら数字が回る
+  if (on) document.querySelectorAll(".amt").forEach(el => {
+    const n = el.firstChild, m = n && n.nodeType === 3 && n.textContent.match(/¥([\d,]+)/);
+    if (!m) return;
+    const to = +m[1].replace(/,/g, ""); if (!to) return;
+    const sp = document.createElement("span"); sp.textContent = "¥" + m[1];
+    n.textContent = n.textContent.replace(/¥[\d,]+/, ""); el.insertBefore(sp, n);
+    new IntersectionObserver((es, o) => { if (!es[0].isIntersecting) return; o.disconnect();
+      const t0 = performance.now();
+      (function f(t) { const k = cl((t - t0) / 900), v = Math.round(to * (1 - Math.pow(1 - k, 3)));
+        sp.textContent = "¥" + v.toLocaleString("en-US"); if (k < 1) requestAnimationFrame(f); })(t0);
+    }, { threshold: 0.6 }).observe(el);
+  });
+
+  // インスタの小さい画面：聞かれるひとこと →「???」→ 意味、を繰り返す（/phrases/ にある実物）
+  const P = [
+    ["袋は<br>ご利用ですか？", "Do you need a bag?"],
+    ["お箸<br>おつけしますか？", "Want chopsticks?"],
+    ["温めますか？", "Shall I heat this up?"],
+    ["店内で<br>お召し上がり<br>ですか？", "For here or to go?"]
+  ];
+  const J = document.getElementById("reelJ"), E = document.getElementById("reelE");
+  const swap = (el, html) => { el.classList.remove("sw"); el.innerHTML = html; void el.offsetWidth; el.classList.add("sw"); };
+  if (still) { E.textContent = P[0][1]; return; }
+  let n = 0;
+  (function next() {
+    swap(J, P[n][0]); swap(E, "???");
+    setTimeout(() => swap(E, P[n][1]), 1500);
+    setTimeout(() => { n = (n + 1) % P.length; next(); }, 3800);
+  })();
+})();
 </script>
 <!-- Cloudflare Web Analytics（Cookieを使わない。個人は追わない。何人・どのページ・どの国・どこから、だけ）-->
 <script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "a549632ca5ba440a9dbdfd24bcbe11e5"}'></script>

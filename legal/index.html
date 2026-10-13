@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Commerce Disclosure (特定商取引法に基づく表記) — More to Japan</title>
+<meta name="description" content="Seller information, prices, payment, and cancellation terms for paid services on More to Japan, as required by Japan's Act on Specified Commercial Transactions.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Commerce Disclosure — More to Japan">
+<meta property="og:url" content="https://moretojapan.com/legal/">
+<link rel="canonical" href="https://moretojapan.com/legal/">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2322406e'/%3E%3Ctext x='32' y='45' font-size='40' text-anchor='middle' fill='white' font-family='Hiragino Sans,sans-serif'%3E%E5%A5%A5%3C/text%3E%3C/svg%3E">
+<style>
+  :root{
+    --paper:#faf7f2; --ink:#1b1f26; --sub:#5d6673; --line:#e4ddd2;
+    --ai:#22406e; --aka:#d94f2b; --card:#ffffff;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--paper);color:var(--ink);line-height:1.85;
+    font-family:"Hiragino Sans","Noto Sans JP",system-ui,-apple-system,"Segoe UI",sans-serif;
+    -webkit-font-smoothing:antialiased}
+  .wrap{max-width:760px;margin:0 auto;padding:0 24px}
+  a{color:var(--ai)}
+
+  header{position:sticky;top:0;z-index:50;background:#faf7f2e6;backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line)}
+  nav{display:flex;align-items:center;gap:20px;height:64px;max-width:1040px;margin:0 auto;padding:0 24px}
+  .logo{font-weight:800;font-size:19px;text-decoration:none;color:var(--ink);
+    display:flex;align-items:center;gap:9px;white-space:nowrap}
+  .logo i{display:grid;place-items:center;width:30px;height:30px;border-radius:9px;
+    background:var(--ai);color:#fff;font-style:normal;font-size:16px;font-weight:700}
+  nav .sp{flex:1}
+  .lang{border:1px solid var(--line);background:#fff;border-radius:999px;padding:6px 14px;
+    font:inherit;font-size:13px;cursor:pointer;color:var(--sub);white-space:nowrap}
+  .lang:hover{border-color:var(--ai);color:var(--ai)}
+
+  .hero{padding:64px 0 10px}
+  .kicker{color:var(--aka);font-weight:700;font-size:13px;letter-spacing:.16em;text-transform:uppercase}
+  h1{font-size:clamp(30px,4.8vw,42px);line-height:1.28;margin:14px 0 16px;letter-spacing:-.01em}
+  .lead{font-size:18px;color:var(--sub);margin:0}
+  .upd{font-size:14px;color:var(--sub);margin-top:14px}
+
+  section{padding:34px 0}
+  section + section{border-top:1px solid var(--line)}
+  h2{font-size:clamp(20px,2.8vw,24px);margin:0 0 14px;line-height:1.4}
+  p{font-size:16.5px;margin:0 0 16px}
+  ul.plain{list-style:none;padding:0;margin:0 0 18px}
+  ul.plain li{padding-left:26px;position:relative;color:var(--sub);margin-bottom:10px;font-size:16.5px}
+  ul.plain li::before{content:"—";position:absolute;left:0;color:var(--aka);font-weight:800}
+  ul.plain li b{color:var(--ink)}
+
+  .short{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:22px 26px 8px;margin-top:28px}
+  .short h2{font-size:18px}
+
+  footer{border-top:1px solid var(--line);padding:36px 0 60px;color:var(--sub);font-size:14px;margin-top:40px}
+  footer .wrap{display:flex;gap:18px;flex-wrap:wrap;align-items:center}
+
+  .who{display:flex;gap:22px;align-items:flex-start;margin-top:8px}
+  .face{flex:none;display:grid;place-items:center;width:72px;height:72px;border-radius:20px;
+    background:var(--ai);color:#fff;font-size:34px;font-weight:700}
+  .links{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px;margin:6px 0 4px}
+  .links a{display:block;background:var(--card);border:1px solid var(--line);border-radius:14px;
+    padding:14px 16px;text-decoration:none;color:var(--ink);font-weight:700;font-size:15.5px}
+  .links a span{display:block;font-weight:400;color:var(--sub);font-size:14px;line-height:1.6;margin-top:2px}
+  .links a:hover{border-color:var(--ai)}
+  form{display:grid;gap:18px;margin-top:6px}
+  label{display:grid;gap:6px;font-weight:700;font-size:15px}
+  .hintline{font-weight:400;color:var(--sub);font-size:14px;margin:0}
+  input,textarea{font:inherit;font-size:16px;padding:12px 14px;border:1px solid var(--line);
+    border-radius:12px;background:#fff;color:var(--ink);width:100%}
+  textarea{min-height:150px;resize:vertical}
+  input:focus,textarea:focus{outline:2px solid var(--ai);outline-offset:1px}
+  .hp{position:absolute;left:-9999px;width:1px;height:1px;opacity:0}
+  .btn{display:inline-block;border:0;border-radius:999px;background:var(--ai);color:#fff;
+    font:inherit;font-weight:700;font-size:16px;padding:13px 26px;cursor:pointer;text-decoration:none}
+  .btn:disabled{opacity:.5;cursor:default}
+  @media (max-width:520px){.who{flex-direction:column;gap:14px}}
+  dl.tk{margin:26px 0 0;border-top:1px solid var(--line)}
+  dl.tk > div{display:grid;grid-template-columns:210px 1fr;gap:6px 24px;padding:18px 0;border-bottom:1px solid var(--line)}
+  dl.tk dt{font-weight:700;font-size:15.5px}
+  dl.tk dd{margin:0;font-size:16px;color:var(--sub)}
+  dl.tk dd b{color:var(--ink)}
+  @media (max-width:620px){dl.tk > div{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<header>
+  <nav>
+    <a class="logo" href="/"><i>奥</i>More to Japan</a>
+    <span class="sp"></span>
+    <button class="lang" id="lang">日本語</button>
+  </nav>
+</header>
+
+<div class="wrap">
+
+  <div class="hero">
+    <div class="kicker" data-en="Commerce disclosure" data-ja="特定商取引法に基づく表記">Commerce disclosure</div>
+    <h1 data-en="Who you are paying, and on what terms" data-ja="だれに、どんな条件で払うのか">Who you are paying, and on what terms</h1>
+    <p class="lead" data-en="Japanese law (the Act on Specified Commercial Transactions) asks anyone who sells online to state these things plainly. Here they are." data-ja="ネットで何かを売る人は、特定商取引法によって次のことをはっきり書くよう求められています。そのまま書きます。">Japanese law (the Act on Specified Commercial Transactions) asks anyone who sells online to state these things plainly. Here they are.</p>
+    <p class="upd" data-en="Last updated: 12 October 2026" data-ja="最終更新：2026年10月12日">Last updated: 12 October 2026</p>
+  </div>
+
+  <section>
+    <dl class="tk">
+      <div><dt data-en="Seller" data-ja="販売事業者">Seller</dt><dd data-en="We will disclose without delay if requested. Please ask through the &lt;a href=&quot;/contact/&quot;&gt;contact page&lt;/a&gt;." data-ja="請求があれば遅滞なく開示します。&lt;a href=&quot;/contact/&quot;&gt;連絡先のページ&lt;/a&gt;からお知らせください。">We will disclose without delay if requested. Please ask through the <a href="/contact/">contact page</a>.</dd></div>
+      <div><dt data-en="Head of operations" data-ja="運営統括責任者">Head of operations</dt><dd data-en="We will disclose without delay if requested. Please ask through the &lt;a href=&quot;/contact/&quot;&gt;contact page&lt;/a&gt;." data-ja="請求があれば遅滞なく開示します。&lt;a href=&quot;/contact/&quot;&gt;連絡先のページ&lt;/a&gt;からお知らせください。">We will disclose without delay if requested. Please ask through the <a href="/contact/">contact page</a>.</dd></div>
+      <div><dt data-en="Address" data-ja="所在地">Address</dt><dd data-en="We will disclose without delay if requested. Please ask through the &lt;a href=&quot;/contact/&quot;&gt;contact page&lt;/a&gt;." data-ja="請求があれば遅滞なく開示します。&lt;a href=&quot;/contact/&quot;&gt;連絡先のページ&lt;/a&gt;からお知らせください。">We will disclose without delay if requested. Please ask through the <a href="/contact/">contact page</a>.</dd></div>
+      <div><dt data-en="Phone number" data-ja="電話番号">Phone number</dt><dd data-en="We will disclose without delay if requested. Please ask through the &lt;a href=&quot;/contact/&quot;&gt;contact page&lt;/a&gt;." data-ja="請求があれば遅滞なく開示します。&lt;a href=&quot;/contact/&quot;&gt;連絡先のページ&lt;/a&gt;からお知らせください。">We will disclose without delay if requested. Please ask through the <a href="/contact/">contact page</a>.</dd></div>
+      <div><dt data-en="Email address" data-ja="メールアドレス">Email address</dt><dd data-en="&lt;span id=&quot;mail&quot;&gt;Please use the &lt;a href=&quot;/contact/&quot;&gt;contact page&lt;/a&gt;.&lt;/span&gt;" data-ja="&lt;span id=&quot;mail&quot;&gt;&lt;a href=&quot;/contact/&quot;&gt;連絡先のページ&lt;/a&gt;からご連絡ください。&lt;/span&gt;"><span id="mail">Please use the <a href="/contact/">contact page</a>.</span></dd></div>
+      <div><dt data-en="What is sold" data-ja="販売するもの">What is sold</dt><dd data-en="One-to-one Japanese lessons (online or in person), and voluntary tips at &lt;a href=&quot;/hinata-bar/&quot;&gt;Hinata Bar #&lt;/a&gt;. Everything else on this site is free." data-ja="1対1の日本語レッスン（オンラインまたは対面）と、&lt;a href=&quot;/hinata-bar/&quot;&gt;ひなたバー ♯&lt;/a&gt; の任意のチップ。それ以外はすべて無料です。">One-to-one Japanese lessons (online or in person), and voluntary tips at <a href="/hinata-bar/">Hinata Bar #</a>. Everything else on this site is free.</dd></div>
+      <div><dt data-en="Price" data-ja="販売価格">Price</dt><dd data-en="&lt;b&gt;Single lesson (60 min): ¥3,000&lt;/b&gt;&lt;br&gt;&lt;b&gt;5 lessons (5 × 60 min): ¥13,500&lt;/b&gt;&lt;br&gt;Trial (30 min): free.&lt;br&gt;Tips: any amount you choose.&lt;br&gt;All prices are in Japanese yen and include tax." data-ja="&lt;b&gt;1回（60分）：3,000円&lt;/b&gt;&lt;br&gt;&lt;b&gt;5回券（60分×5回）：13,500円&lt;/b&gt;&lt;br&gt;体験（30分）：無料&lt;br&gt;チップ：ご自身で決めた金額&lt;br&gt;価格はすべて日本円・税込です。"><b>Single lesson (60 min): ¥3,000</b><br><b>5 lessons (5 × 60 min): ¥13,500</b><br>Trial (30 min): free.<br>Tips: any amount you choose.<br>All prices are in Japanese yen and include tax.</dd></div>
+      <div><dt data-en="Additional fees" data-ja="商品代金以外の必要料金">Additional fees</dt><dd data-en="None from us. Your own internet connection costs, and any currency conversion fee charged by your card issuer, are yours to pay. For in-person lessons, each side pays their own travel and any café costs." data-ja="こちらからの追加料金はありません。通信料、およびカード会社が定める外貨換算の手数料はお客様の負担です。対面レッスンの交通費・飲食代は各自の負担です。">None from us. Your own internet connection costs, and any currency conversion fee charged by your card issuer, are yours to pay. For in-person lessons, each side pays their own travel and any café costs.</dd></div>
+      <div><dt data-en="Accepted payment methods" data-ja="支払方法">Accepted payment methods</dt><dd data-en="Credit or debit card (processed by Stripe). Card details are entered on Stripe&#x27;s page and never reach this site." data-ja="クレジットカード・デビットカード（決済はStripe）。カード情報はStripeのページで入力され、このサイトには届きません。">Credit or debit card (processed by Stripe). Card details are entered on Stripe's page and never reach this site.</dd></div>
+      <div><dt data-en="Payment period" data-ja="支払時期">Payment period</dt><dd data-en="Your card is charged when you complete the payment, before the lesson." data-ja="お支払いの手続きが完了した時点で決済されます（レッスンの前払い）。">Your card is charged when you complete the payment, before the lesson.</dd></div>
+      <div><dt data-en="Delivery time" data-ja="役務の提供時期">Delivery time</dt><dd data-en="Lessons take place at the date and time we agree on by message after payment. The 5-lesson pack has no expiry." data-ja="お支払いのあと、メッセージで決めた日時にレッスンを行います。5回券に期限はありません。">Lessons take place at the date and time we agree on by message after payment. The 5-lesson pack has no expiry.</dd></div>
+      <div><dt data-en="Cancellations and refunds" data-ja="キャンセル・返金">Cancellations and refunds</dt><dd data-en="&lt;b&gt;Before a lesson:&lt;/b&gt; tell me at least 24 hours ahead and you can move the lesson or get a full refund.&lt;br&gt;&lt;b&gt;Less than 24 hours, or no-show:&lt;/b&gt; the lesson counts as used.&lt;br&gt;&lt;b&gt;If I have to cancel:&lt;/b&gt; we rebook, or you get a full refund — your choice.&lt;br&gt;&lt;b&gt;5-lesson pack:&lt;/b&gt; unused lessons can be refunded; lessons already taken are counted at the single-lesson price.&lt;br&gt;&lt;b&gt;Tips:&lt;/b&gt; not refundable, since nothing is owed in return.&lt;br&gt;Refunds go back to the card you paid with." data-ja="&lt;b&gt;レッスンの前：&lt;/b&gt;24時間前までにご連絡いただければ、日時の変更または全額返金をします。&lt;br&gt;&lt;b&gt;24時間を切ってからのキャンセル・無断欠席：&lt;/b&gt;1回ぶんを消化したものとします。&lt;br&gt;&lt;b&gt;こちらの都合で中止する場合：&lt;/b&gt;振り替えか全額返金かを選んでいただけます。&lt;br&gt;&lt;b&gt;5回券：&lt;/b&gt;未使用ぶんは返金できます。受講済みの回は1回ぶんの価格で計算します。&lt;br&gt;&lt;b&gt;チップ：&lt;/b&gt;対価のないお支払いのため、返金はできません。&lt;br&gt;返金はお支払いに使ったカードに戻します。"><b>Before a lesson:</b> tell me at least 24 hours ahead and you can move the lesson or get a full refund.<br><b>Less than 24 hours, or no-show:</b> the lesson counts as used.<br><b>If I have to cancel:</b> we rebook, or you get a full refund — your choice.<br><b>5-lesson pack:</b> unused lessons can be refunded; lessons already taken are counted at the single-lesson price.<br><b>Tips:</b> not refundable, since nothing is owed in return.<br>Refunds go back to the card you paid with.</dd></div>
+    </dl>
+  </section>
+
+  <section>
+    <p data-en="More to Japan is run by one person, not a company. That is why the name, address and phone number are given on request instead of printed here — the law allows this for individuals. How your information is handled is on the <a href=&quot;/privacy/&quot;>privacy page</a>." data-ja="More to Japan は会社ではなく、一人でやっています。そのため氏名・住所・電話番号はここに載せず、請求があったときにお伝えする形にしています（個人の場合に法律で認められている方法です）。情報の扱いは <a href=&quot;/privacy/&quot;>プライバシーのページ</a>に書いています。">More to Japan is run by one person, not a company.</p>
+  </section>
+
+</div>
+
+<footer>
+  <div class="wrap">
+    <span>© <span id="yr"></span> More to Japan</span>
+    <span style="flex:1"></span>
+    <a href="/" data-en="Home" data-ja="トップ">Home</a>
+    <a href="/why/" data-en="Why" data-ja="なぜ">Why</a>
+    <a href="/about/" data-en="About" data-ja="このサイトについて">About</a>
+    <a href="/contact/" data-en="Contact" data-ja="連絡先">Contact</a>
+    <a href="/privacy/" data-en="Privacy" data-ja="プライバシー">Privacy</a>
+    <a href="/legal/" data-en="Commerce disclosure" data-ja="特定商取引法に基づく表記">Commerce disclosure</a>
+  </div>
+</footer>
+
+<script>
+let lang = "en";
+function applyLang() {
+  document.documentElement.lang = lang === "en" ? "en" : "ja";
+  document.querySelectorAll("[data-en]").forEach(el => {
+    const v = el.getAttribute("data-" + lang);
+    if (v != null) el.innerHTML = v;
+  });
+  document.querySelectorAll("[data-ph-en]").forEach(el => {
+    el.placeholder = el.getAttribute("data-ph-" + lang) || "";
+  });
+  document.getElementById("lang").textContent = lang === "en" ? "日本語" : "English";
+  try { localStorage.setItem("mj-lang", lang); } catch (e) {}
+}
+document.getElementById("lang").addEventListener("click", () => {
+  lang = lang === "en" ? "ja" : "en"; applyLang();
+});
+try { const s = localStorage.getItem("mj-lang"); if (s === "en" || s === "ja") lang = s; } catch (e) {}
+/* ★連絡用のメールができたら、ここに入れるだけでメールの行が変わる（トップの CONTACT_EMAIL と同じもの） */
+const CONTACT_EMAIL = "";
+const _applyLang = applyLang;
+applyLang = function () {
+  _applyLang();
+  const m = document.getElementById("mail");
+  if (m && CONTACT_EMAIL) m.innerHTML = '<a href="mailto:' + CONTACT_EMAIL + '">' + CONTACT_EMAIL + '</a>';
+};
+applyLang();
+document.getElementById("yr").textContent = new Date().getFullYear();
+</script>
+<!-- Cloudflare Web Analytics（Cookieを使わない。個人は追わない。何人・どのページ・どの国・どこから、だけ）-->
+<script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "a549632ca5ba440a9dbdfd24bcbe11e5"}'></script>
+</body>
+</html>
