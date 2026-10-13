@@ -160,8 +160,8 @@
   /* ---- about ---- */
   .about{display:grid;grid-template-columns:.8fr 1.2fr;gap:40px;align-items:start}
   @media(max-width:860px){ .about{grid-template-columns:1fr} }
-  .face{aspect-ratio:1;border-radius:22px;background:linear-gradient(150deg,#22406e,#d94f2b);
-    display:grid;place-items:center;color:#fff;font-size:60px;font-weight:800}
+  .face{display:block;width:100%;height:auto;aspect-ratio:1;border-radius:22px;object-fit:cover;
+    border:1px solid var(--line);box-shadow:0 14px 34px #22406e1f}
 
   /* ---- form ---- */
   form{display:grid;gap:16px;max-width:620px}
@@ -221,7 +221,6 @@
   .logo:hover i{transform:rotate(-12deg) scale(1.1)}
   .tile .go{transition:transform .15s}
   .tile:hover .go{transform:translateX(4px)}
-  .face{background-size:220% 220%;animation:drift 9s ease-in-out infinite alternate}
 
   /* ---- インスタ始めました ---- */
   .ig{display:block;text-decoration:none;color:inherit}
@@ -738,7 +737,7 @@
 <section id="about">
   <div class="wrap">
     <div class="about">
-      <div class="face">栄</div>
+      <img class="face" src="/img/eisaku.webp" width="900" height="900" loading="lazy" alt="Eisaku in a black kimono, arm in arm with a fox and a tanuki under a moretojapan.com banner">
       <div>
         <h2 data-en="Who is teaching you" data-ja="教えるのはこんな人間です">Who is teaching you</h2>
         <p class="lead" data-en="I am Eisaku — a native Japanese speaker, a breakdancer, a bodyworker, and someone who builds small strange apps like the one on this page."
