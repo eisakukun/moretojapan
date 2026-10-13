@@ -268,47 +268,30 @@
     margin-bottom:14px;transform:scaleX(0);transform-origin:0 50%;transition:transform .8s .15s cubic-bezier(.2,.7,.2,1)}
   .js section h2.rv.in::before{transform:scaleX(1)}
 
-  /* ---- 場面：読めるのに、読めない（春夏冬中） ---- */
+  /* ---- 場面：読めるのに、読めない（春夏冬中）。ここだけは動かさない（本人の指定） ---- */
   #scene{padding:0;border-top:0;background:linear-gradient(170deg,#0e1626,#1b2a45);color:#eaf2ff}
-  .js #scene{height:340vh}
-  .scPin{padding:72px 24px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:34px;text-align:center}
-  .js .scPin{position:sticky;top:0;height:100vh;height:100svh;padding:64px 24px 24px;overflow:hidden}
+  .scPin{padding:84px 24px;display:flex;flex-direction:column;align-items:center;gap:30px;text-align:center}
   .scTag{color:#8ef0c0;font-weight:800;font-size:12px;letter-spacing:.2em;text-transform:uppercase}
+  .signs{display:flex;align-items:center;justify-content:center;gap:26px;flex-wrap:wrap}
+  .signs > span{color:#ff8a66;font-weight:800;font-size:30px}
+  @media(max-width:860px){ .signs{flex-direction:column;gap:14px} .signs > span{transform:rotate(90deg)} }
   /* 木の札 */
-  .plaque{position:relative;background:#f1e6cf;color:#1b1f26;border-radius:10px;padding:20px 26px 16px;
-    box-shadow:0 0 0 5px #c9a56a,0 0 0 7px #8a6a3a,0 24px 60px #0008;
-    transform:scale(calc(.86 + .14*var(--p,1)))}
-  .row{display:flex;justify-content:center;font-weight:800;font-size:clamp(40px,10.5vw,92px);line-height:1.1;
+  .plaque{background:#f1e6cf;color:#1b1f26;border-radius:10px;padding:18px 24px 14px;
+    box-shadow:0 0 0 5px #c9a56a,0 0 0 7px #8a6a3a,0 24px 60px #0008}
+  .row{display:flex;justify-content:center;font-weight:800;font-size:clamp(34px,6.4vw,68px);line-height:1.1;
     font-family:"Hiragino Mincho ProN","Yu Mincho","Noto Serif JP",serif}
   .row i{font-style:normal;display:grid;justify-items:center;padding:0 .08em}
-  .row i s{text-decoration:none;font:600 clamp(10px,1.5vw,13px)/1.4 "Hiragino Sans",system-ui,sans-serif;
-    color:#8a6a3a;letter-spacing:.04em;margin-top:6px;opacity:var(--p,1)}
-  /* 抜けている「秋」。幅ごと開く */
-  .row i.gap{width:calc(1.16em*var(--p,1));padding:0;overflow:hidden;opacity:var(--p,1)}
-  .row i.gap b{font-weight:800;color:transparent;-webkit-text-stroke:1.5px #d94f2b;position:relative}
-  .row i.gap s{color:#d94f2b}
-  .rowA{opacity:calc(1 - var(--p,1))}
-  .rowB{position:absolute;inset:20px 26px 16px;align-items:start;opacity:var(--p,1);
-    transform:translateY(calc((1 - var(--p,1))*14px))}
-  .rowB i{color:#d94f2b}
-  .rowB i s{opacity:1}
-  /* 札の下の一行。同じ場所で入れ替わる */
-  .caps{position:relative;width:min(100%,720px);min-height:9.5em;display:grid}
-  .caps > *{grid-area:1/1;margin:0;align-self:start}
-  .js .caps > *{opacity:var(--p,0);transform:translateY(calc((1 - var(--p,0))*18px))}
-  .cap{font-size:clamp(16px,2.4vw,21px);color:#c9d6ea;line-height:1.7}
+  .row i s{text-decoration:none;font:600 clamp(10px,1.4vw,13px)/1.4 "Hiragino Sans",system-ui,sans-serif;
+    color:#8a6a3a;letter-spacing:.04em;margin-top:6px}
+  /* 抜けている「秋」は輪郭だけ */
+  .row i.gap b{font-weight:800;color:transparent;-webkit-text-stroke:1.5px #d94f2b}
+  .row i.gap s, .rowB i{color:#d94f2b}
+  .cap{margin:0;max-width:40em;font-size:clamp(16px,2.2vw,20px);color:#c9d6ea;line-height:1.8}
   .cap b{color:#fff}
-  .say{font-size:clamp(25px,4.6vw,46px);font-weight:800;line-height:1.35;letter-spacing:-.01em;color:#fff;text-wrap:balance}
-  .js .say span{opacity:calc(.16 + .84*var(--c,0))}
+  .say{margin:8px 0 0;font-size:clamp(25px,4.6vw,46px);font-weight:800;line-height:1.35;letter-spacing:-.01em;color:#fff;text-wrap:balance}
   .say em{font-style:normal;color:#ff8a66}
-  .scLink{display:inline-block;margin-top:18px;color:#8ef0c0;font-size:15px;font-weight:700;text-decoration:none;
-    opacity:var(--p,1)}
-  .scLink + .scLink{margin-left:20px}
-  /* 静止版（js なし）は順に全部並べる */
-  html:not(.js) .caps{display:block;min-height:0}
-  html:not(.js) .caps > *{margin:0 0 14px}
-  html:not(.js) .rowA{display:none}
-  html:not(.js) .rowB{position:static}
+  .scLinks{display:flex;gap:22px;flex-wrap:wrap;justify-content:center}
+  .scLink{color:#8ef0c0;font-size:15px;font-weight:700;text-decoration:none}
 
   /* ---- 横に流れる大きな字（スクロールした分だけ動く） ---- */
   .band{overflow:hidden;padding:34px 0 6px;border-top:1px solid var(--line);user-select:none}
@@ -404,36 +387,27 @@
 <section id="scene">
   <div class="scPin">
     <div class="scTag" data-en="A sign on a ramen shop door" data-ja="ラーメン屋の戸口の札">A sign on a ramen shop door</div>
-    <div class="plaque" data-a="0" data-b=".12" aria-hidden="true">
-      <div class="row rowA" data-a=".6" data-b=".7">
-        <i><b>春</b><s data-a=".05" data-b=".1" data-en="spring" data-ja="はる">spring</s></i>
-        <i><b>夏</b><s data-a=".1" data-b=".15" data-en="summer" data-ja="なつ">summer</s></i>
-        <i class="gap" data-a=".34" data-b=".44"><b>秋</b><s data-en="autumn" data-ja="あき">autumn</s></i>
-        <i><b>冬</b><s data-a=".15" data-b=".2" data-en="winter" data-ja="ふゆ">winter</s></i>
-        <i><b>中</b><s data-a=".2" data-b=".25" data-en="in progress" data-ja="〜中">in progress</s></i>
-      </div>
-      <div class="row rowB" data-a=".6" data-b=".7">
+    <div class="signs" aria-hidden="true">
+      <div class="plaque"><div class="row">
+        <i><b>春</b><s data-en="spring" data-ja="はる">spring</s></i>
+        <i><b>夏</b><s data-en="summer" data-ja="なつ">summer</s></i>
+        <i class="gap"><b>秋</b><s data-en="autumn" data-ja="あき">autumn</s></i>
+        <i><b>冬</b><s data-en="winter" data-ja="ふゆ">winter</s></i>
+        <i><b>中</b><s data-en="in progress" data-ja="〜中">in progress</s></i>
+      </div></div>
+      <span>→</span>
+      <div class="plaque"><div class="row rowB">
         <i><b>商</b><s>aki</s></i><i><b>い</b><s>nai</s></i><i><b>中</b><s>chū</s></i>
-      </div>
+      </div></div>
     </div>
-    <div class="caps">
-      <p class="cap" data-a=".05" data-b=".13" data-c=".28" data-d=".34"
-         data-en="You can read <b>every character</b>.<br>Spring, summer, winter. It still makes no sense."
-         data-ja="<b>字は全部読める。</b><br>春、夏、冬。なのに意味が取れない。">You can read <b>every character</b>.<br>Spring, summer, winter. It still makes no sense.</p>
-      <p class="cap" data-a=".36" data-b=".44" data-c=".53" data-d=".59"
-         data-en="Autumn is missing.<br><b>No autumn</b> — <b>aki nai</b>."
-         data-ja="秋がない。<br><b>あき、ない。</b>">Autumn is missing.<br><b>No autumn</b> — <b>aki nai</b>.</p>
-      <p class="cap" data-a=".62" data-b=".7" data-c=".78" data-d=".84"
-         data-en="<b>Akinai-chū</b> — “Open for business.”<br>The answer is the one thing not written on the board."
-         data-ja="<b>商い中</b> ─ 営業しています。<br>答えは、札に書いていない一字のほう。">“Open for business.”</p>
-      <div data-a=".84" data-b=".88">
-        <p class="say" id="say" data-en="The deep Japan is not hidden. It is just <em>unreadable</em>."
-           data-ja="深い日本は、隠れていない。<em>読めない</em>だけだ。">The deep Japan is not hidden. It is just <em>unreadable</em>.</p>
-        <span data-a=".95" data-b="1" class="scLink" style="margin:0">
-          <a class="scLink" href="/why/" data-en="Why this site exists →" data-ja="このサイトがある理由 →">Why this site exists →</a>
-          <a class="scLink" href="/signs-that-are-jokes/" data-en="Seven more signs like this →" data-ja="こういう看板をあと七つ →">Seven more signs like this →</a>
-        </span>
-      </div>
+    <p class="cap"
+       data-en="The plaque says 春夏冬中. You can read <b>every character</b> — spring, summer, winter — and it still makes no sense. Autumn is missing. <b>No autumn</b> is <b>aki nai</b>: 商い中, “open for business.” The answer is the one thing not written on the board."
+       data-ja="札には「春夏冬中」。<b>字は全部読める</b>のに、意味が取れない。秋がない。<b>あき、ない</b>。つまり「商い中」＝営業しています。答えは、札に書いていない一字のほう。">The plaque says 春夏冬中.</p>
+    <p class="say" data-en="The deep Japan is not hidden. It is just <em>unreadable</em>."
+       data-ja="深い日本は、隠れていない。<em>読めない</em>だけだ。">The deep Japan is not hidden. It is just <em>unreadable</em>.</p>
+    <div class="scLinks">
+      <a class="scLink" href="/why/" data-en="Why this site exists →" data-ja="このサイトがある理由 →">Why this site exists →</a>
+      <a class="scLink" href="/signs-that-are-jokes/" data-en="Seven more signs like this →" data-ja="こういう看板をあと七つ →">Seven more signs like this →</a>
     </div>
   </div>
 </section>
@@ -983,30 +957,6 @@ document.getElementById("form").addEventListener("submit", async e => {
   const cl = v => v < 0 ? 0 : v > 1 ? 1 : v;
   const ease = t => t * t * (3 - 2 * t);
   const prog = document.getElementById("prog");
-  const scene = document.getElementById("scene");
-  const say = document.getElementById("say");
-  const keyed = on ? Array.from(scene.querySelectorAll("[data-a]")).map(el => ({
-    el, a: +el.dataset.a, b: +el.dataset.b,
-    c: el.dataset.c ? +el.dataset.c : 2, d: el.dataset.d ? +el.dataset.d : 3 })) : [];
-  // 決めの一文は1字（英語は1語）ずつ灯す。言語を切り替えたら割り直す
-  let chars = [];
-  const split = () => {
-    if (!on) return;
-    const ja = document.documentElement.lang === "ja";
-    const walk = node => Array.from(node.childNodes).forEach(n => {
-      if (n.nodeType === 3) {
-        const f = document.createDocumentFragment();
-        (ja ? Array.from(n.textContent) : n.textContent.split(/(\s+)/)).forEach(w => {
-          if (!w.trim()) { f.appendChild(document.createTextNode(w)); return; }
-          const sp = document.createElement("span"); sp.textContent = w; f.appendChild(sp);
-        });
-        n.replaceWith(f);
-      } else if (n.nodeType === 1 && n.tagName !== "SPAN") walk(n);
-    });
-    walk(say);
-    chars = Array.from(say.querySelectorAll("span"));
-    draw();
-  };
   const heroTxt = document.querySelector(".hero > div:first-child");
   const heroBox = document.querySelector(".hero .drop");
   const shelf = document.querySelector(".shelf");
@@ -1035,20 +985,6 @@ document.getElementById("form").addEventListener("submit", async e => {
       heroBox.style.transform = "translateY(" + (y * 0.07).toFixed(1) + "px) scale(" + (1 + cl(y / vh) * 0.04).toFixed(4) + ")";
     }
 
-    // 場面：止まっている間のスクロール量を 0〜1 にして、各部品の出番に配る
-    const r = scene.getBoundingClientRect();
-    if (r.top < vh && r.bottom > 0) {
-      const P = cl(-r.top / (r.height - vh));
-      const enter = cl(1 - r.top / vh);            // 札は止まる前、入ってくる途中から大きくなる
-      keyed.forEach(k => {
-        let p = ease(cl((P - k.a) / (k.b - k.a))) * (1 - ease(cl((P - k.c) / (k.d - k.c))));
-        if (k.el.classList.contains("plaque")) p = ease(enter);
-        k.el.style.setProperty("--p", p.toFixed(3));
-      });
-      const q = cl((P - 0.85) / 0.11) * (chars.length + 1);
-      chars.forEach((c, i) => c.style.setProperty("--c", cl(q - i).toFixed(2)));
-    }
-
     // 棚：下から入ってきて画面の6割の高さに来るまでに手前へ
     const s = shelf.getBoundingClientRect();
     if (s.top < vh * 1.1 && s.bottom > 0) shelf.style.setProperty("--p", ease(cl((vh - s.top) / (vh * 0.45))).toFixed(3));
@@ -1063,8 +999,7 @@ document.getElementById("form").addEventListener("submit", async e => {
   }
   addEventListener("scroll", () => { if (!tick) { tick = true; requestAnimationFrame(draw); } }, { passive: true });
   addEventListener("resize", draw);
-  addEventListener("mj-lang", split);
-  split(); draw();
+  draw();
 
   // 料金：見えたら数字が回る
   if (on) document.querySelectorAll(".amt").forEach(el => {
