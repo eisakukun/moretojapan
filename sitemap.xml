@@ -174,7 +174,17 @@
     <priority>0.4</priority>
   </url>
   <url>
+    <loc>https://moretojapan.com/hanahata-first-tori/</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://moretojapan.com/phrases/</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://moretojapan.com/phrases/moeru-gomi-no-hi/</loc>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -222,10 +232,5 @@
     <loc>https://moretojapan.com/phrases/atatamemasu-ka/</loc>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://moretojapan.com/hanahata-first-tori/</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
   </url>
 </urlset>
