@@ -11,18 +11,64 @@ export const BASE = [
   { id: '鳥', reading: 'とり', english: 'bird', power: 20, art: 'bird' },
   { id: '水', reading: 'みず', english: 'water', power: 20, art: 'water' },
   { id: '中', reading: 'なか・ちゅう', english: 'middle / inside', power: 20, art: 'middle', starterCopies: 0 },
+  // 町で見つかる、くらしの字
+  { id: '門', reading: 'もん・かど', english: 'gate', power: 30, art: 'gate', starterCopies: 0 },
+  { id: '耳', reading: 'みみ', english: 'ear', power: 20, art: 'ear', starterCopies: 0 },
+  { id: '目', reading: 'め', english: 'eye', power: 20, art: 'eye', starterCopies: 0 },
+  { id: '立', reading: 'た(つ)', english: 'stand', power: 20, art: 'stand', starterCopies: 0 },
+  { id: '心', reading: 'こころ', english: 'heart / mind', power: 30, art: 'heart', starterCopies: 0 },
+  // ふかい森
+  { id: '山', reading: 'やま', english: 'mountain', power: 20, art: 'mountain', starterCopies: 0 },
+  { id: '石', reading: 'いし', english: 'stone', power: 20, art: 'stone', starterCopies: 0 },
+  { id: '火', reading: 'ひ', english: 'fire', power: 20, art: 'fire', starterCopies: 0 },
+  { id: '田', reading: 'た', english: 'rice field', power: 20, art: 'field', starterCopies: 0 },
+  { id: '力', reading: 'ちから', english: 'power', power: 10, art: 'power', starterCopies: 0 },
+  { id: '花', reading: 'はな', english: 'flower', power: 30, art: 'flower', starterCopies: 0 },
+  // うみべの道
+  { id: '魚', reading: 'さかな', english: 'fish', power: 30, art: 'fish', starterCopies: 0 },
+  { id: '白', reading: 'しろ', english: 'white', power: 20, art: 'white', starterCopies: 0 },
+  { id: '貝', reading: 'かい', english: 'shell', power: 20, art: 'shell', starterCopies: 0 },
+  { id: '風', reading: 'かぜ', english: 'wind', power: 30, art: 'wind', starterCopies: 0 },
+  { id: '少', reading: 'すこ(し)', english: 'a little', power: 10, art: 'few', starterCopies: 0 },
 ];
 export const RECIPES = [
   { id: '林', inputs: ['木', '木'], reading: 'はやし', english: 'grove', art: 'grove' },
   { id: '森', inputs: ['林', '木'], reading: 'もり', english: 'forest', art: 'forest' },
   { id: '森', inputs: ['木', '木', '木'], reading: 'もり', english: 'forest', art: 'forest' },
   { id: '明', inputs: ['日', '月'], reading: 'めい・あか(るい)', english: 'bright', art: 'sun' },
-  { id: '休', inputs: ['人', '木'], reading: 'きゅう・やす(む)', english: 'rest', art: 'rest', forms: [{ from: '人', to: '亻', name: 'にんべん' }] },
+  { id: '休', inputs: ['人', '木'], reading: 'きゅう・やす(む)', english: 'rest', art: 'rest', forms: [{ from: '人', to: '亻', name: 'にんべん', romaji: 'ninben' }] },
   { id: '好', inputs: ['女', '子'], reading: 'こう・この(む)', english: 'like / fond of', art: 'heart' },
   { id: '鳴', inputs: ['口', '鳥'], reading: 'めい・な(く)', english: 'chirp / cry', art: 'bird' },
-  { id: '仲', inputs: ['人', '中'], reading: 'なか', english: 'relationship', art: 'friends', forms: [{ from: '人', to: '亻', name: 'にんべん' }] },
+  { id: '仲', inputs: ['人', '中'], reading: 'なか', english: 'relationship', art: 'friends', forms: [{ from: '人', to: '亻', name: 'にんべん', romaji: 'ninben' }] },
+  // 町の字で
+  { id: '問', inputs: ['門', '口'], reading: 'もん・と(う)', english: 'question', art: 'gate' },
+  { id: '聞', inputs: ['門', '耳'], reading: 'ぶん・き(く)', english: 'hear / listen', art: 'ear' },
+  { id: '間', inputs: ['門', '日'], reading: 'かん・あいだ', english: 'between / interval', art: 'gate' },
+  { id: '相', inputs: ['木', '目'], reading: 'そう・あい', english: 'each other', art: 'eye' },
+  { id: '位', inputs: ['人', '立'], reading: 'い・くらい', english: 'rank / position', art: 'stand', forms: [{ from: '人', to: '亻', name: 'にんべん', romaji: 'ninben' }] },
+  { id: '品', inputs: ['口', '口', '口'], reading: 'ひん・しな', english: 'goods / quality', art: 'mouth' },
+  { id: '晶', inputs: ['日', '日', '日'], reading: 'しょう', english: 'crystal / sparkle', art: 'sun' },
+  // 森の字で
+  { id: '岩', inputs: ['山', '石'], reading: 'いわ', english: 'rock', art: 'stone' },
+  { id: '炎', inputs: ['火', '火'], reading: 'えん・ほのお', english: 'flame', art: 'fire' },
+  { id: '男', inputs: ['田', '力'], reading: 'だん・おとこ', english: 'man', art: 'power' },
+  { id: '畑', inputs: ['火', '田'], reading: 'はたけ', english: 'farm field', art: 'field' },
+  { id: '仙', inputs: ['人', '山'], reading: 'せん', english: 'hermit / sage', art: 'mountain', forms: [{ from: '人', to: '亻', name: 'にんべん', romaji: 'ninben' }] },
+  // うみべの字で（白と水は、並べる向きで別の字になる）
+  { id: '泉', inputs: ['白', '水'], reading: 'せん・いずみ', english: 'spring (water)', art: 'water' },
+  { id: '泊', inputs: ['水', '白'], reading: 'はく・と(まる)', english: 'stay overnight', art: 'house', forms: [{ from: '水', to: '氵', name: 'さんずい', romaji: 'sanzui' }] },
+  { id: '沖', inputs: ['水', '中'], reading: 'おき', english: 'open sea', art: 'water', forms: [{ from: '水', to: '氵', name: 'さんずい', romaji: 'sanzui' }] },
+  { id: '漁', inputs: ['水', '魚'], reading: 'ぎょ・りょう', english: 'fishing', art: 'fish', forms: [{ from: '水', to: '氵', name: 'さんずい', romaji: 'sanzui' }] },
+  { id: '員', inputs: ['口', '貝'], reading: 'いん', english: 'member', art: 'shell' },
+  // 別の場所の札どうしで
+  { id: '思', inputs: ['田', '心'], reading: 'し・おも(う)', english: 'think', art: 'heart' },
+  { id: '嵐', inputs: ['山', '風'], reading: 'あらし', english: 'storm', art: 'wind' },
+  { id: '砂', inputs: ['石', '少'], reading: 'さ・すな', english: 'sand', art: 'few' },
 ];
 export const DEFINITIONS = Object.fromEntries([...BASE, ...RECIPES].map(c => [c.id, c]));
+// 手に入れ方。search＝調べる / shake＝木をゆする / fish＝釣る / pick＝踏んで拾う
+export const methodOf = spot => spot?.method ?? 'search';
+export const SHAKES_NEEDED = 4;
 const base = Object.fromEntries(BASE.map(c => [c.id, c]));
 export const WIDTH = 24, HEIGHT = 20;
 export const START = { x: 3, y: 7 };
@@ -45,48 +91,60 @@ export const exitAt = (field, x, y) => EXITS.find(e => e.field === field && e.x 
 export const fieldOf = place => place?.field ?? 'town';
 export const SPOTS = [
   { id: 'grass-west', x: 3, y: 6, kind: 'grass', name: 'ふわふわの草むら', cards: ['木', '木', '人'] },
-  { id: 'pot', x: 5, y: 3, kind: 'pot', name: '家の横のつぼ', cards: ['日', '月', '口'] },
+  { id: 'pot', x: 5, y: 3, kind: 'pot', name: '家の横のつぼ', cards: ['口', '目', '耳'] },
   { id: 'grass-north', x: 9, y: 2, kind: 'grass', name: '木かげの草むら', cards: ['女', '子', '木'] },
-  { id: 'post', x: 7, y: 7, kind: 'post', name: '赤いポスト', cards: ['家', '人', '口'] },
-  { id: 'grass-east', x: 13, y: 7, kind: 'grass', name: 'お花のそばの草むら', cards: ['鳥', '鳥', '水'] },
+  { id: 'post', x: 7, y: 7, kind: 'post', name: '赤いポスト', cards: ['門', '口', '心'] },
+  { id: 'grass-east', x: 13, y: 7, kind: 'grass', name: 'お花のそばの草むら', cards: ['鳥', '鳥', '目'] },
   { id: 'well', x: 10, y: 6, kind: 'well', name: '古い井戸', cards: ['水', '月', '日'] },
-  { id: 'stump', x: 2, y: 2, kind: 'stump', name: '小さな切り株', cards: ['木', '女', '子'] },
+  { id: 'stump', x: 2, y: 2, kind: 'stump', name: '小さな切り株', cards: ['木', '立', '子'] },
   { id: 'grass-south', x: 5, y: 8, kind: 'grass', name: '南の草むら', cards: ['口', '鳥', '家'] },
   { id: 'grass-middle', x: 8, y: 5, kind: 'grass', name: '町の中央の草むら', cards: ['中', '中', '人'] },
-  { id: 'east-grass', x: 19, y: 3, kind: 'grass', name: '東の森の草むら', cards: ['木','日','月'] },
-  { id: 'east-well', x: 21, y: 9, kind: 'well', name: '東の小さな井戸', cards: ['中','水','口'] },
-  { id: 'south-grass', x: 4, y: 14, kind: 'grass', name: '南の原っぱ', cards: ['人','中','女'] },
+  { id: 'east-grass', x: 19, y: 3, kind: 'grass', name: '東の森の草むら', cards: ['目','木','立'] },
+  { id: 'east-well', x: 21, y: 9, kind: 'well', name: '東の小さな井戸', cards: ['門','日','耳'] },
+  { id: 'south-grass', x: 4, y: 14, kind: 'grass', name: '南の原っぱ', cards: ['心','立','人'] },
   { id: 'south-stump', x: 11, y: 16, kind: 'stump', name: '南の森の切り株', cards: ['木','木','子'] },
-  { id: 'pond-post', x: 19, y: 15, kind: 'post', name: '水辺のポスト', cards: ['鳥','家','日'] },
-  { id: 'far-grass', x: 21, y: 17, kind: 'grass', name: '奥の花畑', cards: ['月','水','鳥'] },
-  { id: 'forest-entry-grass', field: 'forest', x: 5, y: 12, kind: 'grass', name: '森の入口の草むら', cards: ['木','木','木'] },
-  { id: 'forest-stump', field: 'forest', x: 11, y: 8, kind: 'stump', name: '苔の切り株', cards: ['木','人','中'] },
-  { id: 'forest-sun-grass', field: 'forest', x: 13, y: 6, kind: 'grass', name: '木もれ日の草むら', cards: ['日','月','鳥'] },
-  { id: 'forest-well', field: 'forest', x: 16, y: 2, kind: 'well', name: '森の古井戸', cards: ['水','水','口'] },
-  { id: 'forest-deep-grass', field: 'forest', x: 22, y: 9, kind: 'grass', name: '奥の草むら', cards: ['女','子','子'] },
-  { id: 'forest-old-stump', field: 'forest', x: 20, y: 12, kind: 'stump', name: '大きな切り株', cards: ['木','木','人'] },
-  { id: 'forest-post', field: 'forest', x: 10, y: 18, kind: 'post', name: '森の小屋のポスト', cards: ['家','口','鳥'] },
-  { id: 'forest-low-grass', field: 'forest', x: 5, y: 16, kind: 'grass', name: '谷の草むら', cards: ['月','日','中'] },
-  { id: 'shore-grass', field: 'shore', x: 5, y: 6, kind: 'grass', name: '坂道の草むら', cards: ['水','口','人'] },
-  { id: 'shore-post', field: 'shore', x: 7, y: 9, kind: 'post', name: '海の見えるポスト', cards: ['家','家','鳥'] },
-  { id: 'shore-pot', field: 'shore', x: 12, y: 11, kind: 'pot', name: '貝がらのつぼ', cards: ['日','日','月'] },
-  { id: 'shore-east-grass', field: 'shore', x: 20, y: 9, kind: 'grass', name: '岬の草むら', cards: ['女','子','中'] },
-  { id: 'shore-stump', field: 'shore', x: 16, y: 5, kind: 'stump', name: '松の切り株', cards: ['木','木','子'] },
-  { id: 'shore-well', field: 'shore', x: 13, y: 2, kind: 'well', name: '丘の井戸', cards: ['水','月','鳥'] },
-  { id: 'shore-sand-pot', field: 'shore', x: 9, y: 14, kind: 'pot', name: '砂浜のつぼ', cards: ['口','鳥','人'] },
-  { id: 'shore-driftwood', field: 'shore', x: 19, y: 14, kind: 'stump', name: '流木', cards: ['木','中','月'] },
+  { id: 'pond-post', x: 19, y: 15, kind: 'post', name: '水辺のポスト', cards: ['門','心','口'] },
+  { id: 'far-grass', x: 21, y: 17, kind: 'grass', name: '奥の花畑', cards: ['耳','心','日'] },
+  { id: 'forest-entry-grass', field: 'forest', x: 5, y: 12, kind: 'grass', name: '森の入口の草むら', cards: ['山','石','木'] },
+  { id: 'forest-stump', field: 'forest', x: 11, y: 8, kind: 'stump', name: '苔の切り株', cards: ['火','火','木'] },
+  { id: 'forest-sun-grass', field: 'forest', x: 13, y: 6, kind: 'grass', name: '木もれ日の草むら', cards: ['田','力','日'] },
+  { id: 'forest-well', field: 'forest', x: 16, y: 2, kind: 'well', name: '森の古井戸', cards: ['水','石','石'] },
+  { id: 'forest-deep-grass', field: 'forest', x: 22, y: 9, kind: 'grass', name: '奥の草むら', cards: ['山','力','人'] },
+  { id: 'forest-old-stump', field: 'forest', x: 20, y: 12, kind: 'stump', name: '大きな切り株', cards: ['田','火','力'] },
+  { id: 'forest-post', field: 'forest', x: 10, y: 18, kind: 'post', name: '森の小屋のポスト', cards: ['心','山','門'] },
+  { id: 'forest-low-grass', field: 'forest', x: 5, y: 16, kind: 'grass', name: '谷の草むら', cards: ['田','石','山'] },
+  { id: 'forest-shake-oak', field: 'forest', method: 'shake', x: 13, y: 4, kind: 'tree', name: '大きなどんぐりの木', cards: ['花','木','木'] },
+  { id: 'forest-shake-pine', field: 'forest', method: 'shake', x: 13, y: 11, kind: 'tree', name: '背の高い松', cards: ['花','火','山'] },
+  { id: 'forest-shake-cherry', field: 'forest', method: 'shake', x: 6, y: 18, kind: 'tree', name: '谷の山桜', cards: ['花','田','力'] },
+  { id: 'shore-grass', field: 'shore', x: 5, y: 6, kind: 'grass', name: '坂道の草むら', cards: ['風','少','人'] },
+  { id: 'shore-post', field: 'shore', x: 7, y: 9, kind: 'post', name: '海の見えるポスト', cards: ['白','門','口'] },
+  { id: 'shore-pot', field: 'shore', x: 12, y: 11, kind: 'pot', name: '貝がらのつぼ', cards: ['貝','貝','口'] },
+  { id: 'shore-east-grass', field: 'shore', x: 20, y: 9, kind: 'grass', name: '岬の草むら', cards: ['風','風','山'] },
+  { id: 'shore-stump', field: 'shore', x: 16, y: 5, kind: 'stump', name: '松の切り株', cards: ['少','石','木'] },
+  { id: 'shore-well', field: 'shore', x: 13, y: 2, kind: 'well', name: '丘の井戸', cards: ['水','白','白'] },
+  { id: 'shore-sand-pot', field: 'shore', x: 9, y: 14, kind: 'pot', name: '砂浜のつぼ', cards: ['少','石','貝'] },
+  { id: 'shore-driftwood', field: 'shore', x: 19, y: 14, kind: 'stump', name: '流木', cards: ['木','風','中'] },
+  { id: 'shore-fish-west', field: 'shore', method: 'fish', x: 4, y: 16, kind: 'ripple', name: '西の磯', cards: ['魚','魚','水'] },
+  { id: 'shore-fish-middle', field: 'shore', method: 'fish', x: 11, y: 16, kind: 'ripple', name: '桟橋の先', cards: ['魚','白','中'] },
+  { id: 'shore-fish-east', field: 'shore', method: 'fish', x: 18, y: 16, kind: 'ripple', name: '東の浅瀬', cards: ['魚','貝','水'] },
+  { id: 'shore-shell-west', field: 'shore', method: 'pick', x: 3, y: 13, kind: 'shell', name: '光る貝がら', cards: ['貝','白','少'] },
+  { id: 'shore-shell-middle', field: 'shore', method: 'pick', x: 15, y: 12, kind: 'shell', name: '大きな巻き貝', cards: ['貝','口','口'] },
+  { id: 'shore-shell-east', field: 'shore', method: 'pick', x: 21, y: 15, kind: 'shell', name: '波うちぎわの貝', cards: ['白','水','少'] },
 ];
 const BLOCKED = new Set([
   '3,2','4,2','3,3','4,3', '11,1','12,1','11,2','12,2',
   '1,5','2,5','1,6','2,6', '14,2','14,3', '8,8','9,8','10,8',
 ]);
 const BLOCKING = ['tree','pond','house','sea'];
-const spotHere = (field, x, y) => SPOTS.some(s => fieldOf(s) === field && s.x === x && s.y === y);
 export function terrain(x, y, field = 'town') {
   if (exitAt(field, x, y)) return 'path';
   const base = field === 'forest' ? forestTerrain(x, y) : field === 'shore' ? shoreTerrain(x, y) : townTerrain(x, y);
-  // 札の場所は必ず歩いて近づけるように
-  return field !== 'town' && spotHere(field, x, y) && BLOCKING.includes(base) ? 'lawn' : base;
+  // ゆする木は木、釣り場は海。ほかの札の場所は必ず歩いて近づけるように
+  const spot = field !== 'town' && SPOTS.find(s => fieldOf(s) === field && s.x === x && s.y === y);
+  if (!spot) return base;
+  if (methodOf(spot) === 'shake') return 'tree';
+  if (methodOf(spot) === 'fish') return 'sea';
+  return BLOCKING.includes(base) ? 'lawn' : base;
 }
 function forestTerrain(x, y) {
   if (x === 0 || y === 0 || x === WIDTH - 1 || y === HEIGHT - 1) return 'tree';
@@ -276,7 +334,7 @@ export function finishMatch(state, match) {
 export function readSave(text) {
   try {
     const s = JSON.parse(text);
-    if (s?.version !== 1 || !Array.isArray(s.inventory) || s.inventory.length < 3 || s.inventory.length > 100 || !Array.isArray(s.found) || !s.found.every(id => SPOTS.some(p => p.id === id))) return null;
+    if (s?.version !== 1 || !Array.isArray(s.inventory) || s.inventory.length < 3 || s.inventory.length > 400 || !Array.isArray(s.found) || !s.found.every(id => SPOTS.some(p => p.id === id))) return null;
     // フィールドが無い古いセーブは町にいたことにする（進捗は消さない）
     if (s.field === undefined) s.field = 'town';
     if (!FIELDS[s.field] || exitAt(s.field, s.player?.x, s.player?.y) || !walkable(s.player?.x, s.player?.y, s.field)) return null;

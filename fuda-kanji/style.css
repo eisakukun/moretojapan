@@ -91,3 +91,16 @@ body[data-screen=field] .mode-bar{padding-top:9px}
 .exit-sign{position:absolute;inset:14%;display:grid;place-items:center;z-index:4;background:#fff5d9;border:2px solid #31533c;color:#31533c;font-weight:800;font-size:15px;line-height:1;animation:exit-blink 1.4s steps(2) infinite}
 @keyframes exit-blink{50%{background:#f2d27a}}
 @media(prefers-reduced-motion:reduce){.exit-sign{animation:none}}
+/* 森：ゆする木 / うみべ：釣り場と光る貝がら */
+.tile.m-shake:not(.found):after{content:"✦";position:absolute;top:2px;left:4px;z-index:6;color:#fff3b0;font-size:11px;text-shadow:0 0 3px #6b5a1e}
+.tile.shaking svg{animation:tree-shake .32s}
+@keyframes tree-shake{0%,100%{transform:none}25%{transform:rotate(-7deg)}75%{transform:rotate(7deg)}}
+.tile.m-fish svg{width:80%;height:80%}
+.tile.casting svg{animation:bob 1s ease-in-out infinite}
+@keyframes bob{50%{transform:translateY(2px)}}
+.tile.bite:before{content:"！";position:absolute;top:-16px;left:50%;transform:translateX(-50%);z-index:8;background:#fff8df;color:#b94d32;border:2px solid #b94d32;font-weight:900;font-size:14px;line-height:18px;padding:0 5px}
+.tile.m-pick:not(.found) svg{animation:shine 1.6s steps(2) infinite}
+@keyframes shine{50%{filter:brightness(1.35)}}
+@media(prefers-reduced-motion:reduce){.tile.shaking svg,.tile.casting svg,.tile.m-pick svg{animation:none}}
+.tile.bite{z-index:40}
+.tile.bite:before{top:-12px;left:auto;right:-16px;transform:none;font-size:18px;line-height:24px;padding:0 7px;box-shadow:2px 2px 0 #263e32}
