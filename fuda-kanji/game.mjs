@@ -29,6 +29,20 @@ export const START = { x: 3, y: 7 };
 export const NPC = { x: 12, y: 4, name: 'もりのおじいさん' };
 export const EVOLUTION = { x: 13, y: 10, name: 'ひと文字の泉' };
 export const MODE_KEYS = { A: SAVE_KEY, B: SAVE_KEY + '-battle-only-v2' };
+// フィールドは3枚（各24×20）。道の端まで歩くと次のフィールドへ入る。
+export const FIELDS = {
+  town: { name: 'こもれびの町', english: 'Komorebi town' },
+  forest: { name: 'ふかい森', english: 'Deep forest' },
+  shore: { name: 'うみべの道', english: 'Seaside road' },
+};
+export const EXITS = [
+  { field: 'town', x: 23, y: 13, to: 'forest', tx: 1, ty: 13 },
+  { field: 'forest', x: 0, y: 13, to: 'town', tx: 22, ty: 13 },
+  { field: 'town', x: 6, y: 19, to: 'shore', tx: 6, ty: 1 },
+  { field: 'shore', x: 6, y: 0, to: 'town', tx: 6, ty: 18 },
+];
+export const exitAt = (field, x, y) => EXITS.find(e => e.field === field && e.x === x && e.y === y) ?? null;
+export const fieldOf = place => place?.field ?? 'town';
 export const SPOTS = [
   { id: 'grass-west', x: 3, y: 6, kind: 'grass', name: 'ふわふわの草むら', cards: ['木', '木', '人'] },
   { id: 'pot', x: 5, y: 3, kind: 'pot', name: '家の横のつぼ', cards: ['日', '月', '口'] },
@@ -45,12 +59,51 @@ export const SPOTS = [
   { id: 'south-stump', x: 11, y: 16, kind: 'stump', name: '南の森の切り株', cards: ['木','木','子'] },
   { id: 'pond-post', x: 19, y: 15, kind: 'post', name: '水辺のポスト', cards: ['鳥','家','日'] },
   { id: 'far-grass', x: 21, y: 17, kind: 'grass', name: '奥の花畑', cards: ['月','水','鳥'] },
+  { id: 'forest-entry-grass', field: 'forest', x: 5, y: 12, kind: 'grass', name: '森の入口の草むら', cards: ['木','木','木'] },
+  { id: 'forest-stump', field: 'forest', x: 11, y: 8, kind: 'stump', name: '苔の切り株', cards: ['木','人','中'] },
+  { id: 'forest-sun-grass', field: 'forest', x: 13, y: 6, kind: 'grass', name: '木もれ日の草むら', cards: ['日','月','鳥'] },
+  { id: 'forest-well', field: 'forest', x: 16, y: 2, kind: 'well', name: '森の古井戸', cards: ['水','水','口'] },
+  { id: 'forest-deep-grass', field: 'forest', x: 22, y: 9, kind: 'grass', name: '奥の草むら', cards: ['女','子','子'] },
+  { id: 'forest-old-stump', field: 'forest', x: 20, y: 12, kind: 'stump', name: '大きな切り株', cards: ['木','木','人'] },
+  { id: 'forest-post', field: 'forest', x: 10, y: 18, kind: 'post', name: '森の小屋のポスト', cards: ['家','口','鳥'] },
+  { id: 'forest-low-grass', field: 'forest', x: 5, y: 16, kind: 'grass', name: '谷の草むら', cards: ['月','日','中'] },
+  { id: 'shore-grass', field: 'shore', x: 5, y: 6, kind: 'grass', name: '坂道の草むら', cards: ['水','口','人'] },
+  { id: 'shore-post', field: 'shore', x: 7, y: 9, kind: 'post', name: '海の見えるポスト', cards: ['家','家','鳥'] },
+  { id: 'shore-pot', field: 'shore', x: 12, y: 11, kind: 'pot', name: '貝がらのつぼ', cards: ['日','日','月'] },
+  { id: 'shore-east-grass', field: 'shore', x: 20, y: 9, kind: 'grass', name: '岬の草むら', cards: ['女','子','中'] },
+  { id: 'shore-stump', field: 'shore', x: 16, y: 5, kind: 'stump', name: '松の切り株', cards: ['木','木','子'] },
+  { id: 'shore-well', field: 'shore', x: 13, y: 2, kind: 'well', name: '丘の井戸', cards: ['水','月','鳥'] },
+  { id: 'shore-sand-pot', field: 'shore', x: 9, y: 14, kind: 'pot', name: '砂浜のつぼ', cards: ['口','鳥','人'] },
+  { id: 'shore-driftwood', field: 'shore', x: 19, y: 14, kind: 'stump', name: '流木', cards: ['木','中','月'] },
 ];
 const BLOCKED = new Set([
   '3,2','4,2','3,3','4,3', '11,1','12,1','11,2','12,2',
   '1,5','2,5','1,6','2,6', '14,2','14,3', '8,8','9,8','10,8',
 ]);
-export function terrain(x, y) {
+const BLOCKING = ['tree','pond','house','sea'];
+const spotHere = (field, x, y) => SPOTS.some(s => fieldOf(s) === field && s.x === x && s.y === y);
+export function terrain(x, y, field = 'town') {
+  if (exitAt(field, x, y)) return 'path';
+  const base = field === 'forest' ? forestTerrain(x, y) : field === 'shore' ? shoreTerrain(x, y) : townTerrain(x, y);
+  // 札の場所は必ず歩いて近づけるように
+  return field !== 'town' && spotHere(field, x, y) && BLOCKING.includes(base) ? 'lawn' : base;
+}
+function forestTerrain(x, y) {
+  if (x === 0 || y === 0 || x === WIDTH - 1 || y === HEIGHT - 1) return 'tree';
+  if ((y === 13 && x <= 12) || (x === 12 && y >= 3 && y <= 13) || (y === 3 && x >= 12 && x <= 21) || (x === 21 && y >= 3 && y <= 17) || (y === 17 && x >= 4 && x <= 21)) return 'path';
+  if (x >= 3 && x <= 6 && y >= 4 && y <= 7) return 'pond';
+  if ((x * 5 + y * 3) % 7 === 0 || (x + y * 2) % 9 === 0) return 'tree';
+  return (x + y) % 5 === 0 ? 'flowers' : 'lawn';
+}
+function shoreTerrain(x, y) {
+  if (y >= 16) return 'sea';
+  if (x === 0 || y === 0 || x === WIDTH - 1) return 'tree';
+  if ((x === 6 && y <= 10) || (y === 10 && x >= 2 && x <= 21) || (x === 17 && y >= 3 && y <= 10) || (y === 3 && x >= 10 && x <= 17)) return 'path';
+  if (y >= 12) return 'sand';
+  if (y <= 8 && (x * 3 + y * 7) % 10 === 0) return 'tree';
+  return (x + y) % 4 === 0 ? 'flowers' : 'lawn';
+}
+function townTerrain(x, y) {
   if (x === 0 || y === 0 || x === WIDTH - 1 || y === HEIGHT - 1) return 'tree';
   if ((x === 1 || x === 2) && (y === 5 || y === 6)) return 'pond';
   if ((x === 3 || x === 4) && (y === 2 || y === 3)) return 'house';
@@ -59,18 +112,23 @@ export function terrain(x, y) {
   if (y === 4 || x === 6 || (y === 7 && x >= 6 && x<=14) || y===13 || (x===19 && y>=4)) return 'path';
   return (x + y) % 4 === 0 ? 'flowers' : 'lawn';
 }
-export function walkable(x, y) {
-  return x > 0 && y > 0 && x < WIDTH - 1 && y < HEIGHT - 1 && !['tree','pond','house'].includes(terrain(x,y)) && !(x === NPC.x && y === NPC.y) && !(x === EVOLUTION.x && y === EVOLUTION.y);
+export function walkable(x, y, field = 'town') {
+  if (!Number.isInteger(x) || !Number.isInteger(y) || !FIELDS[field]) return false;
+  if (exitAt(field, x, y)) return true;
+  if (!(x > 0 && y > 0 && x < WIDTH - 1 && y < HEIGHT - 1) || BLOCKING.includes(terrain(x, y, field))) return false;
+  return field !== 'town' || !((x === NPC.x && y === NPC.y) || (x === EVOLUTION.x && y === EVOLUTION.y));
 }
 export const distance = (a, b) => Math.abs(a.x - b.x) + Math.abs(a.y - b.y);
-export function pathTo(from, target, adjacent = false) {
+export function pathTo(from, target, adjacent = false, field = 'town') {
   const queue = [[{ ...from }]], seen = new Set([`${from.x},${from.y}`]);
   while (queue.length) {
     const path = queue.shift(), p = path.at(-1);
     if (adjacent ? distance(p, target) <= 1 : distance(p, target) === 0) return path.slice(1);
     for (const [dx, dy] of [[0,-1],[1,0],[0,1],[-1,0]]) {
       const n = { x: p.x + dx, y: p.y + dy }, key = `${n.x},${n.y}`;
-      if (walkable(n.x, n.y) && !seen.has(key)) { seen.add(key); queue.push([...path, n]); }
+      // 出入口は目的地のときだけ通る（途中で別のフィールドへ入らないように）
+      const isExit = exitAt(field, n.x, n.y) && !(n.x === target.x && n.y === target.y);
+      if (walkable(n.x, n.y, field) && !isExit && !seen.has(key)) { seen.add(key); queue.push([...path, n]); }
     }
   }
   return null;
@@ -81,20 +139,23 @@ export function makeBase(id) {
   return { id, power: c.power, materials: [id], kind: 'kanji' };
 }
 export function createState() {
-  return { version: 1, player: { ...START }, face: { x: 0, y: -1 },
+  return { version: 1, field: 'town', player: { ...START }, face: { x: 0, y: -1 },
     inventory: BASE.flatMap(c => Array.from({ length: c.starterCopies ?? 3 }, () => makeBase(c.id))),
     found: [], crafted: 0, matches: 0, wins: 0 };
 }
 export function move(state, dx, dy) {
   if (Math.abs(dx) + Math.abs(dy) !== 1) return false;
   state.face = { x: dx, y: dy };
-  const { x, y } = state.player;
-  if (!walkable(x + dx, y + dy)) return false;
-  state.player = { x: x + dx, y: y + dy }; return true;
+  const { x, y } = state.player, field = fieldOf(state);
+  if (!walkable(x + dx, y + dy, field)) return false;
+  state.player = { x: x + dx, y: y + dy };
+  const exit = exitAt(field, x + dx, y + dy);
+  if (exit) { state.field = exit.to; state.player = { x: exit.tx, y: exit.ty }; }
+  return true;
 }
 export function discover(state, spotID) {
   const spot = SPOTS.find(s => s.id === spotID);
-  if (!spot || distance(state.player, spot) > 1) return { ok: false, reason: '近づいてから調べよう。' };
+  if (!spot || fieldOf(spot) !== fieldOf(state) || distance(state.player, spot) > 1) return { ok: false, reason: '近づいてから調べよう。' };
   if (state.found.includes(spot.id)) return { ok: false, reason: 'ここはもう調べたよ。ほかの場所も探そう。' };
   const cards = spot.cards.map(makeBase);
   state.inventory.push(...cards); state.found.push(spot.id);
@@ -147,7 +208,7 @@ export function cpuDeck(mode = 'A') {
   return deck;
 }
 export function startMatch(state, random = Math.random, mode = 'A') {
-  if (distance(state.player, NPC) > 1) throw Error('おじいさんの近くで話しかけよう。');
+  if (fieldOf(state) !== 'town' || distance(state.player, NPC) > 1) throw Error('おじいさんの近くで話しかけよう。');
   const deck = buildDeck(state, mode);
   if (deck.length < 3) throw Error('札が3枚以上必要だよ。');
   const playerDeck = shuffle(deck, random), opponentDeck = shuffle(cpuDeck(mode), random);
@@ -216,7 +277,9 @@ export function readSave(text) {
   try {
     const s = JSON.parse(text);
     if (s?.version !== 1 || !Array.isArray(s.inventory) || s.inventory.length < 3 || s.inventory.length > 100 || !Array.isArray(s.found) || !s.found.every(id => SPOTS.some(p => p.id === id))) return null;
-    if (!walkable(s.player?.x, s.player?.y) || !Number.isInteger(s.player.x) || !Number.isInteger(s.player.y)) return null;
+    // フィールドが無い古いセーブは町にいたことにする（進捗は消さない）
+    if (s.field === undefined) s.field = 'town';
+    if (!FIELDS[s.field] || exitAt(s.field, s.player?.x, s.player?.y) || !walkable(s.player?.x, s.player?.y, s.field)) return null;
     if (!s.inventory.every(c => DEFINITIONS[c.id] && Array.isArray(c.materials) && c.materials.length >= 1 && c.materials.length <= 3 && c.materials.every(id => base[id]) && c.power === c.materials.reduce((n, id) => n + base[id].power, 0))) return null;
     if (!['crafted', 'matches', 'wins'].every(k => Number.isInteger(s[k]) && s[k] >= 0) || s.wins > s.matches || !s.face || Math.abs(s.face.x) + Math.abs(s.face.y) !== 1) return null;
     return s;

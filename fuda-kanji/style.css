@@ -82,3 +82,12 @@ body[data-screen=field] .mode-bar{padding-top:9px}
 @media(max-width:430px){.spring-pouch{grid-template-columns:repeat(3,minmax(0,1fr))}.spring-card{width:76px}}
 @media(prefers-reduced-motion:reduce){.shake{animation:none}}
 .fuse-ask{font-size:30px;font-weight:700;letter-spacing:.08em;margin:18px 0}.fuse-ask strong{color:var(--gold)}
+/* 3つのフィールド：うみべの砂と海、道のつきあたりの出入口 */
+.tile.sand{background:#ecd9a4}.tile.sand:nth-child(3n){background:#e6d199}
+.tile.sand:after{content:"";width:2px;height:2px;background:#c7ad6c;box-shadow:6px 5px #c7ad6c;position:absolute;top:8px;left:8px;opacity:.7}
+.tile.sea{background:#5f9fb0;box-shadow:inset 0 0 0 1px #6eabbb}
+.tile.sea:after{content:"";width:45%;height:2px;background:#cfe6e3;opacity:.8;box-shadow:-6px 9px #a9d1d3}
+.tile.exit{background:#e8d79c;cursor:pointer}
+.exit-sign{position:absolute;inset:14%;display:grid;place-items:center;z-index:4;background:#fff5d9;border:2px solid #31533c;color:#31533c;font-weight:800;font-size:15px;line-height:1;animation:exit-blink 1.4s steps(2) infinite}
+@keyframes exit-blink{50%{background:#f2d27a}}
+@media(prefers-reduced-motion:reduce){.exit-sign{animation:none}}
