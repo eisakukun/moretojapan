@@ -64,3 +64,21 @@ body[data-screen=field] .mode-bar{padding-top:9px}
 .handheld.world-panel .message{display:block;background:none;border:0;padding:2px 0 0;min-height:0;text-align:center;line-height:1.25}
 .handheld .message-icon,.handheld .message p{display:none}
 .handheld .message strong{font-size:8px;font-weight:500;color:#59644e}
+/* A：泉の場。札を真ん中に置いて、くっつける */
+.spring-table{min-height:210px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:20px;border:2px dashed #b6c1a0;border-radius:18px;background:radial-gradient(ellipse at center,#e1eedd 0,#f4f0df 72%)}
+.spring-empty{color:var(--muted);font-size:13px;padding:36px 0}
+.spring-stack{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:8px}
+.spring-card,.pouch-card{background:none;border:0;padding:0;margin:0;min-width:0;text-align:center;cursor:pointer}
+.spring-card{width:112px}.spring-card .card,.pouch-card .card{height:100%}
+.spring-plus{font-size:24px;font-weight:700;color:var(--green)}
+.spring-note{min-height:1.7em;margin:6px 0 12px;text-align:center;font-size:12px;color:var(--red)}
+.spring-pouch{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:12px}
+.pouch-card:disabled{opacity:.35;cursor:default}
+.pouch-card:not(:disabled):hover .card{transform:translateY(-3px)}
+.shake{animation:spring-shake .32s}
+@keyframes spring-shake{0%,100%{transform:none}25%{transform:translateX(-7px)}75%{transform:translateX(7px)}}
+.confirm-row{display:flex;justify-content:center;gap:10px;margin-top:16px}.confirm-row .primary{margin:0}
+@media(max-width:760px){.spring-pouch{grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}.spring-card{width:86px}.spring-table{min-height:170px;padding:14px}}
+@media(max-width:430px){.spring-pouch{grid-template-columns:repeat(3,minmax(0,1fr))}.spring-card{width:76px}}
+@media(prefers-reduced-motion:reduce){.shake{animation:none}}
+.fuse-ask{font-size:30px;font-weight:700;letter-spacing:.08em;margin:18px 0}.fuse-ask strong{color:var(--gold)}
