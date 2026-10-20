@@ -1,0 +1,548 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Japanese for when you&#x27;re lost: stop someone, ask which way, catch the answer, say thanks. Tap to hear each phrase, slow it down, or show the screen.">
+<link rel="canonical" href="https://moretojapan.com/asking-the-way/">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Lost? Ask Like This">
+<meta property="og:description" content="Japanese for when you&#x27;re lost: stop someone, ask which way, catch the answer, say thanks. Tap to hear each phrase, slow it down, or show the screen.">
+<meta property="og:url" content="https://moretojapan.com/asking-the-way/">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2322406e'/%3E%3Ctext x='32' y='45' font-size='40' text-anchor='middle' fill='white' font-family='Hiragino Sans,sans-serif'%3E%E5%A5%A5%3C/text%3E%3C/svg%3E">
+<title>Lost? Ask Like This — More to Japan</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Old+Mincho:wght@600;900&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&family=Zen+Kaku+Gothic+New:wght@500;700&display=swap">
+<style>
+  /* A phrasebook you open on the street: one column, big Japanese, buttons under the thumb. */
+  :root{
+    --paper:#eeeeeb; --surface:#f7f7f5; --ink:#1b1c1f; --ink-soft:#44474d; --ink-faint:#747880; --rule:#cdcfd3;
+    --ai:#2f4f7a; --ai-soft:#d6dfec; --shu:#b8402a; --shu-soft:#f3dad3; --ki:#8a6a3f; --ki-soft:#eadfcd;
+    --good:#2f6b4a; --good-soft:#d9eadf;
+    --f-display:"Zen Old Mincho","Hiragino Mincho ProN",serif;
+    --f-body:"Source Serif 4",Georgia,"Hiragino Mincho ProN",serif;
+    --f-ui:"Zen Kaku Gothic New","Hiragino Sans",system-ui,sans-serif;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --paper:#131416; --surface:#1b1c1f; --ink:#e8e9ec; --ink-soft:#bfc2c8; --ink-faint:#8c9098;
+      --rule:#33363b; --ai:#8fb0dc; --ai-soft:#1b2a40; --shu:#f08a72; --shu-soft:#3f1f18; --ki:#d6b07c; --ki-soft:#33281a;
+      --good:#8ccfa6; --good-soft:#18301f;
+      color-scheme:dark;
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#131416; --surface:#1b1c1f; --ink:#e8e9ec; --ink-soft:#bfc2c8; --ink-faint:#8c9098;
+    --rule:#33363b; --ai:#8fb0dc; --ai-soft:#1b2a40; --shu:#f08a72; --shu-soft:#3f1f18; --ki:#d6b07c; --ki-soft:#33281a;
+    --good:#8ccfa6; --good-soft:#18301f;
+    color-scheme:dark;
+  }
+  *{box-sizing:border-box}
+  body{background:var(--paper);color:var(--ink);font-family:var(--f-body);font-size:19px;line-height:1.6;margin:0;padding-inline:16px;-webkit-font-smoothing:antialiased}
+  main{max-width:660px;margin:0 auto;padding-bottom:40px}
+  header{max-width:660px;margin:0 auto;padding-block:52px 24px}
+  .eyebrow{font-family:var(--f-ui);font-weight:700;font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--ai);margin:0 0 16px}
+  h1{font-family:var(--f-display);font-weight:900;font-size:clamp(40px,9vw,68px);line-height:1.04;margin:0 0 14px;text-wrap:balance}
+  h1 .k{color:var(--shu)}
+  .dek{font-size:clamp(18px,2.4vw,21px);color:var(--ink-soft);margin:0;text-wrap:pretty}
+  .jump{display:flex;flex-wrap:wrap;gap:8px;margin:24px 0 0;padding:16px 0 0;border-top:1px solid var(--rule);list-style:none}
+  .jump a{font-family:var(--f-ui);font-size:13.5px;color:var(--ink);text-decoration:none;border:1px solid var(--rule);background:var(--surface);border-radius:999px;padding:6px 12px;display:inline-block}
+  .jump a:hover{border-color:var(--ai)}
+  h2{font-family:var(--f-display);font-weight:900;font-size:clamp(26px,3.6vw,34px);line-height:1.18;margin:56px 0 6px;text-wrap:balance}
+  h2 .jp{display:block;font-family:var(--f-ui);font-weight:500;font-size:14px;letter-spacing:.08em;color:var(--ink-faint);margin-top:6px}
+  .intro{color:var(--ink-soft);margin:8px 0 18px}
+  p{margin:0 0 1em}
+
+  .rules{list-style:none;padding:0;margin:18px 0 0;display:grid;gap:10px}
+  .rules li{background:var(--surface);border:1px solid var(--rule);border-radius:12px;padding:14px 16px;font-size:17px}
+  .rules b{font-family:var(--f-ui);display:block;font-size:15px;margin-bottom:2px}
+  .rules code{font-family:var(--f-ui);font-weight:700;color:var(--shu);font-size:16px}
+
+  .picker{background:var(--surface);border:1px solid var(--rule);border-radius:14px;padding:14px;margin:0 0 16px}
+  .pq{font-family:var(--f-ui);font-weight:700;font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--ai);margin:0 0 10px}
+  .chips{display:flex;flex-wrap:wrap;gap:8px}
+  .chip{font:inherit;cursor:pointer;border:1px solid var(--rule);background:var(--paper);color:var(--ink);border-radius:10px;padding:7px 11px;display:flex;flex-direction:column;align-items:flex-start;line-height:1.2;min-height:44px}
+  .chip span{font-family:var(--f-ui);font-weight:700;font-size:17px}
+  .chip small{font-family:var(--f-ui);font-size:11.5px;color:var(--ink-faint)}
+  .chip.on{background:var(--ai);border-color:var(--ai);color:var(--surface)}
+  .chip.on small{color:var(--ai-soft)}
+  .own{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:12px;font-family:var(--f-ui);font-size:13.5px;color:var(--ink-soft)}
+  .own input{flex:1;min-width:180px;font:inherit;font-size:16px;padding:9px 11px;border-radius:10px;border:1px solid var(--rule);background:var(--paper);color:var(--ink)}
+
+  .cards{display:grid;gap:14px}
+  .card{background:var(--surface);border:1px solid var(--rule);border-radius:16px;padding:16px 16px 14px}
+  .card.heard{border-style:dashed;background:transparent}
+  .card.yes{border-left:5px solid var(--good)}
+  .card.no{border-left:5px solid var(--shu)}
+  .lab{font-family:var(--f-ui);font-weight:700;font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-faint);margin:0 0 6px}
+  .card.yes .lab{color:var(--good)} .card.no .lab{color:var(--shu)}
+  .ja{font-family:var(--f-ui);font-weight:700;font-size:clamp(22px,6vw,31px);line-height:1.75;margin:0 0 4px;line-break:strict;overflow-wrap:anywhere}
+  rt{font-size:.42em;font-weight:500;color:var(--ink-faint)}
+  .ja .slot{color:var(--ai)}
+  .ro{font-family:var(--f-ui);font-weight:700;font-size:16px;color:var(--ink);margin:0 0 2px}
+  .sounds{font-size:16px;color:var(--ink-soft);margin:0 0 8px;font-style:italic}
+  .sounds .sl{font-style:normal;font-family:var(--f-ui);font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-faint);margin-right:4px}
+  .en{font-size:18px;margin:0 0 8px}
+  .note{font-size:16px;color:var(--ink-soft);border-top:1px solid var(--rule);padding-top:8px;margin:8px 0 0}
+  .btns{display:flex;gap:8px;margin-top:12px}
+  .btns button{font-family:var(--f-ui);font-weight:700;font-size:15px;cursor:pointer;border-radius:10px;min-height:44px;padding:0 16px;border:1px solid var(--rule);background:var(--paper);color:var(--ink)}
+  .btns .play{background:var(--shu);border-color:var(--shu);color:#fff;flex:1}
+  .btns .show{margin-left:auto}
+  .btns button:active{transform:translateY(1px)}
+
+  .words{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px;margin:0 0 20px}
+  .word{font:inherit;text-align:left;cursor:pointer;background:var(--surface);border:1px solid var(--rule);border-radius:12px;padding:10px 12px;color:var(--ink);display:flex;flex-direction:column;gap:1px}
+  .word:hover{border-color:var(--shu)}
+  .wj{font-family:var(--f-ui);font-weight:700;font-size:21px;line-height:1.7}
+  .wr{font-family:var(--f-ui);font-weight:700;font-size:13.5px;color:var(--shu)}
+  .we{font-size:14.5px;color:var(--ink-soft);line-height:1.3}
+
+  figure.street{margin:4px 0 20px}
+  figure.street svg{width:100%;height:auto;display:block;background:var(--surface);border:1px solid var(--rule);border-radius:14px}
+  figcaption{font-size:15.5px;color:var(--ink-soft);margin-top:8px}
+  .road{fill:var(--ki-soft)}
+  .lane{stroke:var(--ki);stroke-width:2;stroke-dasharray:10 10;fill:none;opacity:.6}
+  .shop{fill:var(--ai-soft);stroke:var(--ai);stroke-width:2}
+  .shopt{fill:var(--ai);font-family:var(--f-ui);font-weight:700;font-size:18px}
+  .you{fill:var(--shu)}
+  .walk{stroke:var(--shu);stroke-width:3;fill:none;stroke-dasharray:2 8;stroke-linecap:round}
+  .kw{fill:var(--ink);font-family:var(--f-ui);font-weight:700;font-size:26px}
+  .ann{fill:var(--ink-faint);font-family:var(--f-ui);font-size:16px}
+  .brk{stroke:var(--shu);stroke-width:3;fill:none;stroke-linecap:round}
+
+  .who{background:var(--surface);border:1px solid var(--rule);border-radius:14px;padding:16px;margin-top:14px}
+  .who ul{margin:6px 0 0;padding-left:20px}
+  .who li{margin:4px 0}
+
+  #show{position:fixed;inset:0;z-index:50;background:var(--paper);display:none;flex-direction:column;justify-content:center;align-items:center;padding:24px;text-align:center;cursor:pointer}
+  #show.on{display:flex}
+  #show .big{font-family:var(--f-ui);font-weight:700;font-size:clamp(34px,10vw,72px);line-height:1.7;margin:0;color:var(--ink);line-break:strict;overflow-wrap:anywhere}
+  #show .big rt{font-size:.38em}
+  #show .sub{font-size:18px;color:var(--ink-soft);margin:18px 0 0}
+  #show .x{position:absolute;top:14px;right:16px;font-family:var(--f-ui);font-size:14px;color:var(--ink-faint)}
+  #toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:var(--ink);color:var(--paper);font-family:var(--f-ui);font-size:14px;padding:10px 14px;border-radius:10px;opacity:0;transition:opacity .2s;pointer-events:none;max-width:calc(100% - 32px);z-index:60}
+  #toast.on{opacity:1}
+
+  footer{max-width:660px;margin:0 auto;padding:24px 0 48px;border-top:1px solid var(--rule);font-family:var(--f-ui);font-size:13px;color:var(--ink-faint)}
+  .sitebar{border-bottom:1px solid var(--rule,#cfc9c4);background:var(--surface,#f7f7f5);margin-inline:-16px}
+  .sitebar .in{max-width:940px;margin:0 auto;padding:0 16px;height:58px;display:flex;align-items:center;gap:14px;font-family:var(--f-ui,system-ui,sans-serif);font-size:14px}
+  .sitebar a{color:var(--ink,#1d1a19);text-decoration:none}
+  .sitebar .brand{display:flex;align-items:center;gap:9px;font-weight:700}
+  .sitebar .brand i{display:grid;place-items:center;width:28px;height:28px;border-radius:8px;background:var(--beni,var(--accent,#22406e));color:var(--paper,#fff);font-style:normal;font-weight:700;font-size:15px}
+  .sitebar .sp{flex:1}
+  .sitebar .back{color:var(--ink-faint,#7a726d)}
+  .sitebar a:hover{text-decoration:underline}
+</style>
+</head>
+<body>
+
+<div class="sitebar"><div class="in">
+  <a class="brand" href="/"><i>奥</i>More to Japan</a>
+  <span class="sp"></span>
+  <a class="back" href="/#articles">All articles</a>
+</div></div>
+
+<header>
+  <p class="eyebrow">Phrasebook · open it on the street</p>
+  <h1>Lost? <span class="k">Ask</span> Like This</h1>
+  <p class="dek">The Japanese you need when you can't find the way: how to stop someone, ask, catch the answer and say thanks. Tap ▶ to hear a phrase, slow it down, or press Show and turn the screen around.</p>
+  <ul class="jump">
+    <li><a href="#sound">How it sounds</a></li>
+    <li><a href="#stop">Stop someone</a></li>
+    <li><a href="#ask">Ask the way</a></li>
+    <li><a href="#listen">Catch the answer</a></li>
+    <li><a href="#repeat">Didn't catch it?</a></li>
+    <li><a href="#walk">“Shall I take you?”</a></li>
+    <li><a href="#asked">When you're asked</a></li>
+  </ul>
+</header>
+
+<main>
+  <section id="sound">
+    <h2>How it sounds<span class="jp" lang="ja">発音の三つのコツ</span></h2>
+    <p class="intro">Three rules cover most of the phrases on this page.</p>
+    <ul class="rules">
+      <li><b>The u in desu and masu almost disappears.</b><code>desu</code> sounds like “dess,” <code>arimasu</code> like “ah-ree-mass.”</li>
+      <li><b>A doubled letter is a tiny stop.</b><code>chotto</code> is “chot · to,” with a beat of silence in the middle. Same for <code>massugu</code> and <code>docchi</code>.</li>
+      <li><b>A line over a vowel means hold it.</b><code>kōban</code> is “koh-oh-ban,” two beats on the o. Keep every syllable the same length and don't stress any of them.</li>
+    </ul>
+  </section>
+
+    <section id="stop">
+      <h2>Stop someone<span class="jp" lang="ja">声をかける</span></h2>
+      <p class="intro">Pick someone who isn&#x27;t rushing. A small bow or a raised hand is enough.</p>
+      <div class="cards">
+      <article class="card say" data-say="すみません、ちょっといいですか？" data-en="Excuse me, do you have a second?">
+        <p class="lab">You say</p>
+        <p class="ja" lang="ja">すみません、<br>ちょっといいですか？</p>
+        <p class="ro">Sumimasen, chotto ii desu ka?</p>
+        <p class="sounds"><span class="sl">Say it like</span> soo-mee-mah-sen, chot-to ee dess ka</p>
+        <p class="en">Excuse me, do you have a second?</p>
+        <p class="note">Here すみません means “excuse me,” not “sorry.” It is the word that opens every request in this list.</p>
+        <div class="btns">
+          <button class="play" type="button" aria-label="Play">▶ Play</button>
+          <button class="slow" type="button" aria-label="Play slowly">Slow</button>
+          <button class="show" type="button" aria-label="Show this to someone">Show</button>
+        </div>
+      </article>
+      </div>
+    </section>
+    <section id="ask">
+      <h2>Ask the way<span class="jp" lang="ja">道を聞く</span></h2>
+      <p class="intro">Choose where you want to go. Every phrase below changes to match.</p>
+      <div class="picker" role="group" aria-label="Where do you want to go?">
+        <p class="pq">Where to?</p>
+        <div class="chips"><button type="button" class="chip on" data-i="0"><span lang="ja">駅</span><small>station</small></button><button type="button" class="chip" data-i="1"><span lang="ja">トイレ</span><small>toilet</small></button><button type="button" class="chip" data-i="2"><span lang="ja">コンビニ</span><small>convenience store</small></button><button type="button" class="chip" data-i="3"><span lang="ja">交番</span><small>police box</small></button><button type="button" class="chip" data-i="4"><span lang="ja">改札</span><small>ticket gates</small></button><button type="button" class="chip" data-i="5"><span lang="ja">出口</span><small>exit</small></button><button type="button" class="chip" data-i="6"><span lang="ja">バス停</span><small>bus stop</small></button><button type="button" class="chip" data-i="7"><span lang="ja">タクシー乗り場</span><small>taxi stand</small></button><button type="button" class="chip" data-i="8"><span lang="ja">エレベーター</span><small>elevator</small></button></div>
+        <label class="own">Somewhere else <input type="text" id="own" lang="ja" placeholder="e.g. 浅草寺, ローソン, 3番出口" autocomplete="off"></label>
+      </div>
+      <div class="cards">
+      <article class="card say" data-say="{P}ってどっちですか？" data-en="Which way is {T}?">
+        <p class="lab">You say</p>
+        <p class="ja" lang="ja"><span class="slot" data-slot="ja"><ruby>駅<rt>えき</rt></ruby></span>ってどっちですか？</p>
+        <p class="ro"><span class="slot" data-slot="ro">eki</span>-tte docchi desu ka?</p>
+        <p class="sounds"><span class="sl">Say it like</span> <span class="slot" data-slot="sounds">eh-kee</span>-teh doh-chee dess ka</p>
+        <p class="en">Which way is <span class="slot" data-slot="the">the station</span>?</p>
+        <p class="note">On the street people ask どっち (which way) more often than どこ (where). Both are fine.</p>
+        <div class="btns">
+          <button class="play" type="button" aria-label="Play">▶ Play</button>
+          <button class="slow" type="button" aria-label="Play slowly">Slow</button>
+          <button class="show" type="button" aria-label="Show this to someone">Show</button>
+        </div>
+      </article>
+      <article class="card say" data-say="このへんに{P}ありますか？" data-en="Is there {A} around here?">
+        <p class="lab">You say</p>
+        <p class="ja" lang="ja">この<ruby>辺<rt>へん</rt></ruby>に<span class="slot" data-slot="ja"><ruby>駅<rt>えき</rt></ruby></span>ありますか？</p>
+        <p class="ro">Kono hen ni <span class="slot" data-slot="ro">eki</span> arimasu ka?</p>
+        <p class="sounds"><span class="sl">Say it like</span> koh-noh hen nee <span class="slot" data-slot="sounds">eh-kee</span> ah-ree-mass ka</p>
+        <p class="en">Is there <span class="slot" data-slot="a">a station</span> around here?</p>
+        <p class="note">Use this when any one will do: any toilet, any konbini.</p>
+        <div class="btns">
+          <button class="play" type="button" aria-label="Play">▶ Play</button>
+          <button class="slow" type="button" aria-label="Play slowly">Slow</button>
+          <button class="show" type="button" aria-label="Show this to someone">Show</button>
+        </div>
+      </article>
+      <article class="card say" data-say="ここに、いきたいんですけど…" data-en="I&#x27;d like to go here… (show your phone)">
+        <p class="lab">You say</p>
+        <p class="ja" lang="ja">ここに<ruby>行<rt>い</rt></ruby>きたいんですけど…</p>
+        <p class="ro">Koko ni ikitai n desu kedo…</p>
+        <p class="sounds"><span class="sl">Say it like</span> koh-koh nee ee-kee-tie n dess keh-doh</p>
+        <p class="en">I&#x27;d like to go here… (show your phone)</p>
+        <p class="note">Hold up the map on your phone while you say it. The trailing けど… is what people really say: you stop, and they take it from there.</p>
+        <div class="btns">
+          <button class="play" type="button" aria-label="Play">▶ Play</button>
+          <button class="slow" type="button" aria-label="Play slowly">Slow</button>
+          <button class="show" type="button" aria-label="Show this to someone">Show</button>
+        </div>
+      </article>
+      <article class="card say" data-say="あるいて、いけますか？" data-en="Can I walk there?">
+        <p class="lab">You say</p>
+        <p class="ja" lang="ja"><ruby>歩<rt>ある</rt></ruby>いて<ruby>行<rt>い</rt></ruby>けますか？</p>
+        <p class="ro">Aruite ikemasu ka?</p>
+        <p class="sounds"><span class="sl">Say it like</span> ah-roo-ee-teh ee-keh-mass ka</p>
+        <p class="en">Can I walk there?</p>
+        
+        <div class="btns">
+          <button class="play" type="button" aria-label="Play">▶ Play</button>
+          <button class="slow" type="button" aria-label="Play slowly">Slow</button>
+          <button class="show" type="button" aria-label="Show this to someone">Show</button>
+        </div>
+      </article>
+      <article class="card say" data-say="あるいて、なんぷんぐらいですか？" data-en="About how many minutes on foot?">
+        <p class="lab">You say</p>
+        <p class="ja" lang="ja"><ruby>歩<rt>ある</rt></ruby>いて<ruby>何分<rt>なんぷん</rt></ruby>ぐらいですか？</p>
+        <p class="ro">Aruite nanpun gurai desu ka?</p>
+        <p class="sounds"><span class="sl">Say it like</span> ah-roo-ee-teh nahn-poon goo-rye dess ka</p>
+        <p class="en">About how many minutes on foot?</p>
+        
+        <div class="btns">
+          <button class="play" type="button" aria-label="Play">▶ Play</button>
+          <button class="slow" type="button" aria-label="Play slowly">Slow</button>
+          <button class="show" type="button" aria-label="Show this to someone">Show</button>
+        </div>
+      </article>
+      <article class="card say" data-say="トイレ、おかりしてもいいですか？" data-en="May I use your toilet?">
+        <p class="lab">You say</p>
+        <p class="ja" lang="ja">トイレお<ruby>借<rt>か</rt></ruby>りしてもいいですか？</p>
+        <p class="ro">Toire okari shite mo ii desu ka?</p>
+        <p class="sounds"><span class="sl">Say it like</span> toh-ee-reh oh-kah-ree shteh moh ee dess ka</p>
+        <p class="en">May I use your toilet?</p>
+        <p class="note">Say it to the clerk in a konbini. Most will say はい、どうぞ (yes, go ahead).</p>
+        <div class="btns">
+          <button class="play" type="button" aria-label="Play">▶ Play</button>
+          <button class="slow" type="button" aria-label="Play slowly">Slow</button>
+          <button class="show" type="button" aria-label="Show this to someone">Show</button>
+        </div>
+      </article>
+      </div>
+    </section>
+    <section id="listen">
+      <h2>Catch the answer<span class="jp" lang="ja">答えで聞こえる言葉</span></h2>
+      <p class="intro">You won't follow every word, and you don't need to. Listen for these and watch where they point. Tap one to hear it.</p>
+      <div class="words"><button type="button" class="word" data-say="まっすぐ"><span class="wj" lang="ja">まっすぐ</span><span class="wr">massugu</span><span class="we">straight on</span></button><button type="button" class="word" data-say="みぎ"><span class="wj" lang="ja"><ruby>右<rt>みぎ</rt></ruby></span><span class="wr">migi</span><span class="we">right</span></button><button type="button" class="word" data-say="ひだり"><span class="wj" lang="ja"><ruby>左<rt>ひだり</rt></ruby></span><span class="wr">hidari</span><span class="we">left</span></button><button type="button" class="word" data-say="まがって"><span class="wj" lang="ja"><ruby>曲がって<rt>まがって</rt></ruby></span><span class="wr">magatte</span><span class="we">turn (and…)</span></button><button type="button" class="word" data-say="しんごう"><span class="wj" lang="ja"><ruby>信号<rt>しんごう</rt></ruby></span><span class="wr">shingō</span><span class="we">traffic light</span></button><button type="button" class="word" data-say="ひとつめ"><span class="wj" lang="ja"><ruby>一つ目<rt>ひとつめ</rt></ruby></span><span class="wr">hitotsume</span><span class="we">the first</span></button><button type="button" class="word" data-say="ふたつめ"><span class="wj" lang="ja"><ruby>二つ目<rt>ふたつめ</rt></ruby></span><span class="wr">futatsume</span><span class="we">the second</span></button><button type="button" class="word" data-say="かど"><span class="wj" lang="ja"><ruby>角<rt>かど</rt></ruby></span><span class="wr">kado</span><span class="we">corner</span></button><button type="button" class="word" data-say="つきあたり"><span class="wj" lang="ja"><ruby>突き当たり<rt>つきあたり</rt></ruby></span><span class="wr">tsukiatari</span><span class="we">where the road ends</span></button><button type="button" class="word" data-say="てまえ"><span class="wj" lang="ja"><ruby>手前<rt>てまえ</rt></ruby></span><span class="wr">temae</span><span class="we">just before it</span></button><button type="button" class="word" data-say="さき"><span class="wj" lang="ja"><ruby>先<rt>さき</rt></ruby></span><span class="wr">saki</span><span class="we">past it, further on</span></button><button type="button" class="word" data-say="むかい"><span class="wj" lang="ja"><ruby>向かい<rt>むかい</rt></ruby></span><span class="wr">mukai</span><span class="we">across the street</span></button><button type="button" class="word" data-say="すぐ"><span class="wj" lang="ja">すぐ</span><span class="wr">sugu</span><span class="we">right there</span></button><button type="button" class="word" data-say="あっち"><span class="wj" lang="ja">あっち</span><span class="wr">acchi</span><span class="we">over there (they&#x27;ll point)</span></button></div>
+      <figure class="street">
+        <svg viewBox="0 0 480 330" role="img" aria-label="Street diagram. You stand at the bottom of a street. A convenience store is on your right. 手前 (temae) is the stretch just before the store, 先 (saki) is past it, 向かい (mukai) is across the street from it, 角 (kado) is the corner at the top, and 突き当たり (tsukiatari) is where the street ends at the top.">
+          <rect x="20" y="10" width="440" height="46" class="road"/>
+          <rect x="180" y="56" width="120" height="274" class="road"/>
+          <line x1="240" y1="66" x2="240" y2="330" class="lane"/>
+          <rect x="310" y="150" width="104" height="60" rx="6" class="shop"/>
+          <text x="362" y="187" text-anchor="middle" class="shopt" lang="ja">コンビニ</text>
+          <path d="M270 300 L270 70" class="walk"/>
+          <circle cx="270" cy="306" r="10" class="you"/>
+          <text x="290" y="318" class="ann">you</text>
+          <path d="M306 218 L306 268" class="brk"/>
+          <text x="318" y="252" class="kw" lang="ja">手前</text>
+          <path d="M306 92 L306 142" class="brk"/>
+          <text x="318" y="126" class="kw" lang="ja">先</text>
+          <text x="170" y="190" text-anchor="end" class="kw" lang="ja">向かい</text>
+          <text x="170" y="96" text-anchor="end" class="kw" lang="ja">角</text>
+          <path d="M176 60 L150 76" class="brk"/>
+          <text x="240" y="42" text-anchor="middle" class="kw" lang="ja">突き当たり</text>
+        </svg>
+        <figcaption>手前 trips people up: it is the near side, before you reach the landmark, not “in front of” it.</figcaption>
+      </figure>
+      <div class="cards">
+      <article class="card heard" data-say="ふたつめのしんごうを、みぎにまがって、すぐです。" data-en="Turn right at the second light, and it&#x27;s right there.">
+        <p class="lab">You hear</p>
+        <p class="ja" lang="ja"><ruby>二<rt>ふた</rt></ruby>つ<ruby>目<rt>め</rt></ruby>の<ruby>信号<rt>しんごう</rt></ruby>を<br><ruby>右<rt>みぎ</rt></ruby>に<ruby>曲<rt>ま</rt></ruby>がって、すぐです。</p>
+        <p class="ro">Futatsume no shingō o migi ni magatte, sugu desu.</p>
+        <p class="sounds"><span class="sl">Say it like</span> foo-tah-tsoo-meh noh sheen-goh oh mee-gee nee mah-gaht-teh, soo-goo dess</p>
+        <p class="en">Turn right at the second light, and it&#x27;s right there.</p>
+        <p class="note">A typical answer. Pick out 二つ目, 信号, 右 and すぐ, and you have all of it.</p>
+        <div class="btns">
+          <button class="play" type="button" aria-label="Play">▶ Play</button>
+          <button class="slow" type="button" aria-label="Play slowly">Slow</button>
+          <button class="show" type="button" aria-label="Show this to someone">Show</button>
+        </div>
+      </article>
+      </div>
+    </section>
+    <section id="repeat">
+      <h2>Didn&#x27;t catch it?<span class="jp" lang="ja">聞き取れなかったとき</span></h2>
+      <p class="intro">Nobody minds. Ask again, or hand them your phone.</p>
+      <div class="cards">
+      <article class="card say" data-say="すみません、もういちど、おねがいします。" data-en="Sorry, one more time, please.">
+        <p class="lab">You say</p>
+        <p class="ja" lang="ja">すみません、<br>もう<ruby>一度<rt>いちど</rt></ruby>お<ruby>願<rt>ねが</rt></ruby>いします。</p>
+        <p class="ro">Sumimasen, mō ichido onegai shimasu.</p>
+        <p class="sounds"><span class="sl">Say it like</span> soo-mee-mah-sen, moh-oh ee-chee-doh oh-neh-guy shee-mass</p>
+        <p class="en">Sorry, one more time, please.</p>
+        
+        <div class="btns">
+          <button class="play" type="button" aria-label="Play">▶ Play</button>
+          <button class="slow" type="button" aria-label="Play slowly">Slow</button>
+          <button class="show" type="button" aria-label="Show this to someone">Show</button>
+        </div>
+      </article>
+      <article class="card say" data-say="ゆっくり、おねがいします。" data-en="Slowly, please.">
+        <p class="lab">You say</p>
+        <p class="ja" lang="ja">ゆっくりお<ruby>願<rt>ねが</rt></ruby>いします。</p>
+        <p class="ro">Yukkuri onegai shimasu.</p>
+        <p class="sounds"><span class="sl">Say it like</span> yook-koo-ree oh-neh-guy shee-mass</p>
+        <p class="en">Slowly, please.</p>
+        
+        <div class="btns">
+          <button class="play" type="button" aria-label="Play">▶ Play</button>
+          <button class="slow" type="button" aria-label="Play slowly">Slow</button>
+          <button class="show" type="button" aria-label="Show this to someone">Show</button>
+        </div>
+      </article>
+      <article class="card say" data-say="ちずで、おしえてもらえますか？" data-en="Could you show me on the map?">
+        <p class="lab">You say</p>
+        <p class="ja" lang="ja"><ruby>地図<rt>ちず</rt></ruby>で<ruby>教<rt>おし</rt></ruby>えてもらえますか？</p>
+        <p class="ro">Chizu de oshiete moraemasu ka?</p>
+        <p class="sounds"><span class="sl">Say it like</span> chee-zoo deh oh-shee-eh-teh moh-rah-eh-mass ka</p>
+        <p class="en">Could you show me on the map?</p>
+        <p class="note">Hand them your phone with the map open. Pointing works in every language.</p>
+        <div class="btns">
+          <button class="play" type="button" aria-label="Play">▶ Play</button>
+          <button class="slow" type="button" aria-label="Play slowly">Slow</button>
+          <button class="show" type="button" aria-label="Show this to someone">Show</button>
+        </div>
+      </article>
+      </div>
+    </section>
+    <section id="walk">
+      <h2>When they offer to take you<span class="jp" lang="ja">「一緒に行きましょうか？」</span></h2>
+      <p class="intro">It happens more often than you&#x27;d expect. You&#x27;ll hear this:</p>
+      <div class="cards">
+      <article class="card heard" data-say="いっしょに、いきましょうか？" data-en="Shall I take you there?">
+        <p class="lab">You hear</p>
+        <p class="ja" lang="ja"><ruby>一緒<rt>いっしょ</rt></ruby>に<ruby>行<rt>い</rt></ruby>きましょうか？</p>
+        <p class="ro">Issho ni ikimashō ka?</p>
+        <p class="sounds"><span class="sl">Say it like</span> ees-shoh nee ee-kee-mah-shoh ka</p>
+        <p class="en">Shall I take you there?</p>
+        
+        <div class="btns">
+          <button class="play" type="button" aria-label="Play">▶ Play</button>
+          <button class="slow" type="button" aria-label="Play slowly">Slow</button>
+          <button class="show" type="button" aria-label="Show this to someone">Show</button>
+        </div>
+      </article>
+      <article class="card say yes" data-say="いいんですか？ありがとうございます！" data-en="Really? Thank you!">
+        <p class="lab">If yes</p>
+        <p class="ja" lang="ja">いいんですか？<br>ありがとうございます！</p>
+        <p class="ro">Ii n desu ka? Arigatō gozaimasu!</p>
+        <p class="sounds"><span class="sl">Say it like</span> ee-n dess ka? ah-ree-gah-toh goh-zye-mass</p>
+        <p class="en">Really? Thank you!</p>
+        
+        <div class="btns">
+          <button class="play" type="button" aria-label="Play">▶ Play</button>
+          <button class="slow" type="button" aria-label="Play slowly">Slow</button>
+          <button class="show" type="button" aria-label="Show this to someone">Show</button>
+        </div>
+      </article>
+      <article class="card say no" data-say="あ、だいじょうぶです。ありがとうございます。" data-en="I&#x27;m fine, thank you.">
+        <p class="lab">If no</p>
+        <p class="ja" lang="ja">あ、<ruby>大丈夫<rt>だいじょうぶ</rt></ruby>です。<br>ありがとうございます。</p>
+        <p class="ro">A, daijōbu desu. Arigatō gozaimasu.</p>
+        <p class="sounds"><span class="sl">Say it like</span> ah, dye-joh-boo dess. ah-ree-gah-toh goh-zye-mass</p>
+        <p class="en">I&#x27;m fine, thank you.</p>
+        <p class="note">Both answers are polite. 大丈夫です here means “no need,” not “OK, yes.”</p>
+        <div class="btns">
+          <button class="play" type="button" aria-label="Play">▶ Play</button>
+          <button class="slow" type="button" aria-label="Play slowly">Slow</button>
+          <button class="show" type="button" aria-label="Show this to someone">Show</button>
+        </div>
+      </article>
+      </div>
+    </section>
+    <section id="thanks">
+      <h2>Say thanks<span class="jp" lang="ja">お礼</span></h2>
+      
+      <div class="cards">
+      <article class="card say" data-say="ありがとうございます、たすかりました！" data-en="Thank you, that really helped!">
+        <p class="lab">You say</p>
+        <p class="ja" lang="ja">ありがとうございます、<br><ruby>助<rt>たす</rt></ruby>かりました！</p>
+        <p class="ro">Arigatō gozaimasu, tasukarimashita!</p>
+        <p class="sounds"><span class="sl">Say it like</span> ah-ree-gah-toh goh-zye-mass, tah-soo-kah-ree-mash-ta</p>
+        <p class="en">Thank you, that really helped!</p>
+        <p class="note">助かりました (you saved me) sounds warmer than thank-you alone.</p>
+        <div class="btns">
+          <button class="play" type="button" aria-label="Play">▶ Play</button>
+          <button class="slow" type="button" aria-label="Play slowly">Slow</button>
+          <button class="show" type="button" aria-label="Show this to someone">Show</button>
+        </div>
+      </article>
+      </div>
+    </section>
+    <section id="asked">
+      <h2>When someone asks you<span class="jp" lang="ja">逆に聞かれたとき</span></h2>
+      <p class="intro">Live here long enough and people will ask you the way too.</p>
+      <div class="cards">
+      <article class="card say" data-say="すみません、このへん、あまりくわしくなくて…" data-en="Sorry, I don&#x27;t really know this area…">
+        <p class="lab">You say</p>
+        <p class="ja" lang="ja">すみません、<br>この<ruby>辺<rt>へん</rt></ruby>あまり<ruby>詳<rt>くわ</rt></ruby>しくなくて…</p>
+        <p class="ro">Sumimasen, kono hen amari kuwashiku nakute…</p>
+        <p class="sounds"><span class="sl">Say it like</span> soo-mee-mah-sen, koh-noh hen ah-mah-ree koo-wah-shkoo nah-koo-teh</p>
+        <p class="en">Sorry, I don&#x27;t really know this area…</p>
+        
+        <div class="btns">
+          <button class="play" type="button" aria-label="Play">▶ Play</button>
+          <button class="slow" type="button" aria-label="Play slowly">Slow</button>
+          <button class="show" type="button" aria-label="Show this to someone">Show</button>
+        </div>
+      </article>
+      <article class="card say" data-say="ちょっと、しらべてみますね。" data-en="Let me check for you. (take out your phone)">
+        <p class="lab">You say</p>
+        <p class="ja" lang="ja">ちょっと<ruby>調<rt>しら</rt></ruby>べてみますね。</p>
+        <p class="ro">Chotto shirabete mimasu ne.</p>
+        <p class="sounds"><span class="sl">Say it like</span> chot-to shee-rah-beh-teh mee-mass neh</p>
+        <p class="en">Let me check for you. (take out your phone)</p>
+        
+        <div class="btns">
+          <button class="play" type="button" aria-label="Play">▶ Play</button>
+          <button class="slow" type="button" aria-label="Play slowly">Slow</button>
+          <button class="show" type="button" aria-label="Show this to someone">Show</button>
+        </div>
+      </article>
+      </div>
+    </section>
+  <aside class="who">
+    <b style="font-family:var(--f-ui)">Who to ask</b>
+    <ul>
+      <li>The <span lang="ja">交番</span> (kōban, police box). Giving directions is a big part of the job, and most have a local map on the wall.</li>
+      <li>Station staff at the window beside the <span lang="ja">改札</span> (kaisatsu, ticket gates).</li>
+      <li>A konbini clerk, if the shop isn't busy.</li>
+    </ul>
+  </aside>
+</main>
+
+<footer>
+  More to Japan · Phrases written for how people actually talk on the street. The ▶ button uses your device's built-in Japanese voice, so it sounds different on every phone.
+</footer>
+
+<div id="show" role="dialog" aria-modal="true" aria-label="Phrase shown full screen">
+  <span class="x">Tap to close</span>
+  <p class="big" lang="ja"></p>
+  <p class="sub"></p>
+</div>
+<div id="toast" role="status"></div>
+
+<script>
+(() => {
+  const PLACES = [{"ja": "駅", "rt": "えき", "ro": "eki", "the": "the station", "a": "a station", "sounds": "eh-kee"}, {"ja": "トイレ", "rt": "", "ro": "toire", "the": "the toilet", "a": "a toilet", "sounds": "toh-ee-reh"}, {"ja": "コンビニ", "rt": "", "ro": "konbini", "the": "the convenience store", "a": "a convenience store", "sounds": "kohn-bee-nee"}, {"ja": "交番", "rt": "こうばん", "ro": "kōban", "the": "the police box", "a": "a police box", "sounds": "koh-oh-bahn"}, {"ja": "改札", "rt": "かいさつ", "ro": "kaisatsu", "the": "the ticket gates", "a": "a ticket gates", "sounds": "kye-sah-tsoo"}, {"ja": "出口", "rt": "でぐち", "ro": "deguchi", "the": "the exit", "a": "an exit", "sounds": "deh-goo-chee"}, {"ja": "バス停", "rt": "バスてい", "ro": "basutei", "the": "the bus stop", "a": "a bus stop", "sounds": "bah-soo-teh-ee"}, {"ja": "タクシー乗り場", "rt": "タクシーのりば", "ro": "takushī-noriba", "the": "the taxi stand", "a": "a taxi stand", "sounds": "tah-koo-shee noh-ree-bah"}, {"ja": "エレベーター", "rt": "", "ro": "erebētā", "the": "the elevator", "a": "an elevator", "sounds": "eh-reh-beh-tah"}];
+  let cur = PLACES[0], own = "";
+  const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+  const esc = s => s.replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+  const rubyOf = p => p.rt ? `<ruby>${esc(p.ja)}<rt>${esc(p.rt)}</rt></ruby>` : esc(p.ja);
+
+  function paint() {
+    const p = own ? {ja: own, rt: "", ro: own, the: "“" + own + "”", a: "“" + own + "”", sounds: own} : cur;
+    $$('.slot[data-slot="ja"]').forEach(el => el.innerHTML = rubyOf(p));
+    $$('.slot[data-slot="ro"]').forEach(el => el.textContent = p.ro);
+    $$('.slot[data-slot="sounds"]').forEach(el => el.textContent = p.sounds);
+    $$('.slot[data-slot="the"]').forEach(el => el.textContent = p.the);
+    $$('.slot[data-slot="a"]').forEach(el => el.textContent = p.a);
+    $$('.chip').forEach(c => c.classList.toggle("on", !own && PLACES[+c.dataset.i] === cur));
+  }
+  $$('.chip').forEach(c => c.addEventListener("click", () => {
+    cur = PLACES[+c.dataset.i]; own = ""; document.getElementById("own").value = "";
+    try { localStorage.setItem("mtj-ask-place", c.dataset.i); } catch (e) {}
+    paint();
+  }));
+  document.getElementById("own").addEventListener("input", e => { own = e.target.value.trim(); paint(); });
+  try { const i = localStorage.getItem("mtj-ask-place"); if (i !== null && PLACES[+i]) cur = PLACES[+i]; } catch (e) {}
+  paint();
+
+  const toast = msg => { const t = document.getElementById("toast"); t.textContent = msg; t.classList.add("on"); clearTimeout(toast.h); toast.h = setTimeout(() => t.classList.remove("on"), 2600); };
+  const placeSay = () => own || cur.rt || cur.ja;
+  let voices = [];
+  const loadVoices = () => { if ("speechSynthesis" in window) voices = speechSynthesis.getVoices(); };
+  loadVoices();
+  if ("speechSynthesis" in window) speechSynthesis.addEventListener?.("voiceschanged", loadVoices);
+
+  function speak(text, rate) {
+    if (!("speechSynthesis" in window)) { toast("This browser can't play sound. Try Safari or Chrome."); return; }
+    speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = "ja-JP"; u.rate = rate;
+    const ja = voices.filter(v => /^ja[-_]/i.test(v.lang));
+    const v = ja.find(v => /Kyoko|O-ren|Otoya|Hattori|Google|Microsoft|Nanami/i.test(v.name)) || ja.find(v => v.localService) || ja[0];
+    if (v) u.voice = v; else if (voices.length) toast("No Japanese voice found on this device. Add one in your system's speech settings.");
+    speechSynthesis.speak(u);
+  }
+  const sayOf = card => card.dataset.say.replace("{P}", placeSay());
+
+  $$(".card").forEach(card => {
+    card.querySelector(".play").addEventListener("click", () => speak(sayOf(card), 0.95));
+    card.querySelector(".slow").addEventListener("click", () => speak(sayOf(card), 0.6));
+    card.querySelector(".show").addEventListener("click", () => {
+      const s = document.getElementById("show");
+      s.querySelector(".big").innerHTML = card.querySelector(".ja").innerHTML;
+      s.querySelector(".sub").textContent = card.querySelector(".en").textContent;
+      s.classList.add("on");
+    });
+  });
+  $$(".word").forEach(w => w.addEventListener("click", () => speak(w.dataset.say, 0.85)));
+  const show = document.getElementById("show");
+  show.addEventListener("click", () => show.classList.remove("on"));
+  document.addEventListener("keydown", e => { if (e.key === "Escape") show.classList.remove("on"); });
+})();
+</script>
+
+<!-- Cloudflare Web Analytics（Cookieを使わない。個人は追わない。何人・どのページ・どの国・どこから、だけ）-->
+<script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "a549632ca5ba440a9dbdfd24bcbe11e5"}'></script>
+</body>
+</html>
