@@ -1,5 +1,14 @@
 [
  {
+  "id": "19-otoshi",
+  "slug": "otoshi",
+  "h1": "“お通しです” — the izakaya dish you didn't order (and what to say)",
+  "ja": "お通しです。",
+  "date": "2026-10-27",
+  "time": "20:47",
+  "duration": 36.9
+ },
+ {
   "id": "23-okusuri-techou",
   "slug": "okusuri-techou",
   "h1": "“Do you have a medicine notebook?” — answering お薬手帳はお持ちですか in Japan",
