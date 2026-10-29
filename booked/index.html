@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Booked — More to Japan</title>
+<meta name="robots" content="noindex">
+<meta name="description" content="Your lesson is paid. Tell me when you are free.">
+<link rel="canonical" href="https://moretojapan.com/booked/">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2322406e'/%3E%3Ctext x='32' y='45' font-size='40' text-anchor='middle' fill='white' font-family='Hiragino Sans,sans-serif'%3E%E5%A5%A5%3C/text%3E%3C/svg%3E">
+<style>
+  :root{
+    --paper:#faf7f2; --ink:#1b1f26; --sub:#5d6673; --line:#e4ddd2;
+    --ai:#22406e; --aka:#d94f2b; --card:#ffffff;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--paper);color:var(--ink);line-height:1.85;
+    font-family:"Hiragino Sans","Noto Sans JP",system-ui,-apple-system,"Segoe UI",sans-serif;
+    -webkit-font-smoothing:antialiased}
+  .wrap{max-width:760px;margin:0 auto;padding:0 24px}
+  a{color:var(--ai)}
+
+  header{position:sticky;top:0;z-index:50;background:#faf7f2e6;backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line)}
+  nav{display:flex;align-items:center;gap:20px;height:64px;max-width:1040px;margin:0 auto;padding:0 24px}
+  .logo{font-weight:800;font-size:19px;text-decoration:none;color:var(--ink);
+    display:flex;align-items:center;gap:9px;white-space:nowrap}
+  .logo i{display:grid;place-items:center;width:30px;height:30px;border-radius:9px;
+    background:var(--ai);color:#fff;font-style:normal;font-size:16px;font-weight:700}
+  nav .sp{flex:1}
+  .lang{border:1px solid var(--line);background:#fff;border-radius:999px;padding:6px 14px;
+    font:inherit;font-size:13px;cursor:pointer;color:var(--sub);white-space:nowrap}
+  .lang:hover{border-color:var(--ai);color:var(--ai)}
+
+  .hero{padding:64px 0 10px}
+  .kicker{color:var(--aka);font-weight:700;font-size:13px;letter-spacing:.16em;text-transform:uppercase}
+  h1{font-size:clamp(30px,4.8vw,42px);line-height:1.28;margin:14px 0 16px;letter-spacing:-.01em}
+  .lead{font-size:18px;color:var(--sub);margin:0}
+  .upd{font-size:14px;color:var(--sub);margin-top:14px}
+
+  section{padding:34px 0}
+  section + section{border-top:1px solid var(--line)}
+  h2{font-size:clamp(20px,2.8vw,24px);margin:0 0 14px;line-height:1.4}
+  p{font-size:16.5px;margin:0 0 16px}
+  ul.plain{list-style:none;padding:0;margin:0 0 18px}
+  ul.plain li{padding-left:26px;position:relative;color:var(--sub);margin-bottom:10px;font-size:16.5px}
+  ul.plain li::before{content:"—";position:absolute;left:0;color:var(--aka);font-weight:800}
+  ul.plain li b{color:var(--ink)}
+
+  .short{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:22px 26px 8px;margin-top:28px}
+  .short h2{font-size:18px}
+
+  footer{border-top:1px solid var(--line);padding:36px 0 60px;color:var(--sub);font-size:14px;margin-top:40px}
+  footer .wrap{display:flex;gap:18px;flex-wrap:wrap;align-items:center}
+
+  .who{display:flex;gap:22px;align-items:flex-start;margin-top:8px}
+  .face{flex:none;display:grid;place-items:center;width:72px;height:72px;border-radius:20px;
+    background:var(--ai);color:#fff;font-size:34px;font-weight:700}
+  .links{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px;margin:6px 0 4px}
+  .links a{display:block;background:var(--card);border:1px solid var(--line);border-radius:14px;
+    padding:14px 16px;text-decoration:none;color:var(--ink);font-weight:700;font-size:15.5px}
+  .links a span{display:block;font-weight:400;color:var(--sub);font-size:14px;line-height:1.6;margin-top:2px}
+  .links a:hover{border-color:var(--ai)}
+  form{display:grid;gap:18px;margin-top:6px}
+  label{display:grid;gap:6px;font-weight:700;font-size:15px}
+  .hintline{font-weight:400;color:var(--sub);font-size:14px;margin:0}
+  input,select,textarea{font:inherit;font-size:16px;padding:12px 14px;border:1px solid var(--line);
+    border-radius:12px;background:#fff;color:var(--ink);width:100%}
+  textarea{min-height:150px;resize:vertical}
+  input:focus,select:focus,textarea:focus{outline:2px solid var(--ai);outline-offset:1px}
+  .hp{position:absolute;left:-9999px;width:1px;height:1px;opacity:0}
+  .btn{display:inline-block;border:0;border-radius:999px;background:var(--ai);color:#fff;
+    font:inherit;font-weight:700;font-size:16px;padding:13px 26px;cursor:pointer;text-decoration:none}
+  .btn:disabled{opacity:.5;cursor:default}
+  .paid{display:inline-block;background:#2f8f5b14;color:#2f8f5b;border-radius:999px;padding:6px 14px;font-weight:700;font-size:14px;margin-top:16px}
+  .paid:empty{display:none}
+  @media (max-width:520px){.who{flex-direction:column;gap:14px}}
+</style>
+</head>
+<body>
+
+<header>
+  <nav>
+    <a class="logo" href="/"><i>奥</i>More to Japan</a>
+    <span class="sp"></span>
+    <button class="lang" id="lang">日本語</button>
+  </nav>
+</header>
+
+<div class="wrap">
+
+  <div class="hero">
+    <div class="kicker" data-en="Paid" data-ja="お支払い済み">Paid</div>
+    <h1 data-en="Thank you — now pick a time" data-ja="ありがとうございます。あとは日時だけです">Thank you — now pick a time</h1>
+    <p class="lead" data-en="Your payment went through, and Stripe has emailed you a receipt. Tell me when you are free and I will confirm the time by message, usually within a day." data-ja="お支払いが完了しました。領収書はStripeからメールで届いています。都合のいい日時を書いてください。だいたい1日以内に、日時を確定する連絡をします。">Your payment went through, and Stripe has emailed you a receipt. Tell me when you are free and I will confirm the time by message, usually within a day.</p>
+    <div class="paid" id="plan"></div>
+  </div>
+
+  <section>
+    <form id="form">
+      <label>
+        <span data-en="Your name" data-ja="お名前">Your name</span>
+        <input name="name" required maxlength="60">
+      </label>
+      <label>
+        <span data-en="How can I reach you?" data-ja="連絡先">How can I reach you?</span>
+        <span class="hintline" data-en="The email you paid with is easiest. Instagram, WhatsApp or LINE is fine too — just write which one." data-ja="お支払いに使ったメールがいちばん確実です。Instagram・WhatsApp・LINEでも大丈夫。どれかを書いてください。">The email you paid with is easiest. Instagram, WhatsApp or LINE is fine too — just write which one.</span>
+        <input name="contact" required maxlength="120" placeholder="you@example.com / IG: @you">
+      </label>
+      <input name="hp" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+      <label>
+        <span data-en="When are you free?" data-ja="都合のいい日時">When are you free?</span>
+        <span class="hintline" data-en="A few options are best. Write your time zone if you are not in Japan." data-ja="候補をいくつか書いてもらえると早いです。日本の外にいる人は時差（国や都市）も。">A few options are best. Write your time zone if you are not in Japan.</span>
+        <textarea name="when" required maxlength="800" data-ph-en="e.g. Tue or Thu after 19:00 (Berlin time), Sat morning" data-ph-ja="例：火曜か木曜の19時以降（ベルリン時間）、土曜の午前"></textarea>
+      </label>
+      <label>
+        <span data-en="Online or in person?" data-ja="オンライン／対面">Online or in person?</span>
+        <select name="where">
+          <option data-en="Online" data-ja="オンライン">Online</option>
+          <option data-en="In person" data-ja="対面">In person</option>
+          <option data-en="Either is fine" data-ja="どちらでもいい">Either is fine</option>
+        </select>
+      </label>
+      <label>
+        <span data-en="Your Japanese level" data-ja="いまの日本語のレベル">Your Japanese level</span>
+        <select name="level">
+          <option data-en="Complete beginner — I cannot read hiragana yet" data-ja="まったくの初心者 ─ ひらがなも読めない">Complete beginner — I cannot read hiragana yet</option>
+          <option data-en="I can read kana, but I cannot speak" data-ja="かなは読めるが話せない">I can read kana, but I cannot speak</option>
+          <option data-en="I can survive daily life" data-ja="日常生活はなんとかなる">I can survive daily life</option>
+          <option data-en="Intermediate or above" data-ja="中級以上">Intermediate or above</option>
+          <option data-en="We already had a lesson" data-ja="もうレッスンを受けたことがある">We already had a lesson</option>
+        </select>
+      </label>
+      <label>
+        <span data-en="What do you want to be able to do? (optional)" data-ja="できるようになりたいこと（任意）">What do you want to be able to do? (optional)</span>
+        <textarea name="goal" maxlength="900"></textarea>
+      </label>
+      <div>
+        <button class="btn" type="submit" data-en="Send" data-ja="送る">Send</button>
+      </div>
+      <p class="hintline" id="note"></p>
+    </form>
+  </section>
+
+  <section>
+    <h2 data-en="Good to know" data-ja="知っておいてほしいこと">Good to know</h2>
+    <ul class="plain">
+      <li data-en="<b>Need to move a lesson?</b> Tell me at least 24 hours ahead and we move it, or you get a full refund." data-ja="<b>日時を変えたいとき</b>は、24時間前までに知らせてください。日時を移すか、全額返金します。"><b>Need to move a lesson?</b> Tell me at least 24 hours ahead and we move it, or you get a full refund.</li>
+      <li data-en="<b>5-lesson pack:</b> no expiry. Send this form once — we pick the next times together after each lesson." data-ja="<b>5回券</b>は期限なし。このフォームは最初の1回だけで大丈夫です。2回目からはレッスンのあとに一緒に決めます。"><b>5-lesson pack:</b> no expiry. Send this form once — we pick the next times together after each lesson.</li>
+      <li data-en="The full terms are on the <a href=&quot;/legal/&quot;>commerce disclosure</a> page." data-ja="細かい条件は<a href=&quot;/legal/&quot;>特定商取引法に基づく表記</a>にあります。">The full terms are on the <a href=&quot;/legal/&quot;>commerce disclosure</a> page.</li>
+    </ul>
+  </section>
+
+</div>
+
+<footer>
+  <div class="wrap">
+    <span>© <span id="yr"></span> More to Japan</span>
+    <span style="flex:1"></span>
+    <a href="/" data-en="Home" data-ja="トップ">Home</a>
+    <a href="/why/" data-en="Why" data-ja="なぜ">Why</a>
+    <a href="/about/" data-en="About" data-ja="このサイトについて">About</a>
+    <a href="/contact/" data-en="Contact" data-ja="連絡先">Contact</a>
+    <a href="/privacy/" data-en="Privacy" data-ja="プライバシー">Privacy</a>
+  </div>
+</footer>
+
+<script>
+let lang = "en";
+function applyLang() {
+  document.documentElement.lang = lang === "en" ? "en" : "ja";
+  document.querySelectorAll("[data-en]").forEach(el => {
+    const v = el.getAttribute("data-" + lang);
+    if (v != null) el.innerHTML = v;
+  });
+  document.querySelectorAll("[data-ph-en]").forEach(el => {
+    el.placeholder = el.getAttribute("data-ph-" + lang) || "";
+  });
+  document.getElementById("lang").textContent = lang === "en" ? "日本語" : "English";
+  try { localStorage.setItem("mj-lang", lang); } catch (e) {}
+}
+document.getElementById("lang").addEventListener("click", () => {
+  lang = lang === "en" ? "ja" : "en"; applyLang();
+});
+try { const s = localStorage.getItem("mj-lang"); if (s === "en" || s === "ja") lang = s; } catch (e) {}
+applyLang();
+document.getElementById("yr").textContent = new Date().getFullYear();
+
+/* ---------- 払ったあとの予約 ----------
+   Stripeの支払いリンクの「支払い後」に、このページへ戻すよう設定してある
+   （https://moretojapan.com/booked/?p=single&s={CHECKOUT_SESSION_ID}）。
+   ?p= で何を買ったかを出し、?s= の番号は通知に入れて、Stripeの管理画面の支払いと突き合わせる。
+   送り先はトップの体験レッスンと同じ Apps Script（gas/Code.js の newBooking_）で、
+   「レベル」の欄の頭に 💳 の目印を入れて、無料体験ではなく払った人だと分かるようにしている。
+   このページはURLさえ知っていれば誰でも開けるので、払ったかどうかは必ずStripe側で確かめる。 */
+const PLANS = {
+  single: { en: "Single lesson · ¥3,000", ja: "1回（60分）・¥3,000", note: "1回 ¥3,000" },
+  pack:   { en: "5-lesson pack · ¥13,500", ja: "5回券・¥13,500",     note: "5回券 ¥13,500" }
+};
+const q = new URLSearchParams(location.search);
+const plan = PLANS[q.get("p")] || null;
+const sid = (q.get("s") || "").slice(0, 200);
+function showPlan() {
+  document.getElementById("plan").textContent = plan ? "✓ " + plan[lang] : "";
+}
+showPlan();
+document.getElementById("lang").addEventListener("click", showPlan);
+const API = "https://script.google.com/macros/s/AKfycbz09z8z5zorue3p6xFwtt01Q3KQgh-7bm-SGTSZj6ILNRxXS-KbASTooYulq3fo7TBL/exec";
+function dev() {
+  let d = "";
+  try { d = localStorage.getItem("mj-board-dev") || ""; } catch (e) {}
+  if (!d) {
+    d = "d" + Math.random().toString(36).slice(2) + Date.now().toString(36);
+    try { localStorage.setItem("mj-board-dev", d); } catch (e) {}
+  }
+  return d;
+}
+document.getElementById("form").addEventListener("submit", async e => {
+  e.preventDefault();
+  const form = e.currentTarget;
+  const note = document.getElementById("note");
+  const btn  = form.querySelector("button[type=submit]");
+  const t = (en, ja) => lang === "en" ? en : ja;
+  const f = new FormData(form);
+  btn.disabled = true;
+  note.textContent = t("Sending…", "送っています…");
+  let o = { ok: false };
+  try {
+    const r = await fetch(API, {
+      method: "POST",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify({
+        a: "book", dev: dev(), lang: lang, hp: f.get("hp") || "",
+        name: f.get("name") || "", contact: f.get("contact") || "",
+        level: "💳 支払い済み：" + (plan ? plan.note : "（不明）") + " ｜ " + (f.get("level") || ""),
+        where: f.get("where") || "",
+        // 番号を先頭に置く（newBooking_ は2000字で切るので、末尾だと消えうる）
+        goal: "Stripeの番号：" + (sid || "（なし）") +
+              "\n\n希望の日時：\n" + (f.get("when") || "") +
+              "\n\nできるようになりたいこと：\n" + (f.get("goal") || "（空欄）")
+      })
+    });
+    o = JSON.parse(await r.text());
+  } catch (err) {}
+  btn.disabled = false;
+  if (o.ok) {
+    form.reset();
+    form.querySelector("button[type=submit]").hidden = true;
+    note.textContent = t("Got it — I will message you to confirm the time, usually within a day.",
+                         "届きました。日時を確定する連絡を、だいたい1日以内にします。");
+  } else if (o.err === "toofast") {
+    note.textContent = t("Already sent — please wait a minute before sending again.",
+                         "送信済みです。もう一度送るときは1分ほど待ってください。");
+  } else if (o.err === "nocontact") {
+    note.textContent = t("Please write how I can reach you.", "連絡先を書いてください。");
+  } else {
+    note.textContent = t("Sorry, it did not go through. Please try again in a moment.",
+                         "うまく送れませんでした。少しして、もう一度お試しください。");
+  }
+});
+</script>
+<!-- Cloudflare Web Analytics（Cookieを使わない。個人は追わない。何人・どのページ・どの国・どこから、だけ）-->
+<script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "a549632ca5ba440a9dbdfd24bcbe11e5"}'></script>
+</body>
+</html>
