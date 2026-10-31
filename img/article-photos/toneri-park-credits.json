@@ -1,0 +1,38 @@
+[
+  {
+    "file": "/img/article-photos/toneri-park-winter.webp",
+    "author": "Nesnad",
+    "title": "Toneri park from above Feb 14 2021 03-18PM.jpeg",
+    "date": "2021-02-14",
+    "license": "CC BY 4.0",
+    "license_url": "https://creativecommons.org/licenses/by/4.0/",
+    "source": "https://commons.wikimedia.org/wiki/File:Toneri_park_from_above_Feb_14_2021_03-18PM.jpeg",
+    "changes": "Resized to 1600 pixels wide and converted to WebP; no crop or content retouching.",
+    "width": 1600,
+    "height": 836
+  },
+  {
+    "file": "/img/article-photos/toneri-park-autumn.webp",
+    "author": "Souka Kinmei",
+    "title": "Toneri Park, a famous spot for viewing autumn leaves.jpg",
+    "date": "2025-11-28",
+    "license": "CC BY 4.0",
+    "license_url": "https://creativecommons.org/licenses/by/4.0/",
+    "source": "https://commons.wikimedia.org/wiki/File:Toneri_Park,_a_famous_spot_for_viewing_autumn_leaves.jpg",
+    "changes": "Resized to 1600 pixels wide and converted to WebP; no crop or content retouching.",
+    "width": 1600,
+    "height": 900
+  },
+  {
+    "file": "/img/article-photos/toneri-park-sign.webp",
+    "author": "Higa4",
+    "title": "Toneri Park 01.jpg",
+    "date": "2022-10-15",
+    "license": "CC0 1.0",
+    "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "source": "https://commons.wikimedia.org/wiki/File:Toneri_Park_01.jpg",
+    "changes": "Resized to 1600 pixels wide and converted to WebP; no crop or content retouching.",
+    "width": 1600,
+    "height": 1200
+  }
+]
