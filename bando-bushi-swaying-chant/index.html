@@ -92,6 +92,36 @@
   figure.illustration{max-width:920px}
   .illustration img{display:block;width:100%;height:auto;border:1px solid var(--rule)}
   .illustration figcaption{margin-inline:auto}
+  /* This article's opening only: decorative, imagined artwork behind live text. */
+  .article-hero{
+    position:relative;isolation:isolate;overflow:hidden;max-width:none;
+    margin:0 -16px 42px;padding:0;background:#211e29;color:#fff8f0;
+  }
+  .hero-art{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center}
+  .article-hero::after{
+    content:"";position:absolute;inset:0;z-index:0;pointer-events:none;
+    background:linear-gradient(90deg,rgba(20,16,26,.72) 0%,rgba(20,16,26,.50) 44%,rgba(20,16,26,.08) 100%),
+      linear-gradient(0deg,rgba(17,14,22,.70),transparent 58%);
+  }
+  .hero-content{position:relative;z-index:1;max-width:1004px;margin:0 auto;padding:72px 32px 30px}
+  .article-hero .eyebrow{color:#ffb8b7;max-width:720px}
+  .article-hero h1{max-width:760px;font-size:clamp(40px,6.4vw,72px);text-shadow:0 2px 22px rgba(0,0,0,.22)}
+  .article-hero h1 .k{color:#ffab96}
+  .article-hero .dek{max-width:650px;color:#f2e8e4;text-shadow:0 1px 12px rgba(0,0,0,.25)}
+  .article-hero .meta{max-width:760px;color:#e5d9d5;border-color:rgba(255,242,232,.30)}
+  .hero-credit{max-width:760px;margin:22px 0 0;font:11px/1.5 var(--f-ui);color:#e2d3d0}
+  @media(max-width:600px){
+    .hero-content{padding:46px 22px 26px}
+    .hero-art{object-position:70% center}
+    .article-hero::after{
+      background:linear-gradient(90deg,rgba(20,16,26,.78),rgba(20,16,26,.50)),
+        linear-gradient(0deg,rgba(17,14,22,.65),transparent 75%);
+    }
+    .article-hero .eyebrow{font-size:10px;letter-spacing:.12em}
+    .article-hero h1{font-size:clamp(37px,9.8vw,56px);line-height:1.08}
+    .article-hero .dek{font-size:19px;line-height:1.55}
+    .article-hero .meta{font-size:11px;gap:6px 16px}
+  }
 </style>
 </head>
 <body>
@@ -102,11 +132,15 @@
   <a class="back" href="/#articles">All articles</a>
 </div></div>
 
-<header>
+<header class="article-hero">
+  <img class="hero-art" src="./images/bando-bushi-swaying-chant-hero-illustration.webp" width="1752" height="897" alt="" aria-hidden="true" fetchpriority="high" decoding="async">
+  <div class="hero-content">
   <p class="eyebrow">Kyoto · Higashi Honganji · Saturday 28 November 2026, 10:00</p>
   <h1>The Chant That <span class="k">Rocks</span> Like a Boat</h1>
   <p class="dek">Once a year, on the morning of 28 November, the monks in the vast hall across the road from Kyoto Station chant while throwing their heads and bodies forward, back and side to side. Nobody is sure why. The temple only says it is the service that closes the year's biggest week.</p>
   <div class="meta"><span>坂東曲 bandō-bushi</span><span>真宗本廟 東本願寺 · Shinshū Honbyō</span><span>Facts checked 4 November 2026</span></div>
+  <p class="hero-credit">AI-generated illustration · An imagined scene, not a photograph or an exact depiction of the place or event.</p>
+  </div>
 </header>
 
 <main class="col">
