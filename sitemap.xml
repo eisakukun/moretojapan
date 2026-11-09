@@ -280,7 +280,52 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://moretojapan.com/shinnyodo-ten-nights/</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://moretojapan.com/murakami-salmon-eaves/</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://moretojapan.com/toei-hanamatsuri-all-night/</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://moretojapan.com/kobenomiya-head-shrine/</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://moretojapan.com/toyokawa-inari-gokaicho/</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://moretojapan.com/nogi-lantern-clash/</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://moretojapan.com/yugiri-festival-seiryoji/</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://moretojapan.com/sada-shrine-kamiari-hush/</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://moretojapan.com/phrases/</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://moretojapan.com/phrases/oyu-kagen-ikaga-desu-ka/</loc>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -388,45 +433,5 @@
     <loc>https://moretojapan.com/phrases/atatamemasu-ka/</loc>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://moretojapan.com/shinnyodo-ten-nights/</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://moretojapan.com/murakami-salmon-eaves/</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://moretojapan.com/toei-hanamatsuri-all-night/</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://moretojapan.com/kobenomiya-head-shrine/</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://moretojapan.com/toyokawa-inari-gokaicho/</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://moretojapan.com/nogi-lantern-clash/</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://moretojapan.com/yugiri-festival-seiryoji/</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://moretojapan.com/sada-shrine-kamiari-hush/</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
   </url>
 </urlset>
