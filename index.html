@@ -156,6 +156,12 @@
     padding:4px 10px;border-radius:999px;letter-spacing:.08em;text-transform:uppercase;margin-bottom:10px}
   .amt{font-size:32px;font-weight:800;margin:6px 0 4px}
   .amt small{font-size:14px;font-weight:600;color:var(--sub)}
+  .price .card{display:flex;flex-direction:column}
+  .price .buy,.price .tag{align-self:flex-start}
+  .price .buy{margin-top:auto}
+  .price .card p{margin-bottom:18px}
+  .payNote{color:var(--sub);font-size:14px;margin:18px 0 0}
+  .buy[hidden],.payNote[hidden]{display:none}
 
   /* ---- about ---- */
   .about{display:grid;grid-template-columns:.8fr 1.2fr;gap:40px;align-items:start}
@@ -912,20 +918,25 @@
         <p data-en="We talk, I find your level, you try one game. No sales talk afterwards."
            data-ja="話して、レベルを見て、ゲームを一つ試します。あとから売り込みはしません。">
           We talk, I find your level, you try one game.</p>
+        <a class="btn s buy" href="#contact" data-en="Book the free trial" data-ja="無料体験を申し込む">Book the free trial</a>
       </div>
       <div class="card hi">
         <div class="tag" data-en="Single lesson" data-ja="1回">Single lesson</div>
         <div class="amt">¥3,000 <small data-en="/ 60 min" data-ja="/ 60分">/ 60 min</small></div>
         <p data-en="Online or in person. Materials and the recording are included."
            data-ja="オンラインでも対面でも。教材と録画つき。">Online or in person. Materials included.</p>
+        <a class="btn p buy" id="paySingle" hidden data-en="Pay &amp; book" data-ja="払って予約する">Pay &amp; book</a>
       </div>
       <div class="card">
         <div class="tag" data-en="5 lessons" data-ja="5回券">5 lessons</div>
         <div class="amt">¥13,500 <small data-en="/ 5 × 60 min" data-ja="/ 60分 × 5回">/ 5 × 60 min</small></div>
         <p data-en="About 10% off. Use them at your own pace, no expiry."
            data-ja="約1割引き。期限なし、好きなペースで使えます。">About 10% off, no expiry.</p>
+        <a class="btn s buy" id="payPack" hidden data-en="Pay &amp; book" data-ja="払って予約する">Pay &amp; book</a>
       </div>
     </div>
+    <p class="payNote" id="payNote" hidden data-en="Card, Apple Pay or Google Pay, on Stripe's page. Right after paying, you pick a time — no back-and-forth about money. Not sure yet? Start with the free trial."
+       data-ja="お支払いはStripeのページで、カード・Apple Pay・Google Pay。払ったらそのまま日時を選ぶ画面に戻ります。お金のやりとりはそれだけです。迷ったら、まず無料体験から。">Card, Apple Pay or Google Pay, on Stripe's page. Right after paying, you pick a time.</p>
   </div>
 </section>
 
@@ -1031,6 +1042,20 @@
 /* 申し込みの送り先。掲示板と同じ Apps Script（gas/Code.js の newBooking_）。
    そこから本人のメールと Discord の両方に飛ぶ。アドレスはサイトに出さない。 */
 const API = "https://script.google.com/macros/s/AKfycbz09z8z5zorue3p6xFwtt01Q3KQgh-7bm-SGTSZj6ILNRxXS-KbASTooYulq3fo7TBL/exec";
+/* レッスンの支払い。Stripeの支払いリンク（https://buy.stripe.com/…）を入れると「払って予約する」が出る。
+   空のあいだはボタンごと隠れる。リンクの「支払い後」は、それぞれ
+   https://moretojapan.com/booked/?p=single&s={CHECKOUT_SESSION_ID}
+   https://moretojapan.com/booked/?p=pack&s={CHECKOUT_SESSION_ID}
+   に戻すよう Stripe 側で設定する（日時を書く画面。booked/index.html）。 */
+/* Stripe の本番リンク（2026-11-14 作成）。本物のお金が動く。 */
+const PAY_SINGLE = "https://buy.stripe.com/5kQ5kC6jccN68j900A1VK02";
+const PAY_PACK   = "https://buy.stripe.com/cNi3cu8rk4gAczp4gQ1VK03";
+[["paySingle", PAY_SINGLE], ["payPack", PAY_PACK]].forEach(([id, url]) => {
+  if (!url) return;
+  const a = document.getElementById(id);
+  a.href = url; a.hidden = false;
+  document.getElementById("payNote").hidden = false;
+});
 
 /* ---------- 落ちてくるカタカナ（トップの絵） ---------- */
 (function () {
