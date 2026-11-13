@@ -162,6 +162,7 @@
   .price .card p{margin-bottom:18px}
   .payNote{color:var(--sub);font-size:14px;margin:18px 0 0}
   .buy[hidden],.payNote[hidden]{display:none}
+  .price .soon{opacity:.5;cursor:default;pointer-events:none}
 
   /* ---- about ---- */
   .about{display:grid;grid-template-columns:.8fr 1.2fr;gap:40px;align-items:start}
@@ -926,6 +927,7 @@
         <p data-en="Online or in person. Materials and the recording are included."
            data-ja="オンラインでも対面でも。教材と録画つき。">Online or in person. Materials included.</p>
         <a class="btn p buy" id="paySingle" hidden data-en="Pay &amp; book" data-ja="払って予約する">Pay &amp; book</a>
+        <span class="btn s buy soon" hidden data-en="From 24 Nov" data-ja="11月24日から">From 24 Nov</span>
       </div>
       <div class="card">
         <div class="tag" data-en="5 lessons" data-ja="5回券">5 lessons</div>
@@ -933,10 +935,13 @@
         <p data-en="About 10% off. Use them at your own pace, no expiry."
            data-ja="約1割引き。期限なし、好きなペースで使えます。">About 10% off, no expiry.</p>
         <a class="btn s buy" id="payPack" hidden data-en="Pay &amp; book" data-ja="払って予約する">Pay &amp; book</a>
+        <span class="btn s buy soon" hidden data-en="From 24 Nov" data-ja="11月24日から">From 24 Nov</span>
       </div>
     </div>
     <p class="payNote" id="payNote" hidden data-en="Card, Apple Pay or Google Pay, on Stripe's page. Right after paying, you pick a time — no back-and-forth about money. Not sure yet? Start with the free trial."
        data-ja="お支払いはStripeのページで、カード・Apple Pay・Google Pay。払ったらそのまま日時を選ぶ画面に戻ります。お金のやりとりはそれだけです。迷ったら、まず無料体験から。">Card, Apple Pay or Google Pay, on Stripe's page. Right after paying, you pick a time.</p>
+    <p class="payNote" id="paySoon" hidden data-en="Paid lessons open on 24 November. You can buy them here from that day."
+       data-ja="有料レッスンは11月24日から始まります。その日から、ここで購入できます。">Paid lessons open on 24 November. You can buy them here from that day.</p>
   </div>
 </section>
 
@@ -1050,7 +1055,12 @@ const API = "https://script.google.com/macros/s/AKfycbz09z8z5zorue3p6xFwtt01Q3KQ
 /* Stripe の本番リンク（2026-11-14 作成）。本物のお金が動く。 */
 const PAY_SINGLE = "https://buy.stripe.com/5kQ5kC6jccN68j900A1VK02";
 const PAY_PACK   = "https://buy.stripe.com/cNi3cu8rk4gAczp4gQ1VK03";
-[["paySingle", PAY_SINGLE], ["payPack", PAY_PACK]].forEach(([id, url]) => {
+/* 有料レッスンの受付開始（日本時間）。この時刻までは支払いボタンを出さず「11月24日から」を見せる。 */
+const PAY_OPEN = new Date("2026-11-24T00:00:00+09:00");
+if (Date.now() < PAY_OPEN.getTime()) {
+  document.querySelectorAll(".price .soon").forEach(s => s.hidden = false);
+  document.getElementById("paySoon").hidden = false;
+} else [["paySingle", PAY_SINGLE], ["payPack", PAY_PACK]].forEach(([id, url]) => {
   if (!url) return;
   const a = document.getElementById(id);
   a.href = url; a.hidden = false;
