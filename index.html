@@ -120,6 +120,16 @@
   .card p{margin:0;color:var(--sub);font-size:15px}
   .card .ic{font-size:26px;margin-bottom:10px;display:block}
 
+  /* ---- 読みもの：最初は数枚だけ、残りは折りたたみ ---- */
+  #articles .grid3.folded > .card:nth-child(n+7){display:none!important}
+  @media(max-width:860px){ #articles .grid3.folded > .card:nth-child(n+4){display:none!important} }
+  .moreArt{display:flex;justify-content:center;margin-top:26px}
+  .moreArt button{font:inherit;font-size:15px;font-weight:700;color:var(--ai);background:#fff;
+    border:1px solid #cfd8e6;border-radius:999px;padding:11px 24px;cursor:pointer}
+  .moreArt button:hover{border-color:var(--ai)}
+  .moreArt .cl{display:none}
+  .moreArt.open .op{display:none} .moreArt.open .cl{display:inline}
+
   /* ---- games shelf（タイル1枚＝ゲーム1本） ---- */
   .shelf{background:linear-gradient(150deg,#0e1626,#1d2c48);color:#eaf2ff;border-radius:24px;padding:32px;border:1px solid #24344f}
   @media(max-width:600px){ .shelf{padding:22px 16px} }
@@ -592,7 +602,7 @@
         data-ja="読みもの — 地図に載っていない日本">Articles — the Japan that is not on the map</h2>
     <p class="lead" data-en="Written for people who have already done Kyoto and Shibuya. Why things in Japan are still standing, and why most of them are not."
        data-ja="京都も渋谷も済ませた人のために。日本で物が残っている理由と、残らなかった理由。">Written for people who have already done Kyoto and Shibuya. Why things in Japan are still standing, and why most of them are not.</p>
-    <div class="grid3">
+    <div class="grid3 folded" id="artGrid">
       <a class="card" href="/ukiyo-e/" style="text-decoration:none;color:inherit;display:block">
         <span class="ic">🌊</span>
         <h3 data-en="The Blue Came From Berlin" data-ja="あの青はベルリンから来た">The Blue Came From Berlin</h3>
@@ -941,6 +951,12 @@
            data-ja="道ばたで開くフレーズ帳。声をかける、どっちか聞く、答えを聞き取る、お礼を言う。行き先を選んで、音を聞くか、画面をそのまま見せる。">A phrasebook to open on the street: stop someone, ask which way, catch the answer, say thanks. Pick where you are going, tap to hear it, or show the screen.</p>
       </a>
     </div>
+    <div class="moreArt" id="moreArt">
+      <button type="button" aria-expanded="false" aria-controls="artGrid">
+        <span class="op"><span data-en="Show all articles" data-ja="記事をすべて見る">Show all articles</span> <span class="n"></span> ▾</span>
+        <span class="cl"><span data-en="Show fewer" data-ja="たたむ">Show fewer</span> ▴</span>
+      </button>
+    </div>
   </div>
 </section>
 
@@ -1160,6 +1176,20 @@ document.getElementById("gameFilter").addEventListener("click", e => {
   const f = b.dataset.f;
   document.querySelectorAll(".tiles .tile").forEach(t => t.classList.toggle("hide", f !== "all" && !t.dataset.tags.split(" ").includes(f)));
 });
+
+/* ---------- 読みもの：折りたたみ ---------- */
+(() => {
+  const grid = document.getElementById("artGrid"), box = document.getElementById("moreArt");
+  if (!grid || !box) return;
+  const btn = box.querySelector("button");
+  box.querySelector(".n").textContent = "(" + grid.querySelectorAll(".card").length + ")";
+  btn.addEventListener("click", () => {
+    const open = grid.classList.toggle("folded") === false;
+    box.classList.toggle("open", open);
+    btn.setAttribute("aria-expanded", open);
+    if (!open) document.getElementById("articles").scrollIntoView({behavior: "smooth"});
+  });
+})();
 
 /* ---------- 英語 / 日本語の切り替え ---------- */
 let lang = "en";
