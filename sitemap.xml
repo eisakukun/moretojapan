@@ -405,6 +405,11 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://moretojapan.com/phrases/yoi-otoshi-o/</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://moretojapan.com/phrases/betsubetsu-de-onegaishimasu/</loc>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
