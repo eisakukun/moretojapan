@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#100d1a">
+<title>日向バー 3D · More to Japan</title>
+<meta name="description" content="夜空に浮かぶ日向バー。ブラウザだけで窓辺、星空デッキ、DJを楽しめる、More to Japanの一人用3D空間。">
+<link rel="canonical" href="https://moretojapan.com/hinata-bar/3d/">
+<link rel="stylesheet" href="./style.css">
+</head>
+<body>
+<header><a class="brand" href="/">MORE TO JAPAN</a><a href="../">言語交流のバーへ <span aria-hidden="true">↗</span></a></header>
+<main>
+<div class="intro"><div class="issue"><span></span> NIGHT SPACE / 01</div><div class="title"><h1>日向バー<span> 3D</span></h1><p>星が流れるまで、ひと休み。</p></div></div>
+<section class="showcase" aria-label="3Dバー">
+  <div id="stage" tabindex="0" aria-label="日向バー。ドラッグで視点を回転。下の操作ボタンでも移動できます。">
+    <div class="view"><span class="live"></span><span id="view-status">読み込み中…</span></div>
+    <div id="loading" role="status"><b>準備中</b><span>日向バーの照明をつけています。</span></div>
+    <div class="looknote" aria-hidden="true">↔ ドラッグで見回す</div>
+  </div>
+  <div class="actions" aria-label="移動">
+    <button id="bar" title="バー中央から窓を眺める">窓辺</button>
+    <button id="door" aria-pressed="false">右のドアを開く</button>
+    <button id="outside">外のデッキへ</button>
+    <button id="dj">DJへ</button>
+  </div>
+</section>
+<section class="music" aria-label="ブースで音楽をかける"><div><b>DJ / ORIGINAL LOOPS</b><p id="track" aria-live="polite">音楽は停止中</p></div>
+<div class="tracks"><button id="track1" aria-pressed="false">01 Twilight</button><button id="track2" aria-pressed="false">02 Orbit</button><button id="stop">停止</button></div></section>
+<p class="note">一人用・ログイン不要。Cluster版や言語交流のバーとは別の空間です。</p>
+</main>
+<script type="module" src="./app.js"></script>
+</body>
+</html>
