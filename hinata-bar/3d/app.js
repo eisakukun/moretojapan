@@ -1,5 +1,6 @@
 import * as T from './vendor/three.module.min.js';
 import {GLTFLoader} from './vendor/GLTFLoader.js';
+import {readRoomCollisions, clear, inThreshold, walk} from './walk.js';
 import * as audio from './audio.js';
 const q=id=>document.getElementById(id);
 const stage=q('stage');
@@ -99,26 +100,35 @@ const meteor=new T.Line(new T.BufferGeometry().setFromPoints([v(0,0,0),v(1.14,.2
 scene.add(meteor);
 const views={
  bar:{eye:v(.24,1.66,-.73),at:v(0,1.44,4.4),label:'窓辺'},
- hall:{eye:v(-2.28,1.58,1.94),at:v(-2.29,1.45,4.42),label:'右のドア'},
- outside:{eye:v(-2.33,1.60,3.96),at:v(-.62,1.33,1.01),label:'星空デッキ'},
- dj:{eye:v(-2.30,1.66,-.79),at:v(-1.32,1.12,-.79),label:'右側のDJブース'}
+ hall:{eye:v(-2.08,1.58,2.06),at:v(-2.08,1.45,4.42),label:'右のドア'},
+ outside:{eye:v(-2.08,1.60,3.79),at:v(-.62,1.33,1.01),label:'星空デッキ'},
+ dj:{eye:v(-2.51,1.66,-.79),at:v(-1.32,1.12,-.79),label:'右側のDJブース'}
 };
-let active='bar', yaw=0,pitch=0,ready=false,doorUntil=0,doorState=false,doorValue=0,legs=[],moveT=0,trackMode=-1, audioTicket=0;
-const currentEye=views.bar.eye.clone(), currentAt=views.bar.at.clone();
-function begin(id){
- const out=active==='outside', into=id==='outside';
- if(into===out&&id===active)return;
- const target=views[id];
- // Walk through the single right-hand opening along the apron instead of through fixed glass.
- legs=into?[views.hall,target]:out?[views.hall,target]:[target];
- if(into||out)openDoor();
- active=id; q('outside').textContent=into?'バーの中へ':'外のデッキへ';
- q('view-status').textContent=target.label;
+let active='bar',yaw=0,pitch=0,ready=false,doorUntil=0,doorState=false,doorValue=0,legs=[],trackMode=-1,audioTicket=0;
+const currentEye=views.bar.eye.clone(),currentAt=views.bar.at.clone();
+const forward=v(0,0,0);
+const outside=()=>currentEye.z>2.77;
+function syncView(id){
+ active=id;
+ q('outside').textContent=outside()?'バーの中へ':'外のデッキへ';
+ q('view-status').textContent=views[id]?.label??(outside()?'星空デッキ':'自由に移動中');
  document.body.dataset.view=id;
- moveT=performance.now();yaw=0;pitch=0;
 }
-function openDoor(){doorUntil=performance.now()+8300; setDoor(true);}
-function setDoor(x){if(x===doorState)return;doorState=x;q('door').textContent=x?'ドアを閉じる':'右のドアを開く';q('door').setAttribute('aria-pressed',x);document.body.dataset.door=x?'open':'closed';}
+function jumpTo(id){
+ const target=views[id];currentEye.copy(target.eye); currentAt.copy(target.at);yaw=0;pitch=0;syncView(id);
+}
+function begin(id){
+ const into=id==='outside';
+ if(into===outside()){legs=[];jumpTo(id);return;}
+ if(!outside())jumpTo('hall');
+ legs=[{x:-2.08,z:into?3.68:2.12,id}];openDoor();
+}
+function openDoor(){doorUntil=performance.now()+8300;setDoor(true);}
+function setDoor(x){
+ if(!x&&inThreshold(currentEye.x,currentEye.z)){doorUntil=performance.now()+850;return;}
+ if(x===doorState)return;
+ doorState=x;q('door').textContent=x?'ドアを閉じる':'右のドアを開く';q('door').setAttribute('aria-pressed',x);document.body.dataset.door=x?'open':'closed';
+}
 async function track(id){
  const ticket=++audioTicket;
  if(id<0)audio.stop();
@@ -136,21 +146,39 @@ function command(name){
  if(name==='door'){if(doorState && legs.length===0){doorUntil=0;setDoor(false);}else openDoor();return;}
  if(name==='track1'||name==='track2'){track(+name.at(-1)-1);return;}
  if(name==='stop'){track(-1);return;}
- if(name==='outside'){begin(active==='outside'?'bar':'outside');return;}
+ if(name==='outside'){begin(outside()?'bar':'outside');return;}
  begin(name);
 }
 for(const id of ['bar','door','outside','dj','track1','track2','stop'])q(id).addEventListener('click',()=>command(id));
 document.body.dataset.door='closed';document.body.dataset.track='off';document.body.dataset.view='bar';
-stage.addEventListener('keydown',e=>{
- if(e.key==='ArrowLeft'||e.key==='ArrowRight'){yaw+=e.key==='ArrowLeft'?-.16:.16;e.preventDefault();}
- if(e.key.toLowerCase()==='e')command('door');
+const held=new Set();
+const keydir={w:'up',a:'left',s:'down',d:'right',arrowup:'up',arrowleft:'left',arrowdown:'down',arrowright:'right'};
+window.addEventListener('keydown',e=>{
+ const k=e.key.toLowerCase();
+ if(e.altKey||e.ctrlKey||e.metaKey||/^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName))return;
+ if(keydir[k]){held.add(k);e.preventDefault();}
+ if(k==='e'&&!e.repeat)command('door');
 });
+window.addEventListener('keyup',e=>held.delete(e.key.toLowerCase()));
+window.addEventListener('blur',()=>{held.clear();resetStick();});
+const joystick=q('stick'),nub=q('stick-nub');let stickId=null, sx=0,sz=0;
+function resetStick(){stickId=null;sx=sz=0;nub.style.transform='translate(0,0)';}
+function aimStick(e){
+ const b=joystick.getBoundingClientRect(),range=b.width*.31;
+ let x=(e.clientX-b.left-b.width/2)/range,z=(e.clientY-b.top-b.height/2)/range;
+ const mag=Math.max(1,Math.hypot(x,z));x/=mag;z/=mag;
+ sx=Math.abs(x)<.11?0:x;sz=Math.abs(z)<.11?0:z;
+ nub.style.transform='translate('+x*range+'px,'+z*range+'px)';
+}
+joystick.addEventListener('pointerdown',e=>{if(stickId!==null||e.button!==0)return;e.preventDefault();e.stopPropagation();stickId=e.pointerId;joystick.setPointerCapture(stickId);aimStick(e);});
+joystick.addEventListener('pointermove',e=>{if(e.pointerId===stickId){e.stopPropagation();aimStick(e);}});
+for(const type of ['pointerup','pointercancel','lostpointercapture'])joystick.addEventListener(type,e=>{if(e.pointerId===stickId){e.stopPropagation();resetStick();}});
 let drag=null;const cast=new T.Raycaster();
-stage.addEventListener('pointerdown',e=>{if(e.button!==0)return;stage.setPointerCapture(e.pointerId);drag={x:e.clientX,y:e.clientY,bx:e.clientX,by:e.clientY};});
-stage.addEventListener('pointermove',e=>{if(!drag)return;yaw-=(e.clientX-drag.x)*.0049;pitch=T.MathUtils.clamp(pitch+(e.clientY-drag.y)*.0048,-.54,.58);drag.x=e.clientX;drag.y=e.clientY;});
-stage.addEventListener('pointercancel',()=>drag=null);
+stage.addEventListener('pointerdown',e=>{if(e.button!==0||drag||e.target.closest('#stick'))return;if(e.pointerType==='mouse')stage.focus({preventScroll:true});stage.setPointerCapture(e.pointerId);drag={id:e.pointerId,x:e.clientX,y:e.clientY,bx:e.clientX,by:e.clientY};});
+stage.addEventListener('pointermove',e=>{if(!drag||drag.id!==e.pointerId)return;yaw-=(e.clientX-drag.x)*.0049;pitch=T.MathUtils.clamp(pitch+(e.clientY-drag.y)*.0048,-.54,.58);drag.x=e.clientX;drag.y=e.clientY;});
+stage.addEventListener('pointercancel',e=>{if(drag?.id===e.pointerId)drag=null;});
 stage.addEventListener('pointerup',e=>{
- if(!drag)return;
+ if(!drag||drag.id!==e.pointerId)return;
  if(Math.hypot(e.clientX-drag.bx,e.clientY-drag.by)<7){
   const rect=stage.getBoundingClientRect(),pt=new T.Vector2((e.clientX-rect.left)/rect.width*2-1,1-(e.clientY-rect.top)/rect.height*2);
   cast.setFromCamera(pt,camera);const hit=cast.intersectObjects(picks,false)[0];
@@ -158,14 +186,32 @@ stage.addEventListener('pointerup',e=>{
  }
  drag=null;
 });
+let lastTime=0;
 function animate(t){
+ const dt=Math.min(.05,Math.max(0,(t-lastTime)/1000));lastTime=t;
  if(!document.hidden) {
   if(doorState&&t>doorUntil&&legs.length===0)setDoor(false);
-  doorValue=T.MathUtils.lerp(doorValue,+doorState,reduced?1:.09);
+  doorValue=T.MathUtils.lerp(doorValue,+doorState,reduced?1:1-Math.exp(-dt*7.7));
   leaf.position.x=T.MathUtils.lerp(closedX,openX,doorValue);
-  if(legs.length && (!doorState||doorValue>.82||currentEye.z<1.7)){
-   const a=legs[0],k=reduced?1:.092; currentEye.lerp(a.eye,k);currentAt.lerp(a.at,k);
-   if(currentEye.distanceToSquared(a.eye)<.0025){currentEye.copy(a.eye);currentAt.copy(a.at);legs.shift();}
+  // Move on the horizontal plane relative to the selected view, not the camera pitch.
+  forward.copy(currentAt).sub(currentEye).setY(0).normalize().applyAxisAngle(v(0,1,0),yaw);
+  if(ready){
+   const kx=sx+Number(held.has('d')||held.has('arrowright'))-Number(held.has('a')||held.has('arrowleft'));
+   const kz=-sz+Number(held.has('w')||held.has('arrowup'))-Number(held.has('s')||held.has('arrowdown'));
+   const mag=Math.max(1,Math.hypot(kx,kz));
+   const oldX=currentEye.x,oldZ=currentEye.z;
+   if(kx||kz){
+    legs=[];const step=dt*1.72/mag;
+    walk(currentEye,(forward.x*kz-forward.z*kx)*step,(forward.z*kz+forward.x*kx)*step,leaf.position.x);
+    currentAt.x+=currentEye.x-oldX;currentAt.z+=currentEye.z-oldZ;
+    if(active!=='walk'||((oldZ>2.77)!==outside()))syncView('walk');
+   }else if(legs.length){
+    const a=legs[0],dx=a.x-currentEye.x,dz=a.z-currentEye.z,len=Math.hypot(dx,dz),step=Math.min(1,dt*2.20/(len||1));
+    if(doorValue>.94)walk(currentEye,dx*step,dz*step,leaf.position.x);
+    currentAt.x+=currentEye.x-oldX;currentAt.z+=currentEye.z-oldZ;
+    if(len<.075){legs.shift();jumpTo(a.id);}
+   }
+   document.body.dataset.pos=currentEye.x.toFixed(3)+','+currentEye.z.toFixed(3);
   }
   const dir=currentAt.clone().sub(currentEye);
   dir.applyAxisAngle(v(0,1,0),yaw);
@@ -186,7 +232,9 @@ try {
  const stream=resp.body.pipeThrough(new DecompressionStream('gzip'));
  const buffer=await new Response(stream).arrayBuffer();
  const gltf=await new GLTFLoader().parseAsync(buffer,'');
- scene.add(gltf.scene);ready=true;q('view-status').textContent='窓辺';q('loading').hidden=true;document.body.dataset.ready='true';
+ scene.add(gltf.scene);readRoomCollisions(gltf.scene,T.Vector3);
+ for(const [id,p] of Object.entries(views)){if(!clear(p.eye.x,p.eye.z,closedX))console.warn('Preset intersects collider:',id);}
+ ready=true;q('view-status').textContent='窓辺';q('loading').hidden=true;document.body.dataset.ready='true';
 }catch(e){
  console.error(e);q('loading').innerHTML='<b>バーを読み込めませんでした</b><span>ページを更新して、もう一度お試しください。</span>';
  q('view-status').textContent='読み込みエラー';document.querySelectorAll('button').forEach(b=>b.disabled=true);
