@@ -2,6 +2,8 @@ import * as T from './vendor/three.module.min.js';
 import {GLTFLoader} from './vendor/GLTFLoader.js';
 import {readRoomCollisions, clear, inThreshold, walk} from './walk.js';
 import * as audio from './audio.js';
+import {addDisplay} from './display.js';
+let exhibit=null, exhibitStart=0;
 const q=id=>document.getElementById(id);
 const stage=q('stage');
 const scene=new T.Scene();scene.background=new T.Color(0x080918);
@@ -221,6 +223,7 @@ function animate(t){
   meteor.position.set(4.7-phase*4,3.65-phase*1.0,15);
   meteor.material.opacity=Math.sin(Math.min(1,phase/.79)*Math.PI)*.82;
   for(const [i,b] of buttons.entries())b.position.y=i===trackMode?.075:.080;
+  exhibit?.update((t-exhibitStart)*.001);
   r.render(scene,camera);
  }
  requestAnimationFrame(animate);
@@ -239,3 +242,6 @@ try {
  console.error(e);q('loading').innerHTML='<b>バーを読み込めませんでした</b><span>ページを更新して、もう一度お試しください。</span>';
  q('view-status').textContent='読み込みエラー';document.querySelectorAll('button').forEach(b=>b.disabled=true);
 }
+
+try{exhibit=await addDisplay(scene);exhibitStart=performance.now();}
+catch(e){console.error(e);document.body.dataset.display='error';}
