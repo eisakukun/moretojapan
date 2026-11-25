@@ -410,7 +410,22 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://moretojapan.com/tokyo-earthquake-ginkgo/</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://moretojapan.com/nagoya-four-kannon-eho/</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://moretojapan.com/phrases/</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://moretojapan.com/phrases/samui-desu-ne/</loc>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -553,15 +568,5 @@
     <loc>https://moretojapan.com/phrases/atatamemasu-ka/</loc>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://moretojapan.com/tokyo-earthquake-ginkgo/</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://moretojapan.com/nagoya-four-kannon-eho/</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
   </url>
 </urlset>
