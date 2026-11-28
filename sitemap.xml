@@ -430,6 +430,11 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://moretojapan.com/phrases/wifi-arimasu-ka/</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://moretojapan.com/phrases/samui-desu-ne/</loc>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
